@@ -1,0 +1,26 @@
+{
+  "id": "./",
+  "name": "Celestial Nexus — Alliance Toolkit",
+  "short_name": "Celestial Nexus",
+  "description": "A community-built Star Citizen alliance toolkit for operations, FPS unit planning, logistics, intelligence, engineering, and organization coordination.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#07131f",
+  "theme_color": "#07131f",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

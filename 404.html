@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#07131f">
+  <title>Celestial Nexus — Returning to toolkit</title>
+  <style>
+    html,body{height:100%;margin:0;background:#07131f;color:#d8f4ff;font-family:system-ui,sans-serif}
+    main{min-height:100%;display:grid;place-items:center;text-align:center;padding:2rem;box-sizing:border-box}
+    a{color:#38bdf8}.panel{max-width:42rem;border:1px solid #164e63;border-radius:16px;padding:2rem;background:#0b1d2a}
+  </style>
+</head>
+<body>
+<main><section class="panel"><h1>Returning to Celestial Nexus…</h1><p>The requested path does not exist. You will be returned to the toolkit home page.</p><p><a id="home" href="./">Open the toolkit</a></p></section></main>
+<script>
+(() => {
+  const parts = location.pathname.split('/').filter(Boolean);
+  const root = location.hostname.endsWith('github.io') && parts.length ? `/${parts[0]}/` : '/';
+  document.getElementById('home').href = root;
+  setTimeout(() => location.replace(root), 1200);
+})();
+</script>
+</body>
+</html>

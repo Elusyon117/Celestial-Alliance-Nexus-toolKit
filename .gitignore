@@ -1,0 +1,17 @@
+# Operating-system files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Local test and export output
+*.log
+.tmp/
+dist/
+exports/
+__pycache__/

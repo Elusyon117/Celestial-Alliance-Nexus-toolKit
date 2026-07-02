@@ -1,0 +1,233 @@
+{
+  "schema_version": 3,
+  "org": {
+    "sid": "CAELITE",
+    "name": "Celestial Alliance",
+    "member_count": 26
+  },
+  "member_count": 26,
+  "hidden_count": 0,
+  "generated_at": "2026-06-22T18:20:53Z",
+  "last_fetched": "2026-06-22T18:20:53Z",
+  "source": "verified-rsi-seed",
+  "source_label": "Verified official RSI roster snapshot",
+  "source_url": "https://robertsspaceindustries.com/en/orgs/CAELITE/members",
+  "rsi_url": "https://robertsspaceindustries.com/en/orgs/CAELITE/members",
+  "members": [
+    {
+      "name": "ultimat3y3ti",
+      "handle": "ultimat3y3ti",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "ArtzCafe",
+      "handle": "ArtzVR",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Thibaud01",
+      "handle": "Thibaud01",
+      "rank": "Recruit",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "Kenbaru",
+      "handle": "Kenbaru",
+      "rank": "Recruit",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "J.HigashiFrameAdv",
+      "handle": "JHigashi-FRAME",
+      "rank": "Recruit",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "Stottsta",
+      "handle": "Stottsta",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "BIrdsofPrey",
+      "handle": "BIrdsofPrey",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "ImSoGirthyy",
+      "handle": "ImSoGirthyy",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Shiro_Draconis",
+      "handle": "Shiro_Draconis",
+      "rank": "Veteran",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "GraveHowl",
+      "handle": "GraveHowl",
+      "rank": "Veteran",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Shoggies",
+      "handle": "Shoggies",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Tronword Furey",
+      "handle": "Tronword_Furey",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "mashed1",
+      "handle": "mashed1",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "GoblinPotato",
+      "handle": "GoblinPotato",
+      "rank": "Recruit",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "locutus9181",
+      "handle": "Locutus9181",
+      "rank": "Enlisted",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Carbonado92",
+      "handle": "Carbonado92",
+      "rank": "Enlisted",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "Mash3dPotato",
+      "handle": "Mash3dPotato",
+      "rank": "Enlisted",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "CommiePotato",
+      "handle": "CommiePotato",
+      "rank": "Enlisted",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "Red_Widow",
+      "handle": "Red_Widow",
+      "rank": "Enlisted",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "CArnelius",
+      "handle": "CArnelius",
+      "rank": "Recruit",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "xxStealthy",
+      "handle": "xxStealthy",
+      "rank": "Enlisted",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Elusyon",
+      "handle": "Elusyon",
+      "rank": "Command",
+      "membership": "Main",
+      "roles": [
+        "Officer",
+        "Recruitment"
+      ],
+      "membership_label": "Main · Officer · Recruitment"
+    },
+    {
+      "name": "DaddyRionx",
+      "handle": "DaddyRionx",
+      "rank": "Enlisted",
+      "membership": "Main",
+      "roles": [],
+      "membership_label": "Main"
+    },
+    {
+      "name": "Hidden",
+      "handle": "HiddenPotato",
+      "rank": "Command",
+      "membership": "Affiliate",
+      "roles": [],
+      "membership_label": "Affiliate"
+    },
+    {
+      "name": "Satheron2023",
+      "handle": "Satheron2023",
+      "rank": "FleetMaster",
+      "membership": "Main",
+      "roles": [
+        "Founder"
+      ],
+      "membership_label": "Main · Founder"
+    },
+    {
+      "name": "Brock",
+      "handle": "BrockJ21",
+      "rank": "FleetMaster",
+      "membership": "Main",
+      "roles": [
+        "Founder"
+      ],
+      "membership_label": "Main · Founder"
+    }
+  ]
+}

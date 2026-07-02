@@ -1,0 +1,7 @@
+Celestial Nexus — Alliance Toolkit
+Version: 1.3.7
+Edition: FPS Unit Force Templates
+Repository package: New GitHub repository release
+Release date: 2026-07-02
+Entry point: index.html
+Deployment: GitHub Pages, main branch, repository root

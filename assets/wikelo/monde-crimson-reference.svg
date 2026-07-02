@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">Monde Crimson reference illustration</title>
+<desc id="desc">A stylized crimson futuristic weapon reference on a dark Celestial Nexus background.</desc>
+<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#06111d"/><stop offset="1" stop-color="#111f31"/></linearGradient>
+  <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#d6e5f3"/><stop offset=".42" stop-color="#657b8f"/><stop offset="1" stop-color="#1b2a3b"/></linearGradient>
+  <linearGradient id="crimson" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#6f0718"/><stop offset=".5" stop-color="#d51c3f"/><stop offset="1" stop-color="#701020"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="9" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="675" rx="32" fill="url(#bg)"/>
+<g opacity=".18" stroke="#72d6ff" fill="none"><path d="M0 110h1200M0 565h1200"/><circle cx="600" cy="338" r="270"/><circle cx="600" cy="338" r="210"/></g>
+<g transform="translate(120 210)">
+  <path d="M60 140 190 83h510l103 42 188 10 45 55-52 44-207 9-95 62H263l-89-49H54l-30-49z" fill="#0a111a" stroke="#9cb4c7" stroke-width="8"/>
+  <path d="M165 137 290 102h388l90 38-59 78H281l-85-36z" fill="url(#metal)"/>
+  <path d="M260 121h350l83 35-48 40H301l-86-32z" fill="url(#crimson)"/>
+  <path d="M400 218h170l-28 112H429z" fill="#172434" stroke="#7890a5" stroke-width="7"/>
+  <path d="M584 220h102l-12 65-78 20z" fill="#202f40" stroke="#7890a5" stroke-width="7"/>
+  <path d="M768 143h213l37 40-40 30H739z" fill="url(#metal)"/>
+  <path d="M792 156h169l24 20-24 17H770z" fill="url(#crimson)"/>
+  <rect x="334" y="148" width="82" height="20" rx="10" fill="#79e4ff" filter="url(#glow)"/>
+  <rect x="895" y="166" width="66" height="13" rx="7" fill="#ff395d" filter="url(#glow)"/>
+</g>
+<text x="72" y="606" fill="#d8e9f8" font-family="system-ui,Segoe UI,sans-serif" font-size="44" font-weight="700">MONDE · CRIMSON REFERENCE</text>
+<text x="76" y="642" fill="#7895aa" font-family="system-ui,Segoe UI,sans-serif" font-size="20">Celestial Nexus local fallback artwork</text>
+</svg>
