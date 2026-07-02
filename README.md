@@ -1,5 +1,8 @@
 <div align="center">
 
+> **Visual preview update:** Event Planner, Commodity Trading, Vehicle Loadout Manager, and Game Status & Intelligence now include animated command-surface headers, module-specific symbols, telemetry chips, and enhanced active-tab states. All workflows and stored data remain unchanged.
+
+
 # Celestial Nexus — Alliance Toolkit
 
 ### Star Citizen operations, FPS force planning, logistics, intelligence, engineering, and organization coordination
@@ -14,6 +17,10 @@
 </div>
 
 ---
+
+### Guaranteed Vehicle Loadout Manager covers
+
+Vehicle Loadout Manager now displays an offline-safe engineering cover for every selected vehicle. When verified Star Citizen artwork is available, it replaces the generated cover automatically; when external media is unavailable or blocked, the selected ship or ground vehicle still receives a role-aware visual identity panel.
 
 ## About this repository
 
@@ -41,14 +48,32 @@ Detailed instructions: [`docs/NEW_REPOSITORY_SETUP.md`](./docs/NEW_REPOSITORY_SE
 |---|---|
 | Alliance Tool Hub & Roster | Central navigation and organization roster snapshot/live synchronization |
 | Event Planner | Operations, ship crews, FPS unit templates, assignments, rosters, and Discord briefings |
-| Item Finder | Equipment, stores, prices, marketplace references, and blueprint research |
+| Item Finder | Equipment, specifications, stores, prices, marketplace references, and item acquisition research |
+| Blueprint Finder | Fabrication recipes, unlock paths, material requirements, and crafted-quality simulation |
+
+### Finder interface design
+
+The Item Finder uses an acquisition-first layout: the selected item remains visible at the top, while **Where to get this item** displays large shop cards, lowest reported price, terminal, and buy/sell values. Matching blueprint information is displayed beside it with larger unlock and recipe sections.
+
+The independent Blueprint Finder gives acquisition sources and recipe materials full-width treatment before the quality simulator, making contracts, mission unlocks, quantities, and minimum-quality requirements easier to read.
+
 | Vehicle Loadout Manager | Hardpoints, components, crafted quality, performance, and acquisition planning |
 | Language Pack Lab | Patch-aware `global.ini` creation, component naming, and ASOP ordering |
 | Game Status & Intelligence | RSI service health, LIVE build awareness, official news, and labeled community intel |
 | Wikelo Trade Center | Trades, materials, shared projects, completability, and reputation planning |
 | Org Picture Creator | Branded organization graphics, templates, reusable projects, and PNG export |
-| Commodity Trading | Market routes, cargo/capital sizing, confidence, fuel planning, convoy briefs, and exports |
-| Mining Resources Command | Resource search, regional guidance, break planning, platform preparation, and operation briefs |
+| Commodity Trading | Exchange-style commodity board, buy/sell terminal dossiers, market signals, trade routes, fuel planning, convoy briefs, and exports |
+| Mining Resources Command | Industrial resource board, regional guidance, fracture planning, owned-platform optimization, and direct VLM loadout handoff |
+### Commodity exchange design
+
+Commodity Trading now opens on a complete exchange-style market board. The default view lists the available UEX commodity catalog, headline buy and sell observations, spread, ROI, freshness, coverage, and a clearly labeled comparison with reported averages. Selecting a commodity opens a larger dossier showing the cheapest purchase terminals, highest-paying sell terminals, stock or demand when reported, and a shortcut into the route finder. Existing trade-route, fuel-planning, convoy, market-pulse, and source-intelligence tabs remain available.
+
+### Mining command and VLM handoff design
+
+Mining Resources Command now follows a four-step field workflow: **Discover → Route → Evaluate → Configure**. The selected resource dossier gives regional confidence, resistance, instability, mass class, quality potential, and the recommended platform more visual priority. The Loadout tab presents a large engineering package with mining head/tool, installed modules, field support, and crew baseline.
+
+Selecting **Open in Vehicle Loadout Manager** transfers the plan into VLM. The toolkit selects the matching manufacturer and vehicle, applies the vehicle search filter, loads its current hardpoint record, and attempts to match compatible mining heads and module slots. Integrated FPS tools and fixed ground-vehicle equipment remain visible as an advisory when VLM cannot expose an editable hardpoint. Live game/API records remain the final authority before saving a configuration.
+
 
 Full workflows and controls: [`docs/MODULE_GUIDE.md`](./docs/MODULE_GUIDE.md)
 
@@ -110,3 +135,11 @@ python scripts/validate_package.py
 ```
 
 The expected release inventory and SHA-256 hashes are recorded in `PACKAGE_REPORT.json` and `SHA256SUMS.txt`.
+
+### Vehicle cover behavior
+
+The Vehicle Loadout Manager displays the selected ship or ground vehicle in the large top hero. Verified artwork is used when available; an offline-safe engineering cover is generated immediately as a fallback. The same cover is synchronized to acquisition planning and image exports.
+
+### Mission Finder
+
+A current-patch contract intelligence workspace designed around SCMDB mission records. It supports full-text search, system/category/faction filters, release and gameplay flags, rewards, reputation gains, blueprint pools, hauling objectives, variants, requirements, raw-field inspection, snapshot import/export, and a scheduled SCMDB synchronization workflow. Every source field is preserved rather than reduced to a fixed schema.

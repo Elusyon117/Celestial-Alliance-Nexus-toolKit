@@ -72,46 +72,61 @@ For every ship or unit, commanders can configure:
 
 ---
 
-## 3. Item and Blueprint Finder
+## 3. Item Finder
 
-The **Universal Item Finder** combines equipment research and blueprint intelligence in one module. It can be switched between **Item Finder** and **Blueprint Finder** modes.
+The **Universal Item Finder** is a dedicated equipment-intelligence workspace for researching weapons, armor, ship components, utility equipment, loot, and other cataloged items.
 
-### Item Finder mode
+### What it provides
 
-Use this mode to research equipment such as:
-
-- Personal weapons and ammunition.
-- Armor and clothing.
-- Ship and vehicle components.
-- Utility equipment and tools.
-- Loot and other cataloged items.
-
-The interface can display item details, availability, known in-game store locations, price information, and marketplace references when those sources are available.
-
-### Blueprint Finder mode
-
-The blueprint catalog is designed for crafting and progression research. It supports:
-
-- Free-text blueprint search.
-- Output-type filtering.
-- Acquisition filtering, including documented/obtainable records, default availability, mission or contract unlocks, and records with no listed source.
-- Material filtering.
-- Recipe, unlock, and quality-tuning reference information where provided by the underlying data.
+- Category and item-name search.
+- Equipment specifications and descriptive metadata.
+- Known in-game store locations and community-reported prices.
+- UEX marketplace references when live data is available.
+- Item artwork and links to supporting community databases.
+- A larger blueprint-match panel that prioritizes unlock sources, craft time, recipe quantities, and direct access to the full Blueprint Finder.
 
 ### Typical workflow
 
-1. Choose **Item Finder** or **Blueprint Finder**.
-2. Select a category or apply blueprint filters.
-3. Search for the desired item or output.
-4. Review acquisition, store, recipe, material, price, and quality information.
+1. Select an item category.
+2. Search for or choose an item.
+3. Review specifications, acquisition locations, prices, and marketplace references.
+4. Open any matching fabrication recipe in **Blueprint Finder**.
 5. Refresh the dataset when newer live information is required.
 
 > [!NOTE]
-> Item availability, store inventories, prices, recipes, and blueprint acquisition rules can change between Star Citizen patches. Treat results as planning intelligence and verify critical purchases in game.
+> Item availability, store inventories, and prices can change between Star Citizen patches. Treat results as planning intelligence and verify critical purchases in game.
 
 ---
 
-## 4. Vehicle Loadout Manager
+## 4. Blueprint Finder
+
+The **Blueprint Finder & Quality Lab** is now an independent fabrication-intelligence module rather than a tab inside Item Finder.
+
+### What it provides
+
+- Free-text search across blueprint outputs, recipe keys, missions, and materials.
+- Output-type filtering.
+- Acquisition filtering for obtainable records, default availability, mission or contract unlocks, and records with no listed source.
+- Material filtering and complete bill-of-materials inspection.
+- Recipe, unlock, dismantle, and acquisition references where provided by the underlying data.
+- A quality simulator for modeling how input quality changes crafted stat multipliers.
+- Direct SCMDB fabrication links for community pool verification.
+
+### Typical workflow
+
+1. Open **Blueprint Finder** from its own home-page module card.
+2. Search or filter the fabrication catalog.
+3. Select a blueprint to inspect its recipe and acquisition path.
+4. Review every required material and mission unlock.
+5. Adjust quality values to model the crafted output.
+6. Open external fabrication references when live verification is required.
+
+> [!NOTE]
+> Recipes, acquisition rules, quality ranges, and available blueprint pools can change after patches. Verify mission-critical crafting plans against current live game behavior.
+
+---
+
+## 5. Vehicle Loadout Manager
 
 The **Vehicle Loadout Manager** is an engineering and acquisition workspace for configuring ships and ground vehicles. It combines hardpoint management, component compatibility, crafted-quality modeling, performance comparison, and shopping preparation.
 
@@ -164,7 +179,7 @@ The loadout workspace also turns a configuration into a practical shopping plan:
 
 ---
 
-## 5. Language Pack Lab
+## 6. Language Pack Lab
 
 The **Language Pack Lab** creates a customized Star Citizen `global.ini` package. It layers community localization improvements with organization-specific component naming and ASOP organization tools.
 
@@ -216,7 +231,7 @@ The module can apply selected community and Nexus layers in sequence:
 
 ---
 
-## 6. Game Status and Intelligence
+## 7. Game Status and Intelligence
 
 The **Game Status & Intelligence** module provides a single monitoring surface for official platform health, current LIVE-build awareness, official news, and clearly separated community intelligence.
 
@@ -251,7 +266,7 @@ Official and community material are intentionally presented as different source 
 
 ---
 
-## 7. Wikelo Trade Center
+## 8. Wikelo Trade Center
 
 The **Wikelo Trade Center** is an alien-commerce planning module for evaluating Wikelo exchanges, coordinating organization materials, tracking reputation, and preparing shared projects.
 
@@ -302,7 +317,7 @@ The calculator tracks:
 
 ---
 
-## 8. Organization Picture Creator
+## 9. Organization Picture Creator
 
 The **Celestial Alliance Picture Studio** creates branded organization graphics directly in the browser. It is intended for Discord announcements, event covers, recruitment, recognition, training, mission briefs, fleet showcases, and social posts.
 
@@ -360,9 +375,23 @@ Uploaded screenshots remain in the browser during editing. They are not uploaded
 
 ---
 
-## 9. Commodity Trading Command
+## 10. Commodity Trading Command
 
-The **Commodity Trading Command** is a hauling and convoy-planning workspace. It evaluates available commodity reports against ship capacity, working capital, route scope, risk tolerance, freshness, and operational constraints.
+The **Commodity Trading Command** is an exchange-first hauling and convoy-planning workspace. It begins with a complete commodity market board, then lets operators move from commodity research into ship-sized routes, fuel planning, and convoy coordination.
+
+### Market Exchange
+
+The default tab presents a stock-market-inspired overview without claiming that terminal observations are a true historical securities chart. It includes:
+
+- The available UEX commodity catalog, including records without a complete two-sided price market.
+- Commodity code, lowest observed buy price, highest observed sell price, spread per SCU, ROI, report freshness, and terminal coverage.
+- Search, legality, availability, and market-ranking controls.
+- A moving opportunity tape for the strongest current two-sided markets.
+- A selected-commodity dossier with larger **Where to buy** and **Where to sell** lists.
+- Reported stock and demand where the source provides them.
+- A market signal comparing current terminal observations with UEX-reported averages. This is explicitly labeled as a comparison, not a future-price prediction.
+- One-click transfer of the selected commodity into Trade Routes.
+- A copyable commodity market brief.
 
 ### Market and route analysis
 
@@ -414,60 +443,92 @@ The fuel planner adds operational routing considerations:
 
 ### Typical workflow
 
-1. Select the cargo platform and enter capital limits.
-2. Refresh the market dataset.
-3. Apply route, age, legality, and risk filters.
-4. Compare the highest-ranked opportunities.
-5. Send the selected route into the fuel planner.
-6. Add approved legs to the convoy board.
-7. Copy or export the final convoy briefing.
+1. Refresh the market dataset and review the Market Exchange.
+2. Select a commodity and compare the larger buy and sell terminal lists.
+3. Send the commodity into Trade Routes.
+4. Select the cargo platform and enter capital limits.
+5. Apply route, age, legality, and risk filters.
+6. Send the selected route into the fuel planner.
+7. Add approved legs to the convoy board.
+8. Copy or export the final convoy briefing.
 
 > [!WARNING]
 > Commodity prices, stock, demand, legality, terminal availability, interdiction risk, and server conditions can change quickly. The module is a forecasting and coordination tool, not a guarantee of profit.
 
 ---
 
-## 10. Mining Resources Command
+## 11. Mining Resources Command
 
-The **Mining Resources Command** is a patch-sensitive field guide and operation planner for hand mining, ground-vehicle mining, and ship mining.
+The **Mining Resources Command** is an industrial intelligence and field-configuration workspace for hand mining, ground-vehicle mining, and ship mining. Its interface is organized around the operator's real decision sequence rather than a collection of disconnected tables.
 
-### Resource intelligence
+### Four-stage workflow
 
-- Search the resource catalog by name.
-- Filter by mining platform: FPS/hand, ground vehicle, or mining ship.
-- Filter by system, including Stanton, Pyro, and Nyx where data is available.
-- Filter by resource tier or type, including high-priority minerals and gemstones.
-- Sort by value/priority, name, resistance, or quality potential.
-- Review known or confirmed mining regions and practical routing information.
-- Compare resistance and quality potential before choosing equipment and crew.
+1. **Discover** — search and compare every mapped resource.
+2. **Route** — review known systems, regions, approach notes, and location confidence.
+3. **Evaluate** — inspect resistance, instability, mass class, quality potential, and fracture-planning guidance.
+4. **Configure** — choose a recommended platform and send its engineering package into Vehicle Loadout Manager.
 
-### Operation preparation
+### Resource intelligence board
 
-The module is designed to support decisions such as:
+- Search the catalog by resource name.
+- Filter by FPS/hand, ground vehicle, or mining ship.
+- Filter by Stanton, Pyro, and Nyx where records are available.
+- Filter by legendary, very-high, high, standard, special-mineral, or gemstone tiers.
+- Sort by operational value, name, resistance, or quality potential.
+- Save priority resources as favorites.
+- Read larger at-a-glance indicators for platform, resistance, instability, quality, and location confidence.
 
-- Which resource to target.
-- Which mining platform is suitable.
-- Where the team should search.
-- What fracture difficulty or resistance to expect.
-- Which resources should be marked as favorites.
-- Which preparation or collection tasks are complete.
+### Resource dossier
 
-Selections, favorites, and checklist state can persist in browser storage.
+The selected resource opens a large dossier containing:
+
+- Recommended extraction platform and deposit scale.
+- Known or confirmed regions with practical routing notes.
+- Resistance, instability, mass, density, and quality guidance.
+- Fracture-planning controls and operational interpretation.
+- A recommended engineering package with mining head/tool, installed modules, field support, and crew baseline.
+- Alternative platform comparisons, crew roles, and a launch checklist.
+
+### Owned-platform optimizer
+
+The owned-platform advisor can generate a plan for FPS gear, ATLS GEO, ROC, ROC-DS, Golem, Prospector, or MOLE. It adjusts the recommended head/tool, module package, reserve equipment, gadget, and field sequence to the selected resource and platform.
+
+### Vehicle Loadout Manager handoff
+
+Use **Open in Vehicle Loadout Manager** from either the primary recommendation or the owned-platform optimizer.
+
+The handoff will:
+
+1. Open Vehicle Loadout Manager.
+2. Apply the matching manufacturer and vehicle-name filters.
+3. Select and load the recommended platform.
+4. Search editable mining-laser hardpoints for the recommended head.
+5. Search mining-module slots for the recommended modules and quantities.
+6. Display a handoff status banner showing what matched and what requires manual review.
+7. Provide a return button to the originating mining plan.
+
+FPS tools, integrated mining equipment, and fixed ground-vehicle systems may not appear as editable hardpoints in VLM. In those cases the recommendation is transferred as an advisory rather than silently discarded. Always review the resulting hardpoints against current LIVE data before saving or sharing the loadout.
 
 ### Briefing output
 
-**Copy operation brief** creates a portable summary for Discord or the Event Planner.
+**Copy operation brief** creates a portable mining summary for Discord or the Event Planner. Loadout and owned-platform plans can also be copied independently.
 
 ### Typical workflow
 
-1. Select the mining platform and system.
-2. Filter or search for the target resource.
-3. Compare value, resistance, location confidence, and quality potential.
-4. Mark priority targets and preparation checks.
-5. Copy the operation brief for the mining team.
-6. Build the full crew and vehicle assignment in the Event Planner when required.
+1. Search or filter for the target resource.
+2. Compare value, location confidence, resistance, instability, and quality potential.
+3. Review the recommended region and route notes.
+4. Use the fracture planner for the expected deposit.
+5. Open the Loadout tab and choose the default or owned-platform recommendation.
+6. Send the plan to VLM and verify every matched hardpoint.
+7. Save the VLM configuration and copy the mining operation brief.
 
 > [!NOTE]
-> Mining locations, resource distributions, resistance values, refinery behavior, and profitability can change between patches. Confirm high-value plans against current in-game conditions.
+> Mining locations, resource distributions, resistance values, component compatibility, refinery behavior, and profitability can change between patches. Confirm high-value plans against current in-game conditions and current live hardpoint data.
 
 ---
+
+
+## Mission Finder
+
+Mission Finder browses current-patch mission and contract records. Search and filter by system, category, faction, legality, release state, blueprint availability, combat, hauling, sharing, prerequisites, and mission chains. The detail workspace surfaces briefing, reward, reputation, access requirements, blueprint pools, hauling manifests, variants, and every unmodified source field. SCMDB is the primary synchronized source; the Star Citizen Wiki mission API is clearly labelled when used as a live fallback.

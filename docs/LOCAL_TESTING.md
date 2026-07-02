@@ -37,10 +37,11 @@ The validator checks required files, JSON syntax, local HTML dependencies, servi
 1. Open the Tool Hub.
 2. Open and close every module.
 3. Create one Event Planner ship/unit and role.
-4. Confirm Item Finder renders its initial screen.
-5. Load a vehicle in Vehicle Loadout Manager.
-6. Confirm Language Pack Lab opens without a script error.
-7. Confirm Game Status degrades gracefully if a source is blocked.
-8. Confirm Wikelo local artwork appears.
-9. Export a small Picture Studio PNG.
-10. Confirm Commodity Trading and Mining Resources open and retain selections after reload.
+4. Confirm Item Finder renders its independent item-research screen.
+5. Confirm Blueprint Finder opens as a separate module and loads its fabrication catalog.
+6. Load a vehicle in Vehicle Loadout Manager.
+7. Confirm Language Pack Lab opens without a script error.
+8. Confirm Game Status degrades gracefully if a source is blocked.
+9. Confirm Wikelo local artwork appears.
+10. Export a small Picture Studio PNG.
+11. Confirm Commodity Trading and Mining Resources open and retain selections after reload.

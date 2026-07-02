@@ -1,0 +1,330 @@
+{
+  "schema": "celestial-nexus.scmd-missions.v1",
+  "source": "Bootstrap mission schema preview — SCMDB sync pending",
+  "sourceUrl": "https://scmdb.net/",
+  "isFallback": true,
+  "fetchedAt": "2026-07-02T00:00:00Z",
+  "gameVersion": "4.8.2-LIVE.12030094",
+  "notice": "SCMDB currently exposes no loadable public game-data version from its website. This bundled schema preview keeps Mission Finder usable until the SCMDB synchronization workflow retrieves the live mission dataset.",
+  "missions": [
+    {
+      "uuid": "f0274151-6591-4bab-b6db-bd01536f9f28",
+      "title": "A Challenging Contract",
+      "description": "A high-risk Vaughn assassination contract targeting a protected mercenary at a research facility. The complete live record will replace this bootstrap preview when SCMDB or the mission API is reachable.",
+      "mission_giver": "Vaughn",
+      "debug_name": "Vaughn_ResearchFacilitySide_RegionA_EliminateSpecific",
+      "faction": {
+        "name": "Vaughn"
+      },
+      "rank_index": 2,
+      "illegal": true,
+      "legality_label": "Illegal",
+      "shareable": false,
+      "once_only": false,
+      "has_combat": true,
+      "reward_min": 30000,
+      "reward_max": 45000,
+      "reward_currency": "aUEC",
+      "time_to_complete_minutes": 20,
+      "star_systems": [
+        "Stanton",
+        "Nyx"
+      ],
+      "has_blueprints": true,
+      "blueprints": [
+        {
+          "name": "Killshot Rifle"
+        },
+        {
+          "name": "Deadrig Shotgun"
+        },
+        {
+          "name": "Overlord Supernova armor set"
+        }
+      ],
+      "has_chain": false,
+      "has_prerequisites": false,
+      "min_standing": {
+        "name": "Low Level Assassin",
+        "min_reputation": 3000
+      },
+      "max_standing": {
+        "name": "Master Assassin",
+        "min_reputation": 112000
+      },
+      "min_crime_stat": 1,
+      "max_crime_stat": 5,
+      "released": false,
+      "not_for_release": true,
+      "reputation_gained": [
+        {
+          "faction": "Vaughn",
+          "scope": "Assassination",
+          "tier": "+T_05",
+          "amount": 1000
+        }
+      ],
+      "max_players_per_instance": 1,
+      "cooldown": {
+        "label": "15 seconds"
+      },
+      "reward_scope": "Assassination",
+      "reputation_amount": 1000,
+      "game_version": "4.8.2-LIVE.12030094"
+    },
+    {
+      "uuid": "8aa22824-56ad-4522-8e76-525e58cf9865",
+      "title": "Active Bounty Evaluation",
+      "description": "A lawful evaluation contract for prospective bounty hunters. Neutralize the target and demonstrate the ability to operate under pressure.",
+      "mission_giver": "MicroTech Bounty Department",
+      "faction": {
+        "name": "microTech"
+      },
+      "illegal": false,
+      "legality_label": "Legal",
+      "shareable": true,
+      "once_only": true,
+      "has_combat": true,
+      "reward_min": 4000,
+      "reward_currency": "aUEC",
+      "star_systems": [
+        "Stanton"
+      ],
+      "has_blueprints": false,
+      "has_chain": true,
+      "has_prerequisites": true,
+      "min_standing": {
+        "name": "Applicant",
+        "min_reputation": 0
+      },
+      "min_crime_stat": 0,
+      "max_crime_stat": 2,
+      "released": true,
+      "reputation_gained": [
+        {
+          "faction": "microTech",
+          "scope": "BountyHunter",
+          "tier": "+T_04",
+          "amount": 500
+        },
+        {
+          "faction": "Bounty Hunters Guild",
+          "scope": "Affinity",
+          "tier": "+T_03",
+          "amount": 250
+        }
+      ],
+      "max_players_per_instance": 1,
+      "cooldown": {
+        "label": "5 seconds"
+      },
+      "reward_scope": "Bounty Hunter",
+      "reputation_amount": 500,
+      "game_version": "4.8.2-LIVE.12030094"
+    },
+    {
+      "uuid": "091ffb61-7733-4ebe-8cef-66ec15de2320",
+      "title": "A Batch from Scratch",
+      "description": "Oversee a multi-stage illegal production line: processing, packaging, and distribution of the finished cargo.",
+      "mission_giver": "Wallace Klim",
+      "faction": {
+        "name": "Wallace Klim"
+      },
+      "illegal": true,
+      "legality_label": "Illegal",
+      "shareable": true,
+      "once_only": true,
+      "has_combat": false,
+      "reward_min": 20000,
+      "reward_currency": "aUEC",
+      "star_systems": [
+        "Stanton"
+      ],
+      "has_blueprints": false,
+      "has_hauling": true,
+      "hauling_summary": [
+        {
+          "name": "Uncut SLAM",
+          "min_amount": 1,
+          "max_amount": 1
+        }
+      ],
+      "min_standing": {
+        "name": "Neutral",
+        "min_reputation": -500
+      },
+      "min_crime_stat": 0,
+      "max_crime_stat": 5,
+      "released": true,
+      "reputation_gained": [
+        {
+          "faction": "Wallace Klim",
+          "scope": "Affinity",
+          "tier": "+T_05",
+          "amount": 1000
+        }
+      ],
+      "max_players_per_instance": 1,
+      "cooldown": {
+        "label": "60 seconds"
+      },
+      "reward_scope": "Hauling",
+      "reputation_amount": 1000,
+      "game_version": "4.8.2-LIVE.12030094"
+    },
+    {
+      "uuid": "ccd6ef5b-9585-49cc-86cd-1062f929d06b",
+      "title": "A Call to Arms",
+      "description": "Join the Civilian Defense Force and receive payment for verified criminal takedowns encountered outside other paid contracts.",
+      "faction": {
+        "name": "Civilian Defense Force"
+      },
+      "illegal": false,
+      "legality_label": "Legal",
+      "shareable": false,
+      "once_only": false,
+      "has_combat": true,
+      "reward_min": 0,
+      "reward_currency": "aUEC",
+      "star_systems": [
+        "Stanton"
+      ],
+      "has_blueprints": false,
+      "has_chain": false,
+      "has_prerequisites": false,
+      "min_crime_stat": 0,
+      "max_crime_stat": 2,
+      "released": true,
+      "max_players_per_instance": 1,
+      "cooldown": {
+        "label": "1 second"
+      },
+      "reward_scope": "Assassination",
+      "game_version": "4.8.2-LIVE.12030094"
+    },
+    {
+      "uuid": "2ebfc69a-384a-436b-af3f-35c015dba107",
+      "title": "Comm Array Repair",
+      "description": "Travel to a damaged communication array and restore operation while managing any local security risk.",
+      "mission_giver": "Aciedo Communications",
+      "faction": {
+        "name": "Aciedo Communications"
+      },
+      "illegal": false,
+      "legality_label": "Legal",
+      "shareable": true,
+      "once_only": false,
+      "has_combat": false,
+      "reward_min": 10000,
+      "reward_currency": "aUEC",
+      "star_systems": [
+        "Stanton"
+      ],
+      "has_blueprints": false,
+      "has_chain": false,
+      "has_prerequisites": false,
+      "min_crime_stat": 0,
+      "max_crime_stat": 2,
+      "released": true,
+      "reputation_gained": [
+        {
+          "faction": "Aciedo Communications",
+          "scope": "Technician",
+          "tier": "+T_05",
+          "amount": 1000
+        }
+      ],
+      "max_players_per_instance": -1,
+      "cooldown": {
+        "label": "1 second"
+      },
+      "reward_scope": "Maintenance",
+      "reputation_amount": 1000,
+      "game_version": "4.8.2-LIVE.12030094"
+    },
+    {
+      "uuid": "2598694a-6283-4800-bd13-a921dba84526",
+      "title": "A Chance to Impress",
+      "description": "Vaughn offers an introductory assassination contract as a test of discretion and combat capability.",
+      "mission_giver": "Vaughn",
+      "faction": {
+        "name": "Vaughn"
+      },
+      "illegal": true,
+      "legality_label": "Illegal",
+      "shareable": false,
+      "once_only": true,
+      "has_combat": true,
+      "enemy_count_min": 1,
+      "enemy_count_max": 1,
+      "time_to_complete_minutes": 12,
+      "star_systems": [
+        "Nyx",
+        "Stanton"
+      ],
+      "has_blueprints": false,
+      "has_chain": false,
+      "has_prerequisites": false,
+      "min_standing": {
+        "name": "Neutral",
+        "min_reputation": 0
+      },
+      "released": true,
+      "reputation_gained": [
+        {
+          "faction": "Vaughn",
+          "scope": "FactionReputation",
+          "tier": "Intro",
+          "amount": 100
+        }
+      ],
+      "max_players_per_instance": 1,
+      "cooldown": {
+        "label": "1 second"
+      },
+      "reward_scope": "Assassination",
+      "reputation_amount": 100,
+      "game_version": "4.8.2-LIVE.12030094"
+    }
+  ],
+  "missionCount": 6,
+  "fields": [
+    "blueprints",
+    "cooldown",
+    "debug_name",
+    "description",
+    "enemy_count_max",
+    "enemy_count_min",
+    "faction",
+    "game_version",
+    "has_blueprints",
+    "has_chain",
+    "has_combat",
+    "has_hauling",
+    "has_prerequisites",
+    "hauling_summary",
+    "illegal",
+    "legality_label",
+    "max_crime_stat",
+    "max_players_per_instance",
+    "max_standing",
+    "min_crime_stat",
+    "min_standing",
+    "mission_giver",
+    "not_for_release",
+    "once_only",
+    "rank_index",
+    "released",
+    "reputation_amount",
+    "reputation_gained",
+    "reward_currency",
+    "reward_max",
+    "reward_min",
+    "reward_scope",
+    "shareable",
+    "star_systems",
+    "time_to_complete_minutes",
+    "title",
+    "uuid"
+  ]
+}

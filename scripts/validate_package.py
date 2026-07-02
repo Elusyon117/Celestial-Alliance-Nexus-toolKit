@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = [
     'index.html', '404.html', 'manifest.webmanifest', 'sw.js', '.nojekyll',
     'icon-192.png', 'icon-512.png', 'data/roster.json',
+    'data/scmdb-missions-live.json', 'data/scmdb-missions-live.js',
     'assets/wikelo/ana-endro.webp', 'assets/wikelo/bokto.webp',
     'assets/wikelo/boomtube-clanguard.webp', 'assets/wikelo/geist-snow.webp',
     'assets/wikelo/killshot-dominion-reference.webp', 'assets/wikelo/monde-crimson-reference.svg',
@@ -25,7 +26,7 @@ for rel in REQUIRED:
     if not (ROOT / rel).is_file():
         errors.append(f'Missing required file: {rel}')
 
-for rel in ['manifest.webmanifest', 'data/roster.json', 'PACKAGE_REPORT.json']:
+for rel in ['manifest.webmanifest', 'data/roster.json', 'data/scmdb-missions-live.json', 'PACKAGE_REPORT.json']:
     try:
         json.loads((ROOT / rel).read_text(encoding='utf-8'))
     except Exception as exc:

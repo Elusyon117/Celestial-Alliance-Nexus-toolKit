@@ -7,7 +7,8 @@ Celestial Nexus is a static client-side application. It does not include a proje
 Depending on the module and browser, locally stored information may include:
 
 - Event Planner operations, units, crew roles, and assignments.
-- Item Finder mode and filters.
+- Item Finder selections and filters.
+- Blueprint Finder filters, selected recipe, and quality-lab values.
 - Vehicle configurations and engineering preferences.
 - Language Pack Lab configuration.
 - Wikelo material locker, project plan, completions, and reputation values.

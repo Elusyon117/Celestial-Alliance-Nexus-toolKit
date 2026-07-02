@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celestial-nexus-v1-3-7-new-repository-2026-07-02';
+const CACHE_NAME = 'celestial-nexus-v137-mission-finder-1';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./data/roster.json",
+  "./data/scmdb-missions-live.json",
+  "./data/scmdb-missions-live.js",
   "./assets/wikelo/ana-endro.webp",
   "./assets/wikelo/bokto.webp",
   "./assets/wikelo/boomtube-clanguard.webp",

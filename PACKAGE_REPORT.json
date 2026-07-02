@@ -1,44 +1,25 @@
 {
-  "package": "Celestial Nexus Toolkit v1.3.7 — New GitHub Repository",
-  "version": "1.3.7",
-  "edition": "FPS Unit Force Templates",
+  "package": "Celestial Nexus Toolkit v1.3.7 \u2014 Mission Finder Preview",
   "generated_at": "2026-07-02",
-  "deployment_model": "GitHub Pages: main branch, repository root, .nojekyll",
-  "custom_workflow_included": false,
-  "modules": [
-    "Alliance Tool Hub and Organization Roster",
-    "Event Planner",
-    "Item Finder",
-    "Vehicle Loadout Manager",
-    "Language Pack Lab",
-    "Game Status & Intelligence",
-    "Wikelo Trade Center",
-    "Org Picture Creator",
-    "Commodity Trading",
-    "Mining Resources Command"
-  ],
-  "runtime_local_dependencies": [
-    "./assets/wikelo/",
-    "./assets/wikelo/ana-endro.webp",
-    "./assets/wikelo/bokto.webp",
-    "./assets/wikelo/boomtube-clanguard.webp",
-    "./assets/wikelo/geist-snow.webp",
-    "./assets/wikelo/killshot-dominion-reference.webp",
-    "./assets/wikelo/monde-crimson-reference.svg",
-    "./assets/wikelo/palatino-mark-1.webp",
-    "./assets/wikelo/polaris-bit-reference.webp",
-    "./assets/wikelo/r97-crimson-reference.webp",
-    "./assets/wikelo/strata-heatwave.webp",
-    "./data/roster.json",
-    "./manifest.webmanifest",
-    "./sw.js"
-  ],
-  "portable_changes": [
-    "Removed absolute roster fallback URLs pointing to the previous repository.",
-    "Changed bundled Wikelo source links to the local assets directory.",
-    "Added new-repository documentation, validation scripts, and GitHub issue templates."
-  ],
-  "file_count": 46,
-  "uncompressed_bytes": 5936513,
-  "entry_point_sha256": "f5cd8b344dd25c4a2d1cb94215cd313959d7bbf814142f5f7a91d41b691f5c1a"
+  "file_count": 51,
+  "index_at_root": true,
+  "module_count": 11,
+  "new_module": "Mission Finder",
+  "mission_data": {
+    "primary_source": "SCMDB synchronized mission records",
+    "fallback_source": "Star Citizen Wiki API",
+    "raw_field_preservation": true,
+    "bundled_snapshot": "data/scmdb-missions-live.json",
+    "sync_workflow": ".github/workflows/sync-scmdb-missions.yml",
+    "bundled_preview_records": 6,
+    "bundled_preview_is_full_scmdb_dataset": false
+  },
+  "validation": {
+    "inline_javascript_blocks_checked": 47,
+    "duplicate_html_ids": 0,
+    "dashboard_module_cards": 11,
+    "mission_function_test": "passed",
+    "zip_integrity": "passed"
+  },
+  "sha256_manifest": "SHA256SUMS.txt"
 }
