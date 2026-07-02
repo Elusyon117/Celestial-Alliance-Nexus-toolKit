@@ -1,0 +1,11 @@
+Upload the CONTENTS of this patch to the repository root and allow GitHub to replace files with the same names.
+
+Required final paths:
+.github/workflows/sync-scmdb-missions.yml
+scripts/sync-scmdb-missions.mjs
+index.html
+SCMDB_MISSION_SYNC_SETUP.md
+sw.js
+
+After committing, open Actions > Sync SCMDB mission data > Run workflow.
+If the workflow cannot commit results, set Settings > Actions > General > Workflow permissions to Read and write permissions.

@@ -1,22 +1,48 @@
-# SCMDB Mission Finder synchronization
+# Mission Finder synchronization setup
 
-Mission Finder reads `data/scmdb-missions-live.json` and preserves every field in each source record. The companion JavaScript file supports standalone/offline preview mode.
+The workflow file must exist on the default branch at:
 
-## Automatic discovery
+```text
+.github/workflows/sync-scmdb-missions.yml
+```
 
-The workflow `.github/workflows/sync-scmdb-missions.yml` runs daily and can be launched manually from **Actions → Sync SCMDB mission data → Run workflow**. Its discovery script scans SCMDB's public HTML, JavaScript and JSON references for the largest mission/contract collection.
+GitHub only lists workflow files stored in `.github/workflows`. The `.github` directory is hidden on Windows, so browser uploads can accidentally omit it.
 
-## Exact endpoint override
+## Install
 
-SCMDB may change its public data path. When the automatic discovery cannot locate it:
+Upload these paths without adding an outer folder:
 
-1. Open the repository **Settings → Secrets and variables → Actions → Variables**.
-2. Create a repository variable named `SCMDB_MISSIONS_URL`.
-3. Set it to SCMDB's current public JSON mission endpoint.
-4. Run the sync workflow manually.
+```text
+.github/workflows/sync-scmdb-missions.yml
+scripts/sync-scmdb-missions.mjs
+index.html
+```
 
-The script does not discard fields or reshape mission records. It wraps the original objects in snapshot metadata and the Mission Finder displays both a decision-friendly view and the complete raw record.
+The existing `data/scmdb-missions-live.json` and `.js` files must also remain in the repository.
 
-## Browser fallback
+## Run
 
-When no SCMDB snapshot is available, the module attempts a live SCMDB request and then uses the current Star Citizen Wiki mission API as an explicitly labelled fallback. Imported SCMDB JSON can also be loaded directly from the Mission Finder interface.
+1. Open **Actions**.
+2. Select **Sync SCMDB mission data**.
+3. Select **Run workflow**.
+4. Run it on `main`.
+
+The workflow first attempts SCMDB. When SCMDB is unavailable, it downloads every paginated mission record from the current Star Citizen Wiki mission API and labels the snapshot as a fallback. It then commits the updated JSON and JavaScript snapshot to the repository.
+
+## Permissions
+
+If the workflow can read data but cannot commit it, open:
+
+**Settings → Actions → General → Workflow permissions**
+
+Select **Read and write permissions**, then save.
+
+## Optional exact SCMDB endpoint
+
+When SCMDB publishes a stable mission JSON endpoint, create this repository variable:
+
+```text
+SCMDB_MISSIONS_URL
+```
+
+under **Settings → Secrets and variables → Actions → Variables**.
