@@ -1,0 +1,45 @@
+name: Sync SCMDB mission data
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "23 6 * * *"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: scmdb-mission-sync
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Synchronize mission catalog
+        env:
+          SCMDB_MISSIONS_URL: ${{ vars.SCMDB_MISSIONS_URL }}
+        run: node scripts/sync-scmdb-missions.mjs
+
+      - name: Commit updated mission snapshot
+        run: |
+          if git diff --quiet -- data/scmdb-missions-live.json data/scmdb-missions-live.js; then
+            echo "Mission snapshot is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/scmdb-missions-live.json data/scmdb-missions-live.js
+          git commit -m "Update mission catalog snapshot"
+          git push
