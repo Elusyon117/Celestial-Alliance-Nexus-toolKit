@@ -149,4 +149,5 @@ When the synchronized fallback contains a mission summary, selecting a contract 
 
 ### Mission Finder 4.8.3 LIVE integrity
 
+
 Mission Finder is now pinned to **4.8.3 LIVE**. The synchronizer examines SCMDB source URLs and metadata before accepting a mission array, rejects PTU and other patch families, and uses a version-scoped Wiki API fallback only after discovering an exact 4.8.3 LIVE game-version code. A patch-integrity strip in the UI shows the required dataset, loaded version, verification status, and snapshot freshness. The refreshed browser adds compensation filters and payout, reputation, duration, and alphabetical sorting.
