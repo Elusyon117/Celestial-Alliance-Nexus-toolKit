@@ -1,3 +1,16 @@
+# Changelog
+
+## Mission Finder 4.8.3 LIVE lock and UI refresh
+
+- Locked Mission Finder synchronization to patch family **4.8.3** and the **LIVE** channel.
+- Rejects SCMDB mission arrays from PTU, EPTU, 4.9, older LIVE builds, and unversioned sources.
+- Wiki fallback now discovers an exact 4.8.3 LIVE game-version code and passes it to every paginated mission request.
+- Added source-version integrity cards with target, loaded version, verification state, and snapshot age.
+- Added compensation filters and payout, reputation, duration, and alphabetical sorting.
+- Added camelCase SCMDB mappings including `rewardUEC`, `timeToComplete`, `haulingOrders`, `blueprintRewards`, `itemRewards`, and access flags.
+- Reworked the contract list and selected dossier for clearer payout, reputation, duration, location, and cargo scanning.
+- Detail requests now remain version-scoped to the loaded 4.8.3 LIVE snapshot.
+
 ## Mission Finder payout and complete-detail upgrade — 2026-07-02
 
 - Replaced the ambiguous “Reward varies” label with explicit source-aware payout states.

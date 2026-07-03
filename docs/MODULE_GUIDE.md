@@ -532,3 +532,8 @@ FPS tools, integrated mining equipment, and fixed ground-vehicle systems may not
 ## Mission Finder
 
 Mission Finder browses current-patch mission and contract records. Search and filter by system, category, faction, legality, release state, blueprint availability, combat, hauling, sharing, prerequisites, and mission chains. The detail workspace surfaces briefing, reward, reputation, access requirements, blueprint pools, hauling manifests, variants, and every unmodified source field. SCMDB is the primary synchronized source; the Star Citizen Wiki mission API is clearly labelled when used as a live fallback.
+
+
+## Mission Finder — 4.8.3 LIVE
+
+The Mission Finder header includes a patch-integrity console. Green **Patch verified** means the source identifies as 4.8.3 LIVE. A red mismatch means the stored snapshot is only a fallback and should not be treated as current. Use the compensation filter to isolate fixed aUEC payouts, item/blueprint rewards, or contracts with no exposed fixed payout. Sorting is available by payout, reputation, duration, and name.

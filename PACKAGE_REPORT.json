@@ -1,24 +1,37 @@
 {
-  "package": "Celestial Nexus Toolkit v1.3.7 \u2014 Mission Finder Preview",
+  "package": "Celestial Nexus Toolkit v1.3.7 \u2014 Mission Finder 4.8.3 LIVE Modern UI",
   "generated_at": "2026-07-02",
-  "file_count": 51,
+  "file_count": 54,
   "index_at_root": true,
   "module_count": 11,
-  "new_module": "Mission Finder",
+  "updated_module": "Mission Finder",
   "mission_data": {
-    "primary_source": "SCMDB synchronized mission records",
-    "fallback_source": "Star Citizen Wiki API",
+    "target_patch": "4.8.3",
+    "target_channel": "LIVE",
+    "known_version": "4.8.3-LIVE.12122953",
+    "primary_source": "SCMDB synchronized mission records with source-version verification",
+    "fallback_source": "Star Citizen Wiki API with exact game-version parameter",
+    "rejects_non_target_sources": true,
     "raw_field_preservation": true,
     "bundled_snapshot": "data/scmdb-missions-live.json",
     "sync_workflow": ".github/workflows/sync-scmdb-missions.yml",
-    "bundled_preview_records": 6,
-    "bundled_preview_is_full_scmdb_dataset": false
+    "camel_case_scmdb_aliases": [
+      "rewardUEC",
+      "timeToComplete",
+      "haulingOrders",
+      "blueprintRewards",
+      "itemRewards",
+      "availableSystems"
+    ],
+    "payout_semantics": "Displays explicit source payout fields; otherwise clearly states that no fixed payout is exposed."
   },
   "validation": {
-    "inline_javascript_blocks_checked": 47,
+    "inline_javascript_blocks_checked": 49,
     "duplicate_html_ids": 0,
     "dashboard_module_cards": 11,
-    "mission_function_test": "passed",
+    "mission_483_source_guard_mock": "passed",
+    "scmdb_camel_case_mapping_test": "passed",
+    "package_validator": "passed",
     "zip_integrity": "passed"
   },
   "sha256_manifest": "SHA256SUMS.txt"

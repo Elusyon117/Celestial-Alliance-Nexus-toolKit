@@ -46,3 +46,8 @@ SCMDB_MISSIONS_URL
 ```
 
 under **Settings → Secrets and variables → Actions → Variables**.
+
+
+## 4.8.3 LIVE safety lock
+
+The sync script defaults to `MISSION_PATCH=4.8.3` and `MISSION_CHANNEL=LIVE`. It will not replace the repository snapshot with 4.9 PTU, an older LIVE patch, or an unversioned/default API response. SCMDB candidates must identify as 4.8.3 LIVE through their source URL or metadata. When SCMDB is unavailable, the script queries the Wiki API game-version catalog, selects an exact 4.8.3 LIVE code, and supplies that code to every mission page request. A run fails visibly rather than writing the wrong patch.

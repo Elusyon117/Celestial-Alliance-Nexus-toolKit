@@ -23,3 +23,8 @@ If that request is unavailable, the synchronized summary remains usable and ever
 ## Synchronization
 
 The scheduled sync now requests `filter[grouped]=false` from the Wiki fallback so contract variants are not intentionally collapsed. Upload the updated `scripts/sync-scmdb-missions.mjs` with `index.html` and `sw.js`, then run the existing **Sync SCMDB mission data** workflow again.
+
+
+## SCMDB field aliases
+
+SCMDB merged records frequently use camelCase. Mission Finder now maps `rewardUEC`, `timeToComplete`, `maxPlayersPerInstance`, `haulingOrders`, `blueprintRewards`, `itemRewards`, `availableSystems`, `canBeShared`, `availableInPrison`, `minStanding`, `maxStanding`, `buyIn`, and cooldown/reaccept fields into the visible dossier while retaining the untouched raw record. A contract can still correctly show **No fixed payout** when neither SCMDB nor the exact-version detail record publishes a monetary amount.
