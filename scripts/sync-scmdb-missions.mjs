@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 /**
- * Mission catalog synchronizer — strict 4.8.3 LIVE targeting.
+ * Mission catalog synchronizer — strict 4.8.2 LIVE targeting.
  *
- * 1. Discovers SCMDB mission datasets, but only accepts 4.8.3 LIVE sources.
+ * 1. Discovers SCMDB mission datasets, but only accepts 4.8.2 LIVE sources.
  * 2. Falls back to the Star Citizen Wiki API only after discovering an exact
- *    4.8.3 LIVE game-version code and passing it to every mission request.
- * 3. Refuses to overwrite the repository with PTU, 4.9, 4.8.2, or an
+ *    4.8.2 LIVE game-version code and passing it to every mission request.
+ * 3. Refuses to overwrite the repository with PTU, other LIVE patches, or an
  *    unversioned/default API response.
  */
 import fs from 'node:fs/promises';
@@ -17,12 +17,12 @@ const outJson = path.join(root, 'data', 'scmdb-missions-live.json');
 const outJs = path.join(root, 'data', 'scmdb-missions-live.js');
 const wikiBase = 'https://api.star-citizen.wiki/api/missions';
 const wikiVersionsUrl = 'https://api.star-citizen.wiki/api/game-versions';
-const TARGET_PATCH = String(process.env.MISSION_PATCH || '4.8.3').trim();
+const TARGET_PATCH = String(process.env.MISSION_PATCH || '4.8.2').trim();
 const TARGET_CHANNEL = String(process.env.MISSION_CHANNEL || 'LIVE').trim().toUpperCase();
-const KNOWN_TARGET_VERSION = String(process.env.MISSION_VERSION || '4.8.3-LIVE.12122953').trim();
+const KNOWN_TARGET_VERSION = String(process.env.MISSION_VERSION || '4.8.2-LIVE.12030094').trim();
 
 const start = [
-  `https://scmdb.net/data/merged-${TARGET_PATCH.toLowerCase()}-${TARGET_CHANNEL.toLowerCase()}.12122953.json`,
+  `https://scmdb.net/data/merged-${TARGET_PATCH.toLowerCase()}-${TARGET_CHANNEL.toLowerCase()}.12030094.json`,
   'https://scmdb.net/'
 ];
 if (process.env.SCMDB_MISSIONS_URL) start.unshift(process.env.SCMDB_MISSIONS_URL);
@@ -329,4 +329,3 @@ await fs.mkdir(path.dirname(outJson), { recursive: true });
 await fs.writeFile(outJson, JSON.stringify(payload, null, 2) + '\n');
 await fs.writeFile(outJs, 'window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ' + JSON.stringify(payload) + ';\n');
 console.log(`Saved ${payload.missionCount} verified ${payload.gameVersion} mission records from ${payload.source}.`);
-
