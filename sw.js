@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-482-live-v2';
+const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-483-scmdb-payout-v3';
 const APP_SHELL = [
   "./",
   "./index.html",
