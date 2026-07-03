@@ -164,6 +164,7 @@ async function fetchAllWikiMissions() {
     const url = new URL(wikiBase);
     url.searchParams.set('page[size]', '200');
     url.searchParams.set('page[number]', String(page));
+    url.searchParams.set('filter[grouped]', 'false');
     console.log(`Downloading Wiki mission page ${page}${lastPage > 1 ? `/${lastPage}` : ''}`);
     const payload = await fetchJson(url.href, 30000);
     if (page === 1) firstMeta = payload?.meta || payload?.metadata || {};

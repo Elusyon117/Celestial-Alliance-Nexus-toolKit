@@ -142,4 +142,6 @@ The Vehicle Loadout Manager displays the selected ship or ground vehicle in the 
 
 ### Mission Finder
 
-A current-patch contract intelligence workspace designed around SCMDB mission records. It supports full-text search, system/category/faction filters, release and gameplay flags, rewards, reputation gains, blueprint pools, hauling objectives, variants, requirements, raw-field inspection, snapshot import/export, and a scheduled SCMDB synchronization workflow. Every source field is preserved rather than reduced to a fixed schema.
+A current-patch contract intelligence workspace designed around SCMDB mission records. It supports full-text search, system/category/faction filters, release and gameplay flags, fixed aUEC payout ranges, item rewards, reputation gains and losses, blueprint pools, hauling orders, timing, locations, variants, requirements, raw-field inspection, snapshot import/export, and scheduled synchronization.
+
+When the synchronized fallback contains a mission summary, selecting a contract now requests that mission’s complete Star Citizen Wiki API detail record and merges it into the dossier without discarding the synchronized source fields. Fixed payout values are shown only when the source publishes `reward_min` or `reward_max`; contracts without a published monetary amount are labelled **No fixed payout exposed** rather than incorrectly implying a UI failure. Every source field remains available in the raw record inspector. See `MISSION_FINDER_DATA_DISPLAY.md` for the field behavior and update workflow.

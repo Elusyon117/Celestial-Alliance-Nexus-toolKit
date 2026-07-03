@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-sync-v2';
+const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-detail-v3';
 const APP_SHELL = [
   "./",
   "./index.html",

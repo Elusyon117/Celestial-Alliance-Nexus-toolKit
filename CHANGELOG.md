@@ -1,3 +1,12 @@
+## Mission Finder payout and complete-detail upgrade — 2026-07-02
+
+- Replaced the ambiguous “Reward varies” label with explicit source-aware payout states.
+- Added prominent fixed aUEC payout, reputation gained/lost, item reward, blueprint, cargo, duration, lifetime, cooldown, player, and rank summaries.
+- Added on-demand loading of the selected mission’s complete API detail record, including reward groups, reputation losses, hauling orders, starmap locations, prerequisite groups, unlock groups, and completion tags.
+- Added complete location-group displays with expandable long lists.
+- Added separate compensation, reputation, hauling, geography, access, operational, and progression sections.
+- Explicitly requests ungrouped mission variants during browser and scheduled synchronization.
+- Preserved all synchronized and imported raw fields and retained SCMDB-first source behavior.
 
 ## Mission Finder preview
 

@@ -1,0 +1,20 @@
+MISSION FINDER PAYOUT + COMPLETE DETAIL PATCH
+
+Upload these files to the repository root and allow replacement:
+
+index.html
+sw.js
+scripts/sync-scmdb-missions.mjs
+README.md
+CHANGELOG.md
+VERSION.txt
+MISSION_FINDER_DATA_DISPLAY.md
+
+The .github workflow does not need to be recreated. After the commit:
+1. Open Actions.
+2. Run Sync SCMDB mission data on main.
+3. Wait for Update mission catalog snapshot.
+4. Wait for GitHub Pages deployment.
+5. Open Mission Finder and press Ctrl+Shift+R once.
+
+Selecting a mission automatically requests the complete detail record. Contracts with no source-published fixed payout display No fixed payout exposed.
