@@ -15,7 +15,6 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -28,6 +27,8 @@ jobs:
       - name: Synchronize mission catalog
         env:
           SCMDB_MISSIONS_URL: ${{ vars.SCMDB_MISSIONS_URL }}
+          MISSION_PATCH: "4.8.3"
+          MISSION_CHANNEL: "LIVE"
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Commit updated mission snapshot
@@ -36,10 +37,8 @@ jobs:
             echo "Mission snapshot is already current."
             exit 0
           fi
-
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
           git add data/scmdb-missions-live.json data/scmdb-missions-live.js
-          git commit -m "Update mission catalog snapshot"
+          git commit -m "Update SCMDB 4.8.3 LIVE mission snapshot"
           git push
