@@ -234,7 +234,8 @@ async function discoverWikiTargetVersion() {
     .filter(entry => isTarget(entry.identity));
   if (!matches.length) {
     const available = rows.map(versionCode).filter(Boolean).slice(0, 12).join(', ');
-    throw new Error(`The Wiki API does not currently expose ${TARGET_PATCH} ${TARGET_CHANNEL}. Available examples: ${available || 'none returned'}. Refusing to sync a different/default patch.`);
+    console.warn(`The Wiki API does not currently expose ${TARGET_PATCH} ${TARGET_CHANNEL}. Available examples: ${available || 'none returned'}. Keeping the existing repository snapshot unchanged.`);
+    return null;
   }
   matches.sort((a, b) => Number(b.identity.build || 0) - Number(a.identity.build || 0));
   return matches[0].identity.code || matches[0].code || KNOWN_TARGET_VERSION;
@@ -296,6 +297,10 @@ if (scmdb) {
 } else {
   console.warn(`No verified SCMDB ${TARGET_PATCH} ${TARGET_CHANNEL} dataset was available. Discovering an exact Wiki API game-version code.`);
   const version = await discoverWikiTargetVersion();
+  if (!version) {
+    console.log(`No verified ${TARGET_PATCH} ${TARGET_CHANNEL} mission dataset is available yet. Nothing was changed; the workflow will check again next time.`);
+    process.exit(0);
+  }
   const wiki = await fetchAllWikiMissions(version);
   payload = {
     schema: 'celestial-nexus.scmd-missions.v3',
@@ -324,3 +329,4 @@ await fs.mkdir(path.dirname(outJson), { recursive: true });
 await fs.writeFile(outJson, JSON.stringify(payload, null, 2) + '\n');
 await fs.writeFile(outJs, 'window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ' + JSON.stringify(payload) + ';\n');
 console.log(`Saved ${payload.missionCount} verified ${payload.gameVersion} mission records from ${payload.source}.`);
+
