@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-483-modern-v1';
+const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-482-live-v2';
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,8 +6,6 @@ const APP_SHELL = [
   "./icon-192.png",
   "./icon-512.png",
   "./data/roster.json",
-  "./data/scmdb-missions-live.json",
-  "./data/scmdb-missions-live.js",
   "./assets/wikelo/ana-endro.webp",
   "./assets/wikelo/bokto.webp",
   "./assets/wikelo/boomtube-clanguard.webp",
@@ -41,6 +39,18 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return;
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
+
+  if (/\/data\/scmdb-missions-live\.(?:json|js)$/.test(url.pathname)) {
+    event.respondWith(
+      fetch(request, { cache: 'no-store' })
+        .then((response) => {
+          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+          return response;
+        })
+        .catch(() => caches.match(request))
+    );
+    return;
+  }
 
   if (request.mode === 'navigate') {
     event.respondWith(
