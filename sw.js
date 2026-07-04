@@ -1,21 +1,21 @@
-const CACHE_NAME = 'celestial-nexus-v1.3.7-mission-483-scmdb-payout-v3';
+const CACHE_NAME = 'celestial-nexus-v1.5.2-item-finder-safe-category-20260704';
 const APP_SHELL = [
-  "./",
-  "./index.html",
-  "./manifest.webmanifest",
-  "./icon-192.png",
-  "./icon-512.png",
-  "./data/roster.json",
-  "./assets/wikelo/ana-endro.webp",
-  "./assets/wikelo/bokto.webp",
-  "./assets/wikelo/boomtube-clanguard.webp",
-  "./assets/wikelo/geist-snow.webp",
-  "./assets/wikelo/killshot-dominion-reference.webp",
-  "./assets/wikelo/monde-crimson-reference.svg",
-  "./assets/wikelo/palatino-mark-1.webp",
-  "./assets/wikelo/polaris-bit-reference.webp",
-  "./assets/wikelo/r97-crimson-reference.webp",
-  "./assets/wikelo/strata-heatwave.webp"
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icon-192.png',
+  './icon-512.png',
+  './data/roster.json',
+  './assets/wikelo/ana-endro.webp',
+  './assets/wikelo/bokto.webp',
+  './assets/wikelo/boomtube-clanguard.webp',
+  './assets/wikelo/geist-snow.webp',
+  './assets/wikelo/killshot-dominion-reference.webp',
+  './assets/wikelo/monde-crimson-reference.svg',
+  './assets/wikelo/palatino-mark-1.webp',
+  './assets/wikelo/polaris-bit-reference.webp',
+  './assets/wikelo/r97-crimson-reference.webp',
+  './assets/wikelo/strata-heatwave.webp'
 ];
 
 self.addEventListener('install', (event) => {
@@ -37,6 +37,7 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const request = event.request;
   if (request.method !== 'GET') return;
+
   const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
 

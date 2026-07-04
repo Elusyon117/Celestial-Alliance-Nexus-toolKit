@@ -1,0 +1,18 @@
+{
+  "package": "Celestial Nexus Toolkit v1.5.2 \u2014 Item Finder Safe Category Patch",
+  "generated_at": "2026-07-04",
+  "repository": "Elusyon117/Celestial-Alliance-Nexus-toolKit",
+  "files_to_update_at_repo_root": [
+    "index.html",
+    "sw.js",
+    "VERSION.txt",
+    "CHANGELOG_PATCH.md",
+    "UPLOAD_PATCH_INSTRUCTIONS.md"
+  ],
+  "notes": [
+    "index.html replaces the deployed single-file toolkit.",
+    "sw.js cache name bumped to force GitHub Pages/browser refresh.",
+    "VERSION.txt updated for package identification.",
+    "Full PACKAGE_REPORT.json and full repository SHA256SUMS.txt were not overwritten because this is a patch package, not a full repository rebuild."
+  ]
+}
