@@ -1,18 +1,17 @@
 {
-  "package": "Celestial Nexus Toolkit v1.5.2 \u2014 Item Finder Safe Category Patch",
-  "generated_at": "2026-07-04",
-  "repository": "Elusyon117/Celestial-Alliance-Nexus-toolKit",
-  "files_to_update_at_repo_root": [
+  "patch_version": "v1.5.3-cargo-vlm-armor-workflow",
+  "created_utc": "2026-07-06T19:27:04Z",
+  "source_file": "Celestial_Nexus_Toolkit_Cargo_Hauling_Contract_Workflow_Fix.html",
+  "target_repository": "https://github.com/Elusyon117/Celestial-Alliance-Nexus-toolKit",
+  "deployment_target": "root index.html",
+  "files_included": [
     "index.html",
     "sw.js",
     "VERSION.txt",
     "CHANGELOG_PATCH.md",
+    "PATCH_REPORT.json",
+    "SHA256SUMS_PATCH.txt",
     "UPLOAD_PATCH_INSTRUCTIONS.md"
   ],
-  "notes": [
-    "index.html replaces the deployed single-file toolkit.",
-    "sw.js cache name bumped to force GitHub Pages/browser refresh.",
-    "VERSION.txt updated for package identification.",
-    "Full PACKAGE_REPORT.json and full repository SHA256SUMS.txt were not overwritten because this is a patch package, not a full repository rebuild."
-  ]
+  "notes": "Targeted GitHub Pages patch package. Does not include full repository assets; only updates the main static app and cache/version metadata."
 }

@@ -1,20 +1,35 @@
-# Patch changelog — 2026-07-04
+# Celestial Nexus Toolkit — GitHub Patch v1.5.3
 
-## Celestial Nexus Toolkit v1.5.2 — Item Finder safe category patch
+This patch updates the deployed toolkit `index.html` to the latest working build from the current session.
 
-Updated root `index.html` with the latest stable toolkit version from the working local HTML file.
+## Included fixes and improvements
 
-Included fixes from the working build:
+- Cargo Hauling module workflow revamp:
+  - Cleaner Contract Finder selection names.
+  - Add, duplicate, remove, and clear contracts freely.
+  - Manual/blank contract support.
+  - Better empty-manifest state and live contract count.
+- VLM Armor Penetration Lab updates:
+  - PenTest-style comparison dashboard.
+  - Target ship synced from main VLM selector.
+  - Full ship weapon catalog selection.
+  - Correct alpha-vs-armor-gate calculation model.
+  - Ship image retained, weapon image removed, ship initials overlay removed.
+  - Cleaner data display and reasoning breakdown.
+- VLM component/weapon picker improvements:
+  - Better component identification cards.
+  - Component grouping by class/type.
+  - Prospector component fallback fix.
+- Event Planner export fix:
+  - Participants included in activity cover export.
+- Item Finder, Blueprint Finder, Language Pack, VLM shopping list, resource color, and slot parser fixes retained from prior patches.
 
-- Item Finder duplicate cleanup and stable item IDs.
-- Item Finder source cross-checking to avoid mismatched wiki/artwork/details.
-- Safe category alignment for armor parts such as helmet, core, arms, legs, backpack, gloves, boots, and full sets.
-- Full-set image filtering so part-specific images are rejected for full-set records.
-- VLM restored/correct hardpoint parsing from the previously working version.
-- VLM not-buyable acquisition label.
-- VLM blueprint links in the shopping list right-side area.
-- Blueprint Finder quality slider behavior and mining-resource color alignment.
-- Language Pack spacing improvement.
-- Event Planner export/layout fixes already present in the working build.
+## Files to upload
 
-`sw.js` was updated only to bump the cache name so GitHub Pages users receive the new `index.html` instead of an old service-worker cached copy.
+- `index.html`
+- `sw.js`
+- `VERSION.txt`
+- `CHANGELOG_PATCH.md`
+- `PATCH_REPORT.json`
+- `SHA256SUMS_PATCH.txt`
+- `UPLOAD_PATCH_INSTRUCTIONS.md`

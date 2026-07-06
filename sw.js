@@ -1,4 +1,4 @@
-const CACHE_NAME = 'celestial-nexus-v1.5.2-item-finder-safe-category-20260704';
+const CACHE_NAME = 'celestial-nexus-v1.5.3-cargo-vlm-armor-workflow-20260706';
 const APP_SHELL = [
   './',
   './index.html',
