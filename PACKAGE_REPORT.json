@@ -1,38 +1,58 @@
 {
-  "package": "Celestial Nexus Toolkit v1.3.7 \u2014 Mission Finder 4.8.3 LIVE Modern UI",
-  "generated_at": "2026-07-02",
-  "file_count": 54,
-  "index_at_root": true,
-  "module_count": 11,
-  "updated_module": "Mission Finder",
-  "mission_data": {
-    "target_patch": "4.8.3",
-    "target_channel": "LIVE",
-    "known_version": "4.8.3-LIVE.12122953",
-    "primary_source": "SCMDB synchronized mission records with source-version verification",
-    "fallback_source": "Star Citizen Wiki API with exact game-version parameter",
-    "rejects_non_target_sources": true,
-    "raw_field_preservation": true,
-    "bundled_snapshot": "data/scmdb-missions-live.json",
-    "sync_workflow": ".github/workflows/sync-scmdb-missions.yml",
-    "camel_case_scmdb_aliases": [
-      "rewardUEC",
-      "timeToComplete",
-      "haulingOrders",
-      "blueprintRewards",
-      "itemRewards",
-      "availableSystems"
-    ],
-    "payout_semantics": "Displays explicit source payout fields; otherwise clearly states that no fixed payout is exposed."
-  },
-  "validation": {
-    "inline_javascript_blocks_checked": 49,
-    "duplicate_html_ids": 0,
-    "dashboard_module_cards": 11,
-    "mission_483_source_guard_mock": "passed",
-    "scmdb_camel_case_mapping_test": "passed",
-    "package_validator": "passed",
-    "zip_integrity": "passed"
-  },
-  "sha256_manifest": "SHA256SUMS.txt"
+  "package": "celestial-nexus-toolkit-v1.6.0-repo-update.zip",
+  "version": "1.6.0",
+  "created_at": "2026-07-08T22:12:40Z",
+  "root_upload": true,
+  "files": [
+    {
+      "path": "CHANGELOG.md",
+      "bytes": 1618,
+      "sha256": "f6713e8e6b4339757b10d932f67b2d84c6ca7567dc499b5951c71f4c1859d682"
+    },
+    {
+      "path": "PATCH_REPORT.json",
+      "bytes": 1100,
+      "sha256": "3bdabdf15f71cacf81975e974bd2069eb18d47552d26b14964575c1fd3684acf"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3319,
+      "sha256": "7ed594cd14a7be3ea64267bea21c97dbe46ac05fd54dd7e7b59a13b55b875bba"
+    },
+    {
+      "path": "SHA256SUMS_PATCH.txt",
+      "bytes": 832,
+      "sha256": "340a309e5cd68b1381a2f9c5a31263e29cfe4b84bcc72c40856745817d01528a"
+    },
+    {
+      "path": "VERSION.txt",
+      "bytes": 86,
+      "sha256": "3c8e3e97e6a4a7fba53cb5f6e474738806f4d1621b16f5227921f0a0b8e31acd"
+    },
+    {
+      "path": "docs/REPOSITORY_CLEANUP.md",
+      "bytes": 2348,
+      "sha256": "3418f8df75742004fa69784a5ab7de931b4813312dd5cfeb7088e928f2179b2a"
+    },
+    {
+      "path": "docs/UPLOAD_PATCH_INSTRUCTIONS.md",
+      "bytes": 915,
+      "sha256": "3c6ee07492f6f497bf0b65c2de4a853ffbd4689b8cfcfc3bf30a62e253e22e2c"
+    },
+    {
+      "path": "index.html",
+      "bytes": 6158606,
+      "sha256": "316f84f7e9e791a1441bf8885b0c93108cdbbd1a0ae8f36877a6217f3b5f2ad8"
+    },
+    {
+      "path": "manifest.webmanifest",
+      "bytes": 607,
+      "sha256": "7a3c9dce18cfceb9cce9e2f19f60e145c05a6e495e305ada672bcabb45160cba"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 1729,
+      "sha256": "4f0ef5e8e00b4384a80141b4a8756ebebc2745d3ff93a2a247c2aa899acd1d58"
+    }
+  ]
 }

@@ -1,1 +1,3 @@
-v1.5.3-cargo-vlm-armor-workflow
+Celestial Nexus Toolkit v1.6.0
+Release: Contract Finder SCMDB Revamp
+Date: 2026-07-08

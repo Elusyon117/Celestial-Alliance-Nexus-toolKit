@@ -1,17 +1,15 @@
 {
-  "patch_version": "v1.5.3-cargo-vlm-armor-workflow",
-  "created_utc": "2026-07-06T19:27:04Z",
-  "source_file": "Celestial_Nexus_Toolkit_Cargo_Hauling_Contract_Workflow_Fix.html",
-  "target_repository": "https://github.com/Elusyon117/Celestial-Alliance-Nexus-toolKit",
-  "deployment_target": "root index.html",
-  "files_included": [
-    "index.html",
-    "sw.js",
-    "VERSION.txt",
-    "CHANGELOG_PATCH.md",
-    "PATCH_REPORT.json",
-    "SHA256SUMS_PATCH.txt",
-    "UPLOAD_PATCH_INSTRUCTIONS.md"
+  "name": "Celestial Nexus Toolkit",
+  "version": "1.6.0",
+  "release": "Contract Finder SCMDB Revamp",
+  "date": "2026-07-08",
+  "source_html": "index_contract_finder_scmdb_revamp.html",
+  "changes": [
+    "Updated index.html metadata and release stamp to v1.6.0",
+    "Preserved hub-only module navigation and Discord allowance from previous patch",
+    "Preserved cargo contract title fix from previous patch",
+    "Preserved SCMDB-style Contract Finder tags, calculator inputs, requirements, combat breakdowns, cargo manifest, and source-field detail board",
+    "Added v1.6.0 README, changelog, manifest, service worker cache, checksum, package report, patch report, upload instructions, and cleanup guide"
   ],
-  "notes": "Targeted GitHub Pages patch package. Does not include full repository assets; only updates the main static app and cache/version metadata."
+  "safe_delete_summary": "After verifying v1.6.0 in production, archive or delete older one-off patch/upload/report files such as *_PATCH_UPLOAD.txt, old PATCH_REPORT.json, old PACKAGE_REPORT.json, old SHA256SUMS_PATCH.txt, and old upload instructions. Keep index.html, data/, assets/wikelo/, manifest.webmanifest, sw.js, icons, .nojekyll, and any workflow/scripts still in use."
 }

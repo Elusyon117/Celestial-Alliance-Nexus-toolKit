@@ -1,79 +1,53 @@
-const CACHE_NAME = 'celestial-nexus-v1.5.3-cargo-vlm-armor-workflow-20260706';
-const APP_SHELL = [
+/* Celestial Nexus Toolkit v1.6.0 service worker */
+const NEXUS_CACHE = 'celestial-nexus-toolkit-v1.6.0';
+const NEXUS_APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icon-192.png',
-  './icon-512.png',
-  './data/roster.json',
-  './assets/wikelo/ana-endro.webp',
-  './assets/wikelo/bokto.webp',
-  './assets/wikelo/boomtube-clanguard.webp',
-  './assets/wikelo/geist-snow.webp',
-  './assets/wikelo/killshot-dominion-reference.webp',
-  './assets/wikelo/monde-crimson-reference.svg',
-  './assets/wikelo/palatino-mark-1.webp',
-  './assets/wikelo/polaris-bit-reference.webp',
-  './assets/wikelo/r97-crimson-reference.webp',
-  './assets/wikelo/strata-heatwave.webp'
+  './icon-512.png'
 ];
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then((cache) => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+self.addEventListener('install', event => {
+  self.skipWaiting();
+  event.waitUntil((async () => {
+    const cache = await caches.open(NEXUS_CACHE);
+    await Promise.all(NEXUS_APP_SHELL.map(async url => {
+      try {
+        const request = new Request(url, { cache: 'reload' });
+        const response = await fetch(request);
+        if (response && response.ok) await cache.put(url, response.clone());
+      } catch (_) {
+        // Optional shell files may be missing in some repositories; do not fail install.
+      }
+    }));
+  })());
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))))
-      .then(() => self.clients.claim())
-  );
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(key => key !== NEXUS_CACHE && key.startsWith('celestial-nexus-toolkit-')).map(key => caches.delete(key)));
+    await self.clients.claim();
+  })());
 });
 
-self.addEventListener('fetch', (event) => {
-  const request = event.request;
-  if (request.method !== 'GET') return;
-
-  const url = new URL(request.url);
+self.addEventListener('fetch', event => {
+  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
   if (url.origin !== self.location.origin) return;
 
-  if (/\/data\/scmdb-missions-live\.(?:json|js)$/.test(url.pathname)) {
-    event.respondWith(
-      fetch(request, { cache: 'no-store' })
-        .then((response) => {
-          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-          return response;
-        })
-        .catch(() => caches.match(request))
-    );
-    return;
-  }
-
-  if (request.mode === 'navigate') {
-    event.respondWith(
-      fetch(request)
-        .then((response) => {
-          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put('./index.html', response.clone()));
-          return response;
-        })
-        .catch(() => caches.match('./index.html'))
-    );
-    return;
-  }
-
-  event.respondWith(
-    caches.match(request).then((cached) => {
-      const network = fetch(request)
-        .then((response) => {
-          if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
-          return response;
-        })
-        .catch(() => cached);
-      return cached || network;
-    })
-  );
+  event.respondWith((async () => {
+    const cache = await caches.open(NEXUS_CACHE);
+    try {
+      const response = await fetch(event.request);
+      if (response && response.ok) cache.put(event.request, response.clone());
+      return response;
+    } catch (_) {
+      const cached = await cache.match(event.request);
+      if (cached) return cached;
+      if (event.request.mode === 'navigate') return cache.match('./index.html');
+      throw _;
+    }
+  })());
 });
