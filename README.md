@@ -49,3 +49,8 @@ This package returns the repository to the stable optimized base and applies onl
 
 This reset package removes the visible Organization Roster card from the main hub and moves the Creator Uplink into that left rail space. The roster data and Event Planner participant/assignee selection remain available through the existing roster data and picker logic.
 
+
+
+## Latest reset note
+
+This reset keeps the stable optimized base and adds Commodity Market Command unit labels plus clear-search reset behavior.
