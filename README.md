@@ -21,3 +21,8 @@ This package resets the repository to the stable optimized toolkit version selec
 5. Push to `main`.
 
 Do not copy back the old experimental folders such as `assets/images/ships/catalog/`, `assets/images/embedded/`, or `assets/images/remote/`.
+
+
+## Stable cargo update
+
+This reset package keeps the stable optimized toolkit base and adds two cargo-routing fixes: Cargo Transfer from Shuttered Facility now uses Onyx Facility as the pickup origin with a local Onyx image, and the Cargo Hauling ship selector includes an expanded cargo-capable ship fallback list.

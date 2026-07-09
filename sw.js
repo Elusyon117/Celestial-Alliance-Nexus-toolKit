@@ -1,7 +1,7 @@
 /* Celestial Nexus Toolkit service worker — stable reset package.
    This clean service worker intentionally does not pre-cache the experimental
    assets/images ship catalog or extracted-image folders. */
-const NEXUS_CACHE_VERSION = 'stable-reset-20260709';
+const NEXUS_CACHE_VERSION = 'stable-cargo-onyx-20260709';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 
@@ -22,7 +22,8 @@ const CORE_ASSETS = [
   './assets/wikelo/palatino-mark-1.webp',
   './assets/wikelo/polaris-bit-reference.webp',
   './assets/wikelo/r97-crimson-reference.webp',
-  './assets/wikelo/strata-heatwave.webp'
+  './assets/wikelo/strata-heatwave.webp',
+  './assets/images/locations/onyx-facility.webp'
 ];
 
 self.addEventListener('install', event => {
