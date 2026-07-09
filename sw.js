@@ -1,5 +1,5 @@
 /* Celestial Nexus Toolkit service worker — full assets repository update. */
-const NEXUS_CACHE_VERSION = 'repo-all-ship-images-20260709193043';
+const NEXUS_CACHE_VERSION = 'repo-ship-images-20260709191038';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 const CORE_ASSETS = [
@@ -71,7 +71,7 @@ const CORE_ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(APP_CACHE).then(cache => Promise.allSettled(CORE_ASSETS.map(asset => cache.add(asset)))).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(APP_CACHE).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
 });
 
 self.addEventListener('activate', event => {

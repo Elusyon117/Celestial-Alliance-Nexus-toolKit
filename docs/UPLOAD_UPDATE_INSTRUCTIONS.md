@@ -36,6 +36,3 @@ Some future images may still come from live APIs or search results. Those cannot
 
 
 Ship images: upload the new `assets/images/ships/` folder with the rest of `assets/images/`.
-
-
-All ship images: upload `assets/images/ships/` including `assets/images/ships/catalog/` and `assets/images/ships/ship-image-manifest.json`.

@@ -1,3 +1,41 @@
+# Celestial Nexus repository update — real ship artwork only
+
+Generated: 2026-07-09T19:59:11Z
+
+This corrected package **removes the generated placeholder ship-cover system** from the previous all-ship-image ZIP.
+
+It keeps only actual artwork files that were already available/detectable from the toolkit package:
+
+- PYAM Executive ship reward artwork
+- Wikelo Polaris artwork
+- Star Citizen Wiki ship cover artwork that was already resolved locally
+- Existing embedded/remote images extracted from the toolkit
+
+For ship selections that do not yet have a real local artwork file, the toolkit keeps using the original live/remote artwork flow and the service worker caches those images after the first successful load. This avoids showing fake/generated “ship name” cards.
+
+## Important cleanup if you copied the previous all-ship-image ZIP
+
+Before committing, delete this folder from your repo if it exists:
+
+```text
+assets/images/ships/catalog/
+```
+
+That folder contained the generated placeholder covers. It should **not** be committed.
+
+You should also replace:
+
+```text
+assets/images/ships/ship-image-manifest.json
+index.html
+sw.js
+```
+
+with the versions from this ZIP.
+
+
+---
+
 # Celestial Nexus Toolkit repository update package
 
 Built from `celestial_nexus_toolkit_optimized_smooth_module_identities.html`.
@@ -34,7 +72,7 @@ The repository already contains `data/roster.json`; this package does not overwr
 
 Some future images may still come from live APIs or search results. Those cannot be known ahead of time, so the included service worker caches them the first time the browser sees them.
 
-## Ship image bundle update
+## Real ship artwork bundle
 
 This package includes a dedicated local ship image folder:
 
@@ -45,19 +83,3 @@ It contains 12 known/bundled ship images used by the toolkit, including the PYAM
 `index.html` now points those known ship image references at `assets/images/ships/`, and `sw.js` pre-caches that folder for faster repeat loads.
 
 Note: ships/images that only appear later through live API/search results cannot be fully known in advance. Those are still cached by the service worker after the first time they load.
-
-## All-module local ship image cache
-
-This update adds a shared local ship-image system for every module that displays ship artwork, not only the Vehicle Loadout Manager.
-
-- Local ship image manifest: `assets/images/ships/ship-image-manifest.json`
-- Generated lightweight catalog covers: `assets/images/ships/catalog/`
-- Existing real bundled ship images remain in `assets/images/ships/`
-
-Coverage in this package:
-
-- 279 unique local ship/vehicle/preset image files
-- 286 normalized ship-name lookup entries
-- VLM, Event Planner/template covers, Trade/Cargo ship imagery, and Wikelo ship rewards are patched to use local ship images first
-
-Performance note: the service worker caches the manifest and uses runtime cache for images. It does **not** pre-cache every generated ship cover during install, because pre-caching hundreds of images would slow initial startup.

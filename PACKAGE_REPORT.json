@@ -178,20 +178,11 @@
       }
     ]
   },
-  "all_ship_images_local_cache": {
-    "folder": "assets/images/ships/catalog/",
-    "manifest": "assets/images/ships/ship-image-manifest.json",
-    "unique_image_files": 279,
-    "name_map_entries": 286,
-    "generated_local_covers": 267,
-    "real_localized_images": 19,
-    "modules_patched": [
-      "VLM / Loadout Manager",
-      "Event Planner ship covers/templates",
-      "Trade route ship imagery",
-      "Cargo Routing ship visual",
-      "Wikelo ship rewards"
-    ],
-    "service_worker": "runtime image cache plus manifest cache; generated covers are not all pre-cached during install to avoid slowing startup"
-  }
+  "correctedPackage": "real-ship-art-only",
+  "generatedPlaceholdersIncluded": false,
+  "deleteIfPresent": [
+    "assets/images/ships/catalog/"
+  ],
+  "realShipArtworkFiles": 12,
+  "note": "This package intentionally does not include generated placeholder ship covers. Unknown/live ship images continue to load from original image sources and are runtime-cached by sw.js."
 }
