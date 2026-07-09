@@ -44,3 +44,8 @@ This package returns the repository to the stable optimized base and applies onl
 - Aligns Cargo Hauling Routing and Commodity Trading ship selectors to one VLM-style canonical cargo list.
 - Removes manufacturer-prefix duplicates in ship selectors.
 - Updates Ironclad and Ironclad Assault cargo capacities in the local fallback profiles.
+
+## Stable hub creator-rail reset
+
+This reset package removes the visible Organization Roster card from the main hub and moves the Creator Uplink into that left rail space. The roster data and Event Planner participant/assignee selection remain available through the existing roster data and picker logic.
+
