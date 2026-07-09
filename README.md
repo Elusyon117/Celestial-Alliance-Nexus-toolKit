@@ -34,3 +34,13 @@ This reset package keeps the stable optimized toolkit base and adds two cargo-ro
 - Tactical Strike Groups uses the bundled QV Extraction stations cover image.
 - Blueprint Finder material quality output now uses selected-blueprint stat paths and avoids fuzzy shield/weapon labels for armor.
 - Blueprint contract unlock rows open Contract Finder and select the matching contract when available.
+
+## Stable reset update: Mining Beradom + unified cargo ship menus
+
+This package returns the repository to the stable optimized base and applies only the current requested fixes:
+
+- Adds Beradom to Mining Resources Command with a distinct material-core accent.
+- Keeps Cargo Transfer from Shuttered Facility routed from Onyx Facility with the bundled Onyx image.
+- Aligns Cargo Hauling Routing and Commodity Trading ship selectors to one VLM-style canonical cargo list.
+- Removes manufacturer-prefix duplicates in ship selectors.
+- Updates Ironclad and Ironclad Assault cargo capacities in the local fallback profiles.
