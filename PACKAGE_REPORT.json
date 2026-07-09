@@ -1,58 +1,197 @@
 {
-  "package": "celestial-nexus-toolkit-v1.6.0-repo-update.zip",
-  "version": "1.6.0",
-  "created_at": "2026-07-08T22:12:40Z",
-  "root_upload": true,
+  "generatedAt": "2026-07-09T19:03:53.480665+00:00",
+  "source": "/mnt/data/celestial_nexus_toolkit_optimized_smooth_module_identities.html",
+  "indexOriginalBytes": 6162056,
+  "indexPackagedBytes": 3318612,
+  "embeddedImagesExtracted": 28,
+  "remoteImagesBundled": 7,
+  "remoteOriginalBytes": 27619436,
+  "remoteOptimizedBytes": 618604,
   "files": [
-    {
-      "path": "CHANGELOG.md",
-      "bytes": 1618,
-      "sha256": "f6713e8e6b4339757b10d932f67b2d84c6ca7567dc499b5951c71f4c1859d682"
-    },
-    {
-      "path": "PATCH_REPORT.json",
-      "bytes": 1100,
-      "sha256": "3bdabdf15f71cacf81975e974bd2069eb18d47552d26b14964575c1fd3684acf"
-    },
-    {
-      "path": "README.md",
-      "bytes": 3319,
-      "sha256": "7ed594cd14a7be3ea64267bea21c97dbe46ac05fd54dd7e7b59a13b55b875bba"
-    },
-    {
-      "path": "SHA256SUMS_PATCH.txt",
-      "bytes": 832,
-      "sha256": "340a309e5cd68b1381a2f9c5a31263e29cfe4b84bcc72c40856745817d01528a"
-    },
-    {
-      "path": "VERSION.txt",
-      "bytes": 86,
-      "sha256": "3c8e3e97e6a4a7fba53cb5f6e474738806f4d1621b16f5227921f0a0b8e31acd"
-    },
-    {
-      "path": "docs/REPOSITORY_CLEANUP.md",
-      "bytes": 2348,
-      "sha256": "3418f8df75742004fa69784a5ab7de931b4813312dd5cfeb7088e928f2179b2a"
-    },
-    {
-      "path": "docs/UPLOAD_PATCH_INSTRUCTIONS.md",
-      "bytes": 915,
-      "sha256": "3c6ee07492f6f497bf0b65c2de4a853ffbd4689b8cfcfc3bf30a62e253e22e2c"
-    },
-    {
-      "path": "index.html",
-      "bytes": 6158606,
-      "sha256": "316f84f7e9e791a1441bf8885b0c93108cdbbd1a0ae8f36877a6217f3b5f2ad8"
-    },
-    {
-      "path": "manifest.webmanifest",
-      "bytes": 607,
-      "sha256": "7a3c9dce18cfceb9cce9e2f19f60e145c05a6e495e305ada672bcabb45160cba"
-    },
-    {
-      "path": "sw.js",
-      "bytes": 1729,
-      "sha256": "4f0ef5e8e00b4384a80141b4a8756ebebc2745d3ff93a2a247c2aa899acd1d58"
-    }
-  ]
+    ".nojekyll",
+    "README_UPDATE.md",
+    "VERSION.txt",
+    "assets/images/embedded/nexus-embedded-01-64x64-9d447cf933be.png",
+    "assets/images/embedded/nexus-embedded-02-180x180-7d81ee20bc35.png",
+    "assets/images/embedded/nexus-embedded-03-1096x731-44b347223ad8.jpg",
+    "assets/images/embedded/nexus-embedded-04-256x256-495a041511a1.png",
+    "assets/images/embedded/nexus-embedded-05-520x440-953272130c49.png",
+    "assets/images/embedded/nexus-embedded-06-1200x675-5a101457ae78.webp",
+    "assets/images/embedded/nexus-embedded-07-1200x675-b11aa913ca6d.webp",
+    "assets/images/embedded/nexus-embedded-08-1200x675-6575c88751fd.webp",
+    "assets/images/embedded/nexus-embedded-09-1200x675-86c083fb3412.webp",
+    "assets/images/embedded/nexus-embedded-10-1200x675-98be4d8b25fa.webp",
+    "assets/images/embedded/nexus-embedded-11-1200x675-13fe928092ee.webp",
+    "assets/images/embedded/nexus-embedded-12-1200x675-b37a0aea800e.webp",
+    "assets/images/embedded/nexus-embedded-13-1200x675-7fc71078fc64.webp",
+    "assets/images/embedded/nexus-embedded-14-1200x675-c9294c9e8d6c.webp",
+    "assets/images/embedded/nexus-embedded-15-1200x675-584c55391158.webp",
+    "assets/images/embedded/nexus-embedded-16-400x225-cefcf4ecef76.webp",
+    "assets/images/embedded/nexus-embedded-17-1280x720-0fb691dfa4f0.webp",
+    "assets/images/embedded/nexus-embedded-18-1280x720-29ab077b774e.webp",
+    "assets/images/embedded/nexus-embedded-19-1280x720-4abc87736cc6.webp",
+    "assets/images/embedded/nexus-embedded-20-1280x720-af910a51288b.webp",
+    "assets/images/embedded/nexus-embedded-21-1280x720-4e8c6c380c36.webp",
+    "assets/images/embedded/nexus-embedded-22-1280x720-3057d25b7b05.webp",
+    "assets/images/embedded/nexus-embedded-23-3000x1286-99ed52560d7f.webp",
+    "assets/images/embedded/nexus-embedded-24-1500x643-d7154923bda2.webp",
+    "assets/images/embedded/nexus-embedded-25-2715x1527-c75395c283df.webp",
+    "assets/images/embedded/nexus-embedded-26-720x480-659560e75c4f.jpg",
+    "assets/images/embedded/nexus-embedded-27-1400x845-2a21c7439ef6.jpg",
+    "assets/images/embedded/nexus-embedded-28-1400x788-23d561040991.jpg",
+    "assets/images/embedded-manifest.json",
+    "assets/images/remaining-image-like-urls.json",
+    "assets/images/remote/ExecCorsair-1600x900-5acd0e8830.webp",
+    "assets/images/remote/ExecSyulen-1600x1000-9dcad09bdf.webp",
+    "assets/images/remote/Execcutlassblack-1600x1000-4fc7e7dc81.webp",
+    "assets/images/remote/Execf7a-1600x1000-4a28cb8fe1.webp",
+    "assets/images/remote/Execf8c-1600x1000-ab35b31e86.webp",
+    "assets/images/remote/Wikelo_Polaris_picture_2-1600x900-7fcab3ee75.webp",
+    "assets/images/remote/avatar_default_big-200x200-05348272aa.webp",
+    "assets/images/remote-image-manifest.json",
+    "assets/wikelo/ana-endro.webp",
+    "assets/wikelo/bokto.webp",
+    "assets/wikelo/boomtube-clanguard.webp",
+    "assets/wikelo/geist-snow.webp",
+    "assets/wikelo/killshot-dominion-reference.webp",
+    "assets/wikelo/monde-crimson-reference.svg",
+    "assets/wikelo/palatino-mark-1.webp",
+    "assets/wikelo/polaris-bit-reference.webp",
+    "assets/wikelo/r97-crimson-reference.webp",
+    "assets/wikelo/strata-heatwave.webp",
+    "data/README.md",
+    "data/scmdb-missions-live.js",
+    "data/scmdb-missions-live.json",
+    "docs/UPLOAD_UPDATE_INSTRUCTIONS.md",
+    "icon-192.png",
+    "icon-512.png",
+    "icons/icon-192.png",
+    "icons/icon-512.png",
+    "index.html",
+    "manifest.webmanifest",
+    "sw.js",
+    "tools/cache_remaining_remote_images.py"
+  ],
+  "wikeloAssetsBundled": 10,
+  "serviceWorkerNote": "Large SCMDB data files are bundled but not pre-cached during install; they are cached on demand.",
+  "ship_images_bundle": {
+    "count": 12,
+    "folder": "assets/images/ships/",
+    "html_references_updated": true,
+    "service_worker_precache_updated": true,
+    "images": [
+      {
+        "label": "Hornet F7A Mk II PYAM Exec",
+        "file": "assets/images/ships/f7a-hornet-mk-ii-pyam-exec.webp",
+        "source_asset": "assets/images/remote/Execf7a-1600x1000-4a28cb8fe1.webp",
+        "note": "Bundled optimized reward artwork",
+        "size_bytes": 111092,
+        "sha256": "683e7ceb480b22ea5efa967b0f5f3407c03bb4bba70525d0011ecb16ab92a970"
+      },
+      {
+        "label": "F8C Lightning PYAM Exec",
+        "file": "assets/images/ships/f8c-lightning-pyam-exec.webp",
+        "source_asset": "assets/images/remote/Execf8c-1600x1000-ab35b31e86.webp",
+        "note": "Bundled optimized reward artwork",
+        "size_bytes": 112632,
+        "sha256": "62c1307a2e3c224610984de3784fa39b9a19d9abf5c83f847620cf10250fb3c2"
+      },
+      {
+        "label": "Corsair PYAM Exec",
+        "file": "assets/images/ships/corsair-pyam-exec.webp",
+        "source_asset": "assets/images/remote/ExecCorsair-1600x900-5acd0e8830.webp",
+        "note": "Bundled optimized reward artwork",
+        "size_bytes": 95456,
+        "sha256": "d162ff0c5596625a3d32e7bdddd2a8522a4921797d5b9203026abe7d8ce29653"
+      },
+      {
+        "label": "Cutlass Black PYAM Exec",
+        "file": "assets/images/ships/cutlass-black-pyam-exec.webp",
+        "source_asset": "assets/images/remote/Execcutlassblack-1600x1000-4fc7e7dc81.webp",
+        "note": "Bundled optimized reward artwork",
+        "size_bytes": 108850,
+        "sha256": "f35901a6d5a94d1bdc0c59a08f07aa3d7c9b67c0235dc0c85f81222140a4a04f"
+      },
+      {
+        "label": "Syulen PYAM Exec",
+        "file": "assets/images/ships/syulen-pyam-exec.webp",
+        "source_asset": "assets/images/remote/ExecSyulen-1600x1000-9dcad09bdf.webp",
+        "note": "Bundled optimized reward artwork",
+        "size_bytes": 124262,
+        "sha256": "e86323f9d52bf6acdfb813c7bd9e123cce92c2e7e57348cf2cb80d50227b106b"
+      },
+      {
+        "label": "Polaris Wikelo Special",
+        "file": "assets/images/ships/polaris-wikelo-special.webp",
+        "source_asset": "assets/images/remote/Wikelo_Polaris_picture_2-1600x900-7fcab3ee75.webp",
+        "note": "Bundled optimized Wikelo artwork",
+        "size_bytes": 62496,
+        "sha256": "aa83d84bae79f695942a0ae0d417b3fde5f927b169000ca95785130c4f0369e4"
+      },
+      {
+        "label": "Golem ship cover",
+        "file": "assets/images/ships/golem-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-17-1280x720-0fb691dfa4f0.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 116682,
+        "sha256": "0fb691dfa4f0c43368ee6b32ce39931bd29527d8e296164e907e4570c9a199f5"
+      },
+      {
+        "label": "Sabre Peregrine ship cover",
+        "file": "assets/images/ships/sabre-peregrine-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-18-1280x720-29ab077b774e.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 53342,
+        "sha256": "29ab077b774e586815bfca133e2c6b8aeb495478665547b0f381950002f15ae7"
+      },
+      {
+        "label": "Sabre Firebird ship cover",
+        "file": "assets/images/ships/sabre-firebird-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-19-1280x720-4abc87736cc6.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 60570,
+        "sha256": "4abc87736cc6292abe6007eea4836a655f1404461272e53f701684aac90b3aef"
+      },
+      {
+        "label": "Asgard ship cover",
+        "file": "assets/images/ships/asgard-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-20-1280x720-af910a51288b.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 102552,
+        "sha256": "af910a51288b051e6baabea2ef01c2f09a51cbda5a3cf8b9bf89b29df2faa1f1"
+      },
+      {
+        "label": "F7C-M Super Hornet Mk II ship cover",
+        "file": "assets/images/ships/f7c-m-super-hornet-mk-ii-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-21-1280x720-4e8c6c380c36.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 73996,
+        "sha256": "4e8c6c380c36fb7741c0a24b628917a083866f6f5be951b1631b835224373be1"
+      },
+      {
+        "label": "A2 Hercules Starlifter ship cover",
+        "file": "assets/images/ships/a2-hercules-starlifter-ship-cover.webp",
+        "source_asset": "assets/images/embedded/nexus-embedded-22-1280x720-3057d25b7b05.webp",
+        "note": "Extracted bundled ship cover",
+        "size_bytes": 49858,
+        "sha256": "3057d25b7b05711b309139f1d71bcd33bf513f757135a83548b6a035309b4fe2"
+      }
+    ]
+  },
+  "all_ship_images_local_cache": {
+    "folder": "assets/images/ships/catalog/",
+    "manifest": "assets/images/ships/ship-image-manifest.json",
+    "unique_image_files": 279,
+    "name_map_entries": 286,
+    "generated_local_covers": 267,
+    "real_localized_images": 19,
+    "modules_patched": [
+      "VLM / Loadout Manager",
+      "Event Planner ship covers/templates",
+      "Trade route ship imagery",
+      "Cargo Routing ship visual",
+      "Wikelo ship rewards"
+    ],
+    "service_worker": "runtime image cache plus manifest cache; generated covers are not all pre-cached during install to avoid slowing startup"
+  }
 }

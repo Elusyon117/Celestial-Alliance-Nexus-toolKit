@@ -1,0 +1,229 @@
+{
+  "generatedAt": "2026-07-09T19:01:24.322548+00:00",
+  "assets": [
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-01-64x64-9d447cf933be.png",
+      "type": "image/png",
+      "bytes": 8933,
+      "dimensions": "64x64",
+      "sha256": "9d447cf933be04cb3c005b7816033da7d77b50f0cfe672a6859feaa47b2eb327"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-02-180x180-7d81ee20bc35.png",
+      "type": "image/png",
+      "bytes": 46838,
+      "dimensions": "180x180",
+      "sha256": "7d81ee20bc35bcb95001b85244da69e6ec23cee9ba07e157ef0eda834c6396d4"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-03-1096x731-44b347223ad8.jpg",
+      "type": "image/jpeg",
+      "bytes": 116408,
+      "dimensions": "1096x731",
+      "sha256": "44b347223ad8384223260e83ae958cc733dd797b2cb00910afe84df70222b519"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-04-256x256-495a041511a1.png",
+      "type": "image/png",
+      "bytes": 54144,
+      "dimensions": "256x256",
+      "sha256": "495a041511a1612a31f55a24c63b1ff7841e2b0c2f7d0bc1d9df4c534817f876"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-05-520x440-953272130c49.png",
+      "type": "image/png",
+      "bytes": 237355,
+      "dimensions": "520x440",
+      "sha256": "953272130c49e206c405a8392bf9050756fb5616f75a2108707f4668d5b0d327"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-06-1200x675-5a101457ae78.webp",
+      "type": "image/webp",
+      "bytes": 32984,
+      "dimensions": "1200x675",
+      "sha256": "5a101457ae78bb55cce02ecff7fe328e2938387f9b6aa246f9ecac2f6bde447a"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-07-1200x675-b11aa913ca6d.webp",
+      "type": "image/webp",
+      "bytes": 24790,
+      "dimensions": "1200x675",
+      "sha256": "b11aa913ca6d8ccf0fb14bd5b214da37d93604388ae3afc8c503f0517ccdd947"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-08-1200x675-6575c88751fd.webp",
+      "type": "image/webp",
+      "bytes": 41944,
+      "dimensions": "1200x675",
+      "sha256": "6575c88751fd7aabcdc0ab7766a7b40cca95a784a4e29b01041fd86dc3058f71"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-09-1200x675-86c083fb3412.webp",
+      "type": "image/webp",
+      "bytes": 13152,
+      "dimensions": "1200x675",
+      "sha256": "86c083fb3412078a41ea1ece37e0d61078ad57d8e9cdec6a1fc9971424a92742"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-10-1200x675-98be4d8b25fa.webp",
+      "type": "image/webp",
+      "bytes": 36886,
+      "dimensions": "1200x675",
+      "sha256": "98be4d8b25fa20861a449c9b28d5cd6e4c7e507eeadf4989da4c43ea45839bb1"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-11-1200x675-13fe928092ee.webp",
+      "type": "image/webp",
+      "bytes": 48632,
+      "dimensions": "1200x675",
+      "sha256": "13fe928092eee23dc5d6b055d829ef31ab48c7e3ba21e30bf4073fc2ed8fcb00"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-12-1200x675-b37a0aea800e.webp",
+      "type": "image/webp",
+      "bytes": 18678,
+      "dimensions": "1200x675",
+      "sha256": "b37a0aea800ea133ae9859b7a31da689fd4126e60d230fc63a16b2175c2b58bd"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-13-1200x675-7fc71078fc64.webp",
+      "type": "image/webp",
+      "bytes": 51210,
+      "dimensions": "1200x675",
+      "sha256": "7fc71078fc64d6480fca5c5c1d34daf7e1ba9aa0bdb54f1ad84e53fbbc41f044"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-14-1200x675-c9294c9e8d6c.webp",
+      "type": "image/webp",
+      "bytes": 29718,
+      "dimensions": "1200x675",
+      "sha256": "c9294c9e8d6cd4dfe794dbf56acc2fe45586bd497c58d1b3fc3f55a607d4b06b"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-15-1200x675-584c55391158.webp",
+      "type": "image/webp",
+      "bytes": 48296,
+      "dimensions": "1200x675",
+      "sha256": "584c553911581053d95686166f30f56702173f94df5c64965ea46729d9629def"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-16-400x225-cefcf4ecef76.webp",
+      "type": "image/webp",
+      "bytes": 24316,
+      "dimensions": "400x225",
+      "sha256": "cefcf4ecef7647b0e12f1a9959b2a525267ef9466c6314a108a8cd058a730841"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-17-1280x720-0fb691dfa4f0.webp",
+      "type": "image/webp",
+      "bytes": 116682,
+      "dimensions": "1280x720",
+      "sha256": "0fb691dfa4f0c43368ee6b32ce39931bd29527d8e296164e907e4570c9a199f5"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-18-1280x720-29ab077b774e.webp",
+      "type": "image/webp",
+      "bytes": 53342,
+      "dimensions": "1280x720",
+      "sha256": "29ab077b774e586815bfca133e2c6b8aeb495478665547b0f381950002f15ae7"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-19-1280x720-4abc87736cc6.webp",
+      "type": "image/webp",
+      "bytes": 60570,
+      "dimensions": "1280x720",
+      "sha256": "4abc87736cc6292abe6007eea4836a655f1404461272e53f701684aac90b3aef"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-20-1280x720-af910a51288b.webp",
+      "type": "image/webp",
+      "bytes": 102552,
+      "dimensions": "1280x720",
+      "sha256": "af910a51288b051e6baabea2ef01c2f09a51cbda5a3cf8b9bf89b29df2faa1f1"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-21-1280x720-4e8c6c380c36.webp",
+      "type": "image/webp",
+      "bytes": 73996,
+      "dimensions": "1280x720",
+      "sha256": "4e8c6c380c36fb7741c0a24b628917a083866f6f5be951b1631b835224373be1"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-22-1280x720-3057d25b7b05.webp",
+      "type": "image/webp",
+      "bytes": 49858,
+      "dimensions": "1280x720",
+      "sha256": "3057d25b7b05711b309139f1d71bcd33bf513f757135a83548b6a035309b4fe2"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-23-3000x1286-99ed52560d7f.webp",
+      "type": "image/webp",
+      "bytes": 305080,
+      "dimensions": "3000x1286",
+      "sha256": "99ed52560d7f736515a108c74fcab266841a62b45540e25752ccb7bf11774805"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-24-1500x643-d7154923bda2.webp",
+      "type": "image/webp",
+      "bytes": 73630,
+      "dimensions": "1500x643",
+      "sha256": "d7154923bda2ff014d35dcc6d30ff13f3893a920a9e38968955725a5b5c570cc"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-25-2715x1527-c75395c283df.webp",
+      "type": "image/webp",
+      "bytes": 149006,
+      "dimensions": "2715x1527",
+      "sha256": "c75395c283df2f79cc104ab95905106a5ae1c7f6f91e42dde2686b5d89430654"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-26-720x480-659560e75c4f.jpg",
+      "type": "image/jpeg",
+      "bytes": 54530,
+      "dimensions": "720x480",
+      "sha256": "659560e75c4ff5c8dc679671109bf390e374636f13d3da913d1e2f6230499aa0"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-27-1400x845-2a21c7439ef6.jpg",
+      "type": "image/jpeg",
+      "bytes": 106033,
+      "dimensions": "1400x845",
+      "sha256": "2a21c7439ef693fc024b71c9819b93356325d3d78f1dd2d923298575e9a09f43"
+    },
+    {
+      "source": "embedded-data-uri",
+      "file": "assets/images/embedded/nexus-embedded-28-1400x788-23d561040991.jpg",
+      "type": "image/jpeg",
+      "bytes": 154575,
+      "dimensions": "1400x788",
+      "sha256": "23d5610409910a850c3308022b41dada7e153454db3fab5226aa3670f6f5808a"
+    }
+  ]
+}
