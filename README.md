@@ -26,3 +26,11 @@ Do not copy back the old experimental folders such as `assets/images/ships/catal
 ## Stable cargo update
 
 This reset package keeps the stable optimized toolkit base and adds two cargo-routing fixes: Cargo Transfer from Shuttered Facility now uses Onyx Facility as the pickup origin with a local Onyx image, and the Cargo Hauling ship selector includes an expanded cargo-capable ship fallback list.
+
+
+## 2026-07-09 focused update
+
+- Cargo Hauling Routing keeps Cargo Transfer from Shuttered Facility tied to Onyx Facility.
+- Tactical Strike Groups uses the bundled QV Extraction stations cover image.
+- Blueprint Finder material quality output now uses selected-blueprint stat paths and avoids fuzzy shield/weapon labels for armor.
+- Blueprint contract unlock rows open Contract Finder and select the matching contract when available.

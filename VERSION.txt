@@ -1,1 +1,1 @@
-1.6.0-stable-optimized-reset
+stable-cargo-onyx-blueprint-20260709
