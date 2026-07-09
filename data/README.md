@@ -1,5 +1,5 @@
-# Data folder notes
+# Toolkit data
 
-This update package includes the current SCMDB mission snapshot files because the app references them directly.
+`scmdb-missions-live.js` and `scmdb-missions-live.json` are local SCMDB mission snapshots used by the Contract Finder and related tools.
 
-Keep your existing `data/roster.json` file in the repository. It is not overwritten in this package because it is organization-specific roster data already present in the repository.
+`roster.json` is a repository snapshot for the organization roster. The toolkit can still use its built-in fallback and live sync if this file is unavailable, but keeping it here prevents a missing-file request.

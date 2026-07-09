@@ -1,1 +1,1 @@
-celestial-nexus-toolkit-update-2026-07-09-cargo-onyx-local-image-layout-scroll
+1.6.0-stable-optimized-reset
