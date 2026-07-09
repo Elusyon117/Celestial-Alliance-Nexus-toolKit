@@ -1,15 +1,19 @@
 {
-  "generatedAt": "2026-07-09T19:03:53.480665+00:00",
-  "source": "/mnt/data/celestial_nexus_toolkit_optimized_smooth_module_identities.html",
-  "indexOriginalBytes": 6162056,
-  "indexPackagedBytes": 3318612,
-  "embeddedImagesExtracted": 28,
-  "remoteImagesBundled": 7,
-  "remoteOriginalBytes": 27619436,
-  "remoteOptimizedBytes": 618604,
+  "package": "celestial_nexus_repository_update_cargo_onyx_layout_scroll",
+  "file_count": 82,
+  "notes": [
+    "Cargo Transfer from Shuttered Facility maps to generic Onyx Facility origin.",
+    "Cargo ship selector fallback list expanded.",
+    "Organization roster hidden from hub but data remains available.",
+    "Centered module layout and scroll performance guard added.",
+    "No generated ship placeholder catalog included."
+  ],
   "files": [
     ".nojekyll",
+    "DELETE_PREVIOUS_PLACEHOLDER_SHIP_COVERS.txt",
+    "PACKAGE_REPORT.json",
     "README_UPDATE.md",
+    "SHA256SUMS_UPDATE.txt",
     "VERSION.txt",
     "assets/images/embedded/nexus-embedded-01-64x64-9d447cf933be.png",
     "assets/images/embedded/nexus-embedded-02-180x180-7d81ee20bc35.png",
@@ -49,6 +53,20 @@
     "assets/images/remote/Wikelo_Polaris_picture_2-1600x900-7fcab3ee75.webp",
     "assets/images/remote/avatar_default_big-200x200-05348272aa.webp",
     "assets/images/remote-image-manifest.json",
+    "assets/images/ships/a2-hercules-starlifter-ship-cover.webp",
+    "assets/images/ships/asgard-ship-cover.webp",
+    "assets/images/ships/corsair-pyam-exec.webp",
+    "assets/images/ships/cutlass-black-pyam-exec.webp",
+    "assets/images/ships/f7a-hornet-mk-ii-pyam-exec.webp",
+    "assets/images/ships/f7c-m-super-hornet-mk-ii-ship-cover.webp",
+    "assets/images/ships/f8c-lightning-pyam-exec.webp",
+    "assets/images/ships/gladius-pirate-isometric.webp",
+    "assets/images/ships/golem-ship-cover.webp",
+    "assets/images/ships/polaris-wikelo-special.webp",
+    "assets/images/ships/sabre-firebird-ship-cover.webp",
+    "assets/images/ships/sabre-peregrine-ship-cover.webp",
+    "assets/images/ships/ship-image-manifest.json",
+    "assets/images/ships/syulen-pyam-exec.webp",
     "assets/wikelo/ana-endro.webp",
     "assets/wikelo/bokto.webp",
     "assets/wikelo/boomtube-clanguard.webp",
@@ -70,119 +88,8 @@
     "index.html",
     "manifest.webmanifest",
     "sw.js",
-    "tools/cache_remaining_remote_images.py"
-  ],
-  "wikeloAssetsBundled": 10,
-  "serviceWorkerNote": "Large SCMDB data files are bundled but not pre-cached during install; they are cached on demand.",
-  "ship_images_bundle": {
-    "count": 12,
-    "folder": "assets/images/ships/",
-    "html_references_updated": true,
-    "service_worker_precache_updated": true,
-    "images": [
-      {
-        "label": "Hornet F7A Mk II PYAM Exec",
-        "file": "assets/images/ships/f7a-hornet-mk-ii-pyam-exec.webp",
-        "source_asset": "assets/images/remote/Execf7a-1600x1000-4a28cb8fe1.webp",
-        "note": "Bundled optimized reward artwork",
-        "size_bytes": 111092,
-        "sha256": "683e7ceb480b22ea5efa967b0f5f3407c03bb4bba70525d0011ecb16ab92a970"
-      },
-      {
-        "label": "F8C Lightning PYAM Exec",
-        "file": "assets/images/ships/f8c-lightning-pyam-exec.webp",
-        "source_asset": "assets/images/remote/Execf8c-1600x1000-ab35b31e86.webp",
-        "note": "Bundled optimized reward artwork",
-        "size_bytes": 112632,
-        "sha256": "62c1307a2e3c224610984de3784fa39b9a19d9abf5c83f847620cf10250fb3c2"
-      },
-      {
-        "label": "Corsair PYAM Exec",
-        "file": "assets/images/ships/corsair-pyam-exec.webp",
-        "source_asset": "assets/images/remote/ExecCorsair-1600x900-5acd0e8830.webp",
-        "note": "Bundled optimized reward artwork",
-        "size_bytes": 95456,
-        "sha256": "d162ff0c5596625a3d32e7bdddd2a8522a4921797d5b9203026abe7d8ce29653"
-      },
-      {
-        "label": "Cutlass Black PYAM Exec",
-        "file": "assets/images/ships/cutlass-black-pyam-exec.webp",
-        "source_asset": "assets/images/remote/Execcutlassblack-1600x1000-4fc7e7dc81.webp",
-        "note": "Bundled optimized reward artwork",
-        "size_bytes": 108850,
-        "sha256": "f35901a6d5a94d1bdc0c59a08f07aa3d7c9b67c0235dc0c85f81222140a4a04f"
-      },
-      {
-        "label": "Syulen PYAM Exec",
-        "file": "assets/images/ships/syulen-pyam-exec.webp",
-        "source_asset": "assets/images/remote/ExecSyulen-1600x1000-9dcad09bdf.webp",
-        "note": "Bundled optimized reward artwork",
-        "size_bytes": 124262,
-        "sha256": "e86323f9d52bf6acdfb813c7bd9e123cce92c2e7e57348cf2cb80d50227b106b"
-      },
-      {
-        "label": "Polaris Wikelo Special",
-        "file": "assets/images/ships/polaris-wikelo-special.webp",
-        "source_asset": "assets/images/remote/Wikelo_Polaris_picture_2-1600x900-7fcab3ee75.webp",
-        "note": "Bundled optimized Wikelo artwork",
-        "size_bytes": 62496,
-        "sha256": "aa83d84bae79f695942a0ae0d417b3fde5f927b169000ca95785130c4f0369e4"
-      },
-      {
-        "label": "Golem ship cover",
-        "file": "assets/images/ships/golem-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-17-1280x720-0fb691dfa4f0.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 116682,
-        "sha256": "0fb691dfa4f0c43368ee6b32ce39931bd29527d8e296164e907e4570c9a199f5"
-      },
-      {
-        "label": "Sabre Peregrine ship cover",
-        "file": "assets/images/ships/sabre-peregrine-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-18-1280x720-29ab077b774e.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 53342,
-        "sha256": "29ab077b774e586815bfca133e2c6b8aeb495478665547b0f381950002f15ae7"
-      },
-      {
-        "label": "Sabre Firebird ship cover",
-        "file": "assets/images/ships/sabre-firebird-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-19-1280x720-4abc87736cc6.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 60570,
-        "sha256": "4abc87736cc6292abe6007eea4836a655f1404461272e53f701684aac90b3aef"
-      },
-      {
-        "label": "Asgard ship cover",
-        "file": "assets/images/ships/asgard-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-20-1280x720-af910a51288b.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 102552,
-        "sha256": "af910a51288b051e6baabea2ef01c2f09a51cbda5a3cf8b9bf89b29df2faa1f1"
-      },
-      {
-        "label": "F7C-M Super Hornet Mk II ship cover",
-        "file": "assets/images/ships/f7c-m-super-hornet-mk-ii-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-21-1280x720-4e8c6c380c36.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 73996,
-        "sha256": "4e8c6c380c36fb7741c0a24b628917a083866f6f5be951b1631b835224373be1"
-      },
-      {
-        "label": "A2 Hercules Starlifter ship cover",
-        "file": "assets/images/ships/a2-hercules-starlifter-ship-cover.webp",
-        "source_asset": "assets/images/embedded/nexus-embedded-22-1280x720-3057d25b7b05.webp",
-        "note": "Extracted bundled ship cover",
-        "size_bytes": 49858,
-        "sha256": "3057d25b7b05711b309139f1d71bcd33bf513f757135a83548b6a035309b4fe2"
-      }
-    ]
-  },
-  "correctedPackage": "real-ship-art-only",
-  "generatedPlaceholdersIncluded": false,
-  "deleteIfPresent": [
-    "assets/images/ships/catalog/"
-  ],
-  "realShipArtworkFiles": 12,
-  "note": "This package intentionally does not include generated placeholder ship covers. Unknown/live ship images continue to load from original image sources and are runtime-cached by sw.js."
+    "tools/cache_remaining_remote_images.py",
+    "tools/remove_generated_ship_placeholders.bat",
+    "tools/remove_generated_ship_placeholders.py"
+  ]
 }

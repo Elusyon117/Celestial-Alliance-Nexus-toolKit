@@ -1,5 +1,1 @@
-Celestial Nexus Toolkit repository update full-assets
-Generated: 2026-07-09T19:01:24.328213+00:00
-Source: celestial_nexus_toolkit_optimized_smooth_module_identities.html
-Embedded images extracted: 28
-Remote images bundled: 7
+celestial-nexus-toolkit-update-2026-07-09-cargo-onyx-layout-scroll

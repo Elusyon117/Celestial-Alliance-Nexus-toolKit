@@ -1,5 +1,5 @@
 /* Celestial Nexus Toolkit service worker — full assets repository update. */
-const NEXUS_CACHE_VERSION = 'repo-ship-images-20260709191038';
+const NEXUS_CACHE_VERSION = 'repo-cargo-onyx-layout-scroll-202607092125';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 const CORE_ASSETS = [
@@ -43,6 +43,7 @@ const CORE_ASSETS = [
   "./assets/images/ships/corsair-pyam-exec.webp",
   "./assets/images/ships/cutlass-black-pyam-exec.webp",
   "./assets/images/ships/syulen-pyam-exec.webp",
+  "./assets/images/ships/gladius-pirate-isometric.webp",
   "./assets/images/ships/polaris-wikelo-special.webp",
   "./assets/images/ships/golem-ship-cover.webp",
   "./assets/images/ships/sabre-peregrine-ship-cover.webp",
