@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-07-09T21:55:00Z",
+  "count": 1,
+  "images": [
+    {
+      "name": "Onyx Facility Site-B primary building",
+      "file": "assets/images/locations/onyx-site-b-primary-building.webp",
+      "source": "Star Citizen Wiki / Onyx Facility images",
+      "source_url": "https://starcitizen.tools/Category:Onyx_Facility_images",
+      "sha256": "fc3c082648424c9c2a73a83a1d4ea91e80726e5f812f1a04958d2aaaaecead45",
+      "size_bytes": 49352,
+      "dimensions": [
+        1600,
+        900
+      ]
+    }
+  ]
+}

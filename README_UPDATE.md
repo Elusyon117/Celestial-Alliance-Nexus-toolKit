@@ -1,85 +1,28 @@
-# Celestial Nexus repository update — real ship artwork only
+# Celestial Nexus Toolkit repository update
 
-Generated: 2026-07-09T19:59:11Z
+This package builds on the optimized/clean toolkit and includes the latest fixes requested in chat.
 
-This corrected package **removes the generated placeholder ship-cover system** from the previous all-ship-image ZIP.
+## Included fixes
 
-It keeps only actual artwork files that were already available/detectable from the toolkit package:
+- Cargo Hauling Routing: `Cargo Transfer from Shuttered Facility` contracts now use the generic `Onyx Facility` origin instead of incorrectly forcing `HDMS-Bezdek`.
+- Cargo Hauling Routing: added a local real Onyx Facility Site-B image at `assets/images/locations/onyx-site-b-primary-building.webp` and wired Onyx route cards to use that local file first.
+- Cargo Hauling Routing: expanded the built-in ship selector fallback list so the module is not limited to only a small group of cargo ships when live vehicle data is unavailable.
+- Hub: the visible Organization Roster panel is hidden from the main page, while the roster data/sync logic remains available for Event Planner participant selection.
+- Hub: the creator section now occupies the rail space where the roster used to be visible.
+- Event Planner: Gladius Pirate continues to use the same real local artwork file used by the VLM mapping: `assets/images/ships/gladius-pirate-isometric.webp`.
+- Layout/scrolling: added stronger scroll-performance CSS, removed fixed background attachment, and pauses paint-heavy shadows/filters while scrolling.
+- Preserved previous fixes: module color identities, smooth hub card pointer motion, cleaned module banners/backgrounds, real ship artwork behavior, and Blueprint Finder selected-stat matching.
 
-- PYAM Executive ship reward artwork
-- Wikelo Polaris artwork
-- Star Citizen Wiki ship cover artwork that was already resolved locally
-- Existing embedded/remote images extracted from the toolkit
+## Upload instructions
 
-For ship selections that do not yet have a real local artwork file, the toolkit keeps using the original live/remote artwork flow and the service worker caches those images after the first successful load. This avoids showing fake/generated “ship name” cards.
+1. Extract this ZIP.
+2. Copy everything into the repository root.
+3. Replace existing files when prompted.
+4. Make sure `assets/images/ships/catalog/` is deleted if it still exists from the earlier placeholder package.
+5. Commit and push with GitHub Desktop or git.
 
-## Important cleanup if you copied the previous all-ship-image ZIP
-
-Before committing, delete this folder from your repo if it exists:
-
-```text
-assets/images/ships/catalog/
-```
-
-That folder contained the generated placeholder covers. It should **not** be committed.
-
-You should also replace:
+Suggested commit message:
 
 ```text
-assets/images/ships/ship-image-manifest.json
-index.html
-sw.js
+Fix cargo Onyx routing, local Onyx image, roster layout, and scrolling
 ```
-
-with the versions from this ZIP.
-
-
----
-
-# Celestial Nexus Toolkit repository update package
-
-Built from `celestial_nexus_toolkit_optimized_smooth_module_identities.html`.
-
-## What is included
-
-- `index.html` — optimized single-page toolkit with cleaned module pages, static background, smooth hub card motion, and restored module color identity.
-- `assets/images/embedded/` — 28 images extracted from base64 data URIs so the browser can cache them as normal files.
-- `assets/images/remote/` — 7 literal remote images downloaded locally and converted/downscaled to WebP where useful.
-- `assets/images/*manifest.json` — source maps and hashes for the bundled images.
-- `data/scmdb-missions-live.js` and `data/scmdb-missions-live.json` — current repository SCMDB mission snapshot kept bundled because the app references it directly.
-- `assets/wikelo/` — Wikelo artwork/reference images that the module already references directly.
-- `manifest.webmanifest`, `sw.js`, root icons, and `icons/` — PWA/cache files needed by the HTML.
-- `.nojekyll` — keeps GitHub Pages from applying Jekyll processing.
-
-## Performance changes in this package
-
-- Main HTML shrank from 5.88 MB to 3.16 MB by externalizing embedded images.
-- Downloaded remote image originals total 26.34 MB; optimized bundled copies total 0.59 MB.
-- The service worker pre-caches the app shell and local image assets, then runtime-caches data files, fonts, and dynamic remote images after first load. The large SCMDB data files are included in the ZIP but are not pre-cached during service-worker install.
-- The SCMDB script is loaded with `defer` to avoid blocking initial document parsing.
-- Extra CSS containment/content-visibility hints remain scoped so visuals stay intact.
-
-## Upload steps
-
-1. Extract this ZIP locally.
-2. Copy the extracted contents into the root of your GitHub repository.
-3. Commit and push.
-4. After deploy, hard-refresh the site once, or unregister the previous service worker if the old page stays cached.
-
-## Notes
-
-The repository already contains `data/roster.json`; this package does not overwrite it because it is organization-specific roster data. Keep that file in place.
-
-Some future images may still come from live APIs or search results. Those cannot be known ahead of time, so the included service worker caches them the first time the browser sees them.
-
-## Real ship artwork bundle
-
-This package includes a dedicated local ship image folder:
-
-`assets/images/ships/`
-
-It contains 12 known/bundled ship images used by the toolkit, including the PYAM Executive reward ships, Polaris Wikelo artwork, and the Star Citizen Wiki ship-cover images for Golem, Sabre Peregrine, Sabre Firebird, Asgard, F7C-M Super Hornet Mk II, and A2 Hercules Starlifter.
-
-`index.html` now points those known ship image references at `assets/images/ships/`, and `sw.js` pre-caches that folder for faster repeat loads.
-
-Note: ships/images that only appear later through live API/search results cannot be fully known in advance. Those are still cached by the service worker after the first time they load.

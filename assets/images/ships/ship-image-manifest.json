@@ -1,6 +1,6 @@
 {
-  "note": "Known ship images are bundled here so the toolkit can load them locally instead of using remote image URLs. Dynamic search/API results may still produce additional ships not known at packaging time; the service worker caches those after first load.",
-  "count": 12,
+  "note": "Known real ship images are bundled here so the toolkit can load matching artwork locally instead of using remote image URLs. Dynamic search/API results may still produce additional ships not known at packaging time; the service worker caches those after first load.",
+  "count": 13,
   "images": [
     {
       "label": "Hornet F7A Mk II PYAM Exec",
@@ -41,6 +41,14 @@
       "note": "Bundled optimized reward artwork",
       "size_bytes": 124262,
       "sha256": "e86323f9d52bf6acdfb813c7bd9e123cce92c2e7e57348cf2cb80d50227b106b"
+    },
+    {
+      "label": "Gladius Pirate",
+      "file": "assets/images/ships/gladius-pirate-isometric.webp",
+      "source_asset": "https://starcitizen.tools/File:Gladius_Pirate_in_space_-_Isometric.jpg",
+      "note": "Bundled optimized Gladius Pirate artwork for Event Planner and VLM variant matching",
+      "size_bytes": 83936,
+      "sha256": "eb874c819cf29cc455524cd9cdb202c02fd646a1c764da8d072c846e20b69fc0"
     },
     {
       "label": "Polaris Wikelo Special",

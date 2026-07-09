@@ -1,5 +1,5 @@
 /* Celestial Nexus Toolkit service worker — full assets repository update. */
-const NEXUS_CACHE_VERSION = 'repo-ship-images-20260709191038';
+const NEXUS_CACHE_VERSION = 'repo-cargo-onyx-layout-scroll-v153-202607092155';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 const CORE_ASSETS = [
@@ -43,6 +43,7 @@ const CORE_ASSETS = [
   "./assets/images/ships/corsair-pyam-exec.webp",
   "./assets/images/ships/cutlass-black-pyam-exec.webp",
   "./assets/images/ships/syulen-pyam-exec.webp",
+  "./assets/images/ships/gladius-pirate-isometric.webp",
   "./assets/images/ships/polaris-wikelo-special.webp",
   "./assets/images/ships/golem-ship-cover.webp",
   "./assets/images/ships/sabre-peregrine-ship-cover.webp",
@@ -51,6 +52,8 @@ const CORE_ASSETS = [
   "./assets/images/ships/f7c-m-super-hornet-mk-ii-ship-cover.webp",
   "./assets/images/ships/a2-hercules-starlifter-ship-cover.webp",
   "./assets/images/ships/ship-image-manifest.json",
+  "./assets/images/locations/onyx-site-b-primary-building.webp",
+  "./assets/images/locations/location-image-manifest.json",
   "./assets/images/remote/ExecCorsair-1600x900-5acd0e8830.webp",
   "./assets/images/remote/ExecSyulen-1600x1000-9dcad09bdf.webp",
   "./assets/images/remote/Execcutlassblack-1600x1000-4fc7e7dc81.webp",
