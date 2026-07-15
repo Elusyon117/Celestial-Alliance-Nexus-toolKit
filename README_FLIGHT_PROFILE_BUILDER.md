@@ -1,23 +1,19 @@
 # Celestial Nexus — Flight Profile Builder
 
-## Version 3: drag, move, and image export
+## Version 5: dark schematic export
 
 This package updates the NX-13 Flight Profile Builder inside the single-file Celestial Nexus Toolkit.
 
-### New in this pass
+## New in this pass
 
-- Action-library rows can be dragged directly onto any button, hat direction, or axis.
-- The drag operation no longer rerenders and destroys its own source element, which was the main cause of unreliable drops in some browsers.
-- Drag data now uses both a custom payload and a `text/plain` fallback for broader browser compatibility.
-- Every assigned action appears as a draggable label on its control.
-- Mapping Summary entries are draggable as well.
-- Dragging an existing assignment to another control **moves** it.
-- Holding **Alt** on Windows/Linux or **Option** on macOS while dropping **copies** the assignment instead.
-- Drop targets receive clear hover, move, and copy feedback.
-- Dropping the same library action onto the same input is now idempotent instead of unexpectedly removing it.
-- A new **Export profile image** button creates a polished PNG reference sheet.
-- The PNG includes both selected devices, profile/build information, assignment totals, shared-control warnings, input labels, action names, action-map IDs, and device artwork.
-- Image generation is local and uses browser Canvas/SVG APIs; no screenshot service or external image library is required.
+- Converts **Export schematic PNG** from a white print sheet to a full Celestial Nexus dark-mode reference board.
+- Adds a deep navy-to-black page gradient, faint cyan engineering grid, and a restrained center glow.
+- Changes device sections and mapping callouts to dark glass-style panels with cyan borders.
+- Restyles the joystick and throttle illustrations as dark technical line art with brighter control accents.
+- Improves contrast for action names, Star Citizen action IDs, input badges, shared mappings, axes, hats, and buttons.
+- Updates leader lines, anchor points, footer details, and empty-device states for dark-background readability.
+- Keeps the exported PNG opaque, so it looks consistent in Discord, browsers, image viewers, and social posts.
+- Leaves XML import/export, local saves, project backups, drag-and-drop mapping, and the compact mapping-list export unchanged.
 
 ## Installation
 
@@ -28,51 +24,54 @@ This package updates the NX-13 Flight Profile Builder inside the single-file Cel
 3. Place it at the repository root.
 4. Commit and push the change.
 
-### Upgrade an existing V2 installation
+### Upgrade an existing V4 installation
 
-From the repository root, place `flight_profile_builder_v3.patch` beside `index.html`, then run:
+Place `flight_profile_builder_v5.patch` in the repository root and run:
 
 ```bash
-git apply flight_profile_builder_v3.patch
+git apply flight_profile_builder_v5.patch
 ```
 
-### Patch the original toolkit directly
+### Patch the original supplied toolkit directly
 
 Use the full patch instead:
 
 ```bash
-git apply flight_profile_builder_full_v3.patch
+git apply flight_profile_builder_full_v5.patch
 ```
 
-## Using drag and drop
+## Image exports
 
-- Drag an action from the left library onto a control to assign it.
-- Drag the small action label displayed inside an assigned control to move it.
-- You can also drag an entry from Mapping Summary.
-- Hold Alt/Option during the drop to copy rather than move an existing assignment.
-- Clicking an action and then clicking a control remains available as a keyboard/touch-friendly alternative.
+### Dark technical schematic
 
-## Image export
+Select **Export schematic PNG**. The builder downloads:
 
-Select **Export profile image** under Profile configuration. The builder downloads:
+```text
+<profile-name>_flight-profile_schematic.png
+```
+
+The generated image contains both joystick slots in stacked dark-mode sections. Callout anchors are model-aware approximations based on the builder artwork; firmware modes can still change the button numbers reported by Windows and Star Citizen.
+
+### Compact mapping list
+
+Select **Export mapping list** to download:
 
 ```text
 <profile-name>_flight-profile.png
 ```
 
-The image expands vertically for larger profiles, so the complete T16K2 starter layout fits without clipping.
+This remains the compact dark Celestial Nexus overview with every action ID.
 
 ## Included files
 
 - `index_with_flight_profile_builder.html` — complete updated toolkit
-- `flight_profile_builder_v3.patch` — incremental patch for the previous V2 builder
-- `flight_profile_builder_full_v3.patch` — patch against the original supplied toolkit
-- `flight_profile_builder_v3_preview.png` — updated builder preview
-- `flight_profile_export_example.png` — example exported PNG sheet
-- `README_FLIGHT_PROFILE_BUILDER.md` — this file
+- `flight_profile_builder_v5.patch` — incremental patch for V4
+- `flight_profile_builder_full_v5.patch` — patch against the original supplied toolkit
+- `flight_profile_schematic_dark_example.png` — example dark schematic export
+- `README_FLIGHT_PROFILE_BUILDER.md` — this guide
 
 ## Compatibility notes
 
-- Existing locally saved NX-13 projects remain compatible. The storage key and project schema were not changed.
-- XML import/export, round-trip preservation, JSON backups, input testing, conflict detection, and the starter layout remain intact.
-- Device illustrations are mapping-oriented references. Firmware mode and Windows device ordering can change button numbering, so imported known-good XML remains the safest baseline.
+- Existing locally saved NX-13 projects remain compatible; the storage key and project schema were not changed.
+- Schematic creation is entirely local and uses browser Canvas and SVG APIs.
+- Device illustrations and leader-line anchors are mapping references, not manufacturer firmware definitions. Importing a known-good current-patch XML remains the safest starting point.
