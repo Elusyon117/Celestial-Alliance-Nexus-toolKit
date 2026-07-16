@@ -1,0 +1,668 @@
+{
+  "schema": "celestial-nexus.patch-audit.v1",
+  "generatedAt": "2026-07-16T17:27:33.323Z",
+  "currentPatch": "4.8.3",
+  "staleReferenceCount": 94,
+  "affectedModuleCount": 4,
+  "modules": {
+    "global-or-embedded-data": {
+      "count": 91,
+      "patches": [
+        "4.0",
+        "4.6",
+        "4.7",
+        "4.8",
+        "4.8.0",
+        "4.8.1",
+        "4.8.2"
+      ],
+      "examples": [
+        {
+          "patch": "4.8.1",
+          "line": 8962,
+          "module": "global-or-embedded-data",
+          "context": "<span class=\"nexus-tool-status\">Patch 4.8.1 snapshot</span>"
+        },
+        {
+          "patch": "4.8",
+          "line": 9001,
+          "module": "global-or-embedded-data",
+          "context": "<div class=\"nexus-tool-meta\"><span class=\"nexus-tool-status\">Alpha 4.8.x field intelligence</span><span aria-hidden=\"true\" class=\"nexus-tool-arrow\">→</span></div>"
+        },
+        {
+          "patch": "4.8.1",
+          "line": 18559,
+          "module": "global-or-embedded-data",
+          "context": "n',planet_name:'ArcCorp',city_name:'Area 18',terminal_name:\"Dumper's Depot - Area 18\",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+        },
+        {
+          "patch": "4.8.1",
+          "line": 18560,
+          "module": "global-or-embedded-data",
+          "context": "anet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+        },
+        {
+          "patch": "4.8.0",
+          "line": 18563,
+          "module": "global-or-embedded-data",
+          "context": "ston',space_station_name:'Everus Harbor',terminal_name:'Platinum Bay - Everus Harbor',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+        },
+        {
+          "patch": "4.8.0",
+          "line": 18564,
+          "module": "global-or-embedded-data",
+          "context": "anet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+        }
+      ]
+    },
+    "flight-profile-view": {
+      "count": 1,
+      "patches": [
+        "4.8"
+      ],
+      "examples": [
+        {
+          "patch": "4.8",
+          "line": 9130,
+          "module": "flight-profile-view",
+          "context": "for=\"fpb-target-build\">Target build</label><input id=\"fpb-target-build\" maxlength=\"24\" value=\"Alpha 4.8.x\"/></div>"
+        }
+      ]
+    },
+    "wikelo-view": {
+      "count": 1,
+      "patches": [
+        "4.8.1"
+      ],
+      "examples": [
+        {
+          "patch": "4.8.1",
+          "line": 10086,
+          "module": "wikelo-view",
+          "context": "<p>Browse the embedded Patch 4.8.1 trade snapshot, record the org material locker, find immediately completable exchanges, aggregate r"
+        }
+      ]
+    },
+    "mining-view": {
+      "count": 1,
+      "patches": [
+        "4.8"
+      ],
+      "examples": [
+        {
+          "patch": "4.8",
+          "line": 10733,
+          "module": "mining-view",
+          "context": "<div class=\"nexus-topbar-actions\"> <span class=\"created-by\">Alpha 4.8.x · patch-sensitive field guide</span> <button class=\"btn btn-ghost\" onclick=\"showAppView('hub-view"
+        }
+      ]
+    }
+  },
+  "references": [
+    {
+      "patch": "4.8.1",
+      "line": 8962,
+      "module": "global-or-embedded-data",
+      "context": "<span class=\"nexus-tool-status\">Patch 4.8.1 snapshot</span>"
+    },
+    {
+      "patch": "4.8",
+      "line": 9001,
+      "module": "global-or-embedded-data",
+      "context": "<div class=\"nexus-tool-meta\"><span class=\"nexus-tool-status\">Alpha 4.8.x field intelligence</span><span aria-hidden=\"true\" class=\"nexus-tool-arrow\">→</span></div>"
+    },
+    {
+      "patch": "4.8",
+      "line": 9130,
+      "module": "flight-profile-view",
+      "context": "for=\"fpb-target-build\">Target build</label><input id=\"fpb-target-build\" maxlength=\"24\" value=\"Alpha 4.8.x\"/></div>"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 10086,
+      "module": "wikelo-view",
+      "context": "<p>Browse the embedded Patch 4.8.1 trade snapshot, record the org material locker, find immediately completable exchanges, aggregate r"
+    },
+    {
+      "patch": "4.8",
+      "line": 10733,
+      "module": "mining-view",
+      "context": "<div class=\"nexus-topbar-actions\"> <span class=\"created-by\">Alpha 4.8.x · patch-sensitive field guide</span> <button class=\"btn btn-ghost\" onclick=\"showAppView('hub-view"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18559,
+      "module": "global-or-embedded-data",
+      "context": "n',planet_name:'ArcCorp',city_name:'Area 18',terminal_name:\"Dumper's Depot - Area 18\",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18560,
+      "module": "global-or-embedded-data",
+      "context": "anet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.0",
+      "line": 18563,
+      "module": "global-or-embedded-data",
+      "context": "ston',space_station_name:'Everus Harbor',terminal_name:'Platinum Bay - Everus Harbor',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.0",
+      "line": 18564,
+      "module": "global-or-embedded-data",
+      "context": "anet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 18567,
+      "module": "global-or-embedded-data",
+      "context": ":'Orison',terminal_name:\"Ship Weapons - Cousin Crow's - Providence Platform - Orison\",game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 18568,
+      "module": "global-or-embedded-data",
+      "context": "stem_name:'Stanton',space_station_name:'CRU-L1',terminal_name:'Platinum Bay - CRU-L1',game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 18569,
+      "module": "global-or-embedded-data",
+      "context": "stem_name:'Stanton',space_station_name:'CRU-L5',terminal_name:'Platinum Bay - CRU-L5',game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18572,
+      "module": "global-or-embedded-data",
+      "context": ":'Orison',terminal_name:\"Ship Weapons - Cousin Crow's - Providence Platform - Orison\",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18573,
+      "module": "global-or-embedded-data",
+      "context": "anet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18576,
+      "module": "global-or-embedded-data",
+      "context": "e:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18577,
+      "module": "global-or-embedded-data",
+      "context": "0,star_system_name:'Nyx',location:'Levski',terminal_name:\"Teach's Item Shop - Levski\",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18580,
+      "module": "global-or-embedded-data",
+      "context": "e:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 18581,
+      "module": "global-or-embedded-data",
+      "context": "0,star_system_name:'Nyx',location:'Levski',terminal_name:\"Teach's Item Shop - Levski\",game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18584,
+      "module": "global-or-embedded-data",
+      "context": "e:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18585,
+      "module": "global-or-embedded-data",
+      "context": "5,star_system_name:'Nyx',location:'Levski',terminal_name:\"Teach's Item Shop - Levski\",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18586,
+      "module": "global-or-embedded-data",
+      "context": "',location:'Starlight Service Station',terminal_name:'Ship Parts - Starlight Service',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18587,
+      "module": "global-or-embedded-data",
+      "context": "ystem_name:'Pyro',location:'Checkmate Station',terminal_name:'Ship Parts - Checkmate',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 18588,
+      "module": "global-or-embedded-data",
+      "context": ":'Pyro',moon_name:'Bloom',location:'Orbituary',terminal_name:'Ship Parts - Orbituary',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": ",\"rewards\":[\"Wikelo Favor\"],\"mission\":\"Trade Merc Scrip for Favors?\",\"category\":\"Currency\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"MG Scrip\",\"qty\":50}],\"notes\":\"\"},{\"id\":\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ewards\":[\"Wikelo Favor\"],\"mission\":\"Trade Council Scrip for Favors?\",\"category\":\"Currency\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Council Scrip\",\"qty\":50}],\"notes\":\"\"},{\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "o Favor\",\"rewards\":[\"Wikelo Favor\"],\"mission\":\"Turn Things to Favor\",\"category\":\"Currency\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Carinite\",\"qty\":50}],\"notes\":\"\"},{\"id\":\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": ",\"rewards\":[\"Wikelo Favor\"],\"mission\":\"Trade Worm Parts for Favors?\",\"category\":\"Currency\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Irradiated Valakkar Pearl (Grade AA)\",\"q"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "s\":[\"Polaris Bit\"],\"mission\":\"Want Polaris? Need something special.\",\"category\":\"Currency\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Quantanium\",\"qty\":24}],\"notes\":\"\"},{\"id\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "[\"Boomtube \\\"Clanguard\\\" Rocket Launcher\"],\"mission\":\"Curious Weapon\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Boomtube Rocket Launcher\",\"qty\":1},{\"nam"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "opion Skull\\\" Energy Assault Rifle\"],\"mission\":\"Fun Kopion Skull Gun\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Carinite\",\"qty\":10},{\"name\":\"Saldynium ("
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ary Skull\\\" Energy Assault Rifle\"],\"mission\":\"Fun Military Skull Gun\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Carinite\",\"qty\":10},{\"name\":\"Saldynium ("
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\\\"Irradiated\\\" Laser Shotgun\"],\"mission\":\"Make VOLT shotgun angrier\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Prism Laser Shotgun\",\"qty\":1},{\"name\":\"I"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "s\":[\"Zenith \\\"Snow Camo\\\" Laser Sniper Rifle\"],\"mission\":\"Snow Snipe\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"ASD Secure Drive\",\"qty\":7},{\"name\":\"Zeni"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "LMG\",\"rewards\":[\"Fresnel \\\"Yormandi\\\" LMG\"],\"mission\":\"Yormandi Gun\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Yormandi Eye\",\"qty\":6},{\"name\":\"Yormandi"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ol\",\"rewards\":[\"TripleDown \\\"Heatwave\\\" Pistol\"],\"mission\":\"Hot Shot\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Tripledown Pistol\",\"qty\":1},{\"name\":\"Blu"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "wards\":[\"R97 \\\"Crimson Camo\\\" Shotgun\"],\"mission\":\"Red Fight Shotgun\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":3},{\"name\":\"Sadaryx\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "llshot \\\"Dominion Camo\\\" Rifle Blueprint\"],\"mission\":\"Your Best Shot\",\"category\":\"Weapons\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":1},{\"name\":\"Killshot"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "latino Core Mark 1\",\"Palatino Backpack Mark 1\"],\"mission\":\"Test Armor\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Palatino Helmet\",\"qty\":1},{\"name\":\"Palat"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "re Snow Camo\",\"Geist Armor Legs Snow Camo\"],\"mission\":\"Hide Snow Suit\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"ASD Secure Drive\",\"qty\":4},{\"name\":\"Geis"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "languard\",\"Testudo Backpack Clanguard\"],\"mission\":\"Armor with Vanduul\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Testudo Helmet Turfwar\",\"qty\":1},{\"name\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Endro\",\"Ana Armor Legs Endro\"],\"mission\":\"Armor with Horn and String\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Carinite (Pure)\",\"qty\":1},{\"name\":\"Antiu"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\",\"Bokto Arms\",\"Bokto Core\",\"Bokto Legs\"],\"mission\":\"Make glowy armor\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Irradiated Valakkar Pearl (Grade AAA)\",\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Strata Core Heatwave\",\"Strata Legs Heatwave\"],\"mission\":\"Do Lava Suit\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Strata Core\",\"qty\":1},{\"name\":\"Strata He"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "egs Crimson Camo\",\"Warden Backpack Monde\"],\"mission\":\"Red Fight Armor\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":3},{\"name\":\"Sadaryx\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ind Flight Suit Dominion Camo Blueprint\"],\"mission\":\"Suit Up Take Off\",\"category\":\"Armors\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":1},{\"name\":\"Tailwind"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "reward\":\"ATLS IKTI\",\"rewards\":[\"ATLS IKTI\"],\"mission\":\"Make ATLS shoot\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Argo ATLS\",\"qty\":1},{\"name\":\"Wikelo Favo"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "GEO IKTI\",\"rewards\":[\"ATLS GEO IKTI\"],\"mission\":\"Make jumpy ATLS shoot\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Argo ATLS Geo\",\"qty\":1},{\"name\":\"Argo AT"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\\\"\",\"rewards\":[\"ATLS GEO \\\"Orange Line\\\"\"],\"mission\":\"ATLS Orange Line\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":1},{\"name\":\"SCU Quan"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\"rewards\":[\"ATLS GEO \\\"Cool Metal\\\"\"],\"mission\":\"ATLS Cool Metal Color\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":1},{\"name\":\"Carinite"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "id\":\"pulse\",\"reward\":\"Pulse\",\"rewards\":[\"Pulse\"],\"mission\":\"Pulse Plus\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":4}],\"notes\":\"\"},{\"id"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\":\"Ursa Medivac\",\"rewards\":[\"Ursa Medivac\"],\"mission\":\"Make a Ursa Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":4},{\"name\":\"Saldyniu"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "rewards\":[\"L-21 Wolf (Stealth Spec)\"],\"mission\":\"Where Wolf? Here Wolf\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":10},{\"name\":\"Vanduul"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "lpha Wolf\",\"rewards\":[\"L-22 Alpha Wolf\"],\"mission\":\"Extra Special Wolf\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Metamaterial Test #146\",\"qty\":1}],\"notes"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Sun\",\"Fresnel \\\"Deepwater\\\" Energy LMG\"],\"mission\":\"Most Special Wolf\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"Very Good Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":5}],\"notes\":\"\""
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "d\":\"golem\",\"reward\":\"Golem\",\"rewards\":[\"Golem\"],\"mission\":\"Golem Rocks\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":2},{\"name\":\"ASD Secu"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\"reward\":\"Intrepid\",\"rewards\":[\"Intrepid\"],\"mission\":\"Upgrade Intrepid\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":3},{\"name\":\"Governme"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "eward\":\"Fortune\",\"rewards\":[\"Fortune\"],\"mission\":\"Fortune ship for you\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":3},{\"name\":\"Carinite"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "eward\":\"C1 Spirit\",\"rewards\":[\"C1 Spirit\"],\"mission\":\"Spirit Cargo mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":8},{\"name\":\"Tevarin"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "d\":\"Zeus Mk II ES\",\"rewards\":[\"Zeus Mk II ES\"],\"mission\":\"Zeus Special\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":10},{\"name\":\"UEE 6th"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "us Mk II CL\",\"rewards\":[\"Zeus Mk II CL\"],\"mission\":\"Zeus Cargo Special\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":20},{\"name\":\"Carinit"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "tarlancer MAX\",\"rewards\":[\"Starlancer MAX\"],\"mission\":\"More than a Max\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":30},{\"name\":\"Ace Int"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Taurus\",\"rewards\":[\"Constellation Taurus\"],\"mission\":\"Want Taurus ship\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":30},{\"name\":\"Carinit"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "reward\":\"Argo Raft\",\"rewards\":[\"Argo Raft\"],\"mission\":\"Ready for Raft?\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":8},{\"name\":\"Irradiat"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ospector\",\"rewards\":[\"MISC Prospector\"],\"mission\":\"Prospects Look Good\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":6},{\"name\":\"Carinite"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "regrine\",\"rewards\":[\"Sabre Peregrine\"],\"mission\":\"Peregrine Wikelo Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":4},{\"name\":\"DCHS-05"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": ":\"Sabre Firebird\",\"rewards\":[\"Sabre Firebird\"],\"mission\":\"Firebird Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":15},{\"name\":\"DCHS-05"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ard\":\"Scorpius\",\"rewards\":[\"Scorpius\"],\"mission\":\"Build a Mod Scorpius\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":15},{\"name\":\"DCHS-05"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "k II\",\"rewards\":[\"F7C-M Super Hornet Mk II\"],\"mission\":\"Wikelo Navy F7\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":16},{\"name\":\"DCHS-05"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "eward\":\"Guardian\",\"rewards\":[\"Guardian\"],\"mission\":\"Guardian Fight Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":20},{\"name\":\"Irradia"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "rdian QI\",\"rewards\":[\"Guardian QI\"],\"mission\":\"Guardian take down ship\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":25},{\"name\":\"Irradia"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ard\":\"Guardian MX\",\"rewards\":[\"Guardian MX\"],\"mission\":\"Guardian Wik-X\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":25},{\"name\":\"Ace Int"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ec)\",\"rewards\":[\"F8C Lightning (Military Spec)\"],\"mission\":\"F8 War Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":40},{\"name\":\"Carinit"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\",\"rewards\":[\"F8C Lightning (Stealth Spec)\"],\"mission\":\"Sneaky Stabber\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":40},{\"name\":\"DCHS-05"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "rapin Medic\",\"rewards\":[\"Terrapin Medic\"],\"mission\":\"What is Terrapin?\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":15},{\"name\":\"ASD Sec"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\",\"rewards\":[\"Starlancer TAC\"],\"mission\":\"New Move Big Starlancer Ship\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":50},{\"name\":\"Ace Int"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "\":[\"Ares Star Fighter Inferno\"],\"mission\":\"Starfighter Inferno Special\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":10},{\"name\":\"Yormand"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": ",\"rewards\":[\"Ares Star Fighter Ion\"],\"mission\":\"Sneaky Starfighter Ion\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":10},{\"name\":\"Yormand"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Utility\",\"rewards\":[\"Prowler Utility\"],\"mission\":\"Prowler More Utility\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":40},{\"name\":\"Yormand"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": ",\"rewards\":[\"A2 Hercules Starlifter\"],\"mission\":\"Starlifter A2 War Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":50},{\"name\":\"Polaris"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "rd\",\"reward\":\"Asgard\",\"rewards\":[\"Asgard\"],\"mission\":\"Asgard Fight Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":50},{\"name\":\"ASD Sec"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "teor\",\"reward\":\"Meteor\",\"rewards\":[\"Meteor\"],\"mission\":\"RSI Meteor Mod\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":10},{\"name\":\"Ace Int"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Polaris Wikelo Special\"],\"mission\":\"Now make Polaris. Short Time Deal.\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":50},{\"name\":\"Carinit"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "ris\",\"reward\":\"Idris-P\",\"rewards\":[\"Idris-P\"],\"mission\":\"AEGIS Idris P\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"Very Best Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":50},{\"name\":\"P"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "Apollo Triage\",\"rewards\":[\"Apollo Triage\"],\"mission\":\"Red Fight Apollo\",\"category\":\"Ships\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Wikelo Favor\",\"qty\":30},{\"name\":\"Savrili"
+    },
+    {
+      "patch": "4.8.1",
+      "line": 22946,
+      "module": "global-or-embedded-data",
+      "context": "s\":[\"Patch-dependent starter reward\"],\"mission\":\"Very Hungry\",\"category\":\"Starter Mission\",\"patch\":\"4.8.1\",\"rank\":\"New Customer\",\"active\":true,\"materials\":[{\"name\":\"Ermer Family Farms Fat Free Ice Cream\",\""
+    },
+    {
+      "patch": "4.8",
+      "line": 26290,
+      "module": "global-or-embedded-data",
+      "context": "ource-link\" href=\"${SOURCE_URLS.patch}\" target=\"_blank\" rel=\"noopener noreferrer\"><span>RSI · Alpha 4.8 patch notes</span><b>↗</b></a><a class=\"mining-source-link\" href=\"${SOURCE_URLS.qualityPatch}\" targ"
+    },
+    {
+      "patch": "4.7",
+      "line": 26290,
+      "module": "global-or-embedded-data",
+      "context": "ink\" href=\"${SOURCE_URLS.qualityPatch}\" target=\"_blank\" rel=\"noopener noreferrer\"><span>RSI · Alpha 4.7 quality-system notes</span><b>↗</b></a><a class=\"mining-source-link\" href=\"${SOURCE_URLS.atls}\" tar"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 29081,
+      "module": "global-or-embedded-data",
+      "context": "commendation.steps.map((step,index)=>`${index+1}. ${step}`).join('\\n')}\\n\\nPLANNING BASELINE: Alpha 4.8.2 component and gadget records. The live scan and HUD are final authority. Use only one mining gadget"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 29087,
+      "module": "global-or-embedded-data",
+      "context": "e.</span></div></div></div><div class=\"mining-owned-source\">Reference baseline · Star Citizen Alpha 4.8.2 component and gadget records · live HUD remains final authority</div>`;"
+    },
+    {
+      "patch": "4.8.2",
+      "line": 29097,
+      "module": "global-or-embedded-data",
+      "context": "ow. Always scan first.</p></aside></div><div class=\"mining-owned-source\">Reference baseline · Alpha 4.8.2-LIVE.12030094 records · recommendation is a planning heuristic, not a guaranteed fracture calculati"
+    },
+    {
+      "patch": "4.0",
+      "line": 39403,
+      "module": "global-or-embedded-data",
+      "context": "version: '1.4.0',"
+    },
+    {
+      "patch": "4.6",
+      "line": 39484,
+      "module": "global-or-embedded-data",
+      "context": "version: '1.4.6',"
+    },
+    {
+      "patch": "4.8",
+      "line": 50911,
+      "module": "global-or-embedded-data",
+      "context": "targetBuild:'Alpha 4.8.x',"
+    },
+    {
+      "patch": "4.8",
+      "line": 52566,
+      "module": "global-or-embedded-data",
+      "context": "state.targetBuild = 'Alpha 4.8.x';"
+    }
+  ],
+  "note": "This report flags patch-specific embedded values. Only modules with a trusted machine-readable upstream should be auto-rewritten; other modules require a reviewed adapter."
+}
