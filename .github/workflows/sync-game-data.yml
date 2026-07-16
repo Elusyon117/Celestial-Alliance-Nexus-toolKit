@@ -1,0 +1,162 @@
+name: Sync game data
+
+on:
+  workflow_dispatch:
+    inputs:
+      patch:
+        description: Optional patch override, for example 4.9. Leave blank for newest LIVE.
+        required: false
+        type: string
+      channel:
+        description: Data channel
+        required: true
+        default: LIVE
+        type: choice
+        options:
+          - LIVE
+          - PTU
+          - EPTU
+  schedule:
+    - cron: "17 */6 * * *"
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: game-data-sync-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Validate update scripts
+        run: |
+          node --check scripts/sync-scmdb-missions.mjs
+          node --check scripts/audit-patch-data.mjs
+
+      - name: Synchronize newest SCMDB dataset
+        env:
+          MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
+          MISSION_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
+        run: node scripts/sync-scmdb-missions.mjs
+
+      - name: Audit other patch-sensitive modules
+        run: node scripts/audit-patch-data.mjs
+
+      - name: Read synchronization result
+        id: result
+        shell: bash
+        run: |
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const fs = require('fs');
+          const status = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
+          const audit = JSON.parse(fs.readFileSync('data/patch-audit.json', 'utf8'));
+          const module = status.modules.contractFinder;
+          console.log(`version=${module.gameVersion}`);
+          console.log(`patch=${module.patch}`);
+          console.log(`stale=${audit.staleReferenceCount}`);
+          NODE
+
+      - name: Commit changed snapshots and reports
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            data/scmdb-missions-live.json \
+            data/scmdb-missions-live.js \
+            data/game-data-status.json \
+            data/patch-audit.json
+
+          if git diff --cached --quiet; then
+            echo "All game data is already current."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync game data for ${{ steps.result.outputs.version }}"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Create or update patch-review issue
+        if: steps.result.outputs.stale != '0'
+        uses: actions/github-script@v8
+        env:
+          CURRENT_PATCH: ${{ steps.result.outputs.patch }}
+          STALE_COUNT: ${{ steps.result.outputs.stale }}
+        with:
+          script: |
+            const fs = require('fs');
+            const audit = JSON.parse(fs.readFileSync('data/patch-audit.json', 'utf8'));
+            const title = `Patch data review required: ${process.env.CURRENT_PATCH} LIVE`;
+            const rows = Object.entries(audit.modules)
+              .sort((a, b) => b[1].count - a[1].count)
+              .map(([name, value]) => `- **${name}**: ${value.count} references (${value.patches.join(', ')})`)
+              .join('\n');
+            const body = [
+              `The automated SCMDB Contract Finder sync is current for **${process.env.CURRENT_PATCH} LIVE**.`,
+              '',
+              `The audit found **${process.env.STALE_COUNT}** older patch-specific references that may belong to curated modules:`,
+              '',
+              rows || '- No grouped references were produced.',
+              '',
+              'Review `data/patch-audit.json`. Add a trusted source adapter before automatically rewriting curated data.',
+              '',
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const existing = issues.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title,
+                body,
+              });
+            }
+
+      - name: Report synchronization failure
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title = 'Game data synchronization failed';
+            const body = `The scheduled game-data sync failed. The existing snapshots were not overwritten.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              per_page: 100,
+            });
+            const existing = issues.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
+            }
