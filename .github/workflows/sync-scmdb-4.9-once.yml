@@ -1,0 +1,81 @@
+name: One-time SCMDB 4.9 sync
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: one-time-scmdb-4-9-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v5
+        with:
+          node-version: "22"
+
+      - name: Validate update scripts
+        run: |
+          node --check scripts/sync-scmdb-missions.mjs
+          node --check scripts/audit-patch-data.mjs
+
+      - name: Synchronize SCMDB 4.9 LIVE dataset
+        env:
+          MISSION_PATCH: "4.9.0"
+          MISSION_CHANNEL: "LIVE"
+          SCMDB_MISSIONS_URL: "https://scmdb.net/data/merged-4.9.0-live.12232306.json"
+        run: node scripts/sync-scmdb-missions.mjs
+
+      - name: Audit other patch-sensitive modules
+        run: node scripts/audit-patch-data.mjs
+
+      - name: Read synchronization result
+        id: result
+        shell: bash
+        run: |
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const fs = require('fs');
+          const status = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
+          const module = status.modules.contractFinder;
+
+          if (module.status !== 'current') {
+            throw new Error(`Expected a current dataset, received status: ${module.status}`);
+          }
+
+          if (module.patch !== '4.9.0') {
+            throw new Error(`Expected patch 4.9.0, received: ${module.patch}`);
+          }
+
+          console.log(`version=${module.gameVersion}`);
+          console.log(`patch=${module.patch}`);
+          NODE
+
+      - name: Commit updated 4.9 snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git add             data/scmdb-missions-live.json             data/scmdb-missions-live.js             data/game-data-status.json             data/patch-audit.json
+
+          if git diff --cached --quiet; then
+            echo "The 4.9 game data is already committed."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync game data for ${{ steps.result.outputs.version }}"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
