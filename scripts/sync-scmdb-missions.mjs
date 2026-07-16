@@ -483,4 +483,59 @@ async function synchronize() {
   });
 }
 
-await synchronize();
+function isTemporaryUpstreamFailure(error) {
+  const message = String(error?.message || error);
+
+  return /HTTP (403|408|429|5\d\d)\b|fetch failed|aborted/i.test(
+    message,
+  );
+}
+
+async function preserveExistingSnapshot(error) {
+  if (!isTemporaryUpstreamFailure(error)) {
+    throw error;
+  }
+
+  const existing = await readExistingSnapshot();
+
+  // A first-time sync without any local snapshot should still fail.
+  if (!existing) {
+    throw error;
+  }
+
+  const identity =
+    parseIdentity(existing.gameVersion) ||
+    parseIdentity(existing.sourceUrl) || {
+      patch: existing.targetPatch || PATCH_OVERRIDE || '',
+      channel: existing.targetChannel || TARGET_CHANNEL,
+      code: existing.gameVersion || 'unknown',
+    };
+
+  console.warn(
+    `SCMDB is temporarily unavailable: ${error?.message || error}\n` +
+    `Keeping the existing ${identity.code} snapshot unchanged.`,
+  );
+
+  // This file is required by the following audit and result steps.
+  await writeStatus({
+    status: 'stale-upstream-unavailable',
+    source: existing.source || 'SCMDB',
+    sourceUrl: existing.sourceUrl || '',
+    versionsUrl: VERSIONS_URL,
+    patch: identity.patch,
+    channel: identity.channel,
+    gameVersion: identity.code,
+    fetchedAt: existing.fetchedAt || null,
+    activeCount: Number(existing.activeMissionCount || 0),
+    legacyCount: Number(existing.legacyMissionCount || 0),
+    totalCount: Number(existing.missionCount || 0),
+    fingerprint: existing.sourceFingerprint || '',
+    lastError: String(error?.message || error),
+  });
+}
+
+try {
+  await synchronize();
+} catch (error) {
+  await preserveExistingSnapshot(error);
+}
