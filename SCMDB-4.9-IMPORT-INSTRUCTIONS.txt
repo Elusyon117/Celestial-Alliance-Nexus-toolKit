@@ -1,0 +1,72 @@
+SCMDB 4.9 WEB-ONLY IMPORT
+
+WHY THIS IS NEEDED
+GitHub's hosted runner is receiving HTTP 403 from SCMDB. Your browser can access
+the file, so this workflow imports a copy that you upload temporarily as a
+GitHub release asset.
+
+FILES
+- sync-scmdb-4.9-once.yml
+
+STEPS
+
+1. DOWNLOAD THE SCMDB FILE IN YOUR BROWSER
+
+   Open:
+   https://scmdb.net/data/merged-4.9.0-live.12232306.json
+
+   Save it with this exact filename:
+   merged-4.9.0-live.12232306.json
+
+   If opening the URL does not download it:
+   - Open SCMDB
+   - Press F12 and choose Network
+   - Select merged-4.9.0-live.12232306.json
+   - Right-click it and choose Open in new tab
+   - Save the page/file
+
+2. REPLACE THE FAILED WORKFLOW
+
+   In the repository, replace:
+   .github/workflows/sync-scmdb-4.9-once.yml
+
+   with the supplied sync-scmdb-4.9-once.yml file and commit it to main.
+
+3. CREATE A TEMPORARY RELEASE ASSET
+
+   Repository -> Releases -> Draft a new release
+
+   Tag:
+   scmdb-4.9-import
+
+   Title:
+   Temporary SCMDB 4.9 import
+
+   Mark it as a pre-release.
+
+   Upload:
+   merged-4.9.0-live.12232306.json
+
+   Publish the pre-release. Do not set it as the latest release.
+
+4. RUN THE WORKFLOW
+
+   Actions -> Import SCMDB 4.9 from release asset -> Run workflow
+
+   Keep the default values:
+   release_tag: scmdb-4.9-import
+   asset_name: merged-4.9.0-live.12232306.json
+
+5. EXPECTED RESULT
+
+   The workflow should commit:
+   Sync game data for 4.9.0-LIVE.12232306
+
+   It verifies that the status is "current" and the patch is "4.9.0" before it
+   commits anything.
+
+6. CLEANUP
+
+   After a successful run, the workflow tries to delete the temporary release
+   and its tag automatically. If it remains, delete the temporary release
+   manually from the Releases page.

@@ -1,17 +1,28 @@
-name: One-time SCMDB 4.9 sync
+name: Import SCMDB 4.9 from release asset
 
 on:
   workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Temporary GitHub release tag containing the SCMDB JSON
+        required: true
+        default: scmdb-4.9-import
+        type: string
+      asset_name:
+        description: Exact SCMDB JSON asset filename
+        required: true
+        default: merged-4.9.0-live.12232306.json
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: one-time-scmdb-4-9-${{ github.ref }}
+  group: scmdb-4-9-release-import-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  sync:
+  import:
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -31,38 +42,81 @@ jobs:
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
 
+      - name: Download SCMDB dataset from temporary release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+          ASSET_NAME: ${{ inputs.asset_name }}
+        run: |
+          set -euo pipefail
+
+          import_dir="$RUNNER_TEMP/scmdb-import"
+          mkdir -p "$import_dir"
+
+          gh release download "$RELEASE_TAG"             --pattern "$ASSET_NAME"             --dir "$import_dir"             --clobber
+
+          dataset="$import_dir/$ASSET_NAME"
+
+          if [[ ! -s "$dataset" ]]; then
+            echo "::error::Release asset was not downloaded or is empty: $ASSET_NAME"
+            exit 1
+          fi
+
+          node -e '
+            const { pathToFileURL } = require("node:url");
+            console.log(`SCMDB_MISSIONS_URL=${pathToFileURL(process.argv[1]).href}`);
+          ' "$dataset" >> "$GITHUB_ENV"
+
+          echo "Downloaded dataset: $dataset"
+          du -h "$dataset"
+
       - name: Synchronize SCMDB 4.9 LIVE dataset
         env:
           MISSION_PATCH: "4.9.0"
           MISSION_CHANNEL: "LIVE"
-          SCMDB_MISSIONS_URL: "https://scmdb.net/data/merged-4.9.0-live.12232306.json"
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Audit other patch-sensitive modules
         run: node scripts/audit-patch-data.mjs
 
-      - name: Read synchronization result
+      - name: Verify imported dataset
         id: result
         shell: bash
         run: |
           node <<'NODE' >> "$GITHUB_OUTPUT"
-          const fs = require('fs');
-          const status = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
-          const module = status.modules.contractFinder;
+          const fs = require('node:fs');
+
+          const status = JSON.parse(
+            fs.readFileSync('data/game-data-status.json', 'utf8'),
+          );
+          const module = status?.modules?.contractFinder;
+
+          if (!module) {
+            throw new Error('Contract Finder status is missing.');
+          }
 
           if (module.status !== 'current') {
-            throw new Error(`Expected a current dataset, received status: ${module.status}`);
+            throw new Error(
+              `Import did not complete. Status: ${module.status}; error: ${module.lastError || 'unknown'}`,
+            );
           }
 
           if (module.patch !== '4.9.0') {
-            throw new Error(`Expected patch 4.9.0, received: ${module.patch}`);
+            throw new Error(`Expected patch 4.9.0, received ${module.patch}.`);
+          }
+
+          if (module.channel !== 'LIVE') {
+            throw new Error(`Expected LIVE, received ${module.channel}.`);
           }
 
           console.log(`version=${module.gameVersion}`);
           console.log(`patch=${module.patch}`);
+          console.log(`active=${module.activeCount}`);
+          console.log(`total=${module.totalCount}`);
           NODE
 
-      - name: Commit updated 4.9 snapshot
+      - name: Commit updated Contract Finder data
         shell: bash
         run: |
           set -euo pipefail
@@ -70,7 +124,7 @@ jobs:
           git add             data/scmdb-missions-live.json             data/scmdb-missions-live.js             data/game-data-status.json             data/patch-audit.json
 
           if git diff --cached --quiet; then
-            echo "The 4.9 game data is already committed."
+            echo "The 4.9 Contract Finder data is already committed."
             exit 0
           fi
 
@@ -79,3 +133,23 @@ jobs:
           git commit -m "Sync game data for ${{ steps.result.outputs.version }}"
           git pull --rebase origin "$GITHUB_REF_NAME"
           git push origin "HEAD:$GITHUB_REF_NAME"
+
+      - name: Write run summary
+        shell: bash
+        run: |
+          {
+            echo "## SCMDB import completed"
+            echo
+            echo "- Version: ${{ steps.result.outputs.version }}"
+            echo "- Patch: ${{ steps.result.outputs.patch }}"
+            echo "- Active contracts: ${{ steps.result.outputs.active }}"
+            echo "- Total contracts: ${{ steps.result.outputs.total }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove temporary release
+        if: success()
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ inputs.release_tag }}
+        run: gh release delete "$RELEASE_TAG" --yes --cleanup-tag
