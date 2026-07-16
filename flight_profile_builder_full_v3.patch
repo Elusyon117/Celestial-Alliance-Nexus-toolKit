@@ -1,0 +1,1781 @@
+--- a/index.html
++++ b/index.html
+@@ -8560,6 +8560,139 @@
+     margin: 0 !important;
+   }
+ </style>
++<style id="nexus-flight-profile-builder-style">
++/* ========================================================================== */
++/* NX-13 · Flight Profile Builder                                             */
++/* ========================================================================== */
++#flight-profile-view{--fpb-bg:#050d16;--fpb-panel:#091725;--fpb-panel-2:#07131f;--fpb-line:#15354a;--fpb-line-soft:#10283a;--fpb-text:#d9e8f4;--fpb-muted:#8fa8ba;--fpb-cyan:#42d9f5;--fpb-blue:#2f8eff;--fpb-gold:#e7b84f;--fpb-red:#ef466f;min-height:100vh;background:radial-gradient(circle at 70% 10%,rgba(20,118,149,.11),transparent 30%),linear-gradient(180deg,#06111c,#040b12 78%);color:var(--fpb-text)}
++#flight-profile-view *{box-sizing:border-box}
++.fpb-shell{width:var(--nexus-fluid-width,calc(100vw - 24px));max-width:none;margin:0 auto;padding:18px 0 44px}
++.fpb-panel{background:linear-gradient(180deg,rgba(10,27,42,.97),rgba(6,18,29,.97));border:1px solid var(--fpb-line);border-radius:16px;box-shadow:0 18px 50px rgba(0,0,0,.2)}
++.fpb-hero{display:flex;gap:28px;align-items:flex-end;justify-content:space-between;padding:26px 28px;margin-bottom:18px;overflow:hidden;position:relative}
++.fpb-hero:after{content:"";position:absolute;right:-80px;top:-100px;width:420px;height:260px;border:1px solid rgba(66,217,245,.11);border-radius:50%;transform:rotate(-12deg);box-shadow:0 0 0 34px rgba(66,217,245,.022),0 0 0 70px rgba(66,217,245,.012);pointer-events:none}
++.fpb-eyebrow,.fpb-kicker{font:700 11px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.2em;text-transform:uppercase;color:var(--fpb-cyan)}
++.fpb-hero h1{margin:8px 0 10px;font-size:clamp(36px,5vw,66px);line-height:.95;letter-spacing:-.055em;color:#e9f5ff}
++.fpb-hero p{max-width:890px;margin:0;color:#9db3c4;line-height:1.7;font-size:14px}
++.fpb-chip-row{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;position:relative;z-index:1}
++.fpb-chip{border:1px solid #1e526b;background:#071a28;color:#a9dceb;padding:7px 10px;border-radius:999px;font:700 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.1em;text-transform:uppercase;white-space:nowrap}
++.fpb-top-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:16px;margin-bottom:16px}
++.fpb-card{padding:18px}
++.fpb-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:14px}
++.fpb-card-head h2,.fpb-card-head h3{margin:0;color:#dcecf8;font-size:15px}
++.fpb-card-head p{margin:4px 0 0;color:var(--fpb-muted);font-size:11px;line-height:1.45}
++.fpb-badge{border:1px solid #20516a;background:#071824;color:#aee6f3;padding:7px 9px;border-radius:9px;font:700 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase}
++.fpb-fields{display:grid;grid-template-columns:1.25fr .8fr .8fr;gap:10px}
++.fpb-field label{display:block;margin:0 0 6px;color:#7f9caf;font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.13em;text-transform:uppercase}
++.fpb-field input,.fpb-field select,.fpb-search input,.fpb-search select{width:100%;height:42px;border:1px solid #17374c;border-radius:9px;background:#06131f;color:#dbeaf4;padding:0 11px;outline:none;font:500 12px/1.2 inherit}
++.fpb-field input:focus,.fpb-field select:focus,.fpb-search input:focus,.fpb-search select:focus{border-color:#2b98bd;box-shadow:0 0 0 3px rgba(66,217,245,.08)}
++.fpb-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
++.fpb-btn{min-height:36px;padding:0 12px;border:1px solid #1b526b;border-radius:9px;background:#071b28;color:#c5e6f1;font:700 10px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.045em;cursor:pointer;transition:.16s ease}
++.fpb-btn:hover{border-color:#2da9cc;background:#092235;transform:translateY(-1px)}
++.fpb-btn.primary{border-color:#168fc5;background:linear-gradient(135deg,#0fa0ce,#2468ff);color:white}
++.fpb-btn.danger{border-color:#613044;color:#ff9ab0;background:#17111b}
++.fpb-btn.small{min-height:30px;padding:0 9px;font-size:9px}
++.fpb-device-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
++.fpb-device-select{border:1px solid var(--fpb-line-soft);background:#06131f;border-radius:11px;padding:10px}
++.fpb-device-select strong{display:block;color:#bcd2df;font-size:10px;margin-bottom:8px}
++.fpb-device-select-grid{display:grid;grid-template-columns:minmax(0,1fr) 82px;gap:8px}
++.fpb-note{margin-top:10px;padding:10px 12px;border:1px solid #4b3b1b;border-radius:9px;background:#15150d;color:#d5bc75;font-size:10px;line-height:1.5}
++.fpb-input-tester{display:none;margin-top:10px;padding:11px;border:1px solid #244d63;border-radius:10px;background:#061522}
++.fpb-input-tester.active{display:grid;grid-template-columns:130px minmax(0,1fr) auto;align-items:center;gap:10px}
++.fpb-input-tester strong{font-size:10px;color:#c9e5f2}
++.fpb-input-tester span{font:600 10px/1.4 ui-monospace,SFMono-Regular,Consolas,monospace;color:#7fc5d8;overflow-wrap:anywhere}
++.fpb-workspace{display:grid;grid-template-columns:clamp(280px,18vw,360px) minmax(720px,1fr) clamp(300px,19vw,390px);gap:16px;align-items:start}
++.fpb-library,.fpb-summary{height:calc(100dvh - 86px);min-height:740px;position:sticky;top:74px;display:flex;flex-direction:column;overflow:hidden}
++.fpb-library-head,.fpb-summary-head{padding:16px;border-bottom:1px solid var(--fpb-line-soft)}
++.fpb-library-head-top,.fpb-summary-head-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
++.fpb-library h2,.fpb-summary h2{font-size:14px;margin:0}
++.fpb-library p,.fpb-summary p{font-size:10px;color:var(--fpb-muted);margin:4px 0 0;line-height:1.45}
++.fpb-counter{border:1px solid #20536d;background:#071925;color:#b4e6f4;border-radius:999px;padding:5px 8px;font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
++.fpb-search{display:grid;grid-template-columns:1fr 116px;gap:7px;margin-top:12px}
++.fpb-search input,.fpb-search select{height:38px;font-size:10px}
++.fpb-action-list{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:7px;scrollbar-color:#1e526b #06111b}
++.fpb-action{display:grid;grid-template-columns:31px minmax(0,1fr);gap:9px;align-items:center;padding:9px;border:1px solid #122c3d;border-radius:9px;background:#06131f;cursor:grab;user-select:none;transition:.14s ease}
++.fpb-action:hover{border-color:#20627d;background:#071a28}.fpb-action.selected{border-color:#31b7d7;box-shadow:inset 0 0 0 1px rgba(66,217,245,.22);background:#082130}.fpb-action.mapped .fpb-action-icon{background:#153b52;color:#85e7f7}
++.fpb-action-icon{display:grid;place-items:center;width:31px;height:31px;border-radius:8px;background:#0c2a41;color:#62bfe1;font:800 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace}
++.fpb-action strong{display:block;font-size:11px;color:#d5e4ed}.fpb-action small{display:block;margin-top:4px;color:#668397;font:500 8px/1.3 ui-monospace,SFMono-Regular,Consolas,monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
++.fpb-library-footer{margin-top:auto;padding:10px;border-top:1px solid var(--fpb-line-soft)}
++.fpb-mapper{min-height:740px;padding:14px}
++.fpb-selection-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:1px solid var(--fpb-line-soft);padding:0 0 11px;margin-bottom:11px}
++.fpb-selection-bar span{font-size:10px;color:#9ab3c3}.fpb-selection-bar strong{color:#dcecf6}
++.fpb-stick-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
++.fpb-stick{overflow:hidden;border:1px solid #132e40;border-radius:13px;background:#040f18;min-width:0}
++.fpb-stick-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 13px;border-bottom:1px solid #12293a;background:linear-gradient(90deg,#071522,rgba(10,42,58,.64))}
++.fpb-stick-title{min-width:0}.fpb-stick-head strong{display:block;font-size:10px;color:#d6e7f1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fpb-stick-head small{display:block;margin-top:4px;color:#63879a;font:600 7px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.04em;text-transform:uppercase}.fpb-stick-head>span{flex:0 0 auto;padding:6px 8px;border:1px solid rgba(66,217,245,.2);border-radius:999px;background:rgba(66,217,245,.055);font:700 9px/1 ui-monospace,SFMono-Regular,Consolas,monospace;color:#4bd8ef}
++.fpb-stick-canvas{--fpb-button-zone:430px;position:relative;min-height:620px;padding:18px 13px 12px;overflow:hidden;background-image:radial-gradient(circle at 50% 34%,rgba(66,217,245,.055),transparent 32%),linear-gradient(rgba(35,84,111,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(35,84,111,.12) 1px,transparent 1px);background-size:auto,25px 25px,25px 25px}
++.fpb-stick-canvas:before{content:"";position:absolute;left:50%;top:20px;bottom:12px;border-left:1px dashed rgba(66,217,245,.12);pointer-events:none}
++.fpb-stick-silhouette{--art-accent:#42d9f5;--art-accent-rgb:66,217,245;position:absolute;z-index:1;left:50%;top:48px;width:clamp(148px,34%,218px);height:min(calc(var(--fpb-button-zone) - 24px),560px);transform:translateX(-50%);pointer-events:none;opacity:.98;filter:drop-shadow(0 18px 22px rgba(0,0,0,.32))}
++.fpb-stick-silhouette svg{display:block;width:100%;height:100%;overflow:visible}.fpb-stick-silhouette.is-left svg{transform:scaleX(-1)}
++.fpb-stick-silhouette.art-t16{--art-accent:#f59e0b;--art-accent-rgb:245,158,11}.fpb-stick-silhouette.art-vkb{--art-accent:#84cc16;--art-accent-rgb:132,204,22}.fpb-stick-silhouette.art-virpil{--art-accent:#a78bfa;--art-accent-rgb:167,139,250}.fpb-stick-silhouette.art-warthog{--art-accent:#94a3b8;--art-accent-rgb:148,163,184}.fpb-stick-silhouette.art-x56{--art-accent:#38bdf8;--art-accent-rgb:56,189,248}.fpb-stick-silhouette.art-throttle{--art-accent:#eab308;--art-accent-rgb:234,179,8}
++.fpb-device-art .art-shadow{fill:rgba(0,0,0,.36)}.fpb-device-art .art-body{fill:url(#fpb-art-body);stroke:#28677d;stroke-width:2}.fpb-device-art .art-body-dark{fill:#06131d;stroke:#24586b;stroke-width:2}.fpb-device-art .art-panel{fill:rgba(8,27,40,.94);stroke:rgba(88,180,207,.5);stroke-width:1.5}.fpb-device-art .art-detail{fill:none;stroke:#316b7d;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.fpb-device-art .art-detail-soft{fill:none;stroke:rgba(67,130,151,.55);stroke-width:1;stroke-dasharray:4 5}.fpb-device-art .art-accent{fill:var(--art-accent);stroke:var(--art-accent);filter:drop-shadow(0 0 7px rgba(var(--art-accent-rgb),.55))}.fpb-device-art .art-accent-line{fill:none;stroke:var(--art-accent);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 4px rgba(var(--art-accent-rgb),.36))}.fpb-device-art .art-button{fill:#071824;stroke:rgba(var(--art-accent-rgb),.72);stroke-width:1.4}.fpb-device-art .art-metal{fill:url(#fpb-art-metal);stroke:#526d7b;stroke-width:1.7}
++.fpb-control-layer{position:relative;z-index:2;display:grid;grid-template-columns:minmax(70px,1fr) minmax(70px,1fr);column-gap:clamp(108px,25%,180px);row-gap:7px;align-content:start;min-height:var(--fpb-button-zone)}
++.fpb-control{display:flex;align-items:center;justify-content:center;min-height:31px;border:1px solid #1f6079;border-radius:999px;background:#061a27;color:#a8d2df;font:700 8px/1 ui-monospace,SFMono-Regular,Consolas,monospace;cursor:pointer;transition:.12s ease;position:relative;overflow:hidden}
++.fpb-control:hover,.fpb-control.dragover{border-color:#4bdef5;background:#0a2a3b;box-shadow:0 0 0 3px rgba(66,217,245,.08)}
++.fpb-control.assigned{border-color:#258eb1;background:linear-gradient(135deg,#0c5f85,#177ad1);color:white;box-shadow:0 0 12px rgba(29,146,207,.2)}
++.fpb-control.shared{border-color:#e94d72;background:linear-gradient(135deg,#9c173d,#d62155)}
++.fpb-control.axis{border-radius:7px;border-color:#6e58a0;background:#171328;color:#cbbcf6;min-height:34px}.fpb-control.axis.assigned{border-color:#8b69d3;background:linear-gradient(135deg,#4c2b88,#6641a8)}
++.fpb-control.hat{border-color:#7d671d;background:#211d0d;color:#f0d782}.fpb-control.hat.assigned{border-color:#bc8f15;background:linear-gradient(135deg,#6b4c00,#9a6c00)}
++.fpb-control em{display:none}.fpb-control.assigned em{display:block;position:absolute;left:5px;right:5px;bottom:2px;font:500 6px/1 ui-monospace,SFMono-Regular,Consolas,monospace;opacity:.76;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
++.fpb-axis-row{position:relative;z-index:3;display:grid;grid-template-columns:repeat(auto-fit,minmax(68px,1fr));gap:7px;margin-top:10px;padding-top:10px;border-top:1px solid rgba(35,84,111,.22)}
++.fpb-legend{display:flex;gap:9px;align-items:center;padding:8px 10px;color:#6f899b;font-size:8px}.fpb-legend i{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px}.fpb-legend .b{background:#3cdcf4}.fpb-legend .h{background:#d2a927}.fpb-legend .a{background:#8f69db}.fpb-legend .s{background:#ef466f}
++.fpb-stats{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:11px}.fpb-stat{padding:10px;border:1px solid #102a3a;border-radius:9px;background:#05121c}.fpb-stat strong{display:block;font-size:22px;color:#e8f4fa}.fpb-stat span{display:block;margin-top:2px;color:#6f899b;font:700 8px/1.2 ui-monospace,SFMono-Regular,Consolas,monospace;text-transform:uppercase;letter-spacing:.08em}
++.fpb-summary-list{padding:10px;overflow:auto;display:flex;flex-direction:column;gap:7px;scrollbar-color:#1e526b #06111b}
++.fpb-map-row{position:relative;padding:9px 32px 9px 9px;border:1px solid #122d3f;border-radius:9px;background:#06131f}.fpb-map-row.shared{border-color:#5e2c3b}.fpb-map-row strong{display:block;color:#d6e4ed;font-size:10px;line-height:1.35}.fpb-map-row small{display:block;margin-top:4px;color:#6c8da1;font:500 8px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;overflow-wrap:anywhere}.fpb-map-remove{position:absolute;right:7px;top:7px;width:22px;height:22px;border:1px solid #552b39;border-radius:7px;background:#151019;color:#e98da3;cursor:pointer}
++.fpb-empty{padding:20px;text-align:center;color:#6e899a;font-size:10px;line-height:1.5}
++.fpb-guide{margin-top:16px;overflow:hidden}.fpb-guide summary{cursor:pointer;padding:16px 18px;font-weight:700;font-size:13px;color:#d8e7f1;list-style:none}.fpb-guide summary::-webkit-details-marker{display:none}.fpb-guide summary:before{content:"▸";margin-right:8px;color:#68ddef}.fpb-guide[open] summary:before{content:"▾"}.fpb-guide-body{padding:0 18px 18px;color:#91aabb;font-size:11px;line-height:1.7}.fpb-guide-body code{background:#04101a;border:1px solid #15364a;border-radius:5px;padding:2px 5px;color:#b9e6f1}
++.fpb-toast{position:fixed;right:18px;bottom:18px;z-index:10000;max-width:390px;padding:12px 14px;border:1px solid #245b74;border-radius:10px;background:#071722;color:#d9edf5;box-shadow:0 18px 45px rgba(0,0,0,.45);font-size:11px;opacity:0;transform:translateY(12px);pointer-events:none;transition:.2s ease}.fpb-toast.show{opacity:1;transform:none}
++@media(max-width:1250px){.fpb-workspace{grid-template-columns:270px minmax(500px,1fr)}.fpb-summary{position:relative;top:auto;height:auto;min-height:0;grid-column:1/-1}.fpb-summary-list{max-height:360px}.fpb-library{height:calc(100dvh - 86px);top:74px}}
++@media(max-width:920px){.fpb-top-grid,.fpb-workspace{grid-template-columns:1fr}.fpb-library,.fpb-summary{position:relative;top:auto;height:auto;min-height:0}.fpb-action-list{max-height:420px}.fpb-stick-grid{grid-template-columns:1fr}.fpb-hero{align-items:flex-start;flex-direction:column}.fpb-chip-row{justify-content:flex-start}.fpb-fields{grid-template-columns:1fr 1fr}.fpb-device-row{grid-template-columns:1fr}}
++@media(max-width:600px){.fpb-shell{width:calc(100% - 16px)}.fpb-hero,.fpb-card{padding:15px}.fpb-fields{grid-template-columns:1fr}.fpb-search{grid-template-columns:1fr}.fpb-stick-canvas{min-height:500px}.fpb-control-layer{gap:6px 92px}.fpb-input-tester.active{grid-template-columns:1fr}.fpb-selection-bar{align-items:flex-start;flex-direction:column}}
++
++
++/* NX-13 hub identity — carries the control-engineering personality into the directory. */
++#hub-view .flight-profile-card{--card-accent:#38bdf8;--card-accent2:#22d3ee;--card-rgb:56,189,248;--card-rgb2:34,211,238;--module-accent:#38bdf8;--module-rgb:56,189,248}
++#hub-view .flight-profile-card .nexus-tool-visual{background:radial-gradient(circle at 50% 45%,rgba(34,211,238,.18),transparent 34%),linear-gradient(145deg,rgba(56,189,248,.08),rgba(3,10,19,.82))!important}
++#hub-view .flight-profile-card .flight-card-orbit{transform-origin:center;animation:fpb-card-orbit 13s linear infinite}
++#hub-view .flight-profile-card .flight-card-scan{animation:fpb-card-scan 3.8s ease-in-out infinite}
++#hub-view .flight-profile-card:hover .flight-card-stick,#hub-view .flight-profile-card:focus-visible .flight-card-stick{filter:drop-shadow(0 0 7px rgba(56,189,248,.62))}
++@keyframes fpb-card-orbit{to{transform:rotate(360deg)}}
++@keyframes fpb-card-scan{0%,100%{opacity:.22;transform:translateX(-12px)}50%{opacity:.82;transform:translateX(12px)}}
++@media(prefers-reduced-motion:reduce){#hub-view .flight-profile-card .flight-card-orbit,#hub-view .flight-profile-card .flight-card-scan{animation:none}}
++
++@media(min-width:1600px){.fpb-shell{width:calc(100vw - 28px)}.fpb-workspace{gap:18px}.fpb-top-grid{gap:18px}.fpb-mapper{padding:16px}.fpb-stick-grid{gap:14px}.fpb-stick-head{padding:13px 15px}.fpb-stick-canvas{padding-left:15px;padding-right:15px}}
++@media(min-width:2100px){.fpb-workspace{grid-template-columns:380px minmax(980px,1fr) 420px}.fpb-stick-silhouette{width:230px}.fpb-control-layer{column-gap:190px}}
++@media(max-width:920px){.fpb-stick-silhouette{width:clamp(148px,30%,205px)}.fpb-control-layer{column-gap:clamp(100px,27%,170px)}}
++@media(max-width:600px){.fpb-stick-silhouette{width:140px}.fpb-control-layer{column-gap:92px}.fpb-stick-canvas{min-height:590px}}
++
++/* V3 interaction pass — reliable native drag/drop and shareable image export. */
++.fpb-btn.image{border-color:#6c4ea3;background:linear-gradient(135deg,rgba(87,52,142,.92),rgba(34,77,124,.9));color:#efe9ff}
++.fpb-btn.image:hover{border-color:#a887ea;background:linear-gradient(135deg,#6943a8,#245f96)}
++.fpb-btn:disabled{cursor:wait;opacity:.62;transform:none}
++.fpb-drag-hint{display:block;margin-top:5px;color:#638395;font:600 8px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
++.fpb-action{grid-template-columns:12px 31px minmax(0,1fr)}
++.fpb-action-grip,.fpb-map-grip{color:#42677a;font:800 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:-4px;cursor:grab;user-select:none}
++.fpb-action:active,.fpb-map-row:active,.fpb-control-map:active{cursor:grabbing}
++.fpb-action.dragging,.fpb-map-row.dragging,.fpb-control-map.dragging{opacity:.34;filter:saturate(.65)}
++.fpb-drag-active .fpb-control{border-style:dashed;box-shadow:inset 0 0 0 1px rgba(66,217,245,.045)}
++.fpb-drag-active .fpb-control:hover,.fpb-control.dragover{border-style:solid;border-color:#62e8fb;background:#0b3043;box-shadow:0 0 0 4px rgba(66,217,245,.11),0 0 24px rgba(49,197,225,.16);transform:translateY(-1px)}
++.fpb-control.copy-target{border-color:#b691f4!important;box-shadow:0 0 0 4px rgba(167,139,250,.13),0 0 24px rgba(167,139,250,.16)!important}
++.fpb-control.copy-target:after{content:"COPY";position:absolute;right:4px;top:3px;padding:2px 4px;border-radius:4px;background:#5b3d91;color:#efe8ff;font:800 5px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
++.fpb-control.assigned{min-height:42px;padding:4px 5px 3px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:2px}
++.fpb-control-code{display:block;line-height:1;pointer-events:none}
++.fpb-control-mappings{display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;width:100%;overflow:hidden}
++.fpb-control-map{display:block;min-width:0;max-width:100%;padding:2px 4px;border:1px solid rgba(255,255,255,.18);border-radius:4px;background:rgba(2,11,18,.28);color:#eefaff;font:600 5.5px/1 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab}
++.fpb-control.shared .fpb-control-map{max-width:50%}
++.fpb-control-map:hover{border-color:rgba(255,255,255,.5);background:rgba(2,11,18,.48)}
++.fpb-map-row{padding-left:27px;cursor:grab;transition:.14s ease}
++.fpb-map-row:hover{border-color:#26536b;background:#071a27;transform:translateX(1px)}
++.fpb-map-row .fpb-map-grip{position:absolute;left:9px;top:12px}
++.fpb-map-row strong,.fpb-map-row small{pointer-events:none}
++.fpb-drag-ghost{position:fixed;left:-1000px;top:-1000px;z-index:100000;display:flex;align-items:center;gap:9px;max-width:310px;padding:9px 12px;border:1px solid #55dff5;border-radius:9px;background:#071b28;color:#e8f9ff;box-shadow:0 14px 34px rgba(0,0,0,.5);font:700 11px/1 system-ui,-apple-system,Segoe UI,sans-serif;pointer-events:none}
++.fpb-drag-ghost span{padding:4px 6px;border-radius:5px;background:#0c526b;color:#76ecfa;font:800 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
++.fpb-drag-ghost strong{min-width:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
++@media(max-width:600px){.fpb-drag-hint{max-width:310px}.fpb-control.assigned{min-height:45px}.fpb-control-map{font-size:5px}}
++
++</style>
+ </head>
+ <body>
+ <section class="app-view nexus-shell" id="hub-view">
+@@ -8568,7 +8701,7 @@
+ <img alt="Celestial Alliance logo" class="nexus-mini-logo" data-nexus-logo="" decoding="async" loading="eager" fetchpriority="low"/>
+ <div class="nexus-mini-copy">
+ <div class="nexus-mini-kicker">Celestial Alliance</div>
+-<div class="nexus-mini-title">Celestial Nexus</div><div class="nexus-mini-meta"><span>v1.4.3</span><span>12 modules</span></div>
++<div class="nexus-mini-title">Celestial Nexus</div><div class="nexus-mini-meta"><span>v1.4.3</span><span>13 modules</span></div>
+ </div>
+ </div>
+ <div class="nexus-topbar-actions">
+@@ -8603,7 +8736,7 @@
+ <span class="nexus-overview-live"><i></i> Operational</span>
+ </div>
+ <div class="nexus-overview-metrics">
+-<div class="nexus-overview-metric"><strong>12</strong><span>Active modules</span></div>
++<div class="nexus-overview-metric"><strong>13</strong><span>Active modules</span></div>
+ <div class="nexus-overview-metric"><strong>PWA</strong><span>Installable toolkit</span></div>
+ <div class="nexus-overview-metric"><strong>Local</strong><span>Browser-first data</span></div>
+ </div>
+@@ -8930,6 +9063,20 @@
+ 
+ 
+ 
++<button aria-label="Open Flight Profile Builder" class="nexus-tool-card flight-profile-card" data-module-category="Configuration" onclick="showAppView('flight-profile-view')" type="button"><span aria-hidden="true" class="nexus-module-code">NX-13</span>
++<div class="nexus-tool-icon"><svg aria-label="Flight controls symbol" role="img" viewBox="0 0 24 24"><path d="M12 3v10M8.5 6.5h7M9.2 13l-2.4 7h10.4l-2.4-7M5 10.5H3m18 0h-2"></path><path d="M10 3.5 12 2l2 1.5"></path><circle cx="12" cy="7" r="1.7"></circle><path d="M7 20h10"></path></svg></div>
++<div class="nexus-tool-overline">Control systems engineering</div>
++<h2 class="nexus-tool-title">Flight Profile Builder</h2>
++<p class="nexus-tool-description">Build HOSAS or HOTAS layouts on interactive hardware diagrams, preserve imported bindings, and export a Star Citizen-ready XML profile.</p>
++<div aria-hidden="true" class="nexus-tool-visual"><svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 520 170">
++<path class="visual-grid" d="M0 42.5H520M0 85H520M0 127.5H520M104 0V170M208 0V170M312 0V170M416 0V170"></path>
++<circle class="visual-line-soft flight-card-orbit" cx="260" cy="84" r="48" stroke-dasharray="8 10"></circle><circle class="visual-line-soft" cx="260" cy="84" r="28"></circle><path class="visual-line" d="M260 24v20m0 80v20M200 84h20m80 0h20"></path><circle class="visual-glow" cx="260" cy="84" r="4"></circle>
++<g class="flight-card-stick"><path class="visual-fill" d="M77 137h112l-13-24h-86z"></path><path class="visual-fill" d="M116 114c-7-19-8-49-3-72 3-14 13-22 27-20 13 2 21 13 19 27l-3 20 12 11-10 13-5 21z"></path><path class="visual-line" d="M126 25l-4-13 15-5 12 9-5 13M116 69l-13 10 12 8M133 113v24"></path><circle class="visual-glow" cx="143" cy="37" r="4"></circle><circle class="visual-node" cx="154" cy="56" r="4"></circle></g>
++<g class="flight-card-stick"><path class="visual-fill" d="M331 137h112l-13-24h-86z"></path><path class="visual-fill" d="M370 114c-7-19-8-49-3-72 3-14 13-22 27-20 13 2 21 13 19 27l-3 20 12 11-10 13-5 21z"></path><path class="visual-line" d="M380 25l-4-13 15-5 12 9-5 13M370 69l-13 10 12 8M387 113v24"></path><circle class="visual-glow" cx="397" cy="37" r="4"></circle><circle class="visual-node" cx="408" cy="56" r="4"></circle></g>
++<path class="visual-line-soft" d="M190 120c24-12 37-20 51-32m38 0c15 12 28 20 52 32"></path><path class="visual-line flight-card-scan" d="M228 151h64"></path><path class="visual-line-soft" d="M24 24h72M24 34h43m357-10h72m-43 10h43"></path>
++</svg></div>
++<div class="nexus-tool-meta"><span class="nexus-tool-status">HOSAS · HOTAS · XML round-trip</span><span aria-hidden="true" class="nexus-tool-arrow">→</span></div>
++</button>
+ </div><div aria-label="Future module capacity" class="nexus-expansion-bay">
+ <div aria-hidden="true" class="nexus-expansion-symbol">＋</div>
+ <div><strong>Expansion bay ready</strong><p>New modules can be added without redesigning the dashboard—the directory automatically adapts to available screen space.</p></div>
+@@ -8962,6 +9109,71 @@
+ <span>Unofficial Star Citizen fan tool · Community data may change with game patches</span>
+ </footer>
+ </section>
++<section class="app-view nexus-shell" hidden id="flight-profile-view">
++<header class="nexus-topbar">
++  <div class="nexus-topbar-brand"><img alt="Celestial Alliance logo" class="nexus-mini-logo" data-nexus-logo decoding="async" loading="lazy"/><div class="nexus-mini-copy"><div class="nexus-mini-kicker">Celestial Alliance</div><div class="nexus-mini-title">Flight Profile Builder</div><div class="nexus-mini-meta"><span>NX-13</span><span>Local-first</span></div></div></div>
++  <div class="nexus-topbar-actions"><span class="created-by">Control systems lab</span><button class="btn btn-ghost" onclick="showAppView('hub-view')" type="button">⌂ <span class="nexus-hide-small">Hub</span></button></div>
++</header>
++<main class="fpb-shell">
++  <section class="fpb-hero fpb-panel">
++    <div><div class="fpb-eyebrow">NX-13 · Flight control engineering</div><h1>Flight Profile Builder</h1><p>Select your sticks, map Star Citizen actions onto interactive controls, import an existing profile for patch-safe editing, and export a ready-to-install XML layout. Everything stays in the member's browser.</p></div>
++    <div class="fpb-chip-row"><span class="fpb-chip">Drag + drop</span><span class="fpb-chip">XML round-trip</span><span class="fpb-chip">Autosaves locally</span></div>
++  </section>
++
++  <section class="fpb-top-grid">
++    <article class="fpb-panel fpb-card">
++      <div class="fpb-card-head"><div><h2>Profile configuration</h2><p>Name the profile and choose a starting layout.</p></div><span class="fpb-badge" id="fpb-draft-state">Draft ready</span></div>
++      <div class="fpb-fields">
++        <div class="fpb-field"><label for="fpb-profile-name">Profile name</label><input id="fpb-profile-name" maxlength="48" value="Celestial-HOSAS"/></div>
++        <div class="fpb-field"><label for="fpb-target-build">Target build</label><input id="fpb-target-build" maxlength="24" value="Alpha 4.8.x"/></div>
++        <div class="fpb-field"><label for="fpb-layout-preset">Layout</label><select id="fpb-layout-preset"><option value="custom">Custom / empty</option><option value="t16k2">Official T16K2 starter</option></select></div>
++      </div>
++      <div class="fpb-actions">
++        <button class="fpb-btn primary" id="fpb-import-xml-btn" type="button">↥ Import SC XML</button>
++        <button class="fpb-btn" id="fpb-export-xml-btn" type="button">↧ Export SC XML</button>
++        <button class="fpb-btn image" id="fpb-export-image-btn" type="button" title="Download a shareable PNG overview of this profile">▣ Export profile image</button>
++        <button class="fpb-btn" id="fpb-import-project-btn" type="button">Import project</button>
++        <button class="fpb-btn" id="fpb-export-project-btn" type="button">Backup project</button>
++        <button class="fpb-btn danger" id="fpb-reset-btn" type="button">Reset</button>
++        <input id="fpb-import-xml" type="file" accept=".xml,text/xml,application/xml" hidden/>
++        <input id="fpb-import-project" type="file" accept=".json,application/json" hidden/>
++      </div>
++    </article>
++
++    <article class="fpb-panel fpb-card">
++      <div class="fpb-card-head"><div><h2>Device order</h2><p>Match each physical device to the joystick slot Star Citizen sees.</p></div><button class="fpb-btn" id="fpb-test-inputs" type="button">Test inputs</button></div>
++      <div class="fpb-device-row">
++        <div class="fpb-device-select"><strong>Primary device</strong><div class="fpb-device-select-grid"><div class="fpb-field"><select aria-label="Primary device" id="fpb-device-1"></select></div><div class="fpb-field"><select aria-label="Primary joystick slot" id="fpb-slot-1"><option value="1">js1</option><option value="2">js2</option></select></div></div></div>
++        <div class="fpb-device-select"><strong>Secondary device</strong><div class="fpb-device-select-grid"><div class="fpb-field"><select aria-label="Secondary device" id="fpb-device-2"></select></div><div class="fpb-field"><select aria-label="Secondary joystick slot" id="fpb-slot-2"><option value="2">js2</option><option value="1">js1</option></select></div></div></div>
++      </div>
++      <div class="fpb-input-tester" id="fpb-input-tester"><strong>Gamepad API monitor</strong><span id="fpb-input-status">Press a button or move an axis. Browser numbering is best-effort and should be verified in game.</span><button class="fpb-btn small" id="fpb-stop-inputs" type="button">Stop</button></div>
++      <div class="fpb-note">The diagrams are mapping surfaces, not firmware definitions. Button numbering can vary by firmware mode and Windows device order. Importing a known-good XML first is the safest patch-to-patch workflow.</div>
++    </article>
++  </section>
++
++  <section class="fpb-workspace">
++    <aside class="fpb-panel fpb-library">
++      <div class="fpb-library-head"><div class="fpb-library-head-top"><div><h2>Action library</h2><p>Drag an action onto any control. Drag an assigned action again to move it.</p></div><span class="fpb-counter" id="fpb-action-count">0/0</span></div><div class="fpb-search"><input id="fpb-action-search" type="search" placeholder="Search actions or IDs…"/><select id="fpb-category-filter"><option value="all">All categories</option></select></div></div>
++      <div class="fpb-action-list" id="fpb-action-list"></div>
++      <div class="fpb-library-footer"><button class="fpb-btn" id="fpb-add-action" type="button">＋ Add a custom / patch action</button></div>
++    </aside>
++
++    <section class="fpb-panel fpb-mapper">
++      <div class="fpb-selection-bar"><div><span id="fpb-selected-copy">Selected: <strong>none</strong> · choose an action</span><small class="fpb-drag-hint">Drop to assign · drag a mapped label to move · hold Alt/Option while dropping to copy</small></div><div class="fpb-actions" style="margin:0"><button class="fpb-btn small" id="fpb-clear-selection" type="button">Clear selection</button><button class="fpb-btn small danger" id="fpb-clear-mappings" type="button">Clear mappings</button></div></div>
++      <div class="fpb-stick-grid" id="fpb-stick-grid"></div>
++    </section>
++
++    <aside class="fpb-panel fpb-summary">
++      <div class="fpb-summary-head"><div class="fpb-summary-head-top"><div><h2>Mapping summary</h2><p>Review assignments and shared-control conflicts.</p></div></div><div class="fpb-stats"><div class="fpb-stat"><strong id="fpb-stat-controls">0</strong><span>Controls assigned</span></div><div class="fpb-stat"><strong id="fpb-stat-mappings">0</strong><span>Total mappings</span></div><div class="fpb-stat"><strong id="fpb-stat-shared">0</strong><span>Shared controls</span></div><div class="fpb-stat"><strong id="fpb-stat-inputs">0</strong><span>Visible inputs</span></div></div></div>
++      <div class="fpb-summary-list" id="fpb-summary-list"></div>
++    </aside>
++  </section>
++
++  <details class="fpb-panel fpb-guide"><summary>Export and installation guide</summary><div class="fpb-guide-body"><p><strong>Recommended workflow:</strong> export a small current-patch profile from Star Citizen, import it here, make changes, and export it again. This preserves unknown actions, tuning nodes, modifiers, and patch-specific metadata.</p><p>Place the exported file in <code>StarCitizen\LIVE\USER\Client\0\Controls\Mappings</code>, then select it from Options → Keybindings → Advanced Controls Customization → Control Profiles. You can also use <code>pp_RebindKeys &lt;filename&gt;</code> from the in-game console.</p><p>Keep a project JSON backup as well as the game XML. Project files retain the selected device diagrams and builder metadata.</p><p><strong>Sharing:</strong> Export profile image creates a polished PNG reference sheet with both devices, every assigned input, shared-control warnings, and the action IDs needed for troubleshooting.</p></div></details>
++</main>
++<div class="fpb-toast" id="fpb-toast" role="status" aria-live="polite"></div>
++</section>
++
+ <section class="app-view nexus-shell" hidden="" id="commodity-view">
+ <header class="nexus-topbar">
+ <div class="nexus-topbar-brand">
+@@ -19597,7 +19809,7 @@
+ function showAppView(viewId, options = {}) {
+   const target = document.getElementById(viewId) || document.getElementById('hub-view');
+   document.querySelectorAll('.app-view').forEach(view => { view.hidden = view !== target; });
+-  const hashMap = {'hub-view':'hub', 'planner-view':'planner', 'item-finder-view':'items', 'blueprint-finder-view':'blueprints', 'loadout-view':'loadout', 'health-view':'status', 'studio-view':'studio', 'wikelo-view':'wikelo', 'language-pack-view':'langpack', 'commodity-view':'trade', 'mining-view':'mining', 'mission-finder-view':'missions', 'cargo-routing-view':'cargo'};
++  const hashMap = {'hub-view':'hub', 'planner-view':'planner', 'item-finder-view':'items', 'blueprint-finder-view':'blueprints', 'loadout-view':'loadout', 'health-view':'status', 'studio-view':'studio', 'wikelo-view':'wikelo', 'language-pack-view':'langpack', 'commodity-view':'trade', 'mining-view':'mining', 'mission-finder-view':'missions', 'cargo-routing-view':'cargo', 'flight-profile-view':'flight'};
+   if (!options.fromHash) {
+     const nextHash = '#' + (hashMap[target.id] || 'hub');
+     if (location.hash !== nextHash) history.pushState({view: target.id}, '', nextHash);
+@@ -19626,7 +19838,9 @@
+                       ? 'Celestial Nexus — Contract Finder'
+                       : target.id === 'cargo-routing-view'
+                         ? 'Celestial Nexus — Cargo Hauling Routing'
+-                        : 'Celestial Nexus — Alliance Toolkit';
++                        : target.id === 'flight-profile-view'
++                          ? 'Celestial Nexus — Flight Profile Builder'
++                          : 'Celestial Nexus — Alliance Toolkit';
+   window.scrollTo({top: 0, behavior: options.instant ? 'auto' : 'smooth'});
+   try { window.dispatchEvent(new CustomEvent('nexus:viewchange', { detail: { viewId: target.id } })); } catch (_) {}
+   if (target.id === 'planner-view') nexusInitializeRoster();
+@@ -19647,12 +19861,13 @@
+   if (target.id === 'mining-view' && typeof nexusInitializeMining === 'function') nexusInitializeMining();
+   if (target.id === 'mission-finder-view' && typeof nexusInitializeMissionFinder === 'function') nexusInitializeMissionFinder();
+   if (target.id === 'cargo-routing-view' && typeof nexusInitializeCargoRouting === 'function') nexusInitializeCargoRouting();
++  if (target.id === 'flight-profile-view' && typeof nexusInitializeFlightProfileBuilder === 'function') nexusInitializeFlightProfileBuilder();
+   if (target.id === 'hub-view') nexusInitializeServerStatusPreview();
+ }
+ 
+ function nexusRouteFromHash() {
+   const route = (location.hash || '#hub').slice(1).toLowerCase();
+-  const view = route === 'planner' ? 'planner-view' : route === 'items' ? 'item-finder-view' : (route === 'blueprints' || route === 'blueprint' || route === 'fabrication') ? 'blueprint-finder-view' : route === 'loadout' ? 'loadout-view' : (route === 'status' || route === 'health') ? 'health-view' : (route === 'studio' || route === 'creative') ? 'studio-view' : route === 'wikelo' ? 'wikelo-view' : (route === 'langpack' || route === 'language' || route === 'strings') ? 'language-pack-view' : (route === 'trade' || route === 'commodity' || route === 'commodities') ? 'commodity-view' : (route === 'mining' || route === 'mine' || route === 'ores' || route === 'resources') ? 'mining-view' : (route === 'missions' || route === 'mission' || route === 'contracts') ? 'mission-finder-view' : (route === 'cargo' || route === 'hauling' || route === 'routing' || route === 'cargo-routing') ? 'cargo-routing-view' : 'hub-view';
++  const view = route === 'planner' ? 'planner-view' : route === 'items' ? 'item-finder-view' : (route === 'blueprints' || route === 'blueprint' || route === 'fabrication') ? 'blueprint-finder-view' : route === 'loadout' ? 'loadout-view' : (route === 'status' || route === 'health') ? 'health-view' : (route === 'studio' || route === 'creative') ? 'studio-view' : route === 'wikelo' ? 'wikelo-view' : (route === 'langpack' || route === 'language' || route === 'strings') ? 'language-pack-view' : (route === 'trade' || route === 'commodity' || route === 'commodities') ? 'commodity-view' : (route === 'mining' || route === 'mine' || route === 'ores' || route === 'resources') ? 'mining-view' : (route === 'missions' || route === 'mission' || route === 'contracts') ? 'mission-finder-view' : (route === 'cargo' || route === 'hauling' || route === 'routing' || route === 'cargo-routing') ? 'cargo-routing-view' : (route === 'flight' || route === 'controls' || route === 'joystick' || route === 'hotas' || route === 'hosas') ? 'flight-profile-view' : 'hub-view';
+   showAppView(view, {fromHash:true, instant:true});
+ }
+ 
+@@ -50552,6 +50767,1492 @@
+ })();
+ </script>
+ 
++<script id="nexus-flight-profile-builder-script">
++(() => {
++  'use strict';
++
++  const STORAGE_KEY = 'celestialNexusFlightProfileBuilderV1';
++  const PROJECT_VERSION = 1;
++  const DRAG_MIME = 'application/x-celestial-flight-profile';
++
++  const DEVICES = [
++    {id:'t16-left', name:'Thrustmaster T.16000M — Left', product:'T.16000M {B10A044F-0000-0000-0000-504944564944}', buttons:16, hats:1, axes:['x','y','rotz','slider1']},
++    {id:'t16-right', name:'Thrustmaster T.16000M — Right', product:'T.16000M {B10A044F-0000-0000-0000-504944564944}', buttons:16, hats:1, axes:['x','y','rotz','slider1']},
++    {id:'vkb-left', name:'VKB Gladiator NXT EVO — Left', product:'VKBsim Gladiator EVO L', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1']},
++    {id:'vkb-right', name:'VKB Gladiator NXT EVO — Right', product:'VKBsim Gladiator EVO R', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1']},
++    {id:'virpil-left', name:'VIRPIL Constellation Alpha Prime — Left', product:'VPC Stick WarBRD', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1']},
++    {id:'virpil-right', name:'VIRPIL Constellation Alpha Prime — Right', product:'VPC Stick WarBRD', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1']},
++    {id:'warthog-stick', name:'Thrustmaster HOTAS Warthog Stick', product:'Joystick - HOTAS Warthog', buttons:19, hats:4, axes:['x','y']},
++    {id:'twcs-throttle', name:'Thrustmaster TWCS Throttle', product:'TWCS Throttle', buttons:14, hats:3, axes:['x','y','z','rotx','roty','slider1']},
++    {id:'x56-stick', name:'Logitech / Saitek X56 Stick', product:'Saitek Pro Flight X-56 Rhino Stick', buttons:34, hats:3, axes:['x','y','rotz']},
++    {id:'x56-throttle', name:'Logitech / Saitek X56 Throttle', product:'Saitek Pro Flight X-56 Rhino Throttle', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1','slider2']},
++    {id:'generic16', name:'Generic DirectInput device — 16 buttons', product:'Generic DirectInput Joystick', buttons:16, hats:1, axes:['x','y','z','rotx','roty','rotz','slider1']},
++    {id:'generic32', name:'Generic DirectInput device — 32 buttons', product:'Generic DirectInput Joystick', buttons:32, hats:4, axes:['x','y','z','rotx','roty','rotz','slider1','slider2']}
++  ];
++
++  const BASE_ACTIONS = [
++    {category:'Flight movement', map:'spaceship_movement', id:'v_pitch', label:'Pitch', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_yaw', label:'Yaw', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_roll', label:'Roll', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_lateral', label:'Strafe lateral', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_longitudinal', label:'Strafe longitudinal', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_vertical', label:'Strafe vertical', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_forward', label:'Strafe forward', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_back', label:'Strafe backward', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_left', label:'Strafe left', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_right', label:'Strafe right', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_up', label:'Strafe up', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_strafe_down', label:'Strafe down', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_accel_range_abs', label:'Acceleration limiter axis', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_speed_range_abs', label:'Speed limiter axis', kind:'axis'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_afterburner', label:'Boost / afterburner', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_ifcs_toggle_cruise_control', label:'Cruise control toggle', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_ifcs_toggle_speed_limiter', label:'Speed limiter toggle', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_ifcs_speed_limiter_reset_scm', label:'Reset speed limiter to SCM', kind:'button'},
++    {category:'Flight movement', map:'spaceship_movement', id:'v_ifcs_toggle_vector_decoupling', label:'Decoupled mode toggle', kind:'button'},
++
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_lock_index_1', label:'Lock target index 1', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_lock_index_2', label:'Lock target index 2', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_lock_index_3', label:'Lock target index 3', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_pin_index_1_hold', label:'Pin target index 1 (hold)', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_pin_index_2_hold', label:'Pin target index 2 (hold)', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting', id:'v_target_toggle_pin_index_3_hold', label:'Pin target index 3 (hold)', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting_advanced', id:'v_target_cycle_friendly_fwd', label:'Cycle friendly targets', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting_advanced', id:'v_target_cycle_hostile_fwd', label:'Cycle hostile targets', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting_advanced', id:'v_target_cycle_hostile_reset', label:'Reset hostile target cycle', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting_advanced', id:'v_target_cycle_in_view_fwd', label:'Cycle targets in view', kind:'button'},
++    {category:'Targeting', map:'spaceship_targeting_advanced', id:'v_target_cycle_in_view_reset', label:'Reset targets-in-view cycle', kind:'button'},
++
++    {category:'Weapons', map:'spaceship_weapons', id:'v_weapon_cycle_aimmode', label:'Cycle weapon aim mode', kind:'button'},
++    {category:'Missiles', map:'spaceship_missiles', id:'v_weapon_arm_missile', label:'Arm missile mode', kind:'button'},
++    {category:'Missiles', map:'spaceship_missiles', id:'v_weapon_launch_missile', label:'Launch missile', kind:'button'},
++
++    {category:'Defensive', map:'spaceship_defensive', id:'v_shield_raise_level_back', label:'Raise rear shield', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_shield_raise_level_forward', label:'Raise forward shield', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_shield_raise_level_left', label:'Raise left shield', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_shield_raise_level_right', label:'Raise right shield', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_shield_reset_level', label:'Reset shield levels', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_weapon_countermeasure_decoy_launch', label:'Launch decoy', kind:'button'},
++    {category:'Defensive', map:'spaceship_defensive', id:'v_weapon_countermeasure_noise_launch', label:'Launch noise', kind:'button'},
++
++    {category:'Power', map:'spaceship_power', id:'v_power_focus_shields', label:'Power focus: shields', kind:'button'},
++    {category:'Power', map:'spaceship_power', id:'v_power_focus_thrusters', label:'Power focus: thrusters', kind:'button'},
++    {category:'Power', map:'spaceship_power', id:'v_power_focus_weapons', label:'Power focus: weapons', kind:'button'},
++    {category:'Power', map:'spaceship_power', id:'v_power_reset_focus', label:'Reset power focus', kind:'button'},
++
++    {category:'Ground vehicle', map:'vehicle_driver', id:'v_boost', label:'Vehicle boost', kind:'button'},
++    {category:'Ground vehicle', map:'vehicle_driver', id:'v_brake', label:'Vehicle brake', kind:'button'},
++    {category:'Ground vehicle', map:'vehicle_driver', id:'v_mgv_switch_brake_on_idle', label:'Brake on idle toggle', kind:'button'},
++    {category:'Ground vehicle', map:'vehicle_driver', id:'v_move', label:'Vehicle movement axis', kind:'axis'},
++
++    {category:'Interaction', map:'player_choice', id:'pc_focus', label:'Interaction focus', kind:'button'},
++    {category:'Interaction', map:'player_choice', id:'pc_interaction_mode', label:'Interaction mode', kind:'button'},
++    {category:'Interaction', map:'player_choice', id:'pc_select', label:'Interaction select', kind:'button'}
++  ];
++
++  const T16K2_MAPPINGS = [
++    ['spaceship_movement','v_accel_range_abs','js1_slider1'],
++    ['spaceship_movement','v_afterburner','js2_button1'],
++    ['spaceship_movement','v_ifcs_speed_limiter_reset_scm','js2_hat1_left'],
++    ['spaceship_movement','v_ifcs_toggle_cruise_control','js2_hat1_up'],
++    ['spaceship_movement','v_ifcs_toggle_speed_limiter','js2_hat1_down'],
++    ['spaceship_movement','v_ifcs_toggle_vector_decoupling','js2_button2'],
++    ['spaceship_movement','v_speed_range_abs','js2_slider1'],
++    ['spaceship_movement','v_strafe_lateral','js2_x'],
++    ['spaceship_movement','v_strafe_longitudinal','js2_y'],
++    ['spaceship_movement','v_strafe_vertical','js2_rotz'],
++    ['spaceship_targeting','v_target_toggle_lock_index_1','js1_button5'],
++    ['spaceship_targeting','v_target_toggle_lock_index_2','js1_button6'],
++    ['spaceship_targeting','v_target_toggle_lock_index_3','js1_button7'],
++    ['spaceship_targeting','v_target_toggle_pin_index_1_hold','js1_button5'],
++    ['spaceship_targeting','v_target_toggle_pin_index_2_hold','js1_button6'],
++    ['spaceship_targeting','v_target_toggle_pin_index_3_hold','js1_button7'],
++    ['spaceship_targeting_advanced','v_target_cycle_friendly_fwd','js1_hat1_right'],
++    ['spaceship_targeting_advanced','v_target_cycle_hostile_fwd','js1_hat1_left'],
++    ['spaceship_targeting_advanced','v_target_cycle_hostile_reset','js1_hat1_down'],
++    ['spaceship_targeting_advanced','v_target_cycle_in_view_fwd','js1_hat1_up'],
++    ['spaceship_targeting_advanced','v_target_cycle_in_view_reset','js1_hat1_up'],
++    ['spaceship_weapons','v_weapon_cycle_aimmode','js1_button8'],
++    ['spaceship_missiles','v_weapon_arm_missile','js1_button3'],
++    ['spaceship_missiles','v_weapon_launch_missile','js1_button3'],
++    ['spaceship_defensive','v_shield_raise_level_back','js2_button15'],
++    ['spaceship_defensive','v_shield_raise_level_forward','js2_button12'],
++    ['spaceship_defensive','v_shield_raise_level_left','js2_button16'],
++    ['spaceship_defensive','v_shield_raise_level_right','js2_button14'],
++    ['spaceship_defensive','v_shield_reset_level','js2_button13'],
++    ['spaceship_defensive','v_weapon_countermeasure_decoy_launch','js2_button3'],
++    ['spaceship_defensive','v_weapon_countermeasure_noise_launch','js2_button4'],
++    ['spaceship_power','v_power_focus_shields','js2_button10'],
++    ['spaceship_power','v_power_focus_thrusters','js2_button6'],
++    ['spaceship_power','v_power_focus_weapons','js2_button8'],
++    ['spaceship_power','v_power_reset_focus','js2_button9'],
++    ['vehicle_driver','v_boost','js2_button1'],
++    ['vehicle_driver','v_mgv_switch_brake_on_idle','js2_button2'],
++    ['vehicle_driver','v_move','js2_y']
++  ];
++
++  const state = {
++    initialized:false,
++    profileName:'Celestial-HOSAS',
++    targetBuild:'Alpha 4.8.x',
++    device1:'t16-left',
++    device2:'t16-right',
++    slot1:1,
++    slot2:2,
++    selectedAction:'',
++    actions:BASE_ACTIONS.map(item => ({...item})),
++    mappings:[],
++    importedXml:'',
++    testerActive:false,
++    testerFrame:0,
++    testerPrevious:new Map(),
++    saveTimer:0,
++    toastTimer:0,
++    dragPayload:null,
++    dragGhost:null
++  };
++
++  const $ = id => document.getElementById(id);
++  const actionKey = (map,id) => `${map}::${id}`;
++  const selectedAction = () => state.actions.find(item => actionKey(item.map,item.id) === state.selectedAction) || null;
++  const deviceById = id => DEVICES.find(device => device.id === id) || DEVICES[0];
++  const slotOfInput = input => Number((/^js(\d+)_/.exec(input || '') || [])[1] || 0);
++  const isAxisInput = input => /_(?:x|y|z|rotx|roty|rotz|slider\d+)$/i.test(input || '');
++  const isHatInput = input => /_hat\d+_(?:up|down|left|right)$/i.test(input || '');
++  const cleanFilePart = value => String(value || 'Celestial-HOSAS').trim().replace(/[^a-z0-9._-]+/gi,'-').replace(/^-+|-+$/g,'').slice(0,64) || 'Celestial-HOSAS';
++  const titleize = value => String(value || '').replace(/^v_|^pc_/,'').replace(/_/g,' ').replace(/\b\w/g, letter => letter.toUpperCase());
++
++  function toast(message){
++    const node = $('fpb-toast');
++    if (!node) return;
++    node.textContent = message;
++    node.classList.add('show');
++    clearTimeout(state.toastTimer);
++    state.toastTimer = setTimeout(() => node.classList.remove('show'), 2800);
++  }
++
++  function saveSoon(){
++    clearTimeout(state.saveTimer);
++    state.saveTimer = setTimeout(saveState, 180);
++  }
++
++  function saveState(){
++    try {
++      const payload = {
++        version:PROJECT_VERSION,
++        profileName:state.profileName,
++        targetBuild:state.targetBuild,
++        device1:state.device1,
++        device2:state.device2,
++        slot1:state.slot1,
++        slot2:state.slot2,
++        actions:state.actions.filter(item => item.custom),
++        mappings:state.mappings,
++        importedXml:state.importedXml
++      };
++      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
++      const badge = $('fpb-draft-state');
++      if (badge) {
++        badge.textContent = 'Autosaved';
++        setTimeout(() => { if (badge) badge.textContent = 'Draft ready'; }, 900);
++      }
++    } catch (error) {
++      console.warn('Flight Profile Builder autosave failed', error);
++    }
++  }
++
++  function loadState(){
++    try {
++      const payload = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
++      if (!payload || payload.version !== PROJECT_VERSION) return;
++      state.profileName = String(payload.profileName || state.profileName);
++      state.targetBuild = String(payload.targetBuild || state.targetBuild);
++      state.device1 = DEVICES.some(d => d.id === payload.device1) ? payload.device1 : state.device1;
++      state.device2 = DEVICES.some(d => d.id === payload.device2) ? payload.device2 : state.device2;
++      state.slot1 = Number(payload.slot1) === 2 ? 2 : 1;
++      state.slot2 = Number(payload.slot2) === 1 ? 1 : 2;
++      const custom = Array.isArray(payload.actions) ? payload.actions.filter(item => item && item.map && item.id) : [];
++      state.actions = BASE_ACTIONS.map(item => ({...item}));
++      custom.forEach(addActionIfMissing);
++      state.mappings = Array.isArray(payload.mappings) ? payload.mappings.filter(validMapping) : [];
++      state.importedXml = typeof payload.importedXml === 'string' ? payload.importedXml : '';
++    } catch (error) {
++      console.warn('Flight Profile Builder saved state could not be loaded', error);
++    }
++  }
++
++  function validMapping(mapping){
++    return !!(mapping && mapping.map && mapping.action && /^js[12]_[a-z0-9_]+$/i.test(String(mapping.input || '')));
++  }
++
++  function addActionIfMissing(action){
++    if (!action || !action.map || !action.id) return;
++    const key = actionKey(action.map,action.id);
++    if (state.actions.some(item => actionKey(item.map,item.id) === key)) return;
++    state.actions.push({
++      category:String(action.category || 'Imported / custom'),
++      map:String(action.map),
++      id:String(action.id),
++      label:String(action.label || titleize(action.id)),
++      kind:action.kind === 'axis' ? 'axis' : 'button',
++      custom:true
++    });
++  }
++
++  function populateDeviceSelects(){
++    [$('fpb-device-1'),$('fpb-device-2')].forEach(select => {
++      if (!select) return;
++      select.textContent = '';
++      DEVICES.forEach(device => {
++        const option = document.createElement('option');
++        option.value = device.id;
++        option.textContent = device.name;
++        select.appendChild(option);
++      });
++    });
++    $('fpb-device-1').value = state.device1;
++    $('fpb-device-2').value = state.device2;
++    $('fpb-slot-1').value = String(state.slot1);
++    $('fpb-slot-2').value = String(state.slot2);
++  }
++
++  function syncFields(){
++    $('fpb-profile-name').value = state.profileName;
++    $('fpb-target-build').value = state.targetBuild;
++    populateDeviceSelects();
++  }
++
++  function populateCategories(){
++    const filter = $('fpb-category-filter');
++    if (!filter) return;
++    const previous = filter.value || 'all';
++    const categories = [...new Set(state.actions.map(item => item.category))].sort((a,b) => a.localeCompare(b));
++    filter.textContent = '';
++    const all = document.createElement('option');
++    all.value = 'all';
++    all.textContent = 'All categories';
++    filter.appendChild(all);
++    categories.forEach(category => {
++      const option = document.createElement('option');
++      option.value = category;
++      option.textContent = category;
++      filter.appendChild(option);
++    });
++    filter.value = [...filter.options].some(option => option.value === previous) ? previous : 'all';
++  }
++
++  function renderActions(){
++    const list = $('fpb-action-list');
++    if (!list) return;
++    const search = String($('fpb-action-search').value || '').trim().toLowerCase();
++    const category = $('fpb-category-filter').value || 'all';
++    const mappedKeys = new Set(state.mappings.map(mapping => actionKey(mapping.map,mapping.action)));
++    const filtered = state.actions.filter(action => {
++      if (category !== 'all' && action.category !== category) return false;
++      if (!search) return true;
++      return `${action.label} ${action.map} ${action.id} ${action.category}`.toLowerCase().includes(search);
++    });
++    list.textContent = '';
++    filtered.forEach(action => {
++      const key = actionKey(action.map,action.id);
++      const row = document.createElement('div');
++      row.className = `fpb-action${state.selectedAction === key ? ' selected' : ''}${mappedKeys.has(key) ? ' mapped' : ''}`;
++      row.draggable = true;
++      row.dataset.actionKey = key;
++      row.setAttribute('role','button');
++      row.setAttribute('tabindex','0');
++      row.setAttribute('aria-label',`Drag ${action.label} to a flight-stick control`);
++      const grip = document.createElement('span');
++      grip.className = 'fpb-action-grip';
++      grip.textContent = '⋮⋮';
++      grip.setAttribute('aria-hidden','true');
++      const icon = document.createElement('span');
++      icon.className = 'fpb-action-icon';
++      icon.textContent = action.kind === 'axis' ? 'AX' : '●';
++      const copy = document.createElement('span');
++      const strong = document.createElement('strong');
++      strong.textContent = action.label;
++      const small = document.createElement('small');
++      small.textContent = `${action.map} · ${action.id}`;
++      copy.append(strong,small);
++      row.append(grip,icon,copy);
++      row.addEventListener('click', () => selectAction(key));
++      row.addEventListener('keydown', event => {
++        if (event.key === 'Enter' || event.key === ' ') {
++          event.preventDefault();
++          selectAction(key);
++        }
++      });
++      row.addEventListener('dragstart', event => {
++        selectAction(key,{render:false});
++        beginDrag(event,row,{type:'action',actionKey:key},action.label);
++      });
++      row.addEventListener('dragend', () => finishDrag(row));
++      list.appendChild(row);
++    });
++    const mappedCount = mappedKeys.size;
++    $('fpb-action-count').textContent = `${mappedCount}/${state.actions.length}`;
++    if (!filtered.length) {
++      const empty = document.createElement('div');
++      empty.className = 'fpb-empty';
++      empty.textContent = 'No actions match this filter.';
++      list.appendChild(empty);
++    }
++  }
++
++  function selectAction(key,{render=true}={}){
++    state.selectedAction = key || '';
++    const action = selectedAction();
++    $('fpb-selected-copy').innerHTML = action
++      ? `Selected: <strong>${escapeHtml(action.label)}</strong> · drag or click a control`
++      : 'Selected: <strong>none</strong> · choose an action';
++    if (render) renderActions();
++  }
++
++  function escapeHtml(value){
++    return String(value ?? '').replace(/[&<>"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[character]));
++  }
++
++  function renderSticks(){
++    const grid = $('fpb-stick-grid');
++    if (!grid) return;
++    grid.textContent = '';
++    const configs = [
++      {device:deviceById(state.device1), slot:state.slot1},
++      {device:deviceById(state.device2), slot:state.slot2}
++    ];
++    configs.forEach(config => grid.appendChild(buildStick(config.device,config.slot)));
++  }
++
++  function buildStick(device,slot){
++    const section = document.createElement('section');
++    section.className = 'fpb-stick';
++    const head = document.createElement('div');
++    head.className = 'fpb-stick-head';
++    const titleWrap = document.createElement('div');
++    titleWrap.className = 'fpb-stick-title';
++    const title = document.createElement('strong');
++    title.textContent = device.name;
++    const hardwareMeta = document.createElement('small');
++    hardwareMeta.textContent = `${device.buttons} buttons · ${device.hats} hat${device.hats === 1 ? '' : 's'} · ${device.axes.length} axes`;
++    titleWrap.append(title,hardwareMeta);
++    const slotLabel = document.createElement('span');
++    slotLabel.textContent = `js${slot}`;
++    head.append(titleWrap,slotLabel);
++
++    const canvas = document.createElement('div');
++    canvas.className = 'fpb-stick-canvas';
++    const buttonRows = Math.ceil(device.buttons / 2);
++    const buttonZone = Math.max(430, buttonRows * 38);
++    canvas.style.setProperty('--fpb-button-zone', `${buttonZone}px`);
++    canvas.style.minHeight = `${Math.max(620, 120 + buttonZone + Math.ceil((device.hats * 4 + device.axes.length) / 4) * 42)}px`;
++    const silhouette = document.createElement('div');
++    silhouette.className = `fpb-stick-silhouette fpb-device-art art-${deviceArtType(device)}${device.id.includes('left') ? ' is-left' : ''}`;
++    silhouette.setAttribute('aria-hidden','true');
++    silhouette.innerHTML = deviceArtMarkup(device);
++    const layer = document.createElement('div');
++    layer.className = 'fpb-control-layer';
++    layer.style.minHeight = `${buttonZone}px`;
++    for (let button = 1; button <= device.buttons; button += 1) {
++      layer.appendChild(buildControl(`js${slot}_button${button}`,`B${button}`,'button'));
++    }
++    const axisRow = document.createElement('div');
++    axisRow.className = 'fpb-axis-row';
++    for (let hat = 1; hat <= device.hats; hat += 1) {
++      ['up','right','down','left'].forEach(direction => axisRow.appendChild(buildControl(`js${slot}_hat${hat}_${direction}`,`H${hat} ${direction[0].toUpperCase()}`,'hat')));
++    }
++    device.axes.forEach(axis => axisRow.appendChild(buildControl(`js${slot}_${axis}`,axisLabel(axis),'axis')));
++    canvas.append(silhouette,layer,axisRow);
++
++    const legend = document.createElement('div');
++    legend.className = 'fpb-legend';
++    legend.innerHTML = '<span><i class="b"></i>Button</span><span><i class="h"></i>Hat</span><span><i class="a"></i>Axis</span><span><i class="s"></i>Shared</span>';
++    section.append(head,canvas,legend);
++    return section;
++  }
++
++  function deviceArtType(device){
++    const id = device.id || '';
++    if (id.includes('throttle')) return 'throttle';
++    if (id.startsWith('t16')) return 't16';
++    if (id.startsWith('vkb')) return 'vkb';
++    if (id.startsWith('virpil')) return 'virpil';
++    if (id.includes('warthog')) return 'warthog';
++    if (id.includes('x56')) return 'x56';
++    return 'x56';
++  }
++
++  function artDefs(){
++    return `<defs><linearGradient id="fpb-art-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#123347"/><stop offset=".48" stop-color="#071925"/><stop offset="1" stop-color="#030b12"/></linearGradient><linearGradient id="fpb-art-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8aa1ad"/><stop offset=".3" stop-color="#263d49"/><stop offset=".72" stop-color="#0b1820"/><stop offset="1" stop-color="#526b76"/></linearGradient></defs>`;
++  }
++
++  function deviceArtMarkup(device){
++    const type = deviceArtType(device);
++    if (type === 'throttle') return throttleArt();
++    if (type === 't16') return t16Art();
++    if (type === 'vkb') return vkbArt();
++    if (type === 'virpil') return virpilArt();
++    if (type === 'warthog') return warthogArt();
++    return x56Art();
++  }
++
++  function vkbArt(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="404" rx="96" ry="15"/><path class="art-body" d="M29 349 45 320h150l17 29-9 49H37z"/><path class="art-panel" d="M46 335h148l8 17-5 31H42l-5-31z"/><path class="art-detail" d="M57 367h44m38 0h42M69 344h102"/><circle class="art-button" cx="62" cy="351" r="6"/><circle class="art-button" cx="83" cy="351" r="6"/><circle class="art-button" cx="157" cy="351" r="6"/><circle class="art-button" cx="178" cy="351" r="6"/><path class="art-body-dark" d="M90 327c1-19 12-34 30-36 18 2 29 17 30 36z"/><path class="art-body" d="M111 298c-8-27-13-55-10-84l8-73 15-39 28-18 18 13 6 31-13 22 7 51-15 41-4 56z"/><path class="art-body-dark" d="m123 104 8-35 25-15 18 10 6 24-15 25-25 5z"/><path class="art-metal" d="m162 112 20 12-4 31-12 11-7-18z"/><path class="art-detail" d="M123 154c14 8 24 8 38 1m-50 53 44 14m-39 20 36 12m-29-106 1 128"/><path class="art-detail-soft" d="M135 126v146m12-139-3 133"/><path class="art-accent-line" d="m132 75 20-12 13 7"/><circle class="art-accent" cx="152" cy="87" r="5"/><circle class="art-button" cx="139" cy="106" r="8"/><path class="art-body-dark" d="m102 167-25 16 6 18 24-7z"/><path class="art-accent-line" d="M82 184 98 174"/></svg>`;
++  }
++
++  function t16Art(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="403" rx="101" ry="14"/><path class="art-body" d="M24 349 42 316h156l18 33-11 50H35z"/><path class="art-panel" d="M42 330h156l8 24-7 29H41l-7-29z"/><path class="art-detail" d="M53 354h42m50 0h42M68 376h104"/><circle class="art-button" cx="57" cy="365" r="5"/><circle class="art-button" cx="75" cy="365" r="5"/><circle class="art-button" cx="165" cy="365" r="5"/><circle class="art-button" cx="183" cy="365" r="5"/><ellipse class="art-body-dark" cx="120" cy="317" rx="40" ry="27"/><ellipse class="art-accent-line" cx="120" cy="317" rx="31" ry="20"/><path class="art-body" d="M106 296c-11-35-18-76-13-117l7-61 15-38 14-13 18 13 12 39-3 64c-1 40-9 79-22 113z"/><path class="art-body-dark" d="M107 109c4-30 14-53 27-53 14 0 25 26 27 57l-18 11-23-2z"/><path class="art-detail" d="M111 137h37m-47 31 54 6m-51 39 48 9m-42 29 35 8"/><path class="art-detail-soft" d="M121 127v144m12-145v145"/><path class="art-metal" d="m100 135-20 21 5 26 19-12z"/><path class="art-accent" d="m84 157 7-8 7 6-8 17z"/><circle class="art-button" cx="132" cy="93" r="8"/><circle class="art-accent" cx="132" cy="93" r="3"/><path class="art-accent-line" d="M116 289c12 6 24 6 37 0"/></svg>`;
++  }
++
++  function virpilArt(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="405" rx="98" ry="15"/><path class="art-body" d="M30 351 53 319h134l23 32-11 47H41z"/><path class="art-panel" d="M48 338h144l8 19-7 27H47l-7-27z"/><path class="art-body-dark" d="M84 326c3-24 15-39 36-41 23 2 35 17 37 41z"/><path class="art-body" d="M109 294c-16-32-21-72-15-113l11-72 18-36 29-15 20 16 8 29-17 24 5 66-17 43-6 58z"/><path class="art-body-dark" d="m124 82 31-22 20 13 7 22-16 22-34-2z"/><path class="art-metal" d="m164 119 23 13-5 29-16 12-8-20z"/><path class="art-body-dark" d="m101 151-31 19 6 22 29-8z"/><path class="art-detail" d="M116 132c15 8 29 8 44 1m-54 49 53 13m-48 26 41 12m-34 21 28 9"/><path class="art-detail-soft" d="M128 119v151m15-148-5 144"/><circle class="art-button" cx="145" cy="86" r="8"/><circle class="art-accent" cx="145" cy="86" r="3"/><path class="art-accent-line" d="M75 171 97 158m69-29 12 8"/><circle class="art-button" cx="158" cy="107" r="5"/></svg>`;
++  }
++
++  function warthogArt(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="405" rx="101" ry="14"/><path class="art-metal" d="M28 348 47 314h146l19 34-10 50H38z"/><path class="art-panel" d="M43 334h154l7 20-8 30H44l-8-30z"/><path class="art-detail" d="M55 363h130M72 344h96"/><circle class="art-button" cx="57" cy="350" r="5"/><circle class="art-button" cx="183" cy="350" r="5"/><path class="art-metal" d="M86 326c2-24 13-38 34-40 21 2 32 16 34 40z"/><path class="art-metal" d="M111 295c-13-32-18-71-13-110l8-69 16-38 23-17 22 12 10 28-12 27 6 62-14 44-5 61z"/><path class="art-body-dark" d="m120 88 24-28 23 12 11 25-16 27-34-3z"/><path class="art-metal" d="m163 122 22 10-3 31-13 12-10-22z"/><path class="art-body-dark" d="m103 155-27 17 6 23 25-10z"/><path class="art-detail" d="M111 140h48m-53 45 55 12m-49 29 42 11m-34-104 2 139"/><circle class="art-button" cx="147" cy="91" r="8"/><circle class="art-button" cx="157" cy="111" r="5"/><path class="art-accent-line" d="M82 173 101 162"/></svg>`;
++  }
++
++  function x56Art(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="404" rx="99" ry="15"/><path class="art-body" d="M27 351 44 320h152l17 31-10 47H37z"/><path class="art-panel" d="M43 337h154l7 20-7 27H43l-7-27z"/><path class="art-detail" d="M55 365h45m40 0h45M71 346h98"/><circle class="art-button" cx="59" cy="351" r="6"/><circle class="art-button" cx="80" cy="351" r="6"/><circle class="art-button" cx="160" cy="351" r="6"/><circle class="art-button" cx="181" cy="351" r="6"/><path class="art-body-dark" d="M88 327c2-22 13-36 32-38 20 2 31 16 33 38z"/><path class="art-body" d="M108 298c-13-30-18-68-14-109l9-72 17-39 25-17 21 13 12 30-14 25 7 63-16 44-6 62z"/><path class="art-body-dark" d="m120 91 25-31 22 13 12 25-16 29-34-4z"/><path class="art-metal" d="m163 128 22 12-4 30-14 11-9-21z"/><path class="art-body-dark" d="m101 157-29 18 7 22 27-10z"/><path class="art-detail" d="M111 141c15 8 29 8 44 0m-50 43 54 14m-49 26 43 12m-37 23 31 9"/><path class="art-detail-soft" d="M124 127v146m14-143-3 139"/><circle class="art-button" cx="146" cy="91" r="8"/><circle class="art-accent" cx="146" cy="91" r="3"/><circle class="art-button" cx="158" cy="112" r="5"/><path class="art-accent-line" d="M78 176 99 163m65-29 13 8"/></svg>`;
++  }
++
++  function throttleArt(){
++    return `<svg viewBox="0 0 240 430" role="presentation">${artDefs()}<ellipse class="art-shadow" cx="120" cy="405" rx="103" ry="14"/><path class="art-body" d="M24 349 38 310h164l14 39-12 50H36z"/><path class="art-panel" d="M39 328h162l7 26-8 30H40l-8-30z"/><path class="art-detail" d="M52 365h66m30 0h39M57 345h47m65 0h18"/><circle class="art-button" cx="59" cy="351" r="6"/><circle class="art-button" cx="80" cy="351" r="6"/><circle class="art-button" cx="177" cy="351" r="7"/><path class="art-body-dark" d="M83 321c1-31 10-57 27-78l15-19 25 11 10 30-9 56z"/><path class="art-body" d="M103 248c-2-48 5-95 22-137l12-30 28-16 22 13 10 27-14 27-4 56-19 57-12 17z"/><path class="art-body-dark" d="m137 84 27-20 22 12 11 24-17 28-34-3z"/><path class="art-metal" d="m179 129 20 12-4 29-14 11-8-22z"/><path class="art-detail" d="M126 137c15 7 31 7 47-1m-56 42 59 12m-61 30 52 9"/><path class="art-detail-soft" d="M143 126v103m16-101-5 111"/><path class="art-accent-line" d="M97 303h60M48 374h69"/><circle class="art-button" cx="163" cy="93" r="8"/><circle class="art-accent" cx="163" cy="93" r="3"/></svg>`;
++  }
++
++  function axisLabel(axis){
++    const labels = {x:'X',y:'Y',z:'Z',rotx:'Rot X',roty:'Rot Y',rotz:'Twist',slider1:'Slider 1',slider2:'Slider 2'};
++    return labels[axis] || axis;
++  }
++
++  function buildControl(input,label,type){
++    const mappings = state.mappings.filter(mapping => mapping.input === input);
++    const control = document.createElement('button');
++    control.type = 'button';
++    control.className = `fpb-control ${type}${mappings.length ? ' assigned' : ''}${mappings.length > 1 ? ' shared' : ''}`;
++    control.dataset.input = input;
++    control.title = mappings.length ? `${mappings.map(mappingLabel).join('\n')}\n\nDrop another action here, or drag a mapped label to move it.` : `${input} · drop an action here`;
++    const text = document.createElement('span');
++    text.className = 'fpb-control-code';
++    text.textContent = label;
++    const mappedWrap = document.createElement('span');
++    mappedWrap.className = 'fpb-control-mappings';
++    mappings.forEach(mapping => {
++      const action = findAction(mapping);
++      const chip = document.createElement('span');
++      chip.className = 'fpb-control-map';
++      chip.draggable = true;
++      chip.textContent = action?.label || mapping.action;
++      chip.title = `Drag to move ${action?.label || mapping.action}. Hold Alt/Option while dropping to copy.`;
++      chip.addEventListener('click', event => {
++        event.stopPropagation();
++        selectAction(actionKey(mapping.map,mapping.action));
++      });
++      chip.addEventListener('dragstart', event => {
++        event.stopPropagation();
++        beginDrag(event,chip,{type:'mapping',map:mapping.map,action:mapping.action,input:mapping.input},action?.label || mapping.action);
++      });
++      chip.addEventListener('dragend', event => {
++        event.stopPropagation();
++        finishDrag(chip);
++      });
++      mappedWrap.appendChild(chip);
++    });
++    control.append(text,mappedWrap);
++    control.addEventListener('click', () => assignSelectedToInput(input));
++    control.addEventListener('dragenter', event => {
++      if (!state.dragPayload && !readDragPayload(event)) return;
++      event.preventDefault();
++      control.classList.add('dragover');
++    });
++    control.addEventListener('dragover', event => {
++      const payload = state.dragPayload || readDragPayload(event);
++      if (!payload) return;
++      event.preventDefault();
++      if (event.dataTransfer) event.dataTransfer.dropEffect = payload.type === 'mapping' && !event.altKey ? 'move' : 'copy';
++      control.classList.add('dragover');
++      control.classList.toggle('copy-target',!!event.altKey && payload.type === 'mapping');
++    });
++    control.addEventListener('dragleave', event => {
++      if (event.relatedTarget && control.contains(event.relatedTarget)) return;
++      control.classList.remove('dragover','copy-target');
++    });
++    control.addEventListener('drop', event => {
++      event.preventDefault();
++      event.stopPropagation();
++      control.classList.remove('dragover','copy-target');
++      const payload = readDragPayload(event) || state.dragPayload;
++      if (payload) dropPayloadOnInput(payload,input,event);
++    });
++    return control;
++  }
++
++  function beginDrag(event,source,payload,label){
++    state.dragPayload = payload;
++    source.classList.add('dragging');
++    $('flight-profile-view')?.classList.add('fpb-drag-active');
++    const encoded = JSON.stringify(payload);
++    if (event.dataTransfer) {
++      event.dataTransfer.effectAllowed = payload.type === 'mapping' ? 'copyMove' : 'copy';
++      try { event.dataTransfer.setData(DRAG_MIME,encoded); } catch (_) {}
++      try { event.dataTransfer.setData('text/plain',`celestial-fpb:${encoded}`); } catch (_) {}
++      const ghost = document.createElement('div');
++      ghost.className = 'fpb-drag-ghost';
++      ghost.innerHTML = `<span>${payload.type === 'mapping' ? 'MOVE' : 'MAP'}</span><strong>${escapeHtml(label)}</strong>`;
++      document.body.appendChild(ghost);
++      state.dragGhost?.remove();
++      state.dragGhost = ghost;
++      try { event.dataTransfer.setDragImage(ghost,18,18); } catch (_) {}
++    }
++  }
++
++  function readDragPayload(event){
++    const transfer = event?.dataTransfer;
++    if (!transfer) return state.dragPayload;
++    const candidates = [];
++    try { candidates.push(transfer.getData(DRAG_MIME)); } catch (_) {}
++    try { candidates.push(transfer.getData('text/plain')); } catch (_) {}
++    for (let value of candidates) {
++      if (!value) continue;
++      if (value.startsWith('celestial-fpb:')) value = value.slice('celestial-fpb:'.length);
++      try {
++        const payload = JSON.parse(value);
++        if (payload && (payload.type === 'action' || payload.type === 'mapping')) return payload;
++      } catch (_) {}
++    }
++    return state.dragPayload;
++  }
++
++  function finishDrag(source){
++    source?.classList.remove('dragging');
++    document.querySelectorAll('#flight-profile-view .dragging,#flight-profile-view .dragover,#flight-profile-view .copy-target').forEach(node => node.classList.remove('dragging','dragover','copy-target'));
++    $('flight-profile-view')?.classList.remove('fpb-drag-active');
++    state.dragGhost?.remove();
++    state.dragGhost = null;
++    state.dragPayload = null;
++  }
++
++  function dropPayloadOnInput(payload,input,event){
++    if (payload.type === 'mapping') moveMappingToInput(payload,input,!!event.altKey);
++    else if (payload.type === 'action') ensureActionMapping(payload.actionKey,input);
++    finishDrag();
++  }
++
++  function ensureActionMapping(key,input){
++    const action = state.actions.find(item => actionKey(item.map,item.id) === key);
++    if (!action) return;
++    const exists = state.mappings.some(mapping => mapping.map === action.map && mapping.action === action.id && mapping.input === input);
++    if (exists) {
++      toast(`${action.label} is already mapped to ${input}.`);
++      flashControl(input);
++      return;
++    }
++    state.mappings.push({map:action.map,action:action.id,input});
++    const shared = state.mappings.filter(mapping => mapping.input === input).length > 1;
++    toast(shared ? `Mapped ${action.label}; ${input} is now shared.` : `Mapped ${action.label} to ${input}.`);
++    renderAll();
++    saveSoon();
++  }
++
++  function moveMappingToInput(payload,input,copy){
++    const sourceIndex = state.mappings.findIndex(mapping => mapping.map === payload.map && mapping.action === payload.action && mapping.input === payload.input);
++    if (sourceIndex < 0) {
++      toast('That mapping changed before it could be dropped.');
++      return;
++    }
++    const source = state.mappings[sourceIndex];
++    const action = findAction(source);
++    if (source.input === input && !copy) {
++      toast(`${action?.label || source.action} is already on ${input}.`);
++      flashControl(input);
++      return;
++    }
++    const duplicate = state.mappings.some((mapping,index) => index !== sourceIndex && mapping.map === source.map && mapping.action === source.action && mapping.input === input);
++    if (duplicate) {
++      if (!copy) {
++        state.mappings.splice(sourceIndex,1);
++        toast(`Merged ${action?.label || source.action} into its existing ${input} assignment.`);
++        renderAll();
++        saveSoon();
++      } else {
++        toast(`${action?.label || source.action} is already mapped to ${input}.`);
++        flashControl(input);
++      }
++      return;
++    }
++    if (copy) state.mappings.push({...source,input});
++    else state.mappings[sourceIndex] = {...source,input};
++    const shared = state.mappings.filter(mapping => mapping.input === input).length > 1;
++    toast(`${copy ? 'Copied' : 'Moved'} ${action?.label || source.action} to ${input}${shared ? ' (shared control)' : ''}.`);
++    renderAll();
++    saveSoon();
++  }
++
++  function findAction(mapping){
++    return state.actions.find(action => action.map === mapping.map && action.id === mapping.action) || null;
++  }
++
++  function mappingLabel(mapping){
++    const action = findAction(mapping);
++    return `${action ? action.label : mapping.action} — ${mapping.input}`;
++  }
++
++  function assignSelectedToInput(input){
++    if (!state.selectedAction) {
++      const existing = state.mappings.find(mapping => mapping.input === input);
++      if (existing) selectAction(actionKey(existing.map,existing.action));
++      else toast('Select or drag an action first.');
++      return;
++    }
++    addMappingByKey(state.selectedAction,input);
++  }
++
++  function addMappingByKey(key,input){
++    const action = state.actions.find(item => actionKey(item.map,item.id) === key);
++    if (!action) return;
++    const existingIndex = state.mappings.findIndex(mapping => mapping.map === action.map && mapping.action === action.id && mapping.input === input);
++    if (existingIndex >= 0) {
++      state.mappings.splice(existingIndex,1);
++      toast(`Removed ${action.label} from ${input}.`);
++    } else {
++      state.mappings.push({map:action.map,action:action.id,input});
++      const shared = state.mappings.filter(mapping => mapping.input === input).length > 1;
++      toast(shared ? `Mapped ${action.label}; ${input} is now shared.` : `Mapped ${action.label} to ${input}.`);
++    }
++    renderAll();
++    saveSoon();
++  }
++
++  function removeMapping(index){
++    if (index < 0 || index >= state.mappings.length) return;
++    const [removed] = state.mappings.splice(index,1);
++    toast(`Removed ${mappingLabel(removed)}.`);
++    renderAll();
++    saveSoon();
++  }
++
++  function renderSummary(){
++    const list = $('fpb-summary-list');
++    if (!list) return;
++    list.textContent = '';
++    const controlCounts = new Map();
++    state.mappings.forEach(mapping => controlCounts.set(mapping.input,(controlCounts.get(mapping.input) || 0) + 1));
++    const sorted = state.mappings.map((mapping,index) => ({mapping,index})).sort((a,b) => a.mapping.input.localeCompare(b.mapping.input) || mappingLabel(a.mapping).localeCompare(mappingLabel(b.mapping)));
++    sorted.forEach(({mapping,index}) => {
++      const row = document.createElement('div');
++      row.className = `fpb-map-row${controlCounts.get(mapping.input) > 1 ? ' shared' : ''}`;
++      row.draggable = true;
++      row.title = 'Drag this assignment onto another control to move it. Hold Alt/Option while dropping to copy.';
++      const grip = document.createElement('span');
++      grip.className = 'fpb-map-grip';
++      grip.textContent = '⋮⋮';
++      grip.setAttribute('aria-hidden','true');
++      const strong = document.createElement('strong');
++      strong.textContent = findAction(mapping)?.label || titleize(mapping.action);
++      const small = document.createElement('small');
++      small.textContent = `${mapping.input} · ${mapping.map} · ${mapping.action}`;
++      const remove = document.createElement('button');
++      remove.type = 'button';
++      remove.className = 'fpb-map-remove';
++      remove.textContent = '×';
++      remove.draggable = false;
++      remove.setAttribute('aria-label','Remove mapping');
++      remove.addEventListener('dragstart',event => event.preventDefault());
++      remove.addEventListener('click', event => {
++        event.stopPropagation();
++        removeMapping(index);
++      });
++      row.addEventListener('click', () => selectAction(actionKey(mapping.map,mapping.action)));
++      row.addEventListener('dragstart', event => beginDrag(event,row,{type:'mapping',map:mapping.map,action:mapping.action,input:mapping.input},findAction(mapping)?.label || mapping.action));
++      row.addEventListener('dragend', () => finishDrag(row));
++      row.append(grip,strong,small,remove);
++      list.appendChild(row);
++    });
++    if (!sorted.length) {
++      const empty = document.createElement('div');
++      empty.className = 'fpb-empty';
++      empty.textContent = 'No controls mapped yet. Drag an action from the library onto a device control.';
++      list.appendChild(empty);
++    }
++    const visibleInputs = visibleInputsFor(deviceById(state.device1)) + visibleInputsFor(deviceById(state.device2));
++    $('fpb-stat-controls').textContent = String(controlCounts.size);
++    $('fpb-stat-mappings').textContent = String(state.mappings.length);
++    $('fpb-stat-shared').textContent = String([...controlCounts.values()].filter(count => count > 1).length);
++    $('fpb-stat-inputs').textContent = String(visibleInputs);
++  }
++
++  function visibleInputsFor(device){
++    return device.buttons + device.hats * 4 + device.axes.length;
++  }
++
++  function renderAll(){
++    renderActions();
++    renderSticks();
++    renderSummary();
++  }
++
++  function applyPreset(name){
++    if (name === 't16k2') {
++      state.device1 = 't16-left';
++      state.device2 = 't16-right';
++      state.slot1 = 1;
++      state.slot2 = 2;
++      state.profileName = 'T16K2-Celestial';
++      state.mappings = T16K2_MAPPINGS.map(([map,action,input]) => ({map,action,input}));
++      state.importedXml = '';
++      syncFields();
++      renderAll();
++      saveSoon();
++      toast('Official T16K2 starter mapping loaded.');
++    } else if (name === 'custom') {
++      toast('Custom mode selected. Existing mappings were kept.');
++    }
++  }
++
++  function addCustomAction(){
++    const map = prompt('Star Citizen action map name (example: spaceship_movement):','spaceship_movement');
++    if (!map) return;
++    const id = prompt('Action ID (example: v_pitch):','');
++    if (!id) return;
++    const label = prompt('Friendly label:',titleize(id)) || titleize(id);
++    const kind = /axis|pitch|yaw|roll|strafe|range_abs|move$/i.test(id) ? 'axis' : 'button';
++    const action = {category:'Imported / custom',map:map.trim(),id:id.trim(),label:label.trim(),kind,custom:true};
++    addActionIfMissing(action);
++    populateCategories();
++    selectAction(actionKey(action.map,action.id));
++    renderAll();
++    saveSoon();
++  }
++
++  function parseXml(text){
++    const doc = new DOMParser().parseFromString(text,'application/xml');
++    const error = doc.querySelector('parsererror');
++    if (error) throw new Error('The selected file is not valid XML.');
++    const root = doc.documentElement;
++    if (!root || root.nodeName !== 'ActionMaps') throw new Error('This does not appear to be a Star Citizen ActionMaps profile.');
++    return doc;
++  }
++
++  function importXmlText(text){
++    const doc = parseXml(text);
++    const root = doc.documentElement;
++    state.importedXml = text;
++    state.profileName = root.getAttribute('profileName') || doc.querySelector('CustomisationUIHeader')?.getAttribute('label') || state.profileName;
++    state.mappings = [];
++    doc.querySelectorAll('actionmap').forEach(mapNode => {
++      const map = mapNode.getAttribute('name') || '';
++      mapNode.querySelectorAll(':scope > action').forEach(actionNode => {
++        const action = actionNode.getAttribute('name') || '';
++        if (!map || !action) return;
++        actionNode.querySelectorAll(':scope > rebind').forEach(rebind => {
++          const input = String(rebind.getAttribute('input') || '').trim();
++          if (!/^js[12]_[a-z0-9_]+$/i.test(input)) return;
++          state.mappings.push({map,action,input});
++          addActionIfMissing({category:'Imported / custom',map,id:action,label:titleize(action),kind:isAxisInput(input) ? 'axis' : 'button',custom:true});
++        });
++      });
++    });
++    [1,2].forEach(slot => {
++      const option = doc.querySelector(`options[type="joystick"][instance="${slot}"]`);
++      const product = option?.getAttribute('Product') || '';
++      if (!product) return;
++      const match = bestDeviceMatch(product,slot);
++      if (slot === state.slot1) state.device1 = match.id;
++      else if (slot === state.slot2) state.device2 = match.id;
++      else if (slot === 1) state.device1 = match.id;
++      else state.device2 = match.id;
++    });
++    syncFields();
++    populateCategories();
++    renderAll();
++    saveSoon();
++    toast(`Imported ${state.mappings.length} joystick mappings from ${state.profileName}.`);
++  }
++
++  function bestDeviceMatch(product,slot){
++    const value = product.toLowerCase();
++    const exact = DEVICES.find(device => value.includes(device.product.toLowerCase()) || value.includes(device.name.toLowerCase().split(' — ')[0]));
++    if (exact) {
++      if (exact.id === 't16-left' || exact.id === 't16-right') return deviceById(slot === 1 ? 't16-left' : 't16-right');
++      return exact;
++    }
++    if (value.includes('t.16000') || value.includes('t16000')) return deviceById(slot === 1 ? 't16-left' : 't16-right');
++    if (value.includes('gladiator') || value.includes('vkb')) return deviceById(slot === 1 ? 'vkb-left' : 'vkb-right');
++    if (value.includes('virpil') || value.includes('vpc')) return deviceById(slot === 1 ? 'virpil-left' : 'virpil-right');
++    if (value.includes('x-56') || value.includes('x56')) return deviceById(value.includes('throttle') ? 'x56-throttle' : 'x56-stick');
++    if (value.includes('twcs')) return deviceById('twcs-throttle');
++    if (value.includes('warthog')) return deviceById('warthog-stick');
++    return deviceById('generic32');
++  }
++
++  async function exportProfileImage(){
++    const button = $('fpb-export-image-btn');
++    const original = button?.textContent || '';
++    try {
++      if (button) {
++        button.disabled = true;
++        button.textContent = 'Rendering PNG…';
++      }
++      const canvas = await buildProfileImageCanvas();
++      const blob = await new Promise(resolve => canvas.toBlob(resolve,'image/png',0.96));
++      if (!blob) throw new Error('The browser could not create the PNG image.');
++      const filename = `${cleanFilePart(state.profileName)}_flight-profile.png`;
++      downloadBlob(filename,blob);
++      toast(`Exported ${filename}.`);
++    } catch (error) {
++      console.error('Flight profile image export failed',error);
++      toast(error.message || 'Image export failed.');
++    } finally {
++      if (button) {
++        button.disabled = false;
++        button.textContent = original;
++      }
++    }
++  }
++
++  async function buildProfileImageCanvas(){
++    const width = 1920;
++    const outer = 70;
++    const gap = 34;
++    const panelWidth = (width - outer * 2 - gap) / 2;
++    const slotData = [1,2].map(slot => ({
++      slot,
++      device:deviceForSlot(slot),
++      mappings:state.mappings.filter(mapping => slotOfInput(mapping.input) === slot).sort(compareMappingInputs)
++    }));
++    const maxRows = Math.max(1,...slotData.map(item => Math.ceil(item.mappings.length / 2)));
++    const mappingAreaHeight = Math.max(210,maxRows * 66 + 54);
++    const panelTop = 330;
++    const panelHeight = 520 + mappingAreaHeight;
++    const height = Math.max(1120,panelTop + panelHeight + 105);
++    const canvas = document.createElement('canvas');
++    canvas.width = width;
++    canvas.height = height;
++    const ctx = canvas.getContext('2d');
++    if (!ctx) throw new Error('Canvas rendering is unavailable in this browser.');
++
++    const background = ctx.createLinearGradient(0,0,0,height);
++    background.addColorStop(0,'#071522');
++    background.addColorStop(0.58,'#040d16');
++    background.addColorStop(1,'#02070c');
++    ctx.fillStyle = background;
++    ctx.fillRect(0,0,width,height);
++    const glow = ctx.createRadialGradient(width * .72,80,0,width * .72,80,760);
++    glow.addColorStop(0,'rgba(27,153,196,.22)');
++    glow.addColorStop(1,'rgba(27,153,196,0)');
++    ctx.fillStyle = glow;
++    ctx.fillRect(0,0,width,720);
++    drawGrid(ctx,width,height);
++
++    ctx.fillStyle = '#5de4f7';
++    ctx.font = '700 20px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText('CELESTIAL ALLIANCE  /  NX-13 FLIGHT CONTROL ENGINEERING',outer,72);
++    ctx.fillStyle = '#eef8ff';
++    ctx.font = '800 68px system-ui, -apple-system, Segoe UI, sans-serif';
++    drawEllipsizedText(ctx,state.profileName || 'Untitled flight profile',outer,145,1100);
++    ctx.fillStyle = '#9bb7c8';
++    ctx.font = '500 24px system-ui, -apple-system, Segoe UI, sans-serif';
++    ctx.fillText(`Star Citizen control profile · target ${state.targetBuild || 'current build'}`,outer,188);
++
++    const controls = new Set(state.mappings.map(mapping => mapping.input)).size;
++    const shared = [...state.mappings.reduce((map,mapping) => map.set(mapping.input,(map.get(mapping.input) || 0) + 1),new Map()).values()].filter(count => count > 1).length;
++    const stats = [
++      ['MAPPINGS',state.mappings.length],
++      ['CONTROLS',controls],
++      ['SHARED',shared],
++      ['DEVICES',2]
++    ];
++    const statW = 150;
++    stats.forEach((item,index) => {
++      const x = width - outer - (stats.length - index) * (statW + 12) + 12;
++      canvasCard(ctx,x,78,statW,105,14,'rgba(4,19,30,.82)','rgba(73,211,240,.2)');
++      ctx.fillStyle = item[0] === 'SHARED' && item[1] ? '#ff6b8c' : '#e9f8ff';
++      ctx.font = '800 40px system-ui, -apple-system, Segoe UI, sans-serif';
++      ctx.fillText(String(item[1]),x + 18,128);
++      ctx.fillStyle = '#6f91a5';
++      ctx.font = '700 13px ui-monospace, SFMono-Regular, Consolas, monospace';
++      ctx.fillText(item[0],x + 18,158);
++    });
++
++    ctx.strokeStyle = 'rgba(74,220,246,.32)';
++    ctx.lineWidth = 2;
++    ctx.beginPath();
++    ctx.moveTo(outer,238);
++    ctx.lineTo(width - outer,238);
++    ctx.stroke();
++    ctx.fillStyle = '#7f9cad';
++    ctx.font = '500 18px system-ui, -apple-system, Segoe UI, sans-serif';
++    ctx.fillText('A shareable reference sheet. Input numbers should still be verified against the active firmware mode and Windows device order.',outer,278);
++
++    const artImages = await Promise.all(slotData.map(item => loadDeviceArtImage(item.device).catch(() => null)));
++    for (let index = 0; index < slotData.length; index += 1) {
++      const x = outer + index * (panelWidth + gap);
++      drawExportDevicePanel(ctx,x,panelTop,panelWidth,panelHeight,slotData[index],artImages[index]);
++    }
++
++    ctx.fillStyle = '#5c7d90';
++    ctx.font = '600 15px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`GENERATED LOCALLY · ${new Date().toLocaleString()} · ${cleanFilePart(state.profileName)}`,outer,height - 48);
++    ctx.textAlign = 'right';
++    ctx.fillStyle = '#54dff5';
++    ctx.fillText('CELESTIAL NEXUS FLIGHT PROFILE BUILDER',width - outer,height - 48);
++    ctx.textAlign = 'left';
++    return canvas;
++  }
++
++  function deviceForSlot(slot){
++    if (state.slot1 === slot) return deviceById(state.device1);
++    if (state.slot2 === slot) return deviceById(state.device2);
++    return deviceById(slot === 1 ? state.device1 : state.device2);
++  }
++
++  function compareMappingInputs(a,b){
++    const rank = input => {
++      const suffix = String(input || '').replace(/^js\d+_/,'');
++      let match = /^button(\d+)$/.exec(suffix);
++      if (match) return 1000 + Number(match[1]);
++      match = /^hat(\d+)_(up|right|down|left)$/.exec(suffix);
++      if (match) return 3000 + Number(match[1]) * 10 + ['up','right','down','left'].indexOf(match[2]);
++      const axes = ['x','y','z','rotx','roty','rotz','slider1','slider2'];
++      const axisIndex = axes.indexOf(suffix);
++      return axisIndex >= 0 ? 5000 + axisIndex : 9000;
++    };
++    return rank(a.input) - rank(b.input) || mappingLabel(a).localeCompare(mappingLabel(b));
++  }
++
++  function compactInputLabel(input){
++    const suffix = String(input || '').replace(/^js\d+_/,'');
++    let match = /^button(\d+)$/.exec(suffix);
++    if (match) return `B${match[1]}`;
++    match = /^hat(\d+)_(up|right|down|left)$/.exec(suffix);
++    if (match) return `H${match[1]} ${match[2][0].toUpperCase()}`;
++    return axisLabel(suffix);
++  }
++
++  function drawExportDevicePanel(ctx,x,y,w,h,data,artImage){
++    canvasCard(ctx,x,y,w,h,22,'rgba(5,19,30,.9)','rgba(64,205,235,.27)');
++    const accent = deviceAccent(data.device);
++    const header = ctx.createLinearGradient(x,y,x + w,y);
++    header.addColorStop(0,'rgba(9,42,59,.96)');
++    header.addColorStop(1,'rgba(5,20,31,.58)');
++    canvasCard(ctx,x + 1,y + 1,w - 2,86,21,header,null);
++    ctx.fillStyle = '#e8f6fd';
++    ctx.font = '750 27px system-ui, -apple-system, Segoe UI, sans-serif';
++    drawEllipsizedText(ctx,data.device.name,x + 28,y + 39,w - 150);
++    ctx.fillStyle = '#7899ab';
++    ctx.font = '600 15px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`${data.device.buttons} BUTTONS · ${data.device.hats} HATS · ${data.device.axes.length} AXES`,x + 29,y + 66);
++    canvasCard(ctx,x + w - 94,y + 22,63,38,19,'rgba(54,213,241,.08)','rgba(72,220,247,.38)');
++    ctx.fillStyle = '#63e4f7';
++    ctx.font = '800 17px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`js${data.slot}`,x + w - 77,y + 47);
++
++    const artTop = y + 108;
++    const artH = 330;
++    const artW = 185;
++    if (artImage) {
++      ctx.save();
++      if (data.device.id.includes('left')) {
++        ctx.translate(x + w / 2,0);
++        ctx.scale(-1,1);
++        ctx.drawImage(artImage,-artW / 2,artTop,artW,artH);
++      } else {
++        ctx.drawImage(artImage,x + (w - artW) / 2,artTop,artW,artH);
++      }
++      ctx.restore();
++    } else {
++      ctx.strokeStyle = accent;
++      ctx.lineWidth = 3;
++      ctx.beginPath();
++      ctx.ellipse(x + w / 2,artTop + 290,100,24,0,0,Math.PI * 2);
++      ctx.moveTo(x + w / 2 - 30,artTop + 275);
++      ctx.quadraticCurveTo(x + w / 2 - 52,artTop + 150,x + w / 2 - 8,artTop + 48);
++      ctx.quadraticCurveTo(x + w / 2 + 47,artTop + 55,x + w / 2 + 28,artTop + 275);
++      ctx.stroke();
++    }
++    ctx.fillStyle = accent;
++    ctx.font = '800 14px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.textAlign = 'center';
++    ctx.fillText(`${data.mappings.length} ASSIGNMENTS`,x + w / 2,artTop + 360);
++    ctx.textAlign = 'left';
++
++    const mappingTop = y + 488;
++    ctx.strokeStyle = 'rgba(70,187,216,.18)';
++    ctx.beginPath();
++    ctx.moveTo(x + 26,mappingTop - 20);
++    ctx.lineTo(x + w - 26,mappingTop - 20);
++    ctx.stroke();
++    const rows = Math.max(1,Math.ceil(data.mappings.length / 2));
++    const colGap = 16;
++    const colW = (w - 56 - colGap) / 2;
++    if (!data.mappings.length) {
++      ctx.fillStyle = '#6d8999';
++      ctx.font = '500 20px system-ui, -apple-system, Segoe UI, sans-serif';
++      ctx.textAlign = 'center';
++      ctx.fillText('No actions assigned to this device.',x + w / 2,mappingTop + 58);
++      ctx.textAlign = 'left';
++      return;
++    }
++    const inputCounts = state.mappings.reduce((map,mapping) => map.set(mapping.input,(map.get(mapping.input) || 0) + 1),new Map());
++    data.mappings.forEach((mapping,index) => {
++      const col = index >= rows ? 1 : 0;
++      const row = index % rows;
++      const rx = x + 28 + col * (colW + colGap);
++      const ry = mappingTop + row * 66;
++      const shared = inputCounts.get(mapping.input) > 1;
++      const action = findAction(mapping);
++      const kind = isAxisInput(mapping.input) ? 'axis' : isHatInput(mapping.input) ? 'hat' : 'button';
++      const kindAccent = shared ? '#ff557c' : kind === 'axis' ? '#a78bfa' : kind === 'hat' ? '#e7bd4e' : '#48dbf3';
++      canvasCard(ctx,rx,ry,colW,54,10,'rgba(4,17,27,.92)',shared ? 'rgba(255,85,124,.72)' : 'rgba(53,126,153,.32)');
++      canvasCard(ctx,rx + 8,ry + 9,73,36,8,`${kindAccent}18`,`${kindAccent}88`);
++      ctx.fillStyle = kindAccent;
++      ctx.font = '800 14px ui-monospace, SFMono-Regular, Consolas, monospace';
++      ctx.textAlign = 'center';
++      ctx.fillText(compactInputLabel(mapping.input),rx + 44.5,ry + 32);
++      ctx.textAlign = 'left';
++      ctx.fillStyle = '#e4f1f8';
++      ctx.font = '700 17px system-ui, -apple-system, Segoe UI, sans-serif';
++      drawEllipsizedText(ctx,action?.label || titleize(mapping.action),rx + 92,ry + 23,colW - 106);
++      ctx.fillStyle = '#68899b';
++      ctx.font = '600 11px ui-monospace, SFMono-Regular, Consolas, monospace';
++      drawEllipsizedText(ctx,`${mapping.map} · ${mapping.action}`,rx + 92,ry + 42,colW - 106);
++    });
++  }
++
++  function deviceAccent(device){
++    const type = deviceArtType(device);
++    return ({t16:'#f6a914',vkb:'#9bd727',virpil:'#aa8dff',warthog:'#9fb0bc',x56:'#42c8fa',throttle:'#edc21f'})[type] || '#4bdcf4';
++  }
++
++  function exportArtStyle(device){
++    const accent = deviceAccent(device);
++    return `<style>svg{--art-accent:${accent};--art-accent-rgb:66,217,245}.art-shadow{fill:rgba(0,0,0,.36)}.art-body{fill:url(#fpb-art-body);stroke:#28677d;stroke-width:2}.art-body-dark{fill:#06131d;stroke:#24586b;stroke-width:2}.art-panel{fill:rgba(8,27,40,.94);stroke:rgba(88,180,207,.5);stroke-width:1.5}.art-detail{fill:none;stroke:#316b7d;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.art-detail-soft{fill:none;stroke:rgba(67,130,151,.55);stroke-width:1;stroke-dasharray:4 5}.art-accent{fill:${accent};stroke:${accent}}.art-accent-line{fill:none;stroke:${accent};stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.art-button{fill:#071824;stroke:${accent};stroke-width:1.4}.art-metal{fill:url(#fpb-art-metal);stroke:#526d7b;stroke-width:1.7}</style>`;
++  }
++
++  function loadDeviceArtImage(device){
++    return new Promise((resolve,reject) => {
++      let svg = deviceArtMarkup(device).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ');
++      svg = svg.replace(/(<svg[^>]*>)/,`$1${exportArtStyle(device)}`);
++      const blob = new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
++      const url = URL.createObjectURL(blob);
++      const image = new Image();
++      image.onload = () => {
++        URL.revokeObjectURL(url);
++        resolve(image);
++      };
++      image.onerror = () => {
++        URL.revokeObjectURL(url);
++        reject(new Error('Device artwork could not be rendered.'));
++      };
++      image.src = url;
++    });
++  }
++
++  function drawGrid(ctx,width,height){
++    ctx.save();
++    ctx.strokeStyle = 'rgba(55,132,160,.055)';
++    ctx.lineWidth = 1;
++    for (let x = 0; x < width; x += 32) {
++      ctx.beginPath();
++      ctx.moveTo(x,0);
++      ctx.lineTo(x,height);
++      ctx.stroke();
++    }
++    for (let y = 0; y < height; y += 32) {
++      ctx.beginPath();
++      ctx.moveTo(0,y);
++      ctx.lineTo(width,y);
++      ctx.stroke();
++    }
++    ctx.restore();
++  }
++
++  function canvasCard(ctx,x,y,w,h,r,fill,stroke,lineWidth=1){
++    ctx.save();
++    ctx.beginPath();
++    if (ctx.roundRect) ctx.roundRect(x,y,w,h,r);
++    else {
++      const radius = Math.min(r,w / 2,h / 2);
++      ctx.moveTo(x + radius,y);
++      ctx.arcTo(x + w,y,x + w,y + h,radius);
++      ctx.arcTo(x + w,y + h,x,y + h,radius);
++      ctx.arcTo(x,y + h,x,y,radius);
++      ctx.arcTo(x,y,x + w,y,radius);
++    }
++    if (fill) {
++      ctx.fillStyle = fill;
++      ctx.fill();
++    }
++    if (stroke) {
++      ctx.strokeStyle = stroke;
++      ctx.lineWidth = lineWidth;
++      ctx.stroke();
++    }
++    ctx.restore();
++  }
++
++  function drawEllipsizedText(ctx,text,x,y,maxWidth){
++    const value = String(text ?? '');
++    if (ctx.measureText(value).width <= maxWidth) {
++      ctx.fillText(value,x,y);
++      return;
++    }
++    let low = 0;
++    let high = value.length;
++    while (low < high) {
++      const middle = Math.ceil((low + high) / 2);
++      if (ctx.measureText(`${value.slice(0,middle)}…`).width <= maxWidth) low = middle;
++      else high = middle - 1;
++    }
++    ctx.fillText(`${value.slice(0,low)}…`,x,y);
++  }
++
++  function exportXml(){
++    try {
++      const xml = state.importedXml ? patchImportedXml() : buildNewXml();
++      const filename = `layout_${cleanFilePart(state.profileName)}_exported.xml`;
++      downloadText(filename,xml,'application/xml');
++      toast(`Exported ${filename}.`);
++    } catch (error) {
++      console.error(error);
++      toast(error.message || 'XML export failed.');
++    }
++  }
++
++  function patchImportedXml(){
++    const doc = parseXml(state.importedXml);
++    const root = doc.documentElement;
++    root.setAttribute('profileName',state.profileName);
++    const header = doc.querySelector('CustomisationUIHeader');
++    if (header) header.setAttribute('label',state.profileName);
++
++    doc.querySelectorAll('action > rebind').forEach(rebind => {
++      const input = String(rebind.getAttribute('input') || '').trim();
++      if (/^js[12]_/.test(input)) rebind.remove();
++    });
++
++    state.mappings.forEach(mapping => {
++      let mapNode = [...doc.querySelectorAll('actionmap')].find(node => node.getAttribute('name') === mapping.map);
++      if (!mapNode) {
++        mapNode = doc.createElement('actionmap');
++        mapNode.setAttribute('name',mapping.map);
++        root.appendChild(mapNode);
++      }
++      let actionNode = [...mapNode.querySelectorAll(':scope > action')].find(node => node.getAttribute('name') === mapping.action);
++      if (!actionNode) {
++        actionNode = doc.createElement('action');
++        actionNode.setAttribute('name',mapping.action);
++        mapNode.appendChild(actionNode);
++      }
++      const rebind = doc.createElement('rebind');
++      rebind.setAttribute('input',mapping.input);
++      actionNode.appendChild(rebind);
++    });
++
++    ensureDeviceHeader(doc,1);
++    ensureDeviceHeader(doc,2);
++    ensureJoystickOption(doc,state.slot1,deviceById(state.device1).product);
++    ensureJoystickOption(doc,state.slot2,deviceById(state.device2).product);
++
++    const serialized = new XMLSerializer().serializeToString(doc);
++    return formatXml(`<!-- Celestial Nexus Flight Profile Builder · ${new Date().toISOString()} -->\n${serialized}`);
++  }
++
++  function ensureDeviceHeader(doc,slot){
++    const devices = doc.querySelector('CustomisationUIHeader > devices');
++    if (!devices) return;
++    if (!devices.querySelector(`joystick[instance="${slot}"]`)) {
++      const joystick = doc.createElement('joystick');
++      joystick.setAttribute('instance',String(slot));
++      devices.appendChild(joystick);
++    }
++  }
++
++  function ensureJoystickOption(doc,slot,product){
++    const root = doc.documentElement;
++    let option = doc.querySelector(`options[type="joystick"][instance="${slot}"]`);
++    if (!option) {
++      option = doc.createElement('options');
++      option.setAttribute('type','joystick');
++      option.setAttribute('instance',String(slot));
++      const before = root.querySelector('modifiers, actionmap');
++      root.insertBefore(option,before || null);
++    }
++    option.setAttribute('Product',product);
++  }
++
++  function buildNewXml(){
++    const grouped = new Map();
++    state.mappings.forEach(mapping => {
++      if (!grouped.has(mapping.map)) grouped.set(mapping.map,[]);
++      grouped.get(mapping.map).push(mapping);
++    });
++    const lines = [];
++    lines.push(`<!-- Celestial Nexus Flight Profile Builder · ${new Date().toISOString()} · target ${escapeXml(state.targetBuild)} -->`);
++    lines.push(`<ActionMaps version="1" optionsVersion="2" rebindVersion="2" profileName="${escapeXml(state.profileName)}">`);
++    lines.push(` <CustomisationUIHeader label="${escapeXml(state.profileName)}" description="Generated locally by Celestial Nexus" image="">`);
++    lines.push('  <devices>','   <keyboard instance="1"/>','   <mouse instance="1"/>','   <joystick instance="1"/>','   <joystick instance="2"/>','  </devices>');
++    lines.push('  <categories>','   <category label="@ui_CCSpaceFlight"/>','   <category label="@ui_CCVehicle"/>','   <category label="@ui_CGInteraction"/>','  </categories>',' </CustomisationUIHeader>');
++    lines.push(' <options type="keyboard" instance="1" Product="Keyboard {6F1D2B61-D5A0-11CF-BFC7-444553540000}"/>');
++    const slotProducts = new Map([[state.slot1,deviceById(state.device1).product],[state.slot2,deviceById(state.device2).product]]);
++    [1,2].forEach(slot => lines.push(` <options type="joystick" instance="${slot}" Product="${escapeXml(slotProducts.get(slot) || 'Generic DirectInput Joystick')}"/>`));
++    lines.push(' <modifiers />');
++    [...grouped.keys()].sort().forEach(map => {
++      lines.push(` <actionmap name="${escapeXml(map)}">`);
++      const actionGroups = new Map();
++      grouped.get(map).forEach(mapping => {
++        if (!actionGroups.has(mapping.action)) actionGroups.set(mapping.action,[]);
++        actionGroups.get(mapping.action).push(mapping);
++      });
++      [...actionGroups.keys()].sort().forEach(action => {
++        lines.push(`  <action name="${escapeXml(action)}">`);
++        actionGroups.get(action).sort((a,b) => a.input.localeCompare(b.input)).forEach(mapping => lines.push(`   <rebind input="${escapeXml(mapping.input)}"/>`));
++        lines.push('  </action>');
++      });
++      lines.push(' </actionmap>');
++    });
++    lines.push('</ActionMaps>');
++    return lines.join('\n');
++  }
++
++  function escapeXml(value){
++    return String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[character]));
++  }
++
++  function formatXml(xml){
++    const normalized = xml.replace(/>\s*</g,'><').replace(/></g,'>\n<');
++    const lines = normalized.split('\n');
++    let indent = 0;
++    return lines.map(raw => {
++      const line = raw.trim();
++      if (!line) return '';
++      if (/^<\//.test(line)) indent = Math.max(0,indent - 1);
++      const output = `${' '.repeat(indent)}${line}`;
++      if (/^<[^!?/][^>]*[^/]?>$/.test(line) && !/<\/[^>]+>$/.test(line)) indent += 1;
++      return output;
++    }).filter(Boolean).join('\n');
++  }
++
++  function exportProject(){
++    const payload = {
++      type:'celestial-nexus-flight-profile-project',
++      version:PROJECT_VERSION,
++      exportedAt:new Date().toISOString(),
++      profileName:state.profileName,
++      targetBuild:state.targetBuild,
++      device1:state.device1,
++      device2:state.device2,
++      slot1:state.slot1,
++      slot2:state.slot2,
++      actions:state.actions.filter(item => item.custom),
++      mappings:state.mappings,
++      importedXml:state.importedXml
++    };
++    downloadText(`${cleanFilePart(state.profileName)}.flight-profile.json`,JSON.stringify(payload,null,2),'application/json');
++    toast('Project backup downloaded.');
++  }
++
++  function importProjectText(text){
++    const payload = JSON.parse(text);
++    if (!payload || payload.type !== 'celestial-nexus-flight-profile-project') throw new Error('This is not a Flight Profile Builder project.');
++    state.profileName = String(payload.profileName || state.profileName);
++    state.targetBuild = String(payload.targetBuild || state.targetBuild);
++    state.device1 = DEVICES.some(d => d.id === payload.device1) ? payload.device1 : state.device1;
++    state.device2 = DEVICES.some(d => d.id === payload.device2) ? payload.device2 : state.device2;
++    state.slot1 = Number(payload.slot1) === 2 ? 2 : 1;
++    state.slot2 = Number(payload.slot2) === 1 ? 1 : 2;
++    state.actions = BASE_ACTIONS.map(item => ({...item}));
++    (Array.isArray(payload.actions) ? payload.actions : []).forEach(addActionIfMissing);
++    state.mappings = (Array.isArray(payload.mappings) ? payload.mappings : []).filter(validMapping);
++    state.importedXml = typeof payload.importedXml === 'string' ? payload.importedXml : '';
++    syncFields();
++    populateCategories();
++    renderAll();
++    saveSoon();
++    toast('Project restored.');
++  }
++
++  function downloadText(filename,text,type){
++    downloadBlob(filename,new Blob([text],{type:`${type};charset=utf-8`}));
++  }
++
++  function downloadBlob(filename,blob){
++    const url = URL.createObjectURL(blob);
++    const link = document.createElement('a');
++    link.href = url;
++    link.download = filename;
++    document.body.appendChild(link);
++    link.click();
++    link.remove();
++    setTimeout(() => URL.revokeObjectURL(url),1500);
++  }
++
++  function readFile(file,callback){
++    if (!file) return;
++    const reader = new FileReader();
++    reader.onerror = () => toast('The selected file could not be read.');
++    reader.onload = () => {
++      try { callback(String(reader.result || '')); }
++      catch (error) { console.error(error); toast(error.message || 'Import failed.'); }
++    };
++    reader.readAsText(file);
++  }
++
++  function clearMappings(){
++    if (!state.mappings.length) return;
++    if (!confirm('Clear every joystick mapping in this builder project?')) return;
++    state.mappings = [];
++    renderAll();
++    saveSoon();
++    toast('All mappings cleared.');
++  }
++
++  function resetBuilder(){
++    if (!confirm('Reset the Flight Profile Builder and remove its local autosave?')) return;
++    localStorage.removeItem(STORAGE_KEY);
++    state.profileName = 'Celestial-HOSAS';
++    state.targetBuild = 'Alpha 4.8.x';
++    state.device1 = 't16-left';
++    state.device2 = 't16-right';
++    state.slot1 = 1;
++    state.slot2 = 2;
++    state.selectedAction = '';
++    state.actions = BASE_ACTIONS.map(item => ({...item}));
++    state.mappings = [];
++    state.importedXml = '';
++    syncFields();
++    populateCategories();
++    selectAction('');
++    renderAll();
++    toast('Builder reset.');
++  }
++
++  function normalizeSlots(changed){
++    const slot1 = Number($('fpb-slot-1').value);
++    const slot2 = Number($('fpb-slot-2').value);
++    if (slot1 === slot2) {
++      if (changed === 1) $('fpb-slot-2').value = slot1 === 1 ? '2' : '1';
++      else $('fpb-slot-1').value = slot2 === 1 ? '2' : '1';
++    }
++    state.slot1 = Number($('fpb-slot-1').value);
++    state.slot2 = Number($('fpb-slot-2').value);
++    renderSticks();
++    renderSummary();
++    saveSoon();
++  }
++
++  function startTester(){
++    state.testerActive = true;
++    state.testerPrevious.clear();
++    $('fpb-input-tester').classList.add('active');
++    $('fpb-input-status').textContent = 'Waiting for a browser-visible joystick input…';
++    cancelAnimationFrame(state.testerFrame);
++    testerLoop();
++  }
++
++  function stopTester(){
++    state.testerActive = false;
++    cancelAnimationFrame(state.testerFrame);
++    $('fpb-input-tester').classList.remove('active');
++    document.querySelectorAll('#flight-profile-view .fpb-control.dragover').forEach(node => node.classList.remove('dragover'));
++  }
++
++  function testerLoop(){
++    if (!state.testerActive) return;
++    const pads = navigator.getGamepads ? [...navigator.getGamepads()].filter(Boolean) : [];
++    if (!pads.length) {
++      $('fpb-input-status').textContent = 'No Gamepad API device detected. Connect a stick, press a button, then try again.';
++    } else {
++      let eventText = '';
++      pads.slice(0,2).forEach((pad,padIndex) => {
++        const slot = padIndex === 0 ? state.slot1 : state.slot2;
++        pad.buttons.forEach((button,index) => {
++          const key = `${pad.index}:b${index}`;
++          const previous = Number(state.testerPrevious.get(key) || 0);
++          const value = Number(button.value || (button.pressed ? 1 : 0));
++          if (value > .55 && previous <= .55) {
++            const input = `js${slot}_button${index + 1}`;
++            eventText = `${pad.id}: button ${index + 1} → ${input}`;
++            flashControl(input);
++          }
++          state.testerPrevious.set(key,value);
++        });
++        pad.axes.forEach((value,index) => {
++          const key = `${pad.index}:a${index}`;
++          const previous = Number(state.testerPrevious.get(key) || 0);
++          if (Math.abs(value) > .72 && Math.abs(previous) <= .72) {
++            const device = padIndex === 0 ? deviceById(state.device1) : deviceById(state.device2);
++            const axis = device.axes[index];
++            if (axis) {
++              const input = `js${slot}_${axis}`;
++              eventText = `${pad.id}: axis ${index} (${value.toFixed(2)}) → ${input}`;
++              flashControl(input);
++            } else eventText = `${pad.id}: axis ${index} (${value.toFixed(2)}) · no diagram axis assigned`;
++          }
++          state.testerPrevious.set(key,value);
++        });
++      });
++      if (eventText) $('fpb-input-status').textContent = eventText;
++      else $('fpb-input-status').textContent = `${pads.length} device${pads.length === 1 ? '' : 's'} visible · press a button or move an axis`;
++    }
++    state.testerFrame = requestAnimationFrame(testerLoop);
++  }
++
++  function flashControl(input){
++    const node = document.querySelector(`#flight-profile-view .fpb-control[data-input="${CSS.escape(input)}"]`);
++    if (!node) return;
++    node.classList.add('dragover');
++    setTimeout(() => node.classList.remove('dragover'),600);
++    node.scrollIntoView({block:'nearest',behavior:'smooth'});
++  }
++
++  function bindEvents(){
++    $('fpb-profile-name').addEventListener('input',event => { state.profileName = event.target.value; saveSoon(); });
++    $('fpb-target-build').addEventListener('input',event => { state.targetBuild = event.target.value; saveSoon(); });
++    $('fpb-layout-preset').addEventListener('change',event => applyPreset(event.target.value));
++    $('fpb-action-search').addEventListener('input',renderActions);
++    $('fpb-category-filter').addEventListener('change',renderActions);
++    $('fpb-clear-selection').addEventListener('click',() => selectAction(''));
++    $('fpb-clear-mappings').addEventListener('click',clearMappings);
++    $('fpb-add-action').addEventListener('click',addCustomAction);
++    $('fpb-reset-btn').addEventListener('click',resetBuilder);
++
++    $('fpb-device-1').addEventListener('change',event => { state.device1 = event.target.value; renderAll(); saveSoon(); });
++    $('fpb-device-2').addEventListener('change',event => { state.device2 = event.target.value; renderAll(); saveSoon(); });
++    $('fpb-slot-1').addEventListener('change',() => normalizeSlots(1));
++    $('fpb-slot-2').addEventListener('change',() => normalizeSlots(2));
++
++    $('fpb-import-xml-btn').addEventListener('click',() => $('fpb-import-xml').click());
++    $('fpb-import-xml').addEventListener('change',event => { readFile(event.target.files?.[0],importXmlText); event.target.value = ''; });
++    $('fpb-export-xml-btn').addEventListener('click',exportXml);
++    $('fpb-export-image-btn').addEventListener('click',exportProfileImage);
++    $('fpb-import-project-btn').addEventListener('click',() => $('fpb-import-project').click());
++    $('fpb-import-project').addEventListener('change',event => { readFile(event.target.files?.[0],importProjectText); event.target.value = ''; });
++    $('fpb-export-project-btn').addEventListener('click',exportProject);
++
++    $('fpb-test-inputs').addEventListener('click',startTester);
++    $('fpb-stop-inputs').addEventListener('click',stopTester);
++    window.addEventListener('gamepadconnected',event => { if (state.testerActive) $('fpb-input-status').textContent = `Connected: ${event.gamepad.id}`; });
++    window.addEventListener('nexus:viewchange',event => { if (event.detail?.viewId !== 'flight-profile-view') { stopTester(); finishDrag(); } });
++    document.addEventListener('dragend',() => finishDrag());
++    document.addEventListener('keydown',event => { if (event.key === 'Escape') finishDrag(); });
++  }
++
++  function initialize(){
++    if (state.initialized || !$('flight-profile-view')) return;
++    state.initialized = true;
++    loadState();
++    syncFields();
++    populateCategories();
++    bindEvents();
++    selectAction('');
++    renderAll();
++  }
++
++  window.nexusInitializeFlightProfileBuilder = initialize;
++})();
++</script>
++
+ </body>
+ </html>
+ 

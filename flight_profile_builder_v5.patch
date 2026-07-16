@@ -1,0 +1,202 @@
+--- a/index.html
++++ b/index.html
+@@ -9133,7 +9133,7 @@
+       <div class="fpb-actions">
+         <button class="fpb-btn primary" id="fpb-import-xml-btn" type="button">↥ Import SC XML</button>
+         <button class="fpb-btn" id="fpb-export-xml-btn" type="button">↧ Export SC XML</button>
+-        <button class="fpb-btn schematic" id="fpb-export-schematic-btn" type="button" title="Download a print-friendly technical diagram with callouts around each flight control">⌁ Export schematic PNG</button>
++        <button class="fpb-btn schematic" id="fpb-export-schematic-btn" type="button" title="Download a dark technical diagram with callouts around each flight control">⌁ Export schematic PNG</button>
+         <button class="fpb-btn image" id="fpb-export-image-btn" type="button" title="Download the detailed dark-theme mapping overview">▣ Export mapping list</button>
+         <button class="fpb-btn" id="fpb-import-project-btn" type="button">Import project</button>
+         <button class="fpb-btn" id="fpb-export-project-btn" type="button">Backup project</button>
+@@ -9172,7 +9172,7 @@
+     </aside>
+   </section>
+ 
+-  <details class="fpb-panel fpb-guide"><summary>Export and installation guide</summary><div class="fpb-guide-body"><p><strong>Recommended workflow:</strong> export a small current-patch profile from Star Citizen, import it here, make changes, and export it again. This preserves unknown actions, tuning nodes, modifiers, and patch-specific metadata.</p><p>Place the exported file in <code>StarCitizen\LIVE\USER\Client\0\Controls\Mappings</code>, then select it from Options → Keybindings → Advanced Controls Customization → Control Profiles. You can also use <code>pp_RebindKeys &lt;filename&gt;</code> from the in-game console.</p><p>Keep a project JSON backup as well as the game XML. Project files retain the selected device diagrams and builder metadata.</p><p><strong>Sharing:</strong> Export schematic PNG creates a print-friendly callout diagram inspired by traditional HOTAS reference sheets. Export mapping list keeps the compact dark-theme overview with every action ID for troubleshooting.</p></div></details>
++  <details class="fpb-panel fpb-guide"><summary>Export and installation guide</summary><div class="fpb-guide-body"><p><strong>Recommended workflow:</strong> export a small current-patch profile from Star Citizen, import it here, make changes, and export it again. This preserves unknown actions, tuning nodes, modifiers, and patch-specific metadata.</p><p>Place the exported file in <code>StarCitizen\LIVE\USER\Client\0\Controls\Mappings</code>, then select it from Options → Keybindings → Advanced Controls Customization → Control Profiles. You can also use <code>pp_RebindKeys &lt;filename&gt;</code> from the in-game console.</p><p>Keep a project JSON backup as well as the game XML. Project files retain the selected device diagrams and builder metadata.</p><p><strong>Sharing:</strong> Export schematic PNG creates a dark, high-contrast callout diagram inspired by traditional HOTAS reference sheets. Export mapping list keeps the compact dark-theme overview with every action ID for troubleshooting.</p></div></details>
+ </main>
+ <div class="fpb-toast" id="fpb-toast" role="status" aria-live="polite"></div>
+ </section>
+@@ -51637,7 +51637,17 @@
+     const ctx = canvas.getContext('2d');
+     if (!ctx) throw new Error('Canvas rendering is unavailable in this browser.');
+ 
+-    ctx.fillStyle = '#f7fafc';
++    const pageGradient = ctx.createLinearGradient(0,0,0,height);
++    pageGradient.addColorStop(0,'#050c13');
++    pageGradient.addColorStop(.42,'#07111a');
++    pageGradient.addColorStop(1,'#03080d');
++    ctx.fillStyle = pageGradient;
++    ctx.fillRect(0,0,width,height);
++    const pageGlow = ctx.createRadialGradient(width * .5,headerHeight + 420,40,width * .5,headerHeight + 420,width * .64);
++    pageGlow.addColorStop(0,'rgba(34,151,178,.12)');
++    pageGlow.addColorStop(.48,'rgba(14,73,92,.055)');
++    pageGlow.addColorStop(1,'rgba(0,0,0,0)');
++    ctx.fillStyle = pageGlow;
+     ctx.fillRect(0,0,width,height);
+     drawSchematicPaperGrid(ctx,width,height);
+ 
+@@ -51675,7 +51685,7 @@
+       ctx.fillText(item[0],x + 18,139);
+     });
+ 
+-    ctx.fillStyle = '#647d89';
++    ctx.fillStyle = '#7899a8';
+     ctx.font = '600 16px system-ui, -apple-system, Segoe UI, sans-serif';
+     ctx.fillText('Assigned controls are arranged automatically around each device. Leader lines point to the approximate physical control region.',pageMargin,headerHeight - 28);
+ 
+@@ -51687,17 +51697,17 @@
+     });
+ 
+     const footerY = height - footerHeight;
+-    ctx.strokeStyle = '#c7d5dc';
++    ctx.strokeStyle = '#173b4b';
+     ctx.lineWidth = 2;
+     ctx.beginPath();
+     ctx.moveTo(pageMargin,footerY + 10);
+     ctx.lineTo(width - pageMargin,footerY + 10);
+     ctx.stroke();
+-    ctx.fillStyle = '#657d89';
++    ctx.fillStyle = '#688797';
+     ctx.font = '600 14px ui-monospace, SFMono-Regular, Consolas, monospace';
+     ctx.fillText(`GENERATED LOCALLY · ${new Date().toLocaleString()} · VERIFY BUTTON NUMBERS IN GAME`,pageMargin,footerY + 50);
+     ctx.textAlign = 'right';
+-    ctx.fillStyle = '#167f99';
++    ctx.fillStyle = '#42d9f5';
+     ctx.fillText('CELESTIAL NEXUS FLIGHT PROFILE BUILDER',width - pageMargin,footerY + 50);
+     ctx.textAlign = 'left';
+     return canvas;
+@@ -51755,13 +51765,13 @@
+ 
+   function drawSchematicDeviceSection(ctx,x,y,w,h,data,artImage){
+     ctx.save();
+-    canvasCard(ctx,x,y,w,h,24,'rgba(255,255,255,.94)','#c5d5dd',2);
+-    ctx.fillStyle = '#eef5f8';
++    canvasCard(ctx,x,y,w,h,24,'rgba(5,15,23,.96)','#173d4f',2);
++    ctx.fillStyle = '#0a1b27';
+     ctx.fillRect(x + 2,y + 2,w - 4,94);
+-    ctx.fillStyle = '#0d2633';
++    ctx.fillStyle = '#e8f6fd';
+     ctx.font = '800 28px system-ui, -apple-system, Segoe UI, sans-serif';
+     drawEllipsizedText(ctx,data.device.name,x + 30,y + 42,w - 260);
+-    ctx.fillStyle = '#607c89';
++    ctx.fillStyle = '#7399aa';
+     ctx.font = '700 14px ui-monospace, SFMono-Regular, Consolas, monospace';
+     ctx.fillText(`${data.device.buttons} BUTTONS · ${data.device.hats} HAT${data.device.hats === 1 ? '' : 'S'} · ${data.device.axes.length} AXES · ${data.groups.length} ASSIGNED CONTROLS`,x + 31,y + 70);
+     canvasCard(ctx,x + w - 112,y + 22,78,43,21,'#0b3442','#42cce5',2);
+@@ -51786,7 +51796,7 @@
+       }
+       ctx.restore();
+     } else {
+-      ctx.strokeStyle = '#9bb0ba';
++      ctx.strokeStyle = '#467386';
+       ctx.lineWidth = 4;
+       ctx.beginPath();
+       ctx.ellipse(x + w / 2,artTop + layout.artHeight - 35,layout.artWidth * .36,30,0,0,Math.PI * 2);
+@@ -51806,8 +51816,8 @@
+     rightPlaced.forEach(item => drawSchematicCallout(ctx,rightBoxX,item.y,438,item,data,artX,artTop,layout.artWidth,layout.artHeight,'right'));
+ 
+     if (!data.groups.length) {
+-      canvasCard(ctx,x + w / 2 - 250,y + h / 2 - 48,500,96,16,'rgba(255,255,255,.96)','#b8cbd5',2);
+-      ctx.fillStyle = '#4e6976';
++      canvasCard(ctx,x + w / 2 - 250,y + h / 2 - 48,500,96,16,'rgba(7,22,32,.96)','#24495a',2);
++      ctx.fillStyle = '#86a8b7';
+       ctx.font = '700 22px system-ui, -apple-system, Segoe UI, sans-serif';
+       ctx.textAlign = 'center';
+       ctx.fillText('No controls assigned to this device.',x + w / 2,y + h / 2 + 8);
+@@ -51841,23 +51851,23 @@
+     drawSchematicLeader(ctx,lineStartX,lineStartY,anchor.x,anchor.y,side,accent);
+ 
+     ctx.save();
+-    ctx.shadowColor = 'rgba(14,37,49,.13)';
++    ctx.shadowColor = 'rgba(0,0,0,.48)';
+     ctx.shadowBlur = 14;
+     ctx.shadowOffsetY = 5;
+-    canvasCard(ctx,x,y,w,item.height,14,'#ffffff','#aebfc8',1.5);
++    canvasCard(ctx,x,y,w,item.height,14,'#091721','#25495a',1.5);
+     ctx.restore();
+     ctx.fillStyle = accent;
+     ctx.fillRect(x,y,8,item.height);
+-    canvasCard(ctx,x + 20,y + 18,84,36,9,`${accent}14`,`${accent}80`,1.5);
++    canvasCard(ctx,x + 20,y + 18,84,36,9,`${accent}22`,`${accent}aa`,1.5);
+     ctx.fillStyle = accent;
+     ctx.font = '850 14px ui-monospace, SFMono-Regular, Consolas, monospace';
+     ctx.textAlign = 'center';
+     ctx.fillText(compactInputLabel(item.input),x + 62,y + 41);
+     ctx.textAlign = 'left';
+-    ctx.fillStyle = '#6f8490';
++    ctx.fillStyle = '#7fa4b3';
+     ctx.font = '750 11px ui-monospace, SFMono-Regular, Consolas, monospace';
+     ctx.fillText(shared ? `${item.mappings.length} SHARED ACTIONS` : kind.toUpperCase(),x + 119,y + 29);
+-    ctx.fillStyle = '#18313e';
++    ctx.fillStyle = '#e6f4fa';
+     ctx.font = '800 17px system-ui, -apple-system, Segoe UI, sans-serif';
+     drawEllipsizedText(ctx,item.mappings.length === 1 ? (findAction(item.mappings[0])?.label || titleize(item.mappings[0].action)) : 'Shared control',x + 119,y + 51,w - 137);
+ 
+@@ -51865,7 +51875,7 @@
+     let rowY = y + 77;
+     visible.forEach((mapping,index) => {
+       if (index) {
+-        ctx.strokeStyle = '#e1e9ed';
++        ctx.strokeStyle = '#17313e';
+         ctx.lineWidth = 1;
+         ctx.beginPath();
+         ctx.moveTo(x + 22,rowY - 10);
+@@ -51873,10 +51883,10 @@
+         ctx.stroke();
+       }
+       const action = findAction(mapping);
+-      ctx.fillStyle = '#263f4b';
++      ctx.fillStyle = '#cde4ed';
+       ctx.font = '700 14px system-ui, -apple-system, Segoe UI, sans-serif';
+       drawEllipsizedText(ctx,action?.label || titleize(mapping.action),x + 24,rowY,w - 48);
+-      ctx.fillStyle = '#82949d';
++      ctx.fillStyle = '#6f91a0';
+       ctx.font = '600 10px ui-monospace, SFMono-Regular, Consolas, monospace';
+       drawEllipsizedText(ctx,`${mapping.map} · ${mapping.action}`,x + 24,rowY + 16,w - 48);
+       rowY += 30;
+@@ -51892,7 +51902,7 @@
+     ctx.save();
+     const direction = side === 'left' ? 1 : -1;
+     const elbowX = startX + direction * Math.max(42,Math.min(126,Math.abs(endX - startX) * .34));
+-    ctx.strokeStyle = '#344d59';
++    ctx.strokeStyle = '#5d8394';
+     ctx.lineWidth = 2.4;
+     ctx.lineJoin = 'round';
+     ctx.beginPath();
+@@ -51901,14 +51911,14 @@
+     ctx.lineTo(endX,endY);
+     ctx.stroke();
+     const angle = Math.atan2(endY - startY,endX - elbowX);
+-    ctx.fillStyle = '#344d59';
++    ctx.fillStyle = '#5d8394';
+     ctx.beginPath();
+     ctx.moveTo(endX,endY);
+     ctx.lineTo(endX - 15 * Math.cos(angle - Math.PI / 7),endY - 15 * Math.sin(angle - Math.PI / 7));
+     ctx.lineTo(endX - 15 * Math.cos(angle + Math.PI / 7),endY - 15 * Math.sin(angle + Math.PI / 7));
+     ctx.closePath();
+     ctx.fill();
+-    ctx.fillStyle = '#ffffff';
++    ctx.fillStyle = '#07131d';
+     ctx.strokeStyle = accent;
+     ctx.lineWidth = 4;
+     ctx.beginPath();
+@@ -51979,7 +51989,7 @@
+   function loadDeviceSchematicImage(device){
+     return new Promise((resolve,reject) => {
+       const accent = deviceAccent(device);
+-      const style = `<style>svg{--art-accent:${accent}}.art-shadow{fill:rgba(40,64,74,.08)}.art-body{fill:rgba(244,248,250,.92);stroke:#aabac2;stroke-width:2.1}.art-body-dark{fill:rgba(231,238,242,.88);stroke:#9aadb7;stroke-width:2}.art-panel{fill:rgba(248,251,252,.96);stroke:#a6b8c1;stroke-width:1.6}.art-detail{fill:none;stroke:#a5b4bc;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}.art-detail-soft{fill:none;stroke:#c2cdd2;stroke-width:1;stroke-dasharray:4 5}.art-accent{fill:${accent};fill-opacity:.22;stroke:${accent};stroke-width:1.8}.art-accent-line{fill:none;stroke:${accent};stroke-opacity:.7;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.art-button{fill:#ffffff;stroke:#8ca2ad;stroke-width:1.5}.art-metal{fill:rgba(223,231,235,.92);stroke:#96aab4;stroke-width:1.8}</style>`;
++      const style = `<style>svg{--art-accent:${accent};filter:drop-shadow(0 12px 18px rgba(0,0,0,.38))}.art-shadow{fill:rgba(0,0,0,.38)}.art-body{fill:rgba(8,24,34,.9);stroke:#4d7d90;stroke-width:2.1}.art-body-dark{fill:rgba(3,12,19,.96);stroke:#365d70;stroke-width:2}.art-panel{fill:rgba(9,29,41,.96);stroke:#416e81;stroke-width:1.6}.art-detail{fill:none;stroke:#568193;stroke-width:1.45;stroke-linecap:round;stroke-linejoin:round}.art-detail-soft{fill:none;stroke:#294b5a;stroke-width:1;stroke-dasharray:4 5}.art-accent{fill:${accent};fill-opacity:.2;stroke:${accent};stroke-width:1.8}.art-accent-line{fill:none;stroke:${accent};stroke-opacity:.88;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.art-button{fill:#08151f;stroke:#6392a4;stroke-width:1.5}.art-metal{fill:rgba(14,36,48,.96);stroke:#52798a;stroke-width:1.8}</style>`;
+       let svg = deviceArtMarkup(device).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ');
+       svg = svg.replace(/(<svg[^>]*>)/,`$1${style}`);
+       const blob = new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
+@@ -51999,7 +52009,7 @@
+ 
+   function drawSchematicPaperGrid(ctx,width,height){
+     ctx.save();
+-    ctx.strokeStyle = 'rgba(89,126,143,.045)';
++    ctx.strokeStyle = 'rgba(74,149,174,.075)';
+     ctx.lineWidth = 1;
+     for (let x = 0; x <= width; x += 36) {
+       ctx.beginPath();

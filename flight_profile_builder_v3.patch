@@ -1,0 +1,717 @@
+--- a/index.html
++++ b/index.html
+@@ -8664,6 +8664,34 @@
+ @media(max-width:920px){.fpb-stick-silhouette{width:clamp(148px,30%,205px)}.fpb-control-layer{column-gap:clamp(100px,27%,170px)}}
+ @media(max-width:600px){.fpb-stick-silhouette{width:140px}.fpb-control-layer{column-gap:92px}.fpb-stick-canvas{min-height:590px}}
+ 
++/* V3 interaction pass — reliable native drag/drop and shareable image export. */
++.fpb-btn.image{border-color:#6c4ea3;background:linear-gradient(135deg,rgba(87,52,142,.92),rgba(34,77,124,.9));color:#efe9ff}
++.fpb-btn.image:hover{border-color:#a887ea;background:linear-gradient(135deg,#6943a8,#245f96)}
++.fpb-btn:disabled{cursor:wait;opacity:.62;transform:none}
++.fpb-drag-hint{display:block;margin-top:5px;color:#638395;font:600 8px/1.35 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.025em}
++.fpb-action{grid-template-columns:12px 31px minmax(0,1fr)}
++.fpb-action-grip,.fpb-map-grip{color:#42677a;font:800 12px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:-4px;cursor:grab;user-select:none}
++.fpb-action:active,.fpb-map-row:active,.fpb-control-map:active{cursor:grabbing}
++.fpb-action.dragging,.fpb-map-row.dragging,.fpb-control-map.dragging{opacity:.34;filter:saturate(.65)}
++.fpb-drag-active .fpb-control{border-style:dashed;box-shadow:inset 0 0 0 1px rgba(66,217,245,.045)}
++.fpb-drag-active .fpb-control:hover,.fpb-control.dragover{border-style:solid;border-color:#62e8fb;background:#0b3043;box-shadow:0 0 0 4px rgba(66,217,245,.11),0 0 24px rgba(49,197,225,.16);transform:translateY(-1px)}
++.fpb-control.copy-target{border-color:#b691f4!important;box-shadow:0 0 0 4px rgba(167,139,250,.13),0 0 24px rgba(167,139,250,.16)!important}
++.fpb-control.copy-target:after{content:"COPY";position:absolute;right:4px;top:3px;padding:2px 4px;border-radius:4px;background:#5b3d91;color:#efe8ff;font:800 5px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
++.fpb-control.assigned{min-height:42px;padding:4px 5px 3px;display:grid;grid-template-rows:auto minmax(0,1fr);gap:2px}
++.fpb-control-code{display:block;line-height:1;pointer-events:none}
++.fpb-control-mappings{display:flex;align-items:center;justify-content:center;gap:3px;min-width:0;width:100%;overflow:hidden}
++.fpb-control-map{display:block;min-width:0;max-width:100%;padding:2px 4px;border:1px solid rgba(255,255,255,.18);border-radius:4px;background:rgba(2,11,18,.28);color:#eefaff;font:600 5.5px/1 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:grab}
++.fpb-control.shared .fpb-control-map{max-width:50%}
++.fpb-control-map:hover{border-color:rgba(255,255,255,.5);background:rgba(2,11,18,.48)}
++.fpb-map-row{padding-left:27px;cursor:grab;transition:.14s ease}
++.fpb-map-row:hover{border-color:#26536b;background:#071a27;transform:translateX(1px)}
++.fpb-map-row .fpb-map-grip{position:absolute;left:9px;top:12px}
++.fpb-map-row strong,.fpb-map-row small{pointer-events:none}
++.fpb-drag-ghost{position:fixed;left:-1000px;top:-1000px;z-index:100000;display:flex;align-items:center;gap:9px;max-width:310px;padding:9px 12px;border:1px solid #55dff5;border-radius:9px;background:#071b28;color:#e8f9ff;box-shadow:0 14px 34px rgba(0,0,0,.5);font:700 11px/1 system-ui,-apple-system,Segoe UI,sans-serif;pointer-events:none}
++.fpb-drag-ghost span{padding:4px 6px;border-radius:5px;background:#0c526b;color:#76ecfa;font:800 7px/1 ui-monospace,SFMono-Regular,Consolas,monospace;letter-spacing:.08em}
++.fpb-drag-ghost strong{min-width:0;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
++@media(max-width:600px){.fpb-drag-hint{max-width:310px}.fpb-control.assigned{min-height:45px}.fpb-control-map{font-size:5px}}
++
+ </style>
+ </head>
+ <body>
+@@ -9103,6 +9131,7 @@
+       <div class="fpb-actions">
+         <button class="fpb-btn primary" id="fpb-import-xml-btn" type="button">↥ Import SC XML</button>
+         <button class="fpb-btn" id="fpb-export-xml-btn" type="button">↧ Export SC XML</button>
++        <button class="fpb-btn image" id="fpb-export-image-btn" type="button" title="Download a shareable PNG overview of this profile">▣ Export profile image</button>
+         <button class="fpb-btn" id="fpb-import-project-btn" type="button">Import project</button>
+         <button class="fpb-btn" id="fpb-export-project-btn" type="button">Backup project</button>
+         <button class="fpb-btn danger" id="fpb-reset-btn" type="button">Reset</button>
+@@ -9124,13 +9153,13 @@
+ 
+   <section class="fpb-workspace">
+     <aside class="fpb-panel fpb-library">
+-      <div class="fpb-library-head"><div class="fpb-library-head-top"><div><h2>Action library</h2><p>Drag an action to a control, or select it and tap a control.</p></div><span class="fpb-counter" id="fpb-action-count">0/0</span></div><div class="fpb-search"><input id="fpb-action-search" type="search" placeholder="Search actions or IDs…"/><select id="fpb-category-filter"><option value="all">All categories</option></select></div></div>
++      <div class="fpb-library-head"><div class="fpb-library-head-top"><div><h2>Action library</h2><p>Drag an action onto any control. Drag an assigned action again to move it.</p></div><span class="fpb-counter" id="fpb-action-count">0/0</span></div><div class="fpb-search"><input id="fpb-action-search" type="search" placeholder="Search actions or IDs…"/><select id="fpb-category-filter"><option value="all">All categories</option></select></div></div>
+       <div class="fpb-action-list" id="fpb-action-list"></div>
+       <div class="fpb-library-footer"><button class="fpb-btn" id="fpb-add-action" type="button">＋ Add a custom / patch action</button></div>
+     </aside>
+ 
+     <section class="fpb-panel fpb-mapper">
+-      <div class="fpb-selection-bar"><span id="fpb-selected-copy">Selected: <strong>none</strong> · choose an action</span><div class="fpb-actions" style="margin:0"><button class="fpb-btn small" id="fpb-clear-selection" type="button">Clear selection</button><button class="fpb-btn small danger" id="fpb-clear-mappings" type="button">Clear mappings</button></div></div>
++      <div class="fpb-selection-bar"><div><span id="fpb-selected-copy">Selected: <strong>none</strong> · choose an action</span><small class="fpb-drag-hint">Drop to assign · drag a mapped label to move · hold Alt/Option while dropping to copy</small></div><div class="fpb-actions" style="margin:0"><button class="fpb-btn small" id="fpb-clear-selection" type="button">Clear selection</button><button class="fpb-btn small danger" id="fpb-clear-mappings" type="button">Clear mappings</button></div></div>
+       <div class="fpb-stick-grid" id="fpb-stick-grid"></div>
+     </section>
+ 
+@@ -9140,7 +9169,7 @@
+     </aside>
+   </section>
+ 
+-  <details class="fpb-panel fpb-guide"><summary>Export and installation guide</summary><div class="fpb-guide-body"><p><strong>Recommended workflow:</strong> export a small current-patch profile from Star Citizen, import it here, make changes, and export it again. This preserves unknown actions, tuning nodes, modifiers, and patch-specific metadata.</p><p>Place the exported file in <code>StarCitizen\LIVE\USER\Client\0\Controls\Mappings</code>, then select it from Options → Keybindings → Advanced Controls Customization → Control Profiles. You can also use <code>pp_RebindKeys &lt;filename&gt;</code> from the in-game console.</p><p>Keep a project JSON backup as well as the game XML. Project files retain the selected device diagrams and builder metadata.</p></div></details>
++  <details class="fpb-panel fpb-guide"><summary>Export and installation guide</summary><div class="fpb-guide-body"><p><strong>Recommended workflow:</strong> export a small current-patch profile from Star Citizen, import it here, make changes, and export it again. This preserves unknown actions, tuning nodes, modifiers, and patch-specific metadata.</p><p>Place the exported file in <code>StarCitizen\LIVE\USER\Client\0\Controls\Mappings</code>, then select it from Options → Keybindings → Advanced Controls Customization → Control Profiles. You can also use <code>pp_RebindKeys &lt;filename&gt;</code> from the in-game console.</p><p>Keep a project JSON backup as well as the game XML. Project files retain the selected device diagrams and builder metadata.</p><p><strong>Sharing:</strong> Export profile image creates a polished PNG reference sheet with both devices, every assigned input, shared-control warnings, and the action IDs needed for troubleshooting.</p></div></details>
+ </main>
+ <div class="fpb-toast" id="fpb-toast" role="status" aria-live="polite"></div>
+ </section>
+@@ -50744,6 +50773,7 @@
+ 
+   const STORAGE_KEY = 'celestialNexusFlightProfileBuilderV1';
+   const PROJECT_VERSION = 1;
++  const DRAG_MIME = 'application/x-celestial-flight-profile';
+ 
+   const DEVICES = [
+     {id:'t16-left', name:'Thrustmaster T.16000M — Left', product:'T.16000M {B10A044F-0000-0000-0000-504944564944}', buttons:16, hats:1, axes:['x','y','rotz','slider1']},
+@@ -50877,7 +50907,9 @@
+     testerFrame:0,
+     testerPrevious:new Map(),
+     saveTimer:0,
+-    toastTimer:0
++    toastTimer:0,
++    dragPayload:null,
++    dragGhost:null
+   };
+ 
+   const $ = id => document.getElementById(id);
+@@ -51027,6 +51059,13 @@
+       row.className = `fpb-action${state.selectedAction === key ? ' selected' : ''}${mappedKeys.has(key) ? ' mapped' : ''}`;
+       row.draggable = true;
+       row.dataset.actionKey = key;
++      row.setAttribute('role','button');
++      row.setAttribute('tabindex','0');
++      row.setAttribute('aria-label',`Drag ${action.label} to a flight-stick control`);
++      const grip = document.createElement('span');
++      grip.className = 'fpb-action-grip';
++      grip.textContent = '⋮⋮';
++      grip.setAttribute('aria-hidden','true');
+       const icon = document.createElement('span');
+       icon.className = 'fpb-action-icon';
+       icon.textContent = action.kind === 'axis' ? 'AX' : '●';
+@@ -51036,13 +51075,19 @@
+       const small = document.createElement('small');
+       small.textContent = `${action.map} · ${action.id}`;
+       copy.append(strong,small);
+-      row.append(icon,copy);
++      row.append(grip,icon,copy);
+       row.addEventListener('click', () => selectAction(key));
++      row.addEventListener('keydown', event => {
++        if (event.key === 'Enter' || event.key === ' ') {
++          event.preventDefault();
++          selectAction(key);
++        }
++      });
+       row.addEventListener('dragstart', event => {
+-        event.dataTransfer.effectAllowed = 'copy';
+-        event.dataTransfer.setData('text/x-fpb-action', key);
+-        selectAction(key);
++        selectAction(key,{render:false});
++        beginDrag(event,row,{type:'action',actionKey:key},action.label);
+       });
++      row.addEventListener('dragend', () => finishDrag(row));
+       list.appendChild(row);
+     });
+     const mappedCount = mappedKeys.size;
+@@ -51055,13 +51100,13 @@
+     }
+   }
+ 
+-  function selectAction(key){
++  function selectAction(key,{render=true}={}){
+     state.selectedAction = key || '';
+     const action = selectedAction();
+     $('fpb-selected-copy').innerHTML = action
+-      ? `Selected: <strong>${escapeHtml(action.label)}</strong> · drop onto a control`
++      ? `Selected: <strong>${escapeHtml(action.label)}</strong> · drag or click a control`
+       : 'Selected: <strong>none</strong> · choose an action';
+-    renderActions();
++    if (render) renderActions();
+   }
+ 
+   function escapeHtml(value){
+@@ -51186,24 +51231,163 @@
+     control.type = 'button';
+     control.className = `fpb-control ${type}${mappings.length ? ' assigned' : ''}${mappings.length > 1 ? ' shared' : ''}`;
+     control.dataset.input = input;
+-    control.title = mappings.length ? mappings.map(mappingLabel).join('\n') : `${input} · unassigned`;
++    control.title = mappings.length ? `${mappings.map(mappingLabel).join('\n')}\n\nDrop another action here, or drag a mapped label to move it.` : `${input} · drop an action here`;
+     const text = document.createElement('span');
++    text.className = 'fpb-control-code';
+     text.textContent = label;
+-    const mapped = document.createElement('em');
+-    mapped.textContent = mappings.length ? mappings.map(mapping => findAction(mapping)?.label || mapping.action).join(' + ') : '';
+-    control.append(text,mapped);
++    const mappedWrap = document.createElement('span');
++    mappedWrap.className = 'fpb-control-mappings';
++    mappings.forEach(mapping => {
++      const action = findAction(mapping);
++      const chip = document.createElement('span');
++      chip.className = 'fpb-control-map';
++      chip.draggable = true;
++      chip.textContent = action?.label || mapping.action;
++      chip.title = `Drag to move ${action?.label || mapping.action}. Hold Alt/Option while dropping to copy.`;
++      chip.addEventListener('click', event => {
++        event.stopPropagation();
++        selectAction(actionKey(mapping.map,mapping.action));
++      });
++      chip.addEventListener('dragstart', event => {
++        event.stopPropagation();
++        beginDrag(event,chip,{type:'mapping',map:mapping.map,action:mapping.action,input:mapping.input},action?.label || mapping.action);
++      });
++      chip.addEventListener('dragend', event => {
++        event.stopPropagation();
++        finishDrag(chip);
++      });
++      mappedWrap.appendChild(chip);
++    });
++    control.append(text,mappedWrap);
+     control.addEventListener('click', () => assignSelectedToInput(input));
+-    control.addEventListener('dragover', event => { event.preventDefault(); control.classList.add('dragover'); });
+-    control.addEventListener('dragleave', () => control.classList.remove('dragover'));
++    control.addEventListener('dragenter', event => {
++      if (!state.dragPayload && !readDragPayload(event)) return;
++      event.preventDefault();
++      control.classList.add('dragover');
++    });
++    control.addEventListener('dragover', event => {
++      const payload = state.dragPayload || readDragPayload(event);
++      if (!payload) return;
++      event.preventDefault();
++      if (event.dataTransfer) event.dataTransfer.dropEffect = payload.type === 'mapping' && !event.altKey ? 'move' : 'copy';
++      control.classList.add('dragover');
++      control.classList.toggle('copy-target',!!event.altKey && payload.type === 'mapping');
++    });
++    control.addEventListener('dragleave', event => {
++      if (event.relatedTarget && control.contains(event.relatedTarget)) return;
++      control.classList.remove('dragover','copy-target');
++    });
+     control.addEventListener('drop', event => {
+       event.preventDefault();
+-      control.classList.remove('dragover');
+-      const key = event.dataTransfer.getData('text/x-fpb-action') || state.selectedAction;
+-      if (key) addMappingByKey(key,input);
++      event.stopPropagation();
++      control.classList.remove('dragover','copy-target');
++      const payload = readDragPayload(event) || state.dragPayload;
++      if (payload) dropPayloadOnInput(payload,input,event);
+     });
+     return control;
+   }
+ 
++  function beginDrag(event,source,payload,label){
++    state.dragPayload = payload;
++    source.classList.add('dragging');
++    $('flight-profile-view')?.classList.add('fpb-drag-active');
++    const encoded = JSON.stringify(payload);
++    if (event.dataTransfer) {
++      event.dataTransfer.effectAllowed = payload.type === 'mapping' ? 'copyMove' : 'copy';
++      try { event.dataTransfer.setData(DRAG_MIME,encoded); } catch (_) {}
++      try { event.dataTransfer.setData('text/plain',`celestial-fpb:${encoded}`); } catch (_) {}
++      const ghost = document.createElement('div');
++      ghost.className = 'fpb-drag-ghost';
++      ghost.innerHTML = `<span>${payload.type === 'mapping' ? 'MOVE' : 'MAP'}</span><strong>${escapeHtml(label)}</strong>`;
++      document.body.appendChild(ghost);
++      state.dragGhost?.remove();
++      state.dragGhost = ghost;
++      try { event.dataTransfer.setDragImage(ghost,18,18); } catch (_) {}
++    }
++  }
++
++  function readDragPayload(event){
++    const transfer = event?.dataTransfer;
++    if (!transfer) return state.dragPayload;
++    const candidates = [];
++    try { candidates.push(transfer.getData(DRAG_MIME)); } catch (_) {}
++    try { candidates.push(transfer.getData('text/plain')); } catch (_) {}
++    for (let value of candidates) {
++      if (!value) continue;
++      if (value.startsWith('celestial-fpb:')) value = value.slice('celestial-fpb:'.length);
++      try {
++        const payload = JSON.parse(value);
++        if (payload && (payload.type === 'action' || payload.type === 'mapping')) return payload;
++      } catch (_) {}
++    }
++    return state.dragPayload;
++  }
++
++  function finishDrag(source){
++    source?.classList.remove('dragging');
++    document.querySelectorAll('#flight-profile-view .dragging,#flight-profile-view .dragover,#flight-profile-view .copy-target').forEach(node => node.classList.remove('dragging','dragover','copy-target'));
++    $('flight-profile-view')?.classList.remove('fpb-drag-active');
++    state.dragGhost?.remove();
++    state.dragGhost = null;
++    state.dragPayload = null;
++  }
++
++  function dropPayloadOnInput(payload,input,event){
++    if (payload.type === 'mapping') moveMappingToInput(payload,input,!!event.altKey);
++    else if (payload.type === 'action') ensureActionMapping(payload.actionKey,input);
++    finishDrag();
++  }
++
++  function ensureActionMapping(key,input){
++    const action = state.actions.find(item => actionKey(item.map,item.id) === key);
++    if (!action) return;
++    const exists = state.mappings.some(mapping => mapping.map === action.map && mapping.action === action.id && mapping.input === input);
++    if (exists) {
++      toast(`${action.label} is already mapped to ${input}.`);
++      flashControl(input);
++      return;
++    }
++    state.mappings.push({map:action.map,action:action.id,input});
++    const shared = state.mappings.filter(mapping => mapping.input === input).length > 1;
++    toast(shared ? `Mapped ${action.label}; ${input} is now shared.` : `Mapped ${action.label} to ${input}.`);
++    renderAll();
++    saveSoon();
++  }
++
++  function moveMappingToInput(payload,input,copy){
++    const sourceIndex = state.mappings.findIndex(mapping => mapping.map === payload.map && mapping.action === payload.action && mapping.input === payload.input);
++    if (sourceIndex < 0) {
++      toast('That mapping changed before it could be dropped.');
++      return;
++    }
++    const source = state.mappings[sourceIndex];
++    const action = findAction(source);
++    if (source.input === input && !copy) {
++      toast(`${action?.label || source.action} is already on ${input}.`);
++      flashControl(input);
++      return;
++    }
++    const duplicate = state.mappings.some((mapping,index) => index !== sourceIndex && mapping.map === source.map && mapping.action === source.action && mapping.input === input);
++    if (duplicate) {
++      if (!copy) {
++        state.mappings.splice(sourceIndex,1);
++        toast(`Merged ${action?.label || source.action} into its existing ${input} assignment.`);
++        renderAll();
++        saveSoon();
++      } else {
++        toast(`${action?.label || source.action} is already mapped to ${input}.`);
++        flashControl(input);
++      }
++      return;
++    }
++    if (copy) state.mappings.push({...source,input});
++    else state.mappings[sourceIndex] = {...source,input};
++    const shared = state.mappings.filter(mapping => mapping.input === input).length > 1;
++    toast(`${copy ? 'Copied' : 'Moved'} ${action?.label || source.action} to ${input}${shared ? ' (shared control)' : ''}.`);
++    renderAll();
++    saveSoon();
++  }
++
+   function findAction(mapping){
+     return state.actions.find(action => action.map === mapping.map && action.id === mapping.action) || null;
+   }
+@@ -51257,6 +51441,12 @@
+     sorted.forEach(({mapping,index}) => {
+       const row = document.createElement('div');
+       row.className = `fpb-map-row${controlCounts.get(mapping.input) > 1 ? ' shared' : ''}`;
++      row.draggable = true;
++      row.title = 'Drag this assignment onto another control to move it. Hold Alt/Option while dropping to copy.';
++      const grip = document.createElement('span');
++      grip.className = 'fpb-map-grip';
++      grip.textContent = '⋮⋮';
++      grip.setAttribute('aria-hidden','true');
+       const strong = document.createElement('strong');
+       strong.textContent = findAction(mapping)?.label || titleize(mapping.action);
+       const small = document.createElement('small');
+@@ -51265,15 +51455,23 @@
+       remove.type = 'button';
+       remove.className = 'fpb-map-remove';
+       remove.textContent = '×';
++      remove.draggable = false;
+       remove.setAttribute('aria-label','Remove mapping');
+-      remove.addEventListener('click', () => removeMapping(index));
+-      row.append(strong,small,remove);
++      remove.addEventListener('dragstart',event => event.preventDefault());
++      remove.addEventListener('click', event => {
++        event.stopPropagation();
++        removeMapping(index);
++      });
++      row.addEventListener('click', () => selectAction(actionKey(mapping.map,mapping.action)));
++      row.addEventListener('dragstart', event => beginDrag(event,row,{type:'mapping',map:mapping.map,action:mapping.action,input:mapping.input},findAction(mapping)?.label || mapping.action));
++      row.addEventListener('dragend', () => finishDrag(row));
++      row.append(grip,strong,small,remove);
+       list.appendChild(row);
+     });
+     if (!sorted.length) {
+       const empty = document.createElement('div');
+       empty.className = 'fpb-empty';
+-      empty.textContent = 'No controls mapped yet. Select an action and click a device control.';
++      empty.textContent = 'No controls mapped yet. Drag an action from the library onto a device control.';
+       list.appendChild(empty);
+     }
+     const visibleInputs = visibleInputsFor(deviceById(state.device1)) + visibleInputsFor(deviceById(state.device2));
+@@ -51387,6 +51585,328 @@
+     return deviceById('generic32');
+   }
+ 
++  async function exportProfileImage(){
++    const button = $('fpb-export-image-btn');
++    const original = button?.textContent || '';
++    try {
++      if (button) {
++        button.disabled = true;
++        button.textContent = 'Rendering PNG…';
++      }
++      const canvas = await buildProfileImageCanvas();
++      const blob = await new Promise(resolve => canvas.toBlob(resolve,'image/png',0.96));
++      if (!blob) throw new Error('The browser could not create the PNG image.');
++      const filename = `${cleanFilePart(state.profileName)}_flight-profile.png`;
++      downloadBlob(filename,blob);
++      toast(`Exported ${filename}.`);
++    } catch (error) {
++      console.error('Flight profile image export failed',error);
++      toast(error.message || 'Image export failed.');
++    } finally {
++      if (button) {
++        button.disabled = false;
++        button.textContent = original;
++      }
++    }
++  }
++
++  async function buildProfileImageCanvas(){
++    const width = 1920;
++    const outer = 70;
++    const gap = 34;
++    const panelWidth = (width - outer * 2 - gap) / 2;
++    const slotData = [1,2].map(slot => ({
++      slot,
++      device:deviceForSlot(slot),
++      mappings:state.mappings.filter(mapping => slotOfInput(mapping.input) === slot).sort(compareMappingInputs)
++    }));
++    const maxRows = Math.max(1,...slotData.map(item => Math.ceil(item.mappings.length / 2)));
++    const mappingAreaHeight = Math.max(210,maxRows * 66 + 54);
++    const panelTop = 330;
++    const panelHeight = 520 + mappingAreaHeight;
++    const height = Math.max(1120,panelTop + panelHeight + 105);
++    const canvas = document.createElement('canvas');
++    canvas.width = width;
++    canvas.height = height;
++    const ctx = canvas.getContext('2d');
++    if (!ctx) throw new Error('Canvas rendering is unavailable in this browser.');
++
++    const background = ctx.createLinearGradient(0,0,0,height);
++    background.addColorStop(0,'#071522');
++    background.addColorStop(0.58,'#040d16');
++    background.addColorStop(1,'#02070c');
++    ctx.fillStyle = background;
++    ctx.fillRect(0,0,width,height);
++    const glow = ctx.createRadialGradient(width * .72,80,0,width * .72,80,760);
++    glow.addColorStop(0,'rgba(27,153,196,.22)');
++    glow.addColorStop(1,'rgba(27,153,196,0)');
++    ctx.fillStyle = glow;
++    ctx.fillRect(0,0,width,720);
++    drawGrid(ctx,width,height);
++
++    ctx.fillStyle = '#5de4f7';
++    ctx.font = '700 20px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText('CELESTIAL ALLIANCE  /  NX-13 FLIGHT CONTROL ENGINEERING',outer,72);
++    ctx.fillStyle = '#eef8ff';
++    ctx.font = '800 68px system-ui, -apple-system, Segoe UI, sans-serif';
++    drawEllipsizedText(ctx,state.profileName || 'Untitled flight profile',outer,145,1100);
++    ctx.fillStyle = '#9bb7c8';
++    ctx.font = '500 24px system-ui, -apple-system, Segoe UI, sans-serif';
++    ctx.fillText(`Star Citizen control profile · target ${state.targetBuild || 'current build'}`,outer,188);
++
++    const controls = new Set(state.mappings.map(mapping => mapping.input)).size;
++    const shared = [...state.mappings.reduce((map,mapping) => map.set(mapping.input,(map.get(mapping.input) || 0) + 1),new Map()).values()].filter(count => count > 1).length;
++    const stats = [
++      ['MAPPINGS',state.mappings.length],
++      ['CONTROLS',controls],
++      ['SHARED',shared],
++      ['DEVICES',2]
++    ];
++    const statW = 150;
++    stats.forEach((item,index) => {
++      const x = width - outer - (stats.length - index) * (statW + 12) + 12;
++      canvasCard(ctx,x,78,statW,105,14,'rgba(4,19,30,.82)','rgba(73,211,240,.2)');
++      ctx.fillStyle = item[0] === 'SHARED' && item[1] ? '#ff6b8c' : '#e9f8ff';
++      ctx.font = '800 40px system-ui, -apple-system, Segoe UI, sans-serif';
++      ctx.fillText(String(item[1]),x + 18,128);
++      ctx.fillStyle = '#6f91a5';
++      ctx.font = '700 13px ui-monospace, SFMono-Regular, Consolas, monospace';
++      ctx.fillText(item[0],x + 18,158);
++    });
++
++    ctx.strokeStyle = 'rgba(74,220,246,.32)';
++    ctx.lineWidth = 2;
++    ctx.beginPath();
++    ctx.moveTo(outer,238);
++    ctx.lineTo(width - outer,238);
++    ctx.stroke();
++    ctx.fillStyle = '#7f9cad';
++    ctx.font = '500 18px system-ui, -apple-system, Segoe UI, sans-serif';
++    ctx.fillText('A shareable reference sheet. Input numbers should still be verified against the active firmware mode and Windows device order.',outer,278);
++
++    const artImages = await Promise.all(slotData.map(item => loadDeviceArtImage(item.device).catch(() => null)));
++    for (let index = 0; index < slotData.length; index += 1) {
++      const x = outer + index * (panelWidth + gap);
++      drawExportDevicePanel(ctx,x,panelTop,panelWidth,panelHeight,slotData[index],artImages[index]);
++    }
++
++    ctx.fillStyle = '#5c7d90';
++    ctx.font = '600 15px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`GENERATED LOCALLY · ${new Date().toLocaleString()} · ${cleanFilePart(state.profileName)}`,outer,height - 48);
++    ctx.textAlign = 'right';
++    ctx.fillStyle = '#54dff5';
++    ctx.fillText('CELESTIAL NEXUS FLIGHT PROFILE BUILDER',width - outer,height - 48);
++    ctx.textAlign = 'left';
++    return canvas;
++  }
++
++  function deviceForSlot(slot){
++    if (state.slot1 === slot) return deviceById(state.device1);
++    if (state.slot2 === slot) return deviceById(state.device2);
++    return deviceById(slot === 1 ? state.device1 : state.device2);
++  }
++
++  function compareMappingInputs(a,b){
++    const rank = input => {
++      const suffix = String(input || '').replace(/^js\d+_/,'');
++      let match = /^button(\d+)$/.exec(suffix);
++      if (match) return 1000 + Number(match[1]);
++      match = /^hat(\d+)_(up|right|down|left)$/.exec(suffix);
++      if (match) return 3000 + Number(match[1]) * 10 + ['up','right','down','left'].indexOf(match[2]);
++      const axes = ['x','y','z','rotx','roty','rotz','slider1','slider2'];
++      const axisIndex = axes.indexOf(suffix);
++      return axisIndex >= 0 ? 5000 + axisIndex : 9000;
++    };
++    return rank(a.input) - rank(b.input) || mappingLabel(a).localeCompare(mappingLabel(b));
++  }
++
++  function compactInputLabel(input){
++    const suffix = String(input || '').replace(/^js\d+_/,'');
++    let match = /^button(\d+)$/.exec(suffix);
++    if (match) return `B${match[1]}`;
++    match = /^hat(\d+)_(up|right|down|left)$/.exec(suffix);
++    if (match) return `H${match[1]} ${match[2][0].toUpperCase()}`;
++    return axisLabel(suffix);
++  }
++
++  function drawExportDevicePanel(ctx,x,y,w,h,data,artImage){
++    canvasCard(ctx,x,y,w,h,22,'rgba(5,19,30,.9)','rgba(64,205,235,.27)');
++    const accent = deviceAccent(data.device);
++    const header = ctx.createLinearGradient(x,y,x + w,y);
++    header.addColorStop(0,'rgba(9,42,59,.96)');
++    header.addColorStop(1,'rgba(5,20,31,.58)');
++    canvasCard(ctx,x + 1,y + 1,w - 2,86,21,header,null);
++    ctx.fillStyle = '#e8f6fd';
++    ctx.font = '750 27px system-ui, -apple-system, Segoe UI, sans-serif';
++    drawEllipsizedText(ctx,data.device.name,x + 28,y + 39,w - 150);
++    ctx.fillStyle = '#7899ab';
++    ctx.font = '600 15px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`${data.device.buttons} BUTTONS · ${data.device.hats} HATS · ${data.device.axes.length} AXES`,x + 29,y + 66);
++    canvasCard(ctx,x + w - 94,y + 22,63,38,19,'rgba(54,213,241,.08)','rgba(72,220,247,.38)');
++    ctx.fillStyle = '#63e4f7';
++    ctx.font = '800 17px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.fillText(`js${data.slot}`,x + w - 77,y + 47);
++
++    const artTop = y + 108;
++    const artH = 330;
++    const artW = 185;
++    if (artImage) {
++      ctx.save();
++      if (data.device.id.includes('left')) {
++        ctx.translate(x + w / 2,0);
++        ctx.scale(-1,1);
++        ctx.drawImage(artImage,-artW / 2,artTop,artW,artH);
++      } else {
++        ctx.drawImage(artImage,x + (w - artW) / 2,artTop,artW,artH);
++      }
++      ctx.restore();
++    } else {
++      ctx.strokeStyle = accent;
++      ctx.lineWidth = 3;
++      ctx.beginPath();
++      ctx.ellipse(x + w / 2,artTop + 290,100,24,0,0,Math.PI * 2);
++      ctx.moveTo(x + w / 2 - 30,artTop + 275);
++      ctx.quadraticCurveTo(x + w / 2 - 52,artTop + 150,x + w / 2 - 8,artTop + 48);
++      ctx.quadraticCurveTo(x + w / 2 + 47,artTop + 55,x + w / 2 + 28,artTop + 275);
++      ctx.stroke();
++    }
++    ctx.fillStyle = accent;
++    ctx.font = '800 14px ui-monospace, SFMono-Regular, Consolas, monospace';
++    ctx.textAlign = 'center';
++    ctx.fillText(`${data.mappings.length} ASSIGNMENTS`,x + w / 2,artTop + 360);
++    ctx.textAlign = 'left';
++
++    const mappingTop = y + 488;
++    ctx.strokeStyle = 'rgba(70,187,216,.18)';
++    ctx.beginPath();
++    ctx.moveTo(x + 26,mappingTop - 20);
++    ctx.lineTo(x + w - 26,mappingTop - 20);
++    ctx.stroke();
++    const rows = Math.max(1,Math.ceil(data.mappings.length / 2));
++    const colGap = 16;
++    const colW = (w - 56 - colGap) / 2;
++    if (!data.mappings.length) {
++      ctx.fillStyle = '#6d8999';
++      ctx.font = '500 20px system-ui, -apple-system, Segoe UI, sans-serif';
++      ctx.textAlign = 'center';
++      ctx.fillText('No actions assigned to this device.',x + w / 2,mappingTop + 58);
++      ctx.textAlign = 'left';
++      return;
++    }
++    const inputCounts = state.mappings.reduce((map,mapping) => map.set(mapping.input,(map.get(mapping.input) || 0) + 1),new Map());
++    data.mappings.forEach((mapping,index) => {
++      const col = index >= rows ? 1 : 0;
++      const row = index % rows;
++      const rx = x + 28 + col * (colW + colGap);
++      const ry = mappingTop + row * 66;
++      const shared = inputCounts.get(mapping.input) > 1;
++      const action = findAction(mapping);
++      const kind = isAxisInput(mapping.input) ? 'axis' : isHatInput(mapping.input) ? 'hat' : 'button';
++      const kindAccent = shared ? '#ff557c' : kind === 'axis' ? '#a78bfa' : kind === 'hat' ? '#e7bd4e' : '#48dbf3';
++      canvasCard(ctx,rx,ry,colW,54,10,'rgba(4,17,27,.92)',shared ? 'rgba(255,85,124,.72)' : 'rgba(53,126,153,.32)');
++      canvasCard(ctx,rx + 8,ry + 9,73,36,8,`${kindAccent}18`,`${kindAccent}88`);
++      ctx.fillStyle = kindAccent;
++      ctx.font = '800 14px ui-monospace, SFMono-Regular, Consolas, monospace';
++      ctx.textAlign = 'center';
++      ctx.fillText(compactInputLabel(mapping.input),rx + 44.5,ry + 32);
++      ctx.textAlign = 'left';
++      ctx.fillStyle = '#e4f1f8';
++      ctx.font = '700 17px system-ui, -apple-system, Segoe UI, sans-serif';
++      drawEllipsizedText(ctx,action?.label || titleize(mapping.action),rx + 92,ry + 23,colW - 106);
++      ctx.fillStyle = '#68899b';
++      ctx.font = '600 11px ui-monospace, SFMono-Regular, Consolas, monospace';
++      drawEllipsizedText(ctx,`${mapping.map} · ${mapping.action}`,rx + 92,ry + 42,colW - 106);
++    });
++  }
++
++  function deviceAccent(device){
++    const type = deviceArtType(device);
++    return ({t16:'#f6a914',vkb:'#9bd727',virpil:'#aa8dff',warthog:'#9fb0bc',x56:'#42c8fa',throttle:'#edc21f'})[type] || '#4bdcf4';
++  }
++
++  function exportArtStyle(device){
++    const accent = deviceAccent(device);
++    return `<style>svg{--art-accent:${accent};--art-accent-rgb:66,217,245}.art-shadow{fill:rgba(0,0,0,.36)}.art-body{fill:url(#fpb-art-body);stroke:#28677d;stroke-width:2}.art-body-dark{fill:#06131d;stroke:#24586b;stroke-width:2}.art-panel{fill:rgba(8,27,40,.94);stroke:rgba(88,180,207,.5);stroke-width:1.5}.art-detail{fill:none;stroke:#316b7d;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.art-detail-soft{fill:none;stroke:rgba(67,130,151,.55);stroke-width:1;stroke-dasharray:4 5}.art-accent{fill:${accent};stroke:${accent}}.art-accent-line{fill:none;stroke:${accent};stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.art-button{fill:#071824;stroke:${accent};stroke-width:1.4}.art-metal{fill:url(#fpb-art-metal);stroke:#526d7b;stroke-width:1.7}</style>`;
++  }
++
++  function loadDeviceArtImage(device){
++    return new Promise((resolve,reject) => {
++      let svg = deviceArtMarkup(device).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" ');
++      svg = svg.replace(/(<svg[^>]*>)/,`$1${exportArtStyle(device)}`);
++      const blob = new Blob([svg],{type:'image/svg+xml;charset=utf-8'});
++      const url = URL.createObjectURL(blob);
++      const image = new Image();
++      image.onload = () => {
++        URL.revokeObjectURL(url);
++        resolve(image);
++      };
++      image.onerror = () => {
++        URL.revokeObjectURL(url);
++        reject(new Error('Device artwork could not be rendered.'));
++      };
++      image.src = url;
++    });
++  }
++
++  function drawGrid(ctx,width,height){
++    ctx.save();
++    ctx.strokeStyle = 'rgba(55,132,160,.055)';
++    ctx.lineWidth = 1;
++    for (let x = 0; x < width; x += 32) {
++      ctx.beginPath();
++      ctx.moveTo(x,0);
++      ctx.lineTo(x,height);
++      ctx.stroke();
++    }
++    for (let y = 0; y < height; y += 32) {
++      ctx.beginPath();
++      ctx.moveTo(0,y);
++      ctx.lineTo(width,y);
++      ctx.stroke();
++    }
++    ctx.restore();
++  }
++
++  function canvasCard(ctx,x,y,w,h,r,fill,stroke,lineWidth=1){
++    ctx.save();
++    ctx.beginPath();
++    if (ctx.roundRect) ctx.roundRect(x,y,w,h,r);
++    else {
++      const radius = Math.min(r,w / 2,h / 2);
++      ctx.moveTo(x + radius,y);
++      ctx.arcTo(x + w,y,x + w,y + h,radius);
++      ctx.arcTo(x + w,y + h,x,y + h,radius);
++      ctx.arcTo(x,y + h,x,y,radius);
++      ctx.arcTo(x,y,x + w,y,radius);
++    }
++    if (fill) {
++      ctx.fillStyle = fill;
++      ctx.fill();
++    }
++    if (stroke) {
++      ctx.strokeStyle = stroke;
++      ctx.lineWidth = lineWidth;
++      ctx.stroke();
++    }
++    ctx.restore();
++  }
++
++  function drawEllipsizedText(ctx,text,x,y,maxWidth){
++    const value = String(text ?? '');
++    if (ctx.measureText(value).width <= maxWidth) {
++      ctx.fillText(value,x,y);
++      return;
++    }
++    let low = 0;
++    let high = value.length;
++    while (low < high) {
++      const middle = Math.ceil((low + high) / 2);
++      if (ctx.measureText(`${value.slice(0,middle)}…`).width <= maxWidth) low = middle;
++      else high = middle - 1;
++    }
++    ctx.fillText(`${value.slice(0,low)}…`,x,y);
++  }
++
+   function exportXml(){
+     try {
+       const xml = state.importedXml ? patchImportedXml() : buildNewXml();
+@@ -51553,7 +52073,10 @@
+   }
+ 
+   function downloadText(filename,text,type){
+-    const blob = new Blob([text],{type:`${type};charset=utf-8`});
++    downloadBlob(filename,new Blob([text],{type:`${type};charset=utf-8`}));
++  }
++
++  function downloadBlob(filename,blob){
+     const url = URL.createObjectURL(blob);
+     const link = document.createElement('a');
+     link.href = url;
+@@ -51702,6 +52225,7 @@
+     $('fpb-import-xml-btn').addEventListener('click',() => $('fpb-import-xml').click());
+     $('fpb-import-xml').addEventListener('change',event => { readFile(event.target.files?.[0],importXmlText); event.target.value = ''; });
+     $('fpb-export-xml-btn').addEventListener('click',exportXml);
++    $('fpb-export-image-btn').addEventListener('click',exportProfileImage);
+     $('fpb-import-project-btn').addEventListener('click',() => $('fpb-import-project').click());
+     $('fpb-import-project').addEventListener('change',event => { readFile(event.target.files?.[0],importProjectText); event.target.value = ''; });
+     $('fpb-export-project-btn').addEventListener('click',exportProject);
+@@ -51709,7 +52233,9 @@
+     $('fpb-test-inputs').addEventListener('click',startTester);
+     $('fpb-stop-inputs').addEventListener('click',stopTester);
+     window.addEventListener('gamepadconnected',event => { if (state.testerActive) $('fpb-input-status').textContent = `Connected: ${event.gamepad.id}`; });
+-    window.addEventListener('nexus:viewchange',event => { if (event.detail?.viewId !== 'flight-profile-view') stopTester(); });
++    window.addEventListener('nexus:viewchange',event => { if (event.detail?.viewId !== 'flight-profile-view') { stopTester(); finishDrag(); } });
++    document.addEventListener('dragend',() => finishDrag());
++    document.addEventListener('keydown',event => { if (event.key === 'Escape') finishDrag(); });
+   }
+ 
+   function initialize(){
