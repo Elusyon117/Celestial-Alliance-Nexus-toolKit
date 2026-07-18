@@ -1,5 +1,5 @@
-/* Celestial Nexus Toolkit service worker — Language Lab localization-driven complete ship catalog v6. */
-const NEXUS_CACHE_VERSION = 'language-lab-complete-ship-editions-v6-20260718';
+/* Celestial Nexus Toolkit service worker — Language Lab Teach mining variants catalog v7. */
+const NEXUS_CACHE_VERSION = 'language-lab-teach-mining-variants-v7-20260718';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 const CORE_ASSETS = [
