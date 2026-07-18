@@ -1,10 +1,7 @@
-/* Celestial Nexus Toolkit service worker — stable reset package.
-   This clean service worker intentionally does not pre-cache the experimental
-   assets/images ship catalog or extracted-image folders. */
-const NEXUS_CACHE_VERSION = 'stable-cargo-onyx-blueprint-20260709';
+/* Celestial Nexus Toolkit service worker — Language Lab mirror v3. */
+const NEXUS_CACHE_VERSION = 'language-lab-mirror-v3-20260718';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
-
 const CORE_ASSETS = [
   './',
   './index.html',
@@ -28,7 +25,11 @@ const CORE_ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(APP_CACHE).then(cache => cache.addAll(CORE_ASSETS)).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(APP_CACHE)
+      .then(cache => cache.addAll(CORE_ASSETS))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', event => {
@@ -43,9 +44,15 @@ self.addEventListener('activate', event => {
 function isImageLike(request, url) {
   return request.destination === 'image' || /\.(?:png|jpe?g|webp|gif|svg|avif)(?:[?#]|$)/i.test(url.pathname);
 }
+
 function isStaticLike(request, url) {
   return ['style', 'script', 'font', 'manifest'].includes(request.destination) || /\.(?:css|js|woff2?|json|webmanifest)(?:[?#]|$)/i.test(url.pathname);
 }
+
+function isMrKrakenMirror(url) {
+  return /\/data\/mrkraken-(?:global\.ini|release\.json)$/i.test(url.pathname);
+}
+
 async function cacheFirst(request) {
   const cached = await caches.match(request, {ignoreSearch: false});
   if (cached) return cached;
@@ -56,19 +63,23 @@ async function cacheFirst(request) {
   }
   return response;
 }
+
 async function staleWhileRevalidate(request) {
   const cache = await caches.open(RUNTIME_CACHE);
   const cached = await cache.match(request, {ignoreSearch: false});
   const network = fetch(request).then(response => {
-    if (response && (response.ok || response.type === 'opaque')) cache.put(request, response.clone()).catch(() => {});
+    if (response && (response.ok || response.type === 'opaque')) {
+      cache.put(request, response.clone()).catch(() => {});
+    }
     return response;
   }).catch(() => cached);
   return cached || network;
 }
+
 async function networkFirst(request) {
   const cache = await caches.open(RUNTIME_CACHE);
   try {
-    const response = await fetch(request);
+    const response = await fetch(request, {cache: 'no-store'});
     if (response && response.ok) cache.put(request, response.clone()).catch(() => {});
     return response;
   } catch (error) {
@@ -85,6 +96,10 @@ self.addEventListener('fetch', event => {
 
   if (url.origin === self.location.origin) {
     if (url.pathname.endsWith('/index.html') || url.pathname === new URL(self.registration.scope).pathname) {
+      event.respondWith(networkFirst(request));
+      return;
+    }
+    if (isMrKrakenMirror(url)) {
       event.respondWith(networkFirst(request));
       return;
     }
