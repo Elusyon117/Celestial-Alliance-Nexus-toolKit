@@ -1,6 +1,6 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-07-18T03:35:43.758Z",
+  "generatedAt": "2026-07-18T08:11:09.035Z",
   "currentPatch": "4.9.0",
   "staleReferenceCount": 94,
   "affectedModuleCount": 4,
@@ -611,55 +611,55 @@
     },
     {
       "patch": "4.8",
-      "line": 26292,
+      "line": 26330,
       "module": "global-or-embedded-data",
       "context": "ource-link\" href=\"${SOURCE_URLS.patch}\" target=\"_blank\" rel=\"noopener noreferrer\"><span>RSI · Alpha 4.8 patch notes</span><b>↗</b></a><a class=\"mining-source-link\" href=\"${SOURCE_URLS.qualityPatch}\" targ"
     },
     {
       "patch": "4.7",
-      "line": 26292,
+      "line": 26330,
       "module": "global-or-embedded-data",
       "context": "ink\" href=\"${SOURCE_URLS.qualityPatch}\" target=\"_blank\" rel=\"noopener noreferrer\"><span>RSI · Alpha 4.7 quality-system notes</span><b>↗</b></a><a class=\"mining-source-link\" href=\"${SOURCE_URLS.atls}\" tar"
     },
     {
       "patch": "4.8.2",
-      "line": 29083,
+      "line": 29121,
       "module": "global-or-embedded-data",
       "context": "commendation.steps.map((step,index)=>`${index+1}. ${step}`).join('\\n')}\\n\\nPLANNING BASELINE: Alpha 4.8.2 component and gadget records. The live scan and HUD are final authority. Use only one mining gadget"
     },
     {
       "patch": "4.8.2",
-      "line": 29089,
+      "line": 29127,
       "module": "global-or-embedded-data",
       "context": "e.</span></div></div></div><div class=\"mining-owned-source\">Reference baseline · Star Citizen Alpha 4.8.2 component and gadget records · live HUD remains final authority</div>`;"
     },
     {
       "patch": "4.8.2",
-      "line": 29099,
+      "line": 29137,
       "module": "global-or-embedded-data",
       "context": "ow. Always scan first.</p></aside></div><div class=\"mining-owned-source\">Reference baseline · Alpha 4.8.2-LIVE.12030094 records · recommendation is a planning heuristic, not a guaranteed fracture calculati"
     },
     {
       "patch": "4.0",
-      "line": 39405,
+      "line": 39443,
       "module": "global-or-embedded-data",
       "context": "version: '1.4.0',"
     },
     {
       "patch": "4.6",
-      "line": 39486,
+      "line": 39524,
       "module": "global-or-embedded-data",
       "context": "version: '1.4.6',"
     },
     {
       "patch": "4.8",
-      "line": 50913,
+      "line": 50951,
       "module": "global-or-embedded-data",
       "context": "targetBuild:'Alpha 4.8.x',"
     },
     {
       "patch": "4.8",
-      "line": 52568,
+      "line": 52606,
       "module": "global-or-embedded-data",
       "context": "state.targetBuild = 'Alpha 4.8.x';"
     }
