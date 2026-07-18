@@ -1,0 +1,16 @@
+The clean-install method deletes everything except .git before extraction.
+If cleaning manually, remove these old/superseded items:
+
+flight_profile_builder_full_v3.patch
+flight_profile_builder_full_v5.patch
+flight_profile_builder_v3.patch
+flight_profile_builder_v5.patch
+index-latest-live.patch
+flight_profile_builder_v3_preview.png
+flight_profile_export_example.png
+flight_profile_schematic_dark_example.png
+assets/images/ships/catalog/
+assets/images/embedded/
+assets/images/remote/
+Any old SCMDB workflow not present in .github/workflows/ of this package
+Any old SCMDB setup/instruction file superseded by docs/SCMDB_4_9_IMPORT.md

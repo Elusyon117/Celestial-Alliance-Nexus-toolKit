@@ -1,541 +1,312 @@
 #!/usr/bin/env node
 /**
- * Synchronize the Contract Finder with the newest SCMDB dataset for a channel.
+ * Celestial Nexus v1.8.0 SCMDB mission synchronizer.
  *
- * By default the newest LIVE patch is selected automatically from SCMDB's
- * versions manifest. Set MISSION_PATCH only for a deliberate one-off pin.
+ * Supports:
+ *   - SCMDB_MISSIONS_URL=file:///... or https://...
+ *   - automatic latest LIVE discovery through SCMDB versions manifests
+ *   - MISSION_PATCH / MISSION_CHANNEL identity validation
+ *   - preservation of the last valid tracked snapshot during temporary upstream failures
  */
-import fs from 'node:fs/promises';
-import path from 'node:path';
+import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
+import path from 'node:path';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const outJson = path.join(root, 'data', 'scmdb-missions-live.json');
-const outJs = path.join(root, 'data', 'scmdb-missions-live.js');
-const statusJson = path.join(root, 'data', 'game-data-status.json');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const DATA_DIR = path.join(ROOT, 'data');
+const JSON_PATH = path.join(DATA_DIR, 'scmdb-missions-live.json');
+const JS_PATH = path.join(DATA_DIR, 'scmdb-missions-live.js');
+const STATUS_PATH = path.join(DATA_DIR, 'game-data-status.json');
 
-const SCMDB_BASE = String(process.env.SCMDB_BASE_URL || 'https://scmdb.net/');
-const VERSIONS_URL = String(
-  process.env.SCMDB_VERSIONS_URL || new URL('data/versions.json', SCMDB_BASE).href,
-);
-const PATCH_OVERRIDE = String(process.env.MISSION_PATCH || '').trim();
-const DIRECT_DATASET_URL = String(process.env.SCMDB_MISSIONS_URL || '').trim();
+const TARGET_PATCH = String(process.env.MISSION_PATCH || '').trim();
 const TARGET_CHANNEL = String(process.env.MISSION_CHANNEL || 'LIVE').trim().toUpperCase();
-const MIN_ACTIVE = Number(process.env.MISSION_MIN_ACTIVE || 100);
-const ALLOW_LARGE_DROP = /^(1|true|yes)$/i.test(String(process.env.ALLOW_LARGE_DROP || ''));
+const DIRECT_URL = String(process.env.SCMDB_MISSIONS_URL || '').trim();
+const STRICT_SYNC = /^(1|true|yes)$/i.test(String(process.env.STRICT_SYNC || ''));
+const MIN_MISSIONS = Math.max(5, Number(process.env.MIN_MISSION_COUNT || 100));
+const TIMEOUT_MS = Math.max(5000, Number(process.env.SCMDB_TIMEOUT_MS || 30000));
+const VERSION_URLS = String(process.env.SCMDB_VERSIONS_URLS || 'https://scmdb.net/data/versions.json,https://scmdb.net/data/game-versions.json')
+  .split(',').map(v => v.trim()).filter(Boolean);
 
-function parseIdentity(value) {
-  const match = String(value || '').match(
-    /(\d+(?:\.\d+){1,3})[._-](live|ptu|eptu)(?:[._-](\d+))?/i,
-  );
-  if (!match) return null;
-  const patch = match[1];
-  const channel = match[2].toUpperCase();
-  const build = match[3] || '';
-  return { patch, channel, build, code: `${patch}-${channel}${build ? `.${build}` : ''}` };
-}
-
-function identityFromEntry(entry, keyHint = '') {
-  if (typeof entry === 'string') return parseIdentity(entry) || parseIdentity(keyHint);
-  const candidates = [
-    entry?.version,
-    entry?.gameVersion,
-    entry?.game_version,
-    entry?.file,
-    entry?.filename,
-    entry?.path,
-    entry?.name,
-    entry?.code,
-    entry?.id,
-    entry?.url,
-    entry?.href,
-    keyHint,
-  ];
-  for (const value of candidates) {
-    const parsed = parseIdentity(value);
-    if (parsed) return parsed;
-  }
-  const patch = String(entry?.patch || '').trim();
-  const channel = String(entry?.channel || entry?.environment || '').trim().toUpperCase();
-  const build = String(entry?.build || entry?.buildNumber || '').trim();
-  if (/^\d+(?:\.\d+){1,3}$/.test(patch) && /^(LIVE|PTU|EPTU)$/.test(channel)) {
-    return { patch, channel, build, code: `${patch}-${channel}${build ? `.${build}` : ''}` };
-  }
-  return null;
-}
-
-function patchParts(value) {
-  return String(value || '')
-    .split('.')
-    .map((part) => Number(part) || 0)
-    .concat([0, 0, 0, 0])
-    .slice(0, 4);
-}
-
-function comparePatch(a, b) {
-  const aa = patchParts(a);
-  const bb = patchParts(b);
-  for (let i = 0; i < aa.length; i += 1) {
-    if (aa[i] !== bb[i]) return aa[i] - bb[i];
-  }
+const now = () => new Date().toISOString();
+const exists = async file => access(file).then(() => true).catch(() => false);
+const sha256 = text => createHash('sha256').update(text).digest('hex');
+const naturalVersion = value => (String(value || '').match(/\b(\d+\.\d+(?:\.\d+)?)\b/) || [,''])[1];
+const normalizePatch = value => {
+  const raw = naturalVersion(value);
+  if (!raw) return '';
+  const parts = raw.split('.');
+  return parts.length === 2 ? `${raw}.0` : raw;
+};
+const compareVersion = (a,b) => {
+  const av = normalizePatch(a).split('.').map(Number), bv = normalizePatch(b).split('.').map(Number);
+  for (let i=0;i<3;i++) if ((av[i]||0)!==(bv[i]||0)) return (av[i]||0)-(bv[i]||0);
   return 0;
+};
+
+function jsonStringify(value, pretty=false) {
+  return JSON.stringify(value, null, pretty ? 2 : 0) + '\n';
 }
 
-function samePatch(a, b) {
-  return comparePatch(a, b) === 0;
+async function fetchWithRetry(url, attempts=3) {
+  let last;
+  for (let i=1;i<=attempts;i++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+    try {
+      const response = await fetch(url, {
+        signal: controller.signal,
+        redirect: 'follow',
+        headers: {
+          'accept': 'application/json,text/plain;q=0.9,*/*;q=0.5',
+          'user-agent': 'Celestial-Nexus-Toolkit/1.8.0 (+https://github.com/Elusyon117/Celestial-Alliance-Nexus-toolKit)'
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+      return await response.text();
+    } catch (error) {
+      last = error;
+      if (i < attempts) await new Promise(r => setTimeout(r, 1000 * i));
+    } finally { clearTimeout(timer); }
+  }
+  throw last || new Error(`Unable to load ${url}`);
 }
 
-function compareDataset(a, b) {
-  const patch = comparePatch(b.identity.patch, a.identity.patch);
-  if (patch) return patch;
-  return Number(b.identity.build || 0) - Number(a.identity.build || 0);
+async function readSource(source) {
+  if (!source) throw new Error('No SCMDB source was selected.');
+  if (/^file:/i.test(source)) {
+    const file = fileURLToPath(source);
+    return { text: await readFile(file, 'utf8'), sourceUrl: pathToFileURL(file).href };
+  }
+  if (/^https?:/i.test(source)) return { text: await fetchWithRetry(source), sourceUrl: source };
+  const file = path.resolve(ROOT, source);
+  return { text: await readFile(file, 'utf8'), sourceUrl: pathToFileURL(file).href };
 }
 
-async function readJsonSource(url, timeout = 45_000) {
-  const parsed = new URL(url);
-  if (parsed.protocol === 'file:') {
-    return JSON.parse(await fs.readFile(fileURLToPath(parsed), 'utf8'));
-  }
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), timeout);
-  try {
-    const response = await fetch(url, {
-      signal: controller.signal,
-      headers: {
-        Accept: 'application/json',
-        'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0',
-      },
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
-    return await response.json();
-  } finally {
-    clearTimeout(timer);
-  }
+function parseJson(text, label) {
+  try { return JSON.parse(text); }
+  catch (error) { throw new Error(`Invalid JSON from ${label}: ${error.message}`); }
 }
 
-function manifestRows(payload) {
-  const rows = [];
-  const seen = new Set();
-
-  function visit(value, keyHint = '', depth = 0) {
-    if (depth > 8 || value == null) return;
-    if (typeof value === 'string') {
-      const identity = identityFromEntry(value, keyHint);
-      if (identity) rows.push({ entry: value, keyHint, identity });
-      return;
-    }
-    if (typeof value !== 'object' || seen.has(value)) return;
-    seen.add(value);
-
-    if (Array.isArray(value)) {
-      for (const item of value) visit(item, keyHint, depth + 1);
-      return;
-    }
-
-    const identity = identityFromEntry(value, keyHint);
-    if (identity) rows.push({ entry: value, keyHint, identity });
-    for (const [key, child] of Object.entries(value)) visit(child, key, depth + 1);
-  }
-
-  visit(payload);
-  const deduped = new Map();
-  for (const row of rows) {
-    const file = datasetFile(row.entry, row.identity);
-    const key = `${row.identity.code}|${file}`;
-    if (!deduped.has(key)) deduped.set(key, { ...row, file });
-  }
-  return [...deduped.values()];
+function objectStrings(value, depth=0, out=[]) {
+  if (depth > 5 || out.length > 4000) return out;
+  if (typeof value === 'string') out.push(value);
+  else if (Array.isArray(value)) value.slice(0,100).forEach(v => objectStrings(v, depth+1, out));
+  else if (value && typeof value === 'object') Object.entries(value).slice(0,150).forEach(([k,v]) => {
+    out.push(k); objectStrings(v, depth+1, out);
+  });
+  return out;
 }
 
-function datasetFile(entry, identity) {
-  if (typeof entry === 'string' && /(?:\.json(?:[?#]|$)|^https?:|^file:|^\.?\.?\/|^\/)/i.test(entry)) {
-    return entry;
-  }
-  const explicit = [
-    entry?.file,
-    entry?.filename,
-    entry?.url,
-    entry?.href,
-    entry?.path,
-    entry?.download,
-    entry?.dataset,
-    entry?.missions,
-    entry?.contracts,
-  ].find((value) => typeof value === 'string' && value.trim());
-  if (explicit) return explicit;
-  return `merged-${identity.patch.toLowerCase()}-${identity.channel.toLowerCase()}${identity.build ? `.${identity.build}` : ''}.json`;
+function identityFrom(payload, sourceUrl='') {
+  const direct = [
+    payload?.gameVersion, payload?.game_version, payload?.version, payload?.patch,
+    payload?.meta?.gameVersion, payload?.meta?.game_version, payload?.meta?.version,
+    payload?.metadata?.gameVersion, payload?.metadata?.version, sourceUrl
+  ].filter(Boolean).join(' ');
+  const haystack = `${direct} ${objectStrings(payload).slice(0,800).join(' ')}`;
+  const patch = normalizePatch(haystack) || normalizePatch(TARGET_PATCH);
+  const channelMatch = haystack.match(/\b(LIVE|EPTU|PTU)\b/i);
+  const channel = (channelMatch?.[1] || TARGET_CHANNEL || 'LIVE').toUpperCase();
+  const build = (haystack.match(/(?:LIVE|EPTU|PTU)[._-]?(\d{5,})/i) || haystack.match(/[._-](\d{5,})(?:\D|$)/) || [,''])[1];
+  const code = patch ? `${patch}-${channel}${build ? `.${build}` : ''}` : '';
+  return { patch, channel, build, code };
 }
 
-async function chooseDataset() {
-  if (DIRECT_DATASET_URL) {
-    const identity = parseIdentity(DIRECT_DATASET_URL);
-    if (!identity) {
-      throw new Error('SCMDB_MISSIONS_URL must contain a patch and channel, such as 4.9-LIVE.12345678.');
-    }
-    if (identity.channel !== TARGET_CHANNEL || (PATCH_OVERRIDE && !samePatch(identity.patch, PATCH_OVERRIDE))) {
-      throw new Error(`SCMDB_MISSIONS_URL identifies as ${identity.code}, outside the requested target.`);
-    }
-    return { url: DIRECT_DATASET_URL, identity, manifestCount: 0, selection: 'explicit override' };
-  }
-
-  const manifest = await readJsonSource(VERSIONS_URL);
-  const rows = manifestRows(manifest);
-  const candidates = rows
-    .filter(({ identity }) => {
-      if (identity.channel !== TARGET_CHANNEL) return false;
-      if (PATCH_OVERRIDE && !samePatch(identity.patch, PATCH_OVERRIDE)) return false;
-      return true;
-    })
-    .sort(compareDataset);
-
-  if (!candidates.length) {
-    const available = rows.map(({ identity }) => identity.code).slice(0, 40).join(', ');
-    throw new Error(
-      `SCMDB does not list ${PATCH_OVERRIDE || 'any'} ${TARGET_CHANNEL} dataset. ` +
-        `Available: ${available || 'none'}.`,
-    );
-  }
-
-  const selected = candidates[0];
-  const dataBase = new URL('data/', SCMDB_BASE);
-  return {
-    url: new URL(selected.file, dataBase).href,
-    identity: selected.identity,
-    manifestCount: rows.length,
-    selection: 'newest manifest dataset',
-  };
-}
-
-function scoreMissionArray(rows) {
-  if (!Array.isArray(rows) || !rows.length) return -1;
-  let score = Math.min(rows.length, 5000);
-  for (const row of rows.slice(0, 20)) {
-    if (!row || typeof row !== 'object') continue;
-    for (const key of ['title', 'name', 'description', 'debugName', 'debug_name', 'reward', 'rewardUEC', 'id', 'uuid']) {
-      if (key in row || (row.attributes && key in row.attributes)) score += 20;
-    }
-  }
+const missionHints = new Set(['title','name','mission_name','contract_name','display_name','reward','rewards','mission_type','contract_type','faction','mission_giver','objectives','uuid','mission_id']);
+function rowScore(row) {
+  if (!row || typeof row !== 'object' || Array.isArray(row)) return -100;
+  const keys = Object.keys(row).map(k => k.toLowerCase());
+  let score = keys.reduce((n,k) => n + (missionHints.has(k) ? 2 : /mission|contract|reward|objective|faction|giver/.test(k) ? 1 : 0), 0);
+  if (keys.includes('title') || keys.includes('name') || keys.includes('mission_name')) score += 3;
   return score;
 }
 
-function findMissionArray(payload, excluded = new Set()) {
-  let best = [];
-  let bestScore = -1;
-  const walked = new Set();
-  function walk(value, depth = 0) {
-    if (depth > 8 || value == null || typeof value !== 'object' || walked.has(value)) return;
-    walked.add(value);
+function findMissionArray(payload) {
+  const candidates = [];
+  const visited = new Set();
+  const queue = [{ value: payload, path: '$', depth: 0 }];
+  while (queue.length) {
+    const { value, path: currentPath, depth } = queue.shift();
+    if (!value || typeof value !== 'object' || visited.has(value) || depth > 8) continue;
+    visited.add(value);
     if (Array.isArray(value)) {
-      if (!excluded.has(value)) {
-        const score = scoreMissionArray(value);
-        if (score > bestScore) { best = value; bestScore = score; }
+      if (value.length && value.some(v => v && typeof v === 'object')) {
+        const sample = value.filter(v => v && typeof v === 'object').slice(0,20);
+        const avg = sample.reduce((n,v) => n + rowScore(v), 0) / Math.max(1,sample.length);
+        const pathBonus = /mission|contract/i.test(currentPath) ? 15 : /data|record|item|entry/i.test(currentPath) ? 3 : 0;
+        candidates.push({ rows: value.filter(v => v && typeof v === 'object'), path: currentPath, score: avg + pathBonus + Math.log10(value.length+1) });
       }
-      for (const item of value.slice(0, 40)) walk(item, depth + 1);
+      value.slice(0,40).forEach((v,i) => queue.push({value:v,path:`${currentPath}[${i}]`,depth:depth+1}));
+    } else {
+      const entries = Object.entries(value);
+      if (/mission|contract/i.test(currentPath) && entries.length >= MIN_MISSIONS && entries.every(([,v]) => v && typeof v === 'object' && !Array.isArray(v))) {
+        const rows = entries.map(([key,v]) => ({ __sourceKey:key, ...v }));
+        const sample = rows.slice(0,20);
+        candidates.push({ rows, path: currentPath, score: 18 + sample.reduce((n,v)=>n+rowScore(v),0)/sample.length + Math.log10(rows.length+1) });
+      }
+      for (const [key,v] of entries.slice(0,500)) queue.push({ value:v, path:`${currentPath}.${key}`, depth:depth+1 });
+    }
+  }
+  candidates.sort((a,b) => b.score-a.score || b.rows.length-a.rows.length);
+  const selected = candidates[0];
+  if (!selected || selected.rows.length < MIN_MISSIONS) {
+    const summary = candidates.slice(0,5).map(c => `${c.path}:${c.rows.length}`).join(', ');
+    throw new Error(`Could not locate at least ${MIN_MISSIONS} mission records. Candidates: ${summary || 'none'}`);
+  }
+  return selected;
+}
+
+function isInactive(row) {
+  const value = row?.active ?? row?.is_active ?? row?.enabled ?? row?.released ?? row?.isReleased;
+  if (value === false || value === 0 || value === '0') return true;
+  const status = String(row?.status ?? row?.state ?? row?.availability ?? '').toLowerCase();
+  return /inactive|disabled|deprecated|legacy|removed|unreleased|archived/.test(status);
+}
+
+function discoverUrls(payload, baseUrl) {
+  const found = [];
+  const walk = (value, context='', depth=0) => {
+    if (depth > 7) return;
+    if (typeof value === 'string') {
+      if (/\.json(?:\?|$)/i.test(value) && /live/i.test(`${context} ${value}`)) {
+        try { found.push(new URL(value, baseUrl).href); } catch (_) {}
+      }
       return;
     }
-    for (const child of Object.values(value)) walk(child, depth + 1);
-  }
+    if (Array.isArray(value)) return value.forEach(v => walk(v, context, depth+1));
+    if (value && typeof value === 'object') Object.entries(value).forEach(([k,v]) => walk(v, `${context} ${k}`, depth+1));
+  };
   walk(payload);
-  return best;
+  return [...new Set(found)].sort((a,b) => compareVersion(b,a));
 }
 
-function firstArray(payload, aliases) {
-  const queue = [payload];
-  const walked = new Set();
-  while (queue.length) {
-    const value = queue.shift();
-    if (!value || typeof value !== 'object' || walked.has(value)) continue;
-    walked.add(value);
-    for (const [key, child] of Object.entries(value)) {
-      if (aliases.has(key.toLowerCase()) && Array.isArray(child)) return child;
-      if (child && typeof child === 'object' && !Array.isArray(child)) queue.push(child);
-    }
+async function chooseSource() {
+  if (DIRECT_URL) return DIRECT_URL;
+  let last;
+  for (const versionsUrl of VERSION_URLS) {
+    try {
+      const text = await fetchWithRetry(versionsUrl);
+      const payload = parseJson(text, versionsUrl);
+      let urls = discoverUrls(payload, versionsUrl);
+      if (TARGET_PATCH) urls = urls.filter(url => normalizePatch(url) === normalizePatch(TARGET_PATCH));
+      if (urls[0]) return urls[0];
+      throw new Error(`No ${TARGET_CHANNEL} JSON file was listed by ${versionsUrl}`);
+    } catch (error) { last = error; }
   }
-  return [];
+  throw last || new Error('SCMDB versions discovery failed.');
 }
 
-function flattenRecord(row) {
-  if (!row || typeof row !== 'object' || !row.attributes || typeof row.attributes !== 'object') return row;
-  return { ...row.attributes, id: row.id ?? row.attributes.id, type: row.type, relationships: row.relationships, links: row.links, __raw_api_record: row };
+async function loadExistingStatus() {
+  try { return JSON.parse(await readFile(STATUS_PATH,'utf8')); } catch (_) { return null; }
 }
 
-function datasetIdentity(source, url) {
-  const candidates = [
-    source?.version,
-    source?.gameVersion,
-    source?.game_version,
-    source?.targetVersion,
-    source?.meta?.version,
-    source?.meta?.gameVersion,
-    source?.metadata?.version,
-    source?.metadata?.gameVersion,
-    url,
-  ];
-  for (const candidate of candidates) {
-    const parsed = parseIdentity(candidate);
-    if (parsed) return parsed;
-  }
-  return null;
-}
-
-function clone(value) {
-  return value == null ? value : JSON.parse(JSON.stringify(value));
-}
-
-function enrichBlueprintRewards(rows, pools) {
-  if (!Array.isArray(rows)) return rows;
-  return rows.map((entry) => {
-    if (!entry || typeof entry !== 'object') return entry;
-    const result = { ...entry };
-    const pool = entry.blueprintPool ? pools?.[entry.blueprintPool] : null;
-    if (pool) {
-      if (!result.poolName && pool.name) result.poolName = pool.name;
-      result.blueprints = clone(pool.blueprints || []);
-      if (pool.source != null) result.source = pool.source;
-    }
-    return result;
-  });
-}
-
-function enrichHaulingOrders(rows, resources) {
-  if (!Array.isArray(rows)) return rows;
-  return rows.map((entry) => {
-    if (!entry || typeof entry !== 'object') return entry;
-    const result = { ...entry };
-    const resource = entry.resource ? resources?.[entry.resource] : null;
-    if (resource) {
-      result.resourceName = resource.name || entry.resource;
-      result.resourceDetails = clone(resource);
-    }
-    return result;
-  });
-}
-
-function enrichRecord(row, context, legacyContract) {
-  const result = {
-    ...row,
-    gameVersion: context.gameVersion,
-    legacyContract: Boolean(legacyContract),
-    scmdb_url: `https://scmdb.net/?m=${encodeURIComponent(String(row?.id || row?.debugName || ''))}`,
-  };
-  const faction = row?.factionGuid ? context.factions?.[row.factionGuid] : null;
-  if (faction) result.faction = { guid: row.factionGuid, ...clone(faction) };
-
-  const rewardIndex = row?.factionRewardsIndex;
-  if (
-    Number.isInteger(rewardIndex) &&
-    rewardIndex >= 0 &&
-    rewardIndex < context.factionRewardsPools.length
-  ) {
-    result.reputation_gained = clone(context.factionRewardsPools[rewardIndex]);
-  }
-  if (Array.isArray(row?.factionRewards_fail)) {
-    result.reputation_lost = clone(row.factionRewards_fail);
-  }
-  if (Array.isArray(row?.blueprintRewards)) {
-    result.blueprintRewards = enrichBlueprintRewards(row.blueprintRewards, context.blueprintPools);
-  }
-  if (Array.isArray(row?.haulingOrders)) {
-    result.haulingOrders = enrichHaulingOrders(row.haulingOrders, context.resourcePools);
-  }
-  return result;
-}
-
-function fieldInventory(rows) {
-  return [...new Set(rows.flatMap((row) => (row && typeof row === 'object' ? Object.keys(row) : [])))].sort();
-}
-
-async function readExistingSnapshot() {
-  try {
-    return JSON.parse(await fs.readFile(outJson, 'utf8'));
-  } catch {
-    return null;
-  }
-}
-
-async function writeStatus(moduleStatus) {
-  let status = {};
-  try {
-    status = JSON.parse(await fs.readFile(statusJson, 'utf8'));
-  } catch {
-    status = {};
-  }
-  const next = {
+async function preserveExisting(error) {
+  if (!(await exists(JSON_PATH))) return false;
+  let payload;
+  try { payload = JSON.parse(await readFile(JSON_PATH,'utf8')); } catch (_) { return false; }
+  const missions = Array.isArray(payload?.missions) ? payload.missions : [];
+  if (missions.length < MIN_MISSIONS || payload?.patchVerified === false) return false;
+  const previous = await loadExistingStatus();
+  const module = previous?.modules?.contractFinder || {};
+  const status = {
     schema: 'celestial-nexus.game-data-status.v1',
-    generatedAt: new Date().toISOString(),
-    detectedPatch: moduleStatus.patch,
-    detectedChannel: moduleStatus.channel,
+    generatedAt: now(),
+    detectedPatch: payload.targetPatch || normalizePatch(payload.gameVersion),
+    detectedChannel: payload.targetChannel || TARGET_CHANNEL,
     modules: {
-      ...(status.modules || {}),
-      contractFinder: moduleStatus,
-    },
+      contractFinder: {
+        ...module,
+        status: 'stale-upstream-unavailable',
+        patch: payload.targetPatch || module.patch,
+        channel: payload.targetChannel || module.channel,
+        gameVersion: payload.gameVersion || module.gameVersion,
+        activeCount: missions.filter(row => !isInactive(row)).length,
+        legacyCount: missions.filter(isInactive).length,
+        totalCount: missions.length,
+        lastAttemptAt: now(),
+        lastError: String(error?.message || error)
+      }
+    }
   };
-  await fs.writeFile(statusJson, `${JSON.stringify(next, null, 2)}\n`);
+  await writeFile(STATUS_PATH, jsonStringify(status, true));
+  console.warn(`SCMDB unavailable; preserved ${missions.length} tracked mission records.`);
+  return true;
 }
 
-async function synchronize() {
-  const selected = await chooseDataset();
-  console.log(`Selected newest ${TARGET_CHANNEL}: ${selected.identity.code}`);
-  console.log(`Downloading ${selected.url}`);
-
-  const source = await readJsonSource(selected.url, 90_000);
-  const sourceIdentity = datasetIdentity(source, selected.url);
-  if (!sourceIdentity) throw new Error('Downloaded SCMDB dataset did not identify its version.');
-  if (
-    sourceIdentity.channel !== TARGET_CHANNEL ||
-    !samePatch(sourceIdentity.patch, selected.identity.patch)
-  ) {
-    throw new Error(
-      `Manifest selected ${selected.identity.code}, but dataset identifies as ${sourceIdentity.code}.`,
-    );
-  }
-
-  const legacy = firstArray(source, new Set(['legacycontracts', 'legacy_contracts', 'legacy-missions', 'legacymissions']));
-  const preferredCurrent = firstArray(source, new Set(['contracts', 'missions', 'currentcontracts', 'current_contracts']));
-  const current = (preferredCurrent.length ? preferredCurrent : findMissionArray(source, new Set([legacy]))).map(flattenRecord);
-  const flattenedLegacy = legacy.map(flattenRecord);
-  if (current.length < MIN_ACTIVE) {
-    throw new Error(`SCMDB returned only ${current.length} active contracts; minimum is ${MIN_ACTIVE}.`);
-  }
-
-  const existing = await readExistingSnapshot();
-  const previousActive = Number(existing?.activeMissionCount || 0);
-  if (
-    previousActive >= MIN_ACTIVE &&
-    current.length < previousActive * 0.55 &&
-    !ALLOW_LARGE_DROP
-  ) {
-    throw new Error(
-      `Active contract count dropped from ${previousActive} to ${current.length}. ` +
-        'Set ALLOW_LARGE_DROP=true only after reviewing the patch.',
-    );
-  }
-
-  const context = {
-    gameVersion: sourceIdentity.code,
-    factions: source?.factions || {},
-    resourcePools: source?.resourcePools || {},
-    blueprintPools: source?.blueprintPools || {},
-    factionRewardsPools: Array.isArray(source?.factionRewardsPools)
-      ? source.factionRewardsPools
-      : [],
-  };
-  const missions = [
-    ...current.map((row) => enrichRecord(row, context, false)),
-    ...flattenedLegacy.map((row) => enrichRecord(row, context, true)),
-  ];
-  const sourceFingerprint = createHash('sha256')
-    .update(JSON.stringify(source))
-    .digest('hex');
-  const fetchedAt = new Date().toISOString();
-  const snapshot = {
-    schema: 'celestial-nexus.scmd-missions.v5',
-    source: 'SCMDB public mission data',
-    sourceUrl: selected.url,
-    versionsUrl: VERSIONS_URL,
-    sourceFingerprint,
-    isFallback: false,
-    fetchedAt,
-    targetPatch: sourceIdentity.patch,
-    targetChannel: TARGET_CHANNEL,
-    gameVersion: sourceIdentity.code,
-    patchVerified: true,
-    verificationMethod:
-      'Newest matching channel selected from SCMDB versions.json; downloaded dataset version was cross-checked before write.',
-    missionCount: missions.length,
-    activeMissionCount: current.length,
-    legacyMissionCount: flattenedLegacy.length,
-    fields: fieldInventory(missions),
-    missions,
-  };
-
-  const unchanged =
-    existing?.sourceFingerprint === sourceFingerprint &&
-    existing?.gameVersion === sourceIdentity.code &&
-    Number(existing?.missionCount) === missions.length;
-
-  await fs.mkdir(path.dirname(outJson), { recursive: true });
-  if (!unchanged) {
-    const compact = JSON.stringify(snapshot);
-    await fs.writeFile(outJson, `${compact}\n`);
-    await fs.writeFile(outJs, `window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ${compact};\n`);
-    console.log(
-      `Saved ${missions.length} contracts (${current.length} active + ${flattenedLegacy.length} legacy).`,
-    );
-  } else {
-    console.log(`Mission snapshot is already current for ${sourceIdentity.code}.`);
-  }
-
-  await writeStatus({
-    status: 'current',
-    source: 'SCMDB',
-    sourceUrl: selected.url,
-    versionsUrl: VERSIONS_URL,
-    patch: sourceIdentity.patch,
-    channel: TARGET_CHANNEL,
-    gameVersion: sourceIdentity.code,
-    fetchedAt,
-    activeCount: current.length,
-    legacyCount: flattenedLegacy.length,
-    totalCount: missions.length,
-    fingerprint: sourceFingerprint,
-  });
-}
-
-function isTemporaryUpstreamFailure(error) {
-  const message = String(error?.message || error);
-
-  return /HTTP (403|408|429|5\d\d)\b|fetch failed|aborted/i.test(
-    message,
-  );
-}
-
-async function preserveExistingSnapshot(error) {
-  if (!isTemporaryUpstreamFailure(error)) {
-    throw error;
-  }
-
-  const existing = await readExistingSnapshot();
-
-  // A first-time sync without any local snapshot should still fail.
-  if (!existing) {
-    throw error;
-  }
-
-  const identity =
-    parseIdentity(existing.gameVersion) ||
-    parseIdentity(existing.sourceUrl) || {
-      patch: existing.targetPatch || PATCH_OVERRIDE || '',
-      channel: existing.targetChannel || TARGET_CHANNEL,
-      code: existing.gameVersion || 'unknown',
+async function main() {
+  await mkdir(DATA_DIR, { recursive:true });
+  let source;
+  try {
+    source = await chooseSource();
+    const { text, sourceUrl } = await readSource(source);
+    const raw = parseJson(text, sourceUrl);
+    const identity = identityFrom(raw, sourceUrl);
+    const expectedPatch = normalizePatch(TARGET_PATCH);
+    if (expectedPatch && identity.patch && identity.patch !== expectedPatch) throw new Error(`SCMDB dataset patch ${identity.patch} does not match requested ${expectedPatch}.`);
+    if (TARGET_CHANNEL && identity.channel && identity.channel !== TARGET_CHANNEL) throw new Error(`SCMDB dataset channel ${identity.channel} does not match requested ${TARGET_CHANNEL}.`);
+    const patch = expectedPatch || identity.patch;
+    if (!patch) throw new Error('Unable to determine SCMDB patch identity. Set MISSION_PATCH explicitly.');
+    const channel = TARGET_CHANNEL || identity.channel || 'LIVE';
+    const selected = findMissionArray(raw);
+    const missions = selected.rows;
+    const activeCount = missions.filter(row => !isInactive(row)).length;
+    const legacyCount = missions.length - activeCount;
+    if (activeCount < MIN_MISSIONS) throw new Error(`Only ${activeCount} active mission records were found; expected at least ${MIN_MISSIONS}.`);
+    const gameVersion = identity.code || `${patch}-${channel}`;
+    const fetchedAt = now();
+    const payload = {
+      schema: 'celestial-nexus.scmdb-missions.v2',
+      source: `SCMDB ${gameVersion} mission snapshot`,
+      sourceUrl,
+      fetchedAt,
+      gameVersion,
+      targetPatch: patch,
+      targetChannel: channel,
+      patchVerified: true,
+      isFallback: false,
+      missionCount: missions.length,
+      meta: {
+        sourcePath: selected.path,
+        sourceRecordCount: missions.length,
+        activeCount,
+        legacyCount,
+        targetPatch: patch,
+        targetChannel: channel,
+        gameVersion,
+        patchVerified: true,
+        fetchedAt
+      },
+      missions
     };
-
-  console.warn(
-    `SCMDB is temporarily unavailable: ${error?.message || error}\n` +
-    `Keeping the existing ${identity.code} snapshot unchanged.`,
-  );
-
-  // This file is required by the following audit and result steps.
-  await writeStatus({
-    status: 'stale-upstream-unavailable',
-    source: existing.source || 'SCMDB',
-    sourceUrl: existing.sourceUrl || '',
-    versionsUrl: VERSIONS_URL,
-    patch: identity.patch,
-    channel: identity.channel,
-    gameVersion: identity.code,
-    fetchedAt: existing.fetchedAt || null,
-    activeCount: Number(existing.activeMissionCount || 0),
-    legacyCount: Number(existing.legacyMissionCount || 0),
-    totalCount: Number(existing.missionCount || 0),
-    fingerprint: existing.sourceFingerprint || '',
-    lastError: String(error?.message || error),
-  });
+    const jsonText = jsonStringify(payload, false);
+    const fingerprint = sha256(jsonText);
+    const status = {
+      schema: 'celestial-nexus.game-data-status.v1',
+      generatedAt: fetchedAt,
+      detectedPatch: patch,
+      detectedChannel: channel,
+      modules: {
+        contractFinder: {
+          status: 'current', source: payload.source, sourceUrl,
+          versionsUrl: DIRECT_URL ? '' : VERSION_URLS[0], patch, channel, gameVersion,
+          fetchedAt, activeCount, legacyCount, totalCount: missions.length,
+          fingerprint, lastError: ''
+        }
+      }
+    };
+    await Promise.all([
+      writeFile(JSON_PATH, jsonText),
+      writeFile(JS_PATH, `window.NEXUS_SCMDB_MISSIONS_PAYLOAD=${JSON.stringify(payload)};\n`),
+      writeFile(STATUS_PATH, jsonStringify(status, true))
+    ]);
+    console.log(`Synchronized ${missions.length} SCMDB missions (${activeCount} active) for ${gameVersion}.`);
+  } catch (error) {
+    const preserved = !STRICT_SYNC && !DIRECT_URL && await preserveExisting(error);
+    if (preserved) return;
+    console.error(error?.stack || error);
+    process.exitCode = 1;
+  }
 }
 
-try {
-  await synchronize();
-} catch (error) {
-  await preserveExistingSnapshot(error);
-}
+await main();

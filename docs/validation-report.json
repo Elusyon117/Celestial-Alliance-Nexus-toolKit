@@ -1,0 +1,81 @@
+{
+  "schema": "celestial-nexus.validation.v1",
+  "generatedAt": "2026-07-18T18:03:27.567Z",
+  "status": "passed",
+  "errors": 0,
+  "warnings": 0,
+  "metrics": {
+    "bytes": 3608801,
+    "lines": 53132,
+    "ids": 693,
+    "scriptTags": 86
+  },
+  "checks": [
+    {
+      "name": "version-meta",
+      "ok": true,
+      "severity": "error",
+      "detail": "1.8.0"
+    },
+    {
+      "name": "index-size",
+      "ok": true,
+      "severity": "warning",
+      "detail": "3608801 bytes"
+    },
+    {
+      "name": "unique-dom-ids",
+      "ok": true,
+      "severity": "error",
+      "detail": "all unique"
+    },
+    {
+      "name": "inline-script-syntax",
+      "ok": true,
+      "severity": "error",
+      "detail": "86 script tags checked"
+    },
+    {
+      "name": "required-files",
+      "ok": true,
+      "severity": "error",
+      "detail": "14 required files found"
+    },
+    {
+      "name": "json:data/scmdb-missions-live.json",
+      "ok": true,
+      "severity": "error",
+      "detail": "valid"
+    },
+    {
+      "name": "json:data/game-data-status.json",
+      "ok": true,
+      "severity": "error",
+      "detail": "valid"
+    },
+    {
+      "name": "json:data/roster.json",
+      "ok": true,
+      "severity": "error",
+      "detail": "valid"
+    },
+    {
+      "name": "json:data/mrkraken-release.json",
+      "ok": true,
+      "severity": "error",
+      "detail": "valid"
+    },
+    {
+      "name": "json:manifest.webmanifest",
+      "ok": true,
+      "severity": "error",
+      "detail": "valid"
+    },
+    {
+      "name": "local-markup-references",
+      "ok": true,
+      "severity": "error",
+      "detail": "6 local markup references resolved"
+    }
+  ]
+}

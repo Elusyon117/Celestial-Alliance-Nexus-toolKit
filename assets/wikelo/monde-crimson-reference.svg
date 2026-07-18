@@ -1,14 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 360" role="img" aria-label="Stylized Monde Crimson Camo reference illustration">
-  <defs>
-    <linearGradient id="g" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#0b1420"/><stop offset="1" stop-color="#1b0610"/></linearGradient>
-    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-  </defs>
-  <rect width="720" height="360" fill="url(#g)"/>
-  <g opacity=".35" stroke="#ff4f7b" stroke-width="1"><path d="M40 300h640M80 70h560M120 30v300M600 40v280"/><circle cx="360" cy="180" r="130" fill="none"/></g>
-  <g filter="url(#glow)" transform="translate(80 145)">
-    <path d="M42 56h335l38-30h84l18 18h65l28 31-29 30h-86l-18 18h-86l-36-28H42z" fill="#151820" stroke="#ff5a7e" stroke-width="5"/>
-    <path d="M80 54h250m45-28 37 70m-3-70h68m-18 18h120m-412 52h174m173-5h64" stroke="#ff9aae" stroke-width="7" stroke-linecap="round"/>
-    <path d="M120 88c34-24 72-26 112 0m132-42 74 48" stroke="#6ee7ff" stroke-width="3" opacity=".65" fill="none"/>
-  </g>
-  <text x="36" y="48" fill="#ff91aa" font-family="monospace" font-size="24" letter-spacing="3">MONDE CRIMSON · LOCAL REFERENCE</text>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+<title id="title">Monde Crimson reference</title><desc id="desc">Local stylized reference card for the Wikelo Monde Crimson item.</desc>
+<defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#091625"/><stop offset=".55" stop-color="#21101b"/><stop offset="1" stop-color="#6d1729"/></linearGradient><radialGradient id="glow"><stop stop-color="#ff5b76" stop-opacity=".75"/><stop offset="1" stop-color="#ff355c" stop-opacity="0"/></radialGradient></defs>
+<rect width="1280" height="720" fill="url(#bg)"/><circle cx="930" cy="230" r="290" fill="url(#glow)"/><path d="M860 170 1040 275 960 485 730 485 650 275Z" fill="none" stroke="#ff657e" stroke-width="18" opacity=".85"/><path d="m760 310 88-88 120 54-26 144-154 24Z" fill="#ff385c" opacity=".32"/><g fill="#f8fbff" font-family="Arial,Helvetica,sans-serif"><text x="76" y="532" font-size="72" font-weight="700" letter-spacing="8">MONDE</text><text x="80" y="598" font-size="32" letter-spacing="14" fill="#ff7188">CRIMSON</text><text x="82" y="650" font-size="20" fill="#9fb1c2">LOCAL REFERENCE ART · CELESTIAL NEXUS</text></g></svg>

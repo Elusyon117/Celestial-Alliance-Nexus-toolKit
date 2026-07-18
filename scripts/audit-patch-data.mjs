@@ -1,79 +1,59 @@
 #!/usr/bin/env node
-/** Report patch-specific values that still need a module adapter or manual review. */
-import fs from 'node:fs/promises';
-import path from 'node:path';
+/** Celestial Nexus v1.8.0 generated-data integrity audit. */
+import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import path from 'node:path';
 
-const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const indexPath = path.join(root, 'index.html');
-const statusPath = path.join(root, 'data', 'game-data-status.json');
-const outPath = path.join(root, 'data', 'patch-audit.json');
-
-const status = JSON.parse(await fs.readFile(statusPath, 'utf8'));
-const currentPatch = String(status.detectedPatch || status.modules?.contractFinder?.patch || '');
-const source = await fs.readFile(indexPath, 'utf8');
-const lines = source.split(/\r?\n/);
-const refs = [];
-const versionPattern = /(?<!\d)(4\.\d+(?:\.\d+)?)(?!\d)/g;
-
-function patchParts(value) {
-  return String(value || '').split('.').map(Number).concat([0, 0, 0]).slice(0, 3);
-}
-function comparePatch(a, b) {
-  const aa = patchParts(a), bb = patchParts(b);
-  for (let i = 0; i < 3; i += 1) if (aa[i] !== bb[i]) return aa[i] - bb[i];
-  return 0;
-}
-function moduleHint(before) {
-  const ids = [...before.matchAll(/id=["']([^"']+-view)["']/g)];
-  return ids.at(-1)?.[1] || 'global-or-embedded-data';
-}
-
-let offset = 0;
-for (let lineIndex = 0; lineIndex < lines.length; lineIndex += 1) {
-  const line = lines[lineIndex];
-  for (const match of line.matchAll(versionPattern)) {
-    const patch = match[1];
-    const start = Math.max(0, match.index - 100);
-    const end = Math.min(line.length, match.index + patch.length + 100);
-    const context = line.slice(start, end);
-    const patchContext = /patch|version|live|ptu|eptu|gameVersion|targetPatch|"patch"|alpha/i.test(context);
-    if (!patchContext || !currentPatch || comparePatch(patch, currentPatch) >= 0) continue;
-    const absolute = offset + match.index;
-    refs.push({
-      patch,
-      line: lineIndex + 1,
-      module: moduleHint(source.slice(Math.max(0, absolute - 12000), absolute)),
-      context: context.replace(/\s+/g, ' ').trim(),
-    });
-  }
-  offset += line.length + 1;
-}
-
-const grouped = {};
-for (const ref of refs) {
-  grouped[ref.module] ||= { count: 0, patches: new Set(), examples: [] };
-  grouped[ref.module].count += 1;
-  grouped[ref.module].patches.add(ref.patch);
-  if (grouped[ref.module].examples.length < 6) grouped[ref.module].examples.push(ref);
-}
-const modules = Object.fromEntries(
-  Object.entries(grouped).map(([key, value]) => [key, {
-    count: value.count,
-    patches: [...value.patches].sort(),
-    examples: value.examples,
-  }]),
-);
-const report = {
-  schema: 'celestial-nexus.patch-audit.v1',
-  generatedAt: new Date().toISOString(),
-  currentPatch,
-  staleReferenceCount: refs.length,
-  affectedModuleCount: Object.keys(modules).length,
-  modules,
-  references: refs.slice(0, 250),
-  note:
-    'This report flags patch-specific embedded values. Only modules with a trusted machine-readable upstream should be auto-rewritten; other modules require a reviewed adapter.',
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const files = {
+  index: path.join(ROOT,'index.html'),
+  payload: path.join(ROOT,'data/scmdb-missions-live.json'),
+  status: path.join(ROOT,'data/game-data-status.json'),
+  output: path.join(ROOT,'data/patch-audit.json')
 };
-await fs.writeFile(outPath, `${JSON.stringify(report, null, 2)}\n`);
-console.log(`Patch audit: ${refs.length} older patch references across ${report.affectedModuleCount} modules.`);
+const strict = /^(1|true|yes)$/i.test(String(process.env.STRICT_AUDIT || ''));
+const readJson = async file => JSON.parse(await readFile(file,'utf8'));
+const norm = value => {
+  const m = String(value||'').match(/\b(\d+\.\d+(?:\.\d+)?)\b/);
+  if (!m) return '';
+  return m[1].split('.').length===2 ? `${m[1]}.0` : m[1];
+};
+
+const checks = [];
+const check = (name, ok, detail, severity='error') => checks.push({name,ok:Boolean(ok),severity,detail:String(detail||'')});
+let payload={}, status={}, index='';
+try { [payload,status,index] = await Promise.all([readJson(files.payload),readJson(files.status),readFile(files.index,'utf8')]); }
+catch (error) { check('required-files-readable',false,error.message); }
+
+const missions = Array.isArray(payload?.missions) ? payload.missions : [];
+const module = status?.modules?.contractFinder || {};
+const payloadPatch = norm(payload?.targetPatch || payload?.gameVersion);
+const statusPatch = norm(module?.patch || status?.detectedPatch || module?.gameVersion);
+const payloadChannel = String(payload?.targetChannel || '').toUpperCase();
+const statusChannel = String(module?.channel || status?.detectedChannel || '').toUpperCase();
+check('payload-schema', payload?.schema === 'celestial-nexus.scmdb-missions.v2', payload?.schema || 'missing');
+check('payload-patch-verified', payload?.patchVerified === true, `patchVerified=${payload?.patchVerified}`);
+check('mission-count-minimum', missions.length >= 100, `missions=${missions.length}`);
+check('mission-count-consistent', Number(payload?.missionCount) === missions.length, `declared=${payload?.missionCount}; actual=${missions.length}`);
+check('status-count-consistent', Number(module?.totalCount) === missions.length, `status=${module?.totalCount}; actual=${missions.length}`);
+check('patch-consistent', Boolean(payloadPatch && statusPatch && payloadPatch === statusPatch), `payload=${payloadPatch}; status=${statusPatch}`);
+check('channel-consistent', Boolean(payloadChannel && statusChannel && payloadChannel === statusChannel), `payload=${payloadChannel}; status=${statusChannel}`);
+check('status-current', module?.status === 'current', module?.status || 'missing', 'warning');
+check('index-version-1.8.0', /name="nexus-version"[^>]*content="1\.8\.0"|content="1\.8\.0"[^>]*name="nexus-version"/.test(index), 'nexus-version meta');
+
+const patchRefs = [...new Set((index.match(/\b4\.\d+(?:\.\d+)?\b/g)||[]).map(norm))].sort();
+const staleRefs = patchRefs.filter(v => statusPatch && v !== statusPatch);
+check('index-patch-reference-review', staleRefs.length === 0, staleRefs.length ? `Non-current patch strings: ${staleRefs.join(', ')}` : 'No stale 4.x strings detected', 'warning');
+
+const errors = checks.filter(c => !c.ok && c.severity === 'error');
+const warnings = checks.filter(c => !c.ok && c.severity === 'warning');
+const report = {
+  schema:'celestial-nexus.patch-audit.v1', generatedAt:new Date().toISOString(),
+  status: errors.length ? 'failed' : warnings.length ? 'passed-with-warnings' : 'passed',
+  patch: statusPatch || payloadPatch, channel: statusChannel || payloadChannel,
+  missionCount: missions.length, errors: errors.length, warnings: warnings.length,
+  patchReferences: patchRefs, checks
+};
+await writeFile(files.output, JSON.stringify(report,null,2)+'\n');
+console.log(JSON.stringify(report,null,2));
+if (strict && errors.length) process.exitCode = 1;

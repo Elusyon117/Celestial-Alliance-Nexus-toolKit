@@ -1,1 +1,1 @@
-stable-optimized-cargo-shipmenus-mining-beradom
+1.8.0

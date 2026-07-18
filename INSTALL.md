@@ -1,43 +1,44 @@
-# Celestial Nexus latest-patch update package
+# Installation — v1.8.0 clean replacement
 
-## Install
+## Before replacing the repository
 
-From the repository root:
+The repository currently tracks generated SCMDB and MrKraken mirrors. If you need the current offline data to remain available immediately, make a temporary local backup of:
 
-1. Replace `index.html` with the packaged `index.html`.
-2. Replace `scripts/sync-scmdb-missions.mjs`.
-3. Add `scripts/audit-patch-data.mjs`.
-4. Delete `.github/workflows/sync-scmdb-missions.yml`.
-5. Add `.github/workflows/sync-game-data.yml`.
-6. Commit and push the changes.
-7. In GitHub, open **Actions → Sync game data → Run workflow**. Leave **patch** blank and choose **LIVE**.
+- `data/scmdb-missions-live.json`
+- `data/scmdb-missions-live.js`
+- `data/game-data-status.json`
+- `data/mrkraken-global.ini`
+- `data/mrkraken-release.json`
 
-The packaged `index-latest-live.patch` is an alternative to replacing the full `index.html`:
+The clean package can regenerate them, but SCMDB 4.9 requires the release-asset import procedure.
 
-```bash
-git apply index-latest-live.patch
-```
+## Replace the files
 
-## What the workflow does
+1. Clone or open the existing repository locally.
+2. Delete all repository contents **except `.git/`**.
+3. Extract this ZIP into the repository root.
+4. Confirm `index.html`, `.github/`, `assets/`, `data/`, `icons/`, and `scripts/` are at the root.
+5. Commit with a message such as `Release Celestial Nexus Toolkit v1.8.0`.
+6. Push to `main`.
 
-- Runs every six hours and can also be run manually.
-- Reads SCMDB's versions manifest and selects the newest dataset for the chosen channel.
-- Chooses the newest build within that patch.
-- Supports an optional `MISSION_PATCH` override for deliberate historical or emergency pins.
-- Cross-checks the downloaded dataset's patch and channel before writing files.
-- Rejects very small datasets and suspicious contract-count drops.
-- Writes `data/scmdb-missions-live.json`, `data/scmdb-missions-live.js`, and `data/game-data-status.json`.
-- Audits the rest of `index.html` for older patch-specific values and writes `data/patch-audit.json`.
-- Opens or updates a GitHub issue when curated modules need review, or when synchronization fails.
+## GitHub Pages
 
-## Important boundary
+Use **Settings → Pages → Deploy from a branch**, with `main` and `/ (root)` unless the repository already uses a different Pages deployment method.
 
-The Contract Finder has a trusted machine-readable upstream, so it can be synchronized automatically. Other embedded datasets—such as curated Wikelo recipes, terminal snapshots, or preview balance tables—must get their own source adapter and validation rules before they should be auto-rewritten. The audit report identifies those references without relabeling old data as new.
+After Pages deploys:
 
-## Optional controls
+1. Open the site.
+2. Hard-refresh once (`Ctrl+Shift+R` or `Cmd+Shift+R`).
+3. If an older build remains, clear site data or unregister the older service worker once.
 
-- `MISSION_CHANNEL=LIVE|PTU|EPTU`
-- `MISSION_PATCH=4.9` to temporarily pin a patch; blank means newest patch in the channel.
-- `SCMDB_MISSIONS_URL=https://.../4.9-LIVE.12345678.json` for an explicit emergency source.
-- `MISSION_MIN_ACTIVE=100` to change the minimum accepted active-contract count.
-- `ALLOW_LARGE_DROP=true` only after manually reviewing a legitimate large dataset reduction.
+## Validate
+
+Run **Actions → Validate toolkit → Run workflow**. The workflow checks version metadata, inline JavaScript syntax, duplicate IDs, JSON validity, required files, and local markup references.
+
+## Populate mission data
+
+Follow [docs/SCMDB_4_9_IMPORT.md](docs/SCMDB_4_9_IMPORT.md). Do not expect the workflow to create the temporary release asset automatically.
+
+## Populate Language Lab data
+
+Run **Actions → Sync MrKraken language pack → Run workflow**. This downloads the latest LIVE localization ZIP, validates at least 10,000 entries, and commits the mirror.

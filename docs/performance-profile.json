@@ -1,0 +1,30 @@
+{
+  "schema": "celestial-nexus.performance-profile.v1",
+  "generatedAt": "2026-07-18T18:02:00Z",
+  "before": {
+    "indexBytes": 6451214,
+    "lines": 53071,
+    "scriptTags": 85,
+    "inlineScriptChars": 4763405,
+    "styleTags": 95,
+    "inlineStyleChars": 932186,
+    "embeddedBase64Images": 28,
+    "estimatedEmbeddedImageBytes": 2134138
+  },
+  "after": {
+    "indexBytes": 3608801,
+    "lines": 53132,
+    "scriptTags": 86,
+    "styleTags": 101,
+    "embeddedBase64Images": 0,
+    "externalizedLocalImages": 26
+  },
+  "improvement": {
+    "indexBytesRemoved": 2842413,
+    "indexSizeReductionPercent": 44.1
+  },
+  "runtimeNotes": {
+    "uploadedInitialChromiumJsHeapMb": 23.1,
+    "limitations": "Full deployed interaction profiling requires the GitHub Pages origin and external providers. Static and initial-render checks were completed in the isolated environment."
+  }
+}

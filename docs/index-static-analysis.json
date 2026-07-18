@@ -1,0 +1,1191 @@
+{
+  "bytes": 6451214,
+  "chars": 6445551,
+  "lines": 53071,
+  "tags": 3504,
+  "scripts": 85,
+  "styles": 95,
+  "links": 5,
+  "images": 22,
+  "buttons": 189,
+  "inputs": 189,
+  "inline_script_chars": 4763405,
+  "inline_style_chars": 932186,
+  "id_count": 691,
+  "duplicate_ids": {
+    "nexus-blueprint-component-symbol-visibility-patch": 2,
+    "nexus-blueprint-quality-slider-visual-patch": 2
+  },
+  "script_inventory": [
+    {
+      "index": 1,
+      "type": "classic",
+      "src": "./data/scmdb-missions-live.js",
+      "chars": 0
+    },
+    {
+      "index": 2,
+      "type": "classic",
+      "src": null,
+      "chars": 2001055
+    },
+    {
+      "index": 3,
+      "type": "classic",
+      "src": null,
+      "chars": 61022
+    },
+    {
+      "index": 4,
+      "type": "classic",
+      "src": null,
+      "chars": 6961
+    },
+    {
+      "index": 5,
+      "type": "classic",
+      "src": null,
+      "chars": 9952
+    },
+    {
+      "index": 6,
+      "type": "classic",
+      "src": null,
+      "chars": 29518
+    },
+    {
+      "index": 7,
+      "type": "classic",
+      "src": null,
+      "chars": 19582
+    },
+    {
+      "index": 8,
+      "type": "classic",
+      "src": null,
+      "chars": 1187226
+    },
+    {
+      "index": 9,
+      "type": "classic",
+      "src": null,
+      "chars": 244
+    },
+    {
+      "index": 10,
+      "type": "classic",
+      "src": null,
+      "chars": 338
+    },
+    {
+      "index": 11,
+      "type": "classic",
+      "src": null,
+      "chars": 51778
+    },
+    {
+      "index": 12,
+      "type": "classic",
+      "src": null,
+      "chars": 37568
+    },
+    {
+      "index": 13,
+      "type": "classic",
+      "src": null,
+      "chars": 31541
+    },
+    {
+      "index": 14,
+      "type": "classic",
+      "src": null,
+      "chars": 38427
+    },
+    {
+      "index": 15,
+      "type": "classic",
+      "src": null,
+      "chars": 18918
+    },
+    {
+      "index": 16,
+      "type": "classic",
+      "src": null,
+      "chars": 27316
+    },
+    {
+      "index": 17,
+      "type": "classic",
+      "src": null,
+      "chars": 21978
+    },
+    {
+      "index": 18,
+      "type": "classic",
+      "src": null,
+      "chars": 3889
+    },
+    {
+      "index": 19,
+      "type": "classic",
+      "src": null,
+      "chars": 143
+    },
+    {
+      "index": 20,
+      "type": "classic",
+      "src": null,
+      "chars": 16159
+    },
+    {
+      "index": 21,
+      "type": "classic",
+      "src": null,
+      "chars": 124
+    },
+    {
+      "index": 22,
+      "type": "classic",
+      "src": null,
+      "chars": 5302
+    },
+    {
+      "index": 23,
+      "type": "classic",
+      "src": null,
+      "chars": 136
+    },
+    {
+      "index": 24,
+      "type": "classic",
+      "src": null,
+      "chars": 7253
+    },
+    {
+      "index": 25,
+      "type": "classic",
+      "src": null,
+      "chars": 42609
+    },
+    {
+      "index": 26,
+      "type": "classic",
+      "src": null,
+      "chars": 13909
+    },
+    {
+      "index": 27,
+      "type": "classic",
+      "src": null,
+      "chars": 29958
+    },
+    {
+      "index": 28,
+      "type": "classic",
+      "src": null,
+      "chars": 514
+    },
+    {
+      "index": 29,
+      "type": "classic",
+      "src": null,
+      "chars": 23933
+    },
+    {
+      "index": 30,
+      "type": "classic",
+      "src": null,
+      "chars": 16136
+    },
+    {
+      "index": 31,
+      "type": "classic",
+      "src": null,
+      "chars": 26244
+    },
+    {
+      "index": 32,
+      "type": "classic",
+      "src": null,
+      "chars": 12254
+    },
+    {
+      "index": 33,
+      "type": "classic",
+      "src": null,
+      "chars": 20258
+    },
+    {
+      "index": 34,
+      "type": "classic",
+      "src": null,
+      "chars": 21954
+    },
+    {
+      "index": 35,
+      "type": "classic",
+      "src": null,
+      "chars": 13009
+    },
+    {
+      "index": 36,
+      "type": "classic",
+      "src": null,
+      "chars": 33296
+    },
+    {
+      "index": 37,
+      "type": "classic",
+      "src": null,
+      "chars": 20582
+    },
+    {
+      "index": 38,
+      "type": "classic",
+      "src": null,
+      "chars": 10709
+    },
+    {
+      "index": 39,
+      "type": "classic",
+      "src": null,
+      "chars": 5445
+    },
+    {
+      "index": 40,
+      "type": "classic",
+      "src": null,
+      "chars": 44724
+    },
+    {
+      "index": 41,
+      "type": "classic",
+      "src": null,
+      "chars": 3739
+    },
+    {
+      "index": 42,
+      "type": "classic",
+      "src": null,
+      "chars": 19060
+    },
+    {
+      "index": 43,
+      "type": "classic",
+      "src": null,
+      "chars": 13091
+    },
+    {
+      "index": 44,
+      "type": "classic",
+      "src": null,
+      "chars": 11361
+    },
+    {
+      "index": 45,
+      "type": "classic",
+      "src": null,
+      "chars": 3028
+    },
+    {
+      "index": 46,
+      "type": "classic",
+      "src": null,
+      "chars": 26666
+    },
+    {
+      "index": 47,
+      "type": "classic",
+      "src": null,
+      "chars": 33381
+    },
+    {
+      "index": 48,
+      "type": "classic",
+      "src": null,
+      "chars": 19376
+    },
+    {
+      "index": 49,
+      "type": "classic",
+      "src": null,
+      "chars": 863
+    },
+    {
+      "index": 50,
+      "type": "classic",
+      "src": null,
+      "chars": 66542
+    },
+    {
+      "index": 51,
+      "type": "classic",
+      "src": null,
+      "chars": 33721
+    },
+    {
+      "index": 52,
+      "type": "classic",
+      "src": null,
+      "chars": 13262
+    },
+    {
+      "index": 53,
+      "type": "classic",
+      "src": null,
+      "chars": 5768
+    },
+    {
+      "index": 54,
+      "type": "classic",
+      "src": null,
+      "chars": 3384
+    },
+    {
+      "index": 55,
+      "type": "classic",
+      "src": null,
+      "chars": 4100
+    },
+    {
+      "index": 56,
+      "type": "classic",
+      "src": null,
+      "chars": 9690
+    },
+    {
+      "index": 57,
+      "type": "classic",
+      "src": null,
+      "chars": 25569
+    },
+    {
+      "index": 58,
+      "type": "classic",
+      "src": null,
+      "chars": 27706
+    },
+    {
+      "index": 59,
+      "type": "classic",
+      "src": null,
+      "chars": 26070
+    },
+    {
+      "index": 60,
+      "type": "classic",
+      "src": null,
+      "chars": 18088
+    },
+    {
+      "index": 61,
+      "type": "classic",
+      "src": null,
+      "chars": 6942
+    },
+    {
+      "index": 62,
+      "type": "classic",
+      "src": null,
+      "chars": 9015
+    },
+    {
+      "index": 63,
+      "type": "classic",
+      "src": null,
+      "chars": 25926
+    },
+    {
+      "index": 64,
+      "type": "classic",
+      "src": null,
+      "chars": 39293
+    },
+    {
+      "index": 65,
+      "type": "classic",
+      "src": null,
+      "chars": 17723
+    },
+    {
+      "index": 66,
+      "type": "classic",
+      "src": null,
+      "chars": 13014
+    },
+    {
+      "index": 67,
+      "type": "classic",
+      "src": null,
+      "chars": 9432
+    },
+    {
+      "index": 68,
+      "type": "classic",
+      "src": null,
+      "chars": 8698
+    },
+    {
+      "index": 69,
+      "type": "classic",
+      "src": null,
+      "chars": 19569
+    },
+    {
+      "index": 70,
+      "type": "classic",
+      "src": null,
+      "chars": 11605
+    },
+    {
+      "index": 71,
+      "type": "classic",
+      "src": null,
+      "chars": 9455
+    },
+    {
+      "index": 72,
+      "type": "classic",
+      "src": null,
+      "chars": 20648
+    },
+    {
+      "index": 73,
+      "type": "classic",
+      "src": null,
+      "chars": 53055
+    },
+    {
+      "index": 74,
+      "type": "classic",
+      "src": null,
+      "chars": 42892
+    },
+    {
+      "index": 75,
+      "type": "classic",
+      "src": null,
+      "chars": 2546
+    },
+    {
+      "index": 76,
+      "type": "classic",
+      "src": null,
+      "chars": 32184
+    },
+    {
+      "index": 77,
+      "type": "classic",
+      "src": null,
+      "chars": 1592
+    },
+    {
+      "index": 78,
+      "type": "classic",
+      "src": null,
+      "chars": 2174
+    },
+    {
+      "index": 79,
+      "type": "classic",
+      "src": null,
+      "chars": 390
+    },
+    {
+      "index": 80,
+      "type": "classic",
+      "src": null,
+      "chars": 2685
+    },
+    {
+      "index": 81,
+      "type": "classic",
+      "src": null,
+      "chars": 25264
+    },
+    {
+      "index": 82,
+      "type": "classic",
+      "src": null,
+      "chars": 12078
+    },
+    {
+      "index": 83,
+      "type": "classic",
+      "src": null,
+      "chars": 2857
+    },
+    {
+      "index": 84,
+      "type": "classic",
+      "src": null,
+      "chars": 98306
+    },
+    {
+      "index": 85,
+      "type": "classic",
+      "src": null,
+      "chars": 19633
+    }
+  ],
+  "local_or_external_refs": [
+    [
+      "link",
+      "href",
+      "./manifest.webmanifest"
+    ],
+    [
+      "link",
+      "href",
+      "https://fonts.googleapis.com"
+    ],
+    [
+      "link",
+      "href",
+      "https://fonts.gstatic.com"
+    ],
+    [
+      "script",
+      "src",
+      "./data/scmdb-missions-live.js"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/en/orgs/CAELITE/members"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/en/citizens/Elusyon"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/en/citizens/Elusyon"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/"
+    ],
+    [
+      "a",
+      "href",
+      "https://api.star-citizen.wiki/"
+    ],
+    [
+      "a",
+      "href",
+      "https://starcitizen.tools/"
+    ],
+    [
+      "a",
+      "href",
+      "https://uexcorp.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://uexcorp.space/api/documentation/"
+    ],
+    [
+      "a",
+      "href",
+      "https://schaulers.space/app"
+    ],
+    [
+      "a",
+      "href",
+      "https://regolith.rocks/"
+    ],
+    [
+      "a",
+      "href",
+      "https://sc-trade.tools/"
+    ],
+    [
+      "a",
+      "href",
+      "https://www.erkul.games/"
+    ],
+    [
+      "a",
+      "href",
+      "https://finder.cstone.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://armory.thespacecoder.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://scmdb.net/"
+    ],
+    [
+      "a",
+      "href",
+      "https://wikelotrades.com/"
+    ],
+    [
+      "a",
+      "href",
+      "https://wikelo-projects.com/Ships"
+    ],
+    [
+      "a",
+      "href",
+      "https://github.com/MrKraken/StarStrings"
+    ],
+    [
+      "a",
+      "href",
+      "https://github.com/ExoAE/ScCompLangPack"
+    ],
+    [
+      "a",
+      "href",
+      "https://www.reddit.com/r/starcitizen/"
+    ],
+    [
+      "a",
+      "href",
+      "https://www.bing.com/images"
+    ],
+    [
+      "a",
+      "href",
+      "https://uexcorp.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://api.star-citizen.wiki/vehicles"
+    ],
+    [
+      "a",
+      "href",
+      "https://starcitizen.tools/"
+    ],
+    [
+      "a",
+      "href",
+      "https://schaulers.space/app"
+    ],
+    [
+      "a",
+      "href",
+      "https://regolith.rocks/"
+    ],
+    [
+      "a",
+      "href",
+      "https://docs.google.com/spreadsheets/d/1J1vGHD1Q7xFh6XfLfha7ZDgtyhwp4Prp7t5NIsrL-bQ/edit?gid=0"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/comm-link/engineering/16517-The-Shipyard-Fuel-Mechanics"
+    ],
+    [
+      "a",
+      "href",
+      "https://starcitizen.tools/Refueling"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://status.robertsspaceindustries.com/"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/en/comm-link/Patch-Notes"
+    ],
+    [
+      "a",
+      "href",
+      "https://robertsspaceindustries.com/en/comm-link/transmission/star-citizen"
+    ],
+    [
+      "a",
+      "href",
+      "https://www.reddit.com/r/starcitizen/search/?q=leak%20OR%20datamine%20OR%20evocati&restrict_sr=1&sort=new"
+    ],
+    [
+      "a",
+      "href",
+      "https://api.star-citizen.wiki/"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://uexcorp.space/items"
+    ],
+    [
+      "a",
+      "href",
+      "https://www.erkul.games/"
+    ],
+    [
+      "a",
+      "href",
+      "https://uexcorp.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://api.star-citizen.wiki/"
+    ],
+    [
+      "a",
+      "href",
+      "https://scmdb.net/?page=fab"
+    ],
+    [
+      "a",
+      "href",
+      "https://finder.cstone.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://armory.thespacecoder.space/"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://api.star-citizen.wiki/blueprints"
+    ],
+    [
+      "a",
+      "href",
+      "https://github.com/Dymerz/StarCitizen-Localization"
+    ],
+    [
+      "a",
+      "href",
+      "https://github.com/MrKraken/StarStrings"
+    ],
+    [
+      "a",
+      "href",
+      "https://github.com/ExoAE/ScCompLangPack"
+    ],
+    [
+      "a",
+      "href",
+      "https://starcitizen.tools/Star_Citizen_Community_Localization"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/celestial-alliance"
+    ],
+    [
+      "a",
+      "href",
+      "https://discord.gg/5YQ44yj6zD"
+    ],
+    [
+      "css",
+      "url",
+      "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+    ],
+    [
+      "css",
+      "url",
+      "%23g"
+    ],
+    [
+      "css",
+      "url",
+      "%23r"
+    ],
+    [
+      "css",
+      "url",
+      "%23g"
+    ],
+    [
+      "css",
+      "url",
+      "%23blur"
+    ],
+    [
+      "css",
+      "url",
+      "${img.src}"
+    ],
+    [
+      "css",
+      "url",
+      "${img.src}"
+    ],
+    [
+      "css",
+      "url",
+      "${String(src || "
+    ],
+    [
+      "js",
+      "string",
+      "./manifest.webmanifest"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.js"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/images/events/tactical-strike-groups.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./data/roster.json"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/polaris-bit-reference.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/boomtube-clanguard.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/killshot-dominion-reference.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/r97-crimson-reference.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/geist-snow.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/palatino-mark-1.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/ana-endro.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/bokto.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/strata-heatwave.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/monde-crimson-reference.svg"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/wikelo/"
+    ],
+    [
+      "js",
+      "string",
+      "./data/mrkraken-global.ini"
+    ],
+    [
+      "js",
+      "string",
+      "./data/mrkraken-release.json"
+    ],
+    [
+      "js",
+      "string",
+      "./sw.js"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.json"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.json?"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.json"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.json"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.js"
+    ],
+    [
+      "js",
+      "string",
+      "./data/scmdb-missions-live.json"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/images/locations/onyx-facility.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/images/locations/onyx-facility.webp"
+    ],
+    [
+      "js",
+      "string",
+      "./assets/images/events/tactical-strike-groups.webp"
+    ]
+  ],
+  "data_uris": {
+    "count": 28,
+    "estimated_bytes": 2134138,
+    "by_mime": {
+      "image/png": 4,
+      "image/jpeg": 4,
+      "image/webp": 20
+    },
+    "largest": [
+      {
+        "mime": "image/webp",
+        "base64_chars": 406776,
+        "estimated_bytes": 305080
+      },
+      {
+        "mime": "image/png",
+        "base64_chars": 316476,
+        "estimated_bytes": 237355
+      },
+      {
+        "mime": "image/jpeg",
+        "base64_chars": 206100,
+        "estimated_bytes": 154575
+      },
+      {
+        "mime": "image/webp",
+        "base64_chars": 198676,
+        "estimated_bytes": 149006
+      },
+      {
+        "mime": "image/webp",
+        "base64_chars": 155576,
+        "estimated_bytes": 116682
+      },
+      {
+        "mime": "image/jpeg",
+        "base64_chars": 155212,
+        "estimated_bytes": 116408
+      },
+      {
+        "mime": "image/jpeg",
+        "base64_chars": 141380,
+        "estimated_bytes": 106033
+      },
+      {
+        "mime": "image/webp",
+        "base64_chars": 136736,
+        "estimated_bytes": 102552
+      },
+      {
+        "mime": "image/webp",
+        "base64_chars": 98664,
+        "estimated_bytes": 73996
+      },
+      {
+        "mime": "image/webp",
+        "base64_chars": 98176,
+        "estimated_bytes": 73630
+      }
+    ]
+  },
+  "version_tokens_top": [
+    [
+      "1.5",
+      93
+    ],
+    [
+      "1.45",
+      83
+    ],
+    [
+      "1.2",
+      75
+    ],
+    [
+      "10.8",
+      74
+    ],
+    [
+      "1.35",
+      68
+    ],
+    [
+      "4.8.1",
+      64
+    ],
+    [
+      "9.6",
+      59
+    ],
+    [
+      "13.2",
+      57
+    ],
+    [
+      "1.55",
+      54
+    ],
+    [
+      "4.9",
+      50
+    ],
+    [
+      "1.4",
+      44
+    ],
+    [
+      "1.25",
+      44
+    ],
+    [
+      "10.5",
+      44
+    ],
+    [
+      "9.5",
+      39
+    ],
+    [
+      "10.56",
+      32
+    ],
+    [
+      "14.4",
+      31
+    ],
+    [
+      "8.5",
+      30
+    ],
+    [
+      "1.65",
+      29
+    ],
+    [
+      "1.3",
+      25
+    ],
+    [
+      "11.88",
+      24
+    ],
+    [
+      "0.42",
+      23
+    ],
+    [
+      "1.08",
+      23
+    ],
+    [
+      "0.15",
+      22
+    ],
+    [
+      "1.1",
+      22
+    ],
+    [
+      "0.5",
+      21
+    ],
+    [
+      "1.15",
+      20
+    ],
+    [
+      "8.4",
+      20
+    ],
+    [
+      "8.8",
+      19
+    ],
+    [
+      "1.12",
+      17
+    ],
+    [
+      "1.6",
+      17
+    ]
+  ]
+}

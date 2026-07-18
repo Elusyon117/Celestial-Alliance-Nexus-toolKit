@@ -1,0 +1,37 @@
+name: Validate toolkit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+      - name: Static integrity checks
+        run: node scripts/validate-repo.mjs
+      - name: Validate workflow YAML
+        run: |
+          python3 - <<'PY'
+          import pathlib, yaml
+          for file in pathlib.Path('.github/workflows').glob('*.yml'):
+              yaml.safe_load(file.read_text())
+              print('OK', file)
+          PY
+      - name: Upload validation report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexus-validation-report
+          path: docs/validation-report.json
+          if-no-files-found: warn

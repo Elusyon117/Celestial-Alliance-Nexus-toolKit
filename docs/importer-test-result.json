@@ -1,0 +1,15 @@
+{
+  "schema": "celestial-nexus.importer-test.v1",
+  "testedAt": "2026-07-18T17:58:30Z",
+  "fixture": "synthetic nested 4.9.0-LIVE.12232306 dataset",
+  "records": 150,
+  "activeRecords": 145,
+  "legacyRecords": 5,
+  "results": {
+    "syncScriptExitCode": 0,
+    "outputIdentity": "4.9.0-LIVE.12232306",
+    "patchAudit": "passed-with-warnings",
+    "validation": "passed"
+  },
+  "note": "The warning was the expected non-current patch-string review in the legacy monolithic index, not a generated-data integrity error."
+}
