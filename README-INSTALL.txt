@@ -1,25 +1,25 @@
-CELESTIAL NEXUS LANGUAGE LAB — MRKRAKEN MIRROR V3
+CELESTIAL NEXUS LANGUAGE LAB — DIRECT-INSTALL EXPORT V4
 
-Copy these files into the matching locations in your repository:
+This update fixes the exported language-pack ZIP layout.
 
+Repository files to replace/add:
   index.html
   sw.js
   .github/workflows/sync-mrkraken-language-pack.yml
   data/mrkraken-release.json
 
-Do not delete your other repository files.
+Keep the workflow and generated data/mrkraken-global.ini from V3. If the mirror
+has not yet been generated, run the Sync MrKraken language pack workflow once.
 
-After committing and pushing:
+IMPORTANT EXPORT CHANGE
+The Language Lab export now places these directly at the ZIP root:
+  Data/Localization/english/global.ini
+  USER.cfg
+  README_INSTALL_FIRST.txt
 
-1. Open the repository on GitHub.
-2. Open Actions.
-3. Select "Sync MrKraken language pack".
-4. Choose "Run workflow" and run it on main.
-5. Wait for the workflow to finish and commit data/mrkraken-global.ini.
-6. Wait for GitHub Pages to redeploy.
-7. Hard-refresh the toolkit or clear its site/service-worker cache.
-8. Open Language Lab and press "Sync recommended pack".
+Users must extract the ZIP contents into the active StarCitizen channel folder
+(LIVE, PTU, EPTU, or PREVIEW). They must not create an extra wrapper folder.
 
-The workflow also runs automatically every six hours. It downloads the release
-server-side, validates at least 10,000 INI entries, and commits a same-origin
-copy that GitHub Pages can read without CORS errors.
+After pushing this update, wait for GitHub Pages to deploy and hard-refresh the
+toolkit before exporting a new pack. Older exported ZIPs retain the bad nested
+folder layout and should not be redistributed.

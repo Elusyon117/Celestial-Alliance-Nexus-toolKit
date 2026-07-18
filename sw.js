@@ -1,5 +1,5 @@
-/* Celestial Nexus Toolkit service worker — Language Lab mirror v3. */
-const NEXUS_CACHE_VERSION = 'language-lab-mirror-v3-20260718';
+/* Celestial Nexus Toolkit service worker — Language Lab direct-install v4. */
+const NEXUS_CACHE_VERSION = 'language-lab-direct-install-v4-20260718';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 const CORE_ASSETS = [
