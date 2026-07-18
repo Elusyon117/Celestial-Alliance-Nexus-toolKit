@@ -1,6 +1,6 @@
-CELESTIAL NEXUS LANGUAGE LAB — DIRECT-INSTALL EXPORT V4
+CELESTIAL NEXUS LANGUAGE LAB — OFFLINE-FIRST SHIP CATALOG V5
 
-This update fixes the exported language-pack ZIP layout.
+This update fixes the Language Lab ASOP ship selector.
 
 Repository files to replace/add:
   index.html
@@ -8,18 +8,21 @@ Repository files to replace/add:
   .github/workflows/sync-mrkraken-language-pack.yml
   data/mrkraken-release.json
 
-Keep the workflow and generated data/mrkraken-global.ini from V3. If the mirror
-has not yet been generated, run the Sync MrKraken language pack workflow once.
+Keep the generated data/mrkraken-global.ini already created by the GitHub Action.
+If it is missing, run the “Sync MrKraken language pack” workflow once.
 
-IMPORTANT EXPORT CHANGE
-The Language Lab export now places these directly at the ZIP root:
-  Data/Localization/english/global.ini
-  USER.cfg
-  README_INSTALL_FIRST.txt
+SHIP CATALOG FIX
+- 291 ships and vehicles are preloaded directly into index.html.
+- The selector no longer waits for the external vehicle API.
+- Live API records are merged only as optional enrichment.
+- An empty API response no longer suppresses the embedded fallback catalog.
+- The custom searchable selector is refreshed whenever the Language Lab opens.
 
-Users must extract the ZIP contents into the active StarCitizen channel folder
-(LIVE, PTU, EPTU, or PREVIEW). They must not create an extra wrapper folder.
+DEPLOYMENT
+1. Extract this ZIP into the repository root and overwrite index.html and sw.js.
+2. Commit and push the files.
+3. Wait for GitHub Pages to redeploy.
+4. Hard-refresh the site. If an older service worker remains, clear site data once.
+5. Open Language Pack Lab. The ship selector should immediately report 291 or more options.
 
-After pushing this update, wait for GitHub Pages to deploy and hard-refresh the
-toolkit before exporting a new pack. Older exported ZIPs retain the bad nested
-folder layout and should not be redistributed.
+The V4 direct-install language-pack export layout is preserved.
