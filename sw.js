@@ -1,5 +1,5 @@
 /* Celestial Alliance Nexus Toolkit v1.8.0 service worker */
-const VERSION = '1.8.0';
+const VERSION = '1.8.0-contract-favicon-hotfix-20260718';
 const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
 const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
 const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;

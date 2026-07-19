@@ -1,12 +1,12 @@
 {
   "schema": "celestial-nexus.validation.v1",
-  "generatedAt": "2026-07-18T18:03:27.567Z",
+  "generatedAt": "2026-07-18T22:44:10.389Z",
   "status": "passed",
   "errors": 0,
   "warnings": 0,
   "metrics": {
-    "bytes": 3608801,
-    "lines": 53132,
+    "bytes": 3611565,
+    "lines": 53180,
     "ids": 693,
     "scriptTags": 86
   },
@@ -21,7 +21,7 @@
       "name": "index-size",
       "ok": true,
       "severity": "warning",
-      "detail": "3608801 bytes"
+      "detail": "3611565 bytes"
     },
     {
       "name": "unique-dom-ids",

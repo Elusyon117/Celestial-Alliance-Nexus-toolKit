@@ -16,9 +16,9 @@
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <title>Celestial Nexus Toolkit — v1.8.0 Stable Performance Release</title>
-<link href="./icon-192.png" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<link href="./icon-192.png?v=1.8.0-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=1.8.0-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -39139,14 +39139,46 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
       }
     }
 
-    if(line)line.innerHTML=`<strong>Latest ${TARGET_CHANNEL} snapshot unavailable.</strong> Run the GitHub “Sync game data” workflow, wait for Pages deployment, then press Refresh latest LIVE.`;
+    // The repository snapshot may be intentionally empty immediately after a clean install.
+    // Try the live SCMDB endpoints first, then use the current LIVE Star Citizen Wiki mission API.
+    try{
+      if(line)line.innerHTML=`<strong>Repository snapshot unavailable.</strong> Checking live SCMDB sources…`;
+      const scmdb=await nexusMissionTryScmdb();
+      if(token!==nexusMissionState.requestToken)return;
+      if(scmdb&&nexusMissionApplyPayload(scmdb)){
+        nexusMissionState.loading=false;
+        return;
+      }
+    }catch(error){
+      console.warn('Live SCMDB contract refresh failed',error);
+    }
+
+    try{
+      if(line)line.innerHTML=`<strong>SCMDB unavailable.</strong> Loading the latest ${TARGET_CHANNEL} mission catalog from Star Citizen Wiki…`;
+      const wikiPayload=await nexusMissionFetchWikiAll();
+      if(token!==nexusMissionState.requestToken)return;
+      const wikiId=adoptTarget(payloadIdentity(wikiPayload,wikiPayload?.sourceUrl||NEXUS_MISSION_WIKI_URL));
+      if(!isTarget(wikiId))throw new Error(`Wiki returned ${wikiId?.code||'an unversioned dataset'}, not the required ${TARGET_CHANNEL} dataset.`);
+      const wikiParsed=nexusMissionNormalize(wikiPayload,`Star Citizen Wiki ${wikiId.code} live fallback`,NEXUS_MISSION_WIKI_URL);
+      if(wikiParsed.rows.length<5)throw new Error('No mission records were returned by the live fallback.');
+      wikiParsed.meta={...wikiParsed.meta,gameVersion:wikiId.code,targetPatch:TARGET_PATCH,targetChannel:TARGET_CHANNEL,patchVerified:true,isFallback:true,notice:'Live API fallback active; restore or sync the repository snapshot for offline use.'};
+      if(nexusMissionApplyPayload(wikiParsed)){
+        nexusMissionState.loading=false;
+        return;
+      }
+    }catch(error){
+      console.warn('Star Citizen Wiki mission fallback failed',error);
+      embeddedError=embeddedError||error;
+    }
+
+    if(line)line.innerHTML=`<strong>Contract synchronization unavailable.</strong> Restore the saved SCMDB files in <code>data/</code> or try Refresh latest LIVE again when the external services are available.`;
     const consoleEl=document.getElementById('mission-patch-console');
     consoleEl?.classList.remove('verified');
     consoleEl?.classList.add('mismatch');
     const status=document.getElementById('mission-patch-status');
     const note=document.getElementById('mission-patch-status-note');
-    if(status)status.textContent='Patch mismatch / pending sync';
-    if(note)note.textContent=embeddedError?.message||`No verified latest ${TARGET_CHANNEL} repository snapshot is available.`;
+    if(status)status.textContent='Contract data unavailable';
+    if(note)note.textContent=embeddedError?.message||`No repository snapshot or live ${TARGET_CHANNEL} mission source is currently available.`;
     nexusMissionState.loading=false;
   };
 
@@ -40216,7 +40248,23 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
       if (button.id === 'cargo-clear-contracts') { clearContracts(); return; }
       if (button.id === 'cargo-demo-route') { loadDemo(); return; }
       if (button.id === 'cargo-load-selected-contract') { loadSelectedMission(); return; }
-      if (button.id === 'cargo-refresh-missions') { try { if(typeof nexusInitializeMissionFinder === 'function') nexusInitializeMissionFinder(); } catch(_) {} setTimeout(renderMissionContractOptions, 750); renderMissionContractOptions(); return; }
+      if (button.id === 'cargo-refresh-missions') {
+        const stateLine = $('cargo-mission-source-state');
+        if(stateLine) stateLine.textContent = 'Synchronizing Contract Finder data…';
+        try {
+          if(typeof nexusMissionRefresh === 'function') await nexusMissionRefresh(true);
+          else if(typeof nexusInitializeMissionFinder === 'function') nexusInitializeMissionFinder();
+          renderMissionContractOptions();
+          if(stateLine) stateLine.textContent = nexusMissionState?.records?.length
+            ? `${nexusMissionState.records.length.toLocaleString()} Contract Finder records synchronized.`
+            : 'No contract records are available yet. Restore the saved SCMDB data files or try again.';
+        } catch(error) {
+          console.warn('Cargo contract synchronization failed', error);
+          renderMissionContractOptions();
+          if(stateLine) stateLine.textContent = 'Contract synchronization failed. Restore the saved SCMDB data files or try again.';
+        }
+        return;
+      }
       if (button.id === 'cargo-copy-brief') { copyBrief(); return; }
       if (button.id === 'cargo-export-csv') { exportCsv(); return; }
       if (button.id === 'cargo-export-json') { exportJson(); return; }
