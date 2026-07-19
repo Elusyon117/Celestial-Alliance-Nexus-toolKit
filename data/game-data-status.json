@@ -1,11 +1,11 @@
 {
   "schema": "celestial-nexus.game-data-status.v1",
-  "generatedAt": "2026-07-19T06:07:59.883Z",
+  "generatedAt": "2026-07-19T08:35:16.817Z",
   "detectedPatch": "4.9.0",
   "detectedChannel": "LIVE",
   "modules": {
     "contractFinder": {
-      "status": "current",
+      "status": "stale-upstream-unavailable",
       "source": "Verified SCMDB snapshot recovered from repository history",
       "sourceUrl": "git:0beb32247d8b4fe49ca4d3b484e584e02e40fd2b",
       "versionsUrl": "https://scmdb.net/data/versions.json",
@@ -15,11 +15,12 @@
       "fetchedAt": "2026-07-16T19:26:21.964Z",
       "restoredAt": "2026-07-19T06:07:59.883Z",
       "restoredFromCommit": "0beb32247d8b4fe49ca4d3b484e584e02e40fd2b",
-      "activeCount": 1487,
-      "legacyCount": 291,
+      "activeCount": 1778,
+      "legacyCount": 0,
       "totalCount": 1778,
       "fingerprint": "96cfdcd8b63960fd15d41f6048d72a32e5313e6e3ad17c12b5622a417477886d",
-      "lastError": ""
+      "lastError": "HTTP 403 for https://scmdb.net/data/merged-4.9.0-live.12248363.json",
+      "lastAttemptAt": "2026-07-19T08:35:16.819Z"
     }
   }
 }

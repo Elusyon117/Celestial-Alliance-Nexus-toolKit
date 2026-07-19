@@ -1,12 +1,12 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-07-19T06:08:00.809Z",
-  "status": "passed-with-warnings",
+  "generatedAt": "2026-07-19T08:35:16.959Z",
+  "status": "failed",
   "patch": "4.9.0",
   "channel": "LIVE",
   "missionCount": 1778,
-  "errors": 0,
-  "warnings": 1,
+  "errors": 1,
+  "warnings": 2,
   "patchReferences": [
     "4.0.0",
     "4.1.0",
@@ -66,13 +66,13 @@
     },
     {
       "name": "status-current",
-      "ok": true,
+      "ok": false,
       "severity": "warning",
-      "detail": "current"
+      "detail": "stale-upstream-unavailable"
     },
     {
       "name": "index-version-1.8.0",
-      "ok": true,
+      "ok": false,
       "severity": "error",
       "detail": "nexus-version meta"
     },
