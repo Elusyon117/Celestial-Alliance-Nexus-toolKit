@@ -1,8 +1,86 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "",
-  "status": "bootstrap-awaiting-sync",
+  "generatedAt": "2026-07-19T06:08:00.809Z",
+  "status": "passed-with-warnings",
   "patch": "4.9.0",
   "channel": "LIVE",
-  "checks": []
+  "missionCount": 1778,
+  "errors": 0,
+  "warnings": 1,
+  "patchReferences": [
+    "4.0.0",
+    "4.1.0",
+    "4.2.0",
+    "4.3.0",
+    "4.4.0",
+    "4.5.0",
+    "4.6.0",
+    "4.7.0",
+    "4.8.0",
+    "4.8.1",
+    "4.8.2",
+    "4.9.0"
+  ],
+  "checks": [
+    {
+      "name": "payload-schema",
+      "ok": true,
+      "severity": "error",
+      "detail": "celestial-nexus.scmdb-missions.v2"
+    },
+    {
+      "name": "payload-patch-verified",
+      "ok": true,
+      "severity": "error",
+      "detail": "patchVerified=true"
+    },
+    {
+      "name": "mission-count-minimum",
+      "ok": true,
+      "severity": "error",
+      "detail": "missions=1778"
+    },
+    {
+      "name": "mission-count-consistent",
+      "ok": true,
+      "severity": "error",
+      "detail": "declared=1778; actual=1778"
+    },
+    {
+      "name": "status-count-consistent",
+      "ok": true,
+      "severity": "error",
+      "detail": "status=1778; actual=1778"
+    },
+    {
+      "name": "patch-consistent",
+      "ok": true,
+      "severity": "error",
+      "detail": "payload=4.9.0; status=4.9.0"
+    },
+    {
+      "name": "channel-consistent",
+      "ok": true,
+      "severity": "error",
+      "detail": "payload=LIVE; status=LIVE"
+    },
+    {
+      "name": "status-current",
+      "ok": true,
+      "severity": "warning",
+      "detail": "current"
+    },
+    {
+      "name": "index-version-1.8.0",
+      "ok": true,
+      "severity": "error",
+      "detail": "nexus-version meta"
+    },
+    {
+      "name": "index-patch-reference-review",
+      "ok": false,
+      "severity": "warning",
+      "detail": "Non-current patch strings: 4.0.0, 4.1.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2"
+    }
+  ]
 }

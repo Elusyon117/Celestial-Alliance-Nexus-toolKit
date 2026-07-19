@@ -1,23 +1,25 @@
 {
   "schema": "celestial-nexus.game-data-status.v1",
-  "generatedAt": "2026-07-18T00:00:00Z",
+  "generatedAt": "2026-07-19T06:07:59.883Z",
   "detectedPatch": "4.9.0",
   "detectedChannel": "LIVE",
   "modules": {
     "contractFinder": {
-      "status": "bootstrap-awaiting-sync",
-      "source": "SCMDB release asset workflow",
-      "sourceUrl": "",
+      "status": "current",
+      "source": "Verified SCMDB snapshot recovered from repository history",
+      "sourceUrl": "git:0beb32247d8b4fe49ca4d3b484e584e02e40fd2b",
       "versionsUrl": "https://scmdb.net/data/versions.json",
       "patch": "4.9.0",
       "channel": "LIVE",
-      "gameVersion": "4.9.0-LIVE",
-      "fetchedAt": "",
-      "activeCount": 0,
-      "legacyCount": 0,
-      "totalCount": 0,
-      "fingerprint": "",
-      "lastError": "Run the Import SCMDB 4.9 from release asset workflow after uploading the required release asset."
+      "gameVersion": "4.9.0-LIVE.12232306",
+      "fetchedAt": "2026-07-16T19:26:21.964Z",
+      "restoredAt": "2026-07-19T06:07:59.883Z",
+      "restoredFromCommit": "0beb32247d8b4fe49ca4d3b484e584e02e40fd2b",
+      "activeCount": 1487,
+      "legacyCount": 291,
+      "totalCount": 1778,
+      "fingerprint": "96cfdcd8b63960fd15d41f6048d72a32e5313e6e3ad17c12b5622a417477886d",
+      "lastError": ""
     }
   }
 }
