@@ -55,17 +55,18 @@ jobs:
             valid = payload.targetPatch === '4.9.0'
               && payload.targetChannel === 'LIVE'
               && payload.patchVerified === true
+              && Number(payload.missionCount) === missionCount
               && missionCount >= 100;
           } catch (_) {}
 
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `valid=${valid}\nmission_count=${missionCount}\nstatus=${status}\n`);
           if (valid) {
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-              `## Existing SCMDB snapshot accepted\n\nThe repository already contains ${missionCount} verified 4.9.0 LIVE missions. No download or release asset is required.\n`);
+              `## Existing SCMDB snapshot accepted\n\nThe repository already contains ${missionCount} verified and normalized 4.9.0 LIVE missions. No download or release asset is required.\n`);
           }
           NODE
 
-      - name: Recover verified contracts from repository history
+      - name: Recover and normalize verified contracts from repository history
         if: ${{ steps.current.outputs.valid != 'true' }}
         id: history
         continue-on-error: true
@@ -91,27 +92,42 @@ jobs:
           const module = state?.modules?.contractFinder || {};
           const count = Array.isArray(payload.missions) ? payload.missions.length : 0;
 
-          const valid = payload.targetPatch === '4.9.0'
+          const valid = payload.schema === 'celestial-nexus.scmdb-missions.v2'
+            && payload.targetPatch === '4.9.0'
             && payload.targetChannel === 'LIVE'
             && payload.patchVerified === true
+            && Number(payload.missionCount) === count
             && count >= 100
+            && Number(module.totalCount) === count
             && ['current', 'stale-upstream-unavailable'].includes(module.status);
 
           if (!valid) {
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-              `## SCMDB recovery failed\n\nNo verified 4.9.0 LIVE snapshot could be recovered from Git history, and SCMDB did not provide the direct asset. Restore your preserved data/scmdb-missions-live.json, data/scmdb-missions-live.js, and data/game-data-status.json files, then rerun this workflow.\n`);
-            throw new Error(`No usable SCMDB snapshot exists. Current status=${module.status || 'unknown'}, missions=${count}.`);
+              `## SCMDB recovery failed\n\nNo verified and normalized 4.9.0 LIVE snapshot could be recovered. Restore your preserved data files, then rerun this workflow.\n`);
+            throw new Error(`No usable SCMDB snapshot exists. Current status=${module.status || 'unknown'}, missions=${count}, declared=${payload.missionCount}.`);
           }
 
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-            `## SCMDB contracts ready\n\n- Status: \`${module.status}\`\n- Game version: \`${module.gameVersion || payload.gameVersion}\`\n- Missions: \`${count}\`\n- Active: \`${module.activeCount ?? 'unknown'}\`\n`);
-          console.log(`Verified ${count} SCMDB mission records.`);
+            `## SCMDB contracts ready\n\n- Status: \`${module.status}\`\n- Game version: \`${module.gameVersion || payload.gameVersion}\`\n- Missions: \`${count}\`\n- Active: \`${module.activeCount ?? 'unknown'}\`\n- Legacy: \`${module.legacyCount ?? 'unknown'}\`\n`);
+          console.log(`Verified ${count} normalized SCMDB mission records.`);
           NODE
 
       - name: Audit patch-sensitive data
         env:
           STRICT_AUDIT: '1'
-        run: node scripts/audit-patch-data.mjs
+        shell: bash
+        run: |
+          set -o pipefail
+          if ! node scripts/audit-patch-data.mjs; then
+            {
+              echo '## SCMDB strict audit failed'
+              echo
+              echo '```json'
+              cat data/patch-audit.json
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
 
       - name: Commit recovered or synchronized contracts
         shell: bash
@@ -134,6 +150,7 @@ jobs:
           for attempt in 1 2 3; do
             git pull --rebase origin "$GITHUB_REF_NAME"
             if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              echo 'Recovered SCMDB contract data was committed successfully.' >> "$GITHUB_STEP_SUMMARY"
               exit 0
             fi
             sleep $((attempt * 3))
