@@ -12,7 +12,7 @@ const checks=[];
 const check=(name,ok,detail,severity='error')=>checks.push({name,ok:Boolean(ok),severity,detail:String(detail||'')});
 
 const version=(index.match(/<meta[^>]+name=["']nexus-version["'][^>]+content=["']([^"']+)/i)||index.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']nexus-version/i)||[])[1];
-check('version-meta',version==='1.8.0',version||'missing');
+check('version-meta',version==='1.8.1',version||'missing');
 check('index-size',Buffer.byteLength(index)<7_000_000,`${Buffer.byteLength(index)} bytes`,'warning');
 
 // Ignore JavaScript/CSS source text; only IDs on the static document tree count here.
