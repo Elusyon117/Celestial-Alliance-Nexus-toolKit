@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 
-<html data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.8.0" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.8.1" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v1.8.0 stable performance release: lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
+<!-- Celestial Nexus Toolkit v1.8.1 stable performance release: lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#07131f" name="theme-color"/>
-<meta content="1.8.0" name="nexus-version"/>
-<meta content="Celestial Nexus Toolkit v1.8.0" name="generator"/>
+<meta content="1.8.1" name="nexus-version"/>
+<meta content="Celestial Nexus Toolkit v1.8.1" name="generator"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -15,10 +15,10 @@
 <link href="./manifest.webmanifest" rel="manifest"/>
 <link href="https://fonts.googleapis.com" rel="preconnect"/>
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-<title>Celestial Nexus Toolkit — v1.8.0 Stable Performance Release</title>
-<link href="./icon-192.png?v=1.8.0-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<title>Celestial Nexus Toolkit — v1.8.1 Stable Performance Release</title>
+<link href="./icon-192.png?v=1.8.1-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png?v=1.8.0-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=1.8.1-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -8649,8 +8649,11 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 @media(max-width:600px){.fpb-shell{width:calc(100% - 16px)}.fpb-hero,.fpb-card{padding:15px}.fpb-fields{grid-template-columns:1fr}.fpb-search{grid-template-columns:1fr}.fpb-stick-canvas{min-height:500px}.fpb-control-layer{gap:6px 92px}.fpb-input-tester.active{grid-template-columns:1fr}.fpb-selection-bar{align-items:flex-start;flex-direction:column}}
 
 
-/* NX-13 hub identity — carries the control-engineering personality into the directory. */
-#hub-view .flight-profile-card{--card-accent:#38bdf8;--card-accent2:#22d3ee;--card-rgb:56,189,248;--card-rgb2:34,211,238;--module-accent:#38bdf8;--module-rgb:56,189,248}
+/* NX-13 hub identity — WIP state is intentionally visible without changing module behavior. */
+#hub-view .flight-profile-card{--card-accent:#fbbf24;--card-accent2:#f59e0b;--card-rgb:251,191,36;--card-rgb2:245,158,11;--module-accent:#fbbf24;--module-rgb:251,191,36}
+#hub-view .flight-profile-card.is-wip{border-style:dashed!important}
+#hub-view .flight-profile-card .nexus-tool-overline{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+#hub-view .nexus-module-wip-badge{display:inline-flex;align-items:center;justify-content:center;padding:2px 6px;border:1px solid rgba(251,191,36,.58);border-radius:999px;color:#fde68a;background:rgba(245,158,11,.14);box-shadow:0 0 14px rgba(245,158,11,.12);font:800 7px/1 'Share Tech Mono',monospace;letter-spacing:.12em;text-transform:uppercase}
 #hub-view .flight-profile-card .nexus-tool-visual{background:radial-gradient(circle at 50% 45%,rgba(34,211,238,.18),transparent 34%),linear-gradient(145deg,rgba(56,189,248,.08),rgba(3,10,19,.82))!important}
 #hub-view .flight-profile-card .flight-card-orbit{transform-origin:center;animation:fpb-card-orbit 13s linear infinite}
 #hub-view .flight-profile-card .flight-card-scan{animation:fpb-card-scan 3.8s ease-in-out infinite}
@@ -8703,7 +8706,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 <img alt="Celestial Alliance logo" class="nexus-mini-logo" data-nexus-logo="" decoding="async" loading="eager" fetchpriority="low"/>
 <div class="nexus-mini-copy">
 <div class="nexus-mini-kicker">Celestial Alliance</div>
-<div class="nexus-mini-title">Celestial Nexus</div><div class="nexus-mini-meta"><span>v1.4.3</span><span>13 modules</span></div>
+<div class="nexus-mini-title">Celestial Nexus</div><div class="nexus-mini-meta"><span>v1.8.1</span><span>12 online · 1 WIP</span></div>
 </div>
 </div>
 <div class="nexus-topbar-actions">
@@ -8738,7 +8741,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 <span class="nexus-overview-live"><i></i> Operational</span>
 </div>
 <div class="nexus-overview-metrics">
-<div class="nexus-overview-metric"><strong>13</strong><span>Active modules</span></div>
+<div class="nexus-overview-metric"><strong>12</strong><span>Online modules</span></div>
 <div class="nexus-overview-metric"><strong>PWA</strong><span>Installable toolkit</span></div>
 <div class="nexus-overview-metric"><strong>Local</strong><span>Browser-first data</span></div>
 </div>
@@ -8809,7 +8812,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 <h2>Command modules</h2>
 <p>Purpose-built workspaces for planning, intelligence, engineering, logistics, communications, and industrial operations.</p>
 </div>
-<div class="nexus-directory-status"><span>12 online</span><small>Expansion-ready grid</small></div>
+<div class="nexus-directory-status"><span>12 online · 1 WIP</span><small>Flight Profile Builder in development</small></div>
 </header><div class="nexus-module-grid">
 <button aria-label="Open Event Planner" class="nexus-tool-card planner-card" data-module-category="Operations" onclick="showAppView('planner-view')" type="button"><span aria-hidden="true" class="nexus-module-code">NX-01</span>
 <div class="nexus-tool-icon"><svg aria-label="Event planning symbol" role="img" viewbox="0 0 24 24"><rect height="15" rx="3" width="16" x="4" y="5"></rect><path d="M8 3v4M16 3v4M4 10h16M8 14h3M13 14h3M8 17h5"></path></svg></div>
@@ -9065,9 +9068,9 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 
 
 
-<button aria-label="Open Flight Profile Builder" class="nexus-tool-card flight-profile-card" data-module-category="Configuration" onclick="showAppView('flight-profile-view')" type="button"><span aria-hidden="true" class="nexus-module-code">NX-13</span>
+<button aria-label="Open Flight Profile Builder — work in progress" class="nexus-tool-card flight-profile-card is-wip" data-module-category="Configuration" data-module-state="wip" onclick="showAppView('flight-profile-view')" type="button"><span aria-hidden="true" class="nexus-module-code">NX-13</span>
 <div class="nexus-tool-icon"><svg aria-label="Flight controls symbol" role="img" viewBox="0 0 24 24"><path d="M12 3v10M8.5 6.5h7M9.2 13l-2.4 7h10.4l-2.4-7M5 10.5H3m18 0h-2"></path><path d="M10 3.5 12 2l2 1.5"></path><circle cx="12" cy="7" r="1.7"></circle><path d="M7 20h10"></path></svg></div>
-<div class="nexus-tool-overline">Control systems engineering</div>
+<div class="nexus-tool-overline">Control systems engineering <span class="nexus-module-wip-badge">WIP</span></div>
 <h2 class="nexus-tool-title">Flight Profile Builder</h2>
 <p class="nexus-tool-description">Build HOSAS or HOTAS layouts on interactive hardware diagrams, preserve imported bindings, and export a Star Citizen-ready XML profile.</p>
 <div aria-hidden="true" class="nexus-tool-visual"><svg preserveAspectRatio="xMidYMid meet" viewBox="0 0 520 170">
@@ -9077,7 +9080,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
 <g class="flight-card-stick"><path class="visual-fill" d="M331 137h112l-13-24h-86z"></path><path class="visual-fill" d="M370 114c-7-19-8-49-3-72 3-14 13-22 27-20 13 2 21 13 19 27l-3 20 12 11-10 13-5 21z"></path><path class="visual-line" d="M380 25l-4-13 15-5 12 9-5 13M370 69l-13 10 12 8M387 113v24"></path><circle class="visual-glow" cx="397" cy="37" r="4"></circle><circle class="visual-node" cx="408" cy="56" r="4"></circle></g>
 <path class="visual-line-soft" d="M190 120c24-12 37-20 51-32m38 0c15 12 28 20 52 32"></path><path class="visual-line flight-card-scan" d="M228 151h64"></path><path class="visual-line-soft" d="M24 24h72M24 34h43m357-10h72m-43 10h43"></path>
 </svg></div>
-<div class="nexus-tool-meta"><span class="nexus-tool-status">HOSAS · HOTAS · XML round-trip</span><span aria-hidden="true" class="nexus-tool-arrow">→</span></div>
+<div class="nexus-tool-meta"><span class="nexus-tool-status">Work in progress · Not finished</span><span aria-hidden="true" class="nexus-tool-arrow">→</span></div>
 </button>
 </div><div aria-label="Future module capacity" class="nexus-expansion-bay">
 <div aria-hidden="true" class="nexus-expansion-symbol">＋</div>
@@ -26364,7 +26367,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 window.NEXUS_RELEASE = Object.freeze({
-  version: '1.8.0',
+  version: '1.8.1',
   label: 'Stable Performance Release',
   catalogMode: 'Unified toolkit with hub-only module navigation, corrected cargo contract names, SCMDB-style Contract Finder tags, calculator inputs, requirements, combat breakdowns, and cargo manifests',
   publishedAt: '2026-07-08'
@@ -49779,8 +49782,8 @@ body {
 <script id="nexus-v180-release-stamp">
 (() => {
   'use strict';
-  const VERSION = '1.8.0';
-  const BUILD = '1.8.0-stable-performance';
+  const VERSION = '1.8.1';
+  const BUILD = '1.8.1-stable-performance';
   const LABEL = 'Stable Performance Release';
   try { document.documentElement.setAttribute('data-nexus-version', BUILD); } catch (_) {}
   try { document.title = `Celestial Nexus Toolkit — v${VERSION} ${LABEL}`; } catch (_) {}
@@ -53114,7 +53117,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 </script>
 
 
-<!-- Celestial Nexus Toolkit v1.8.0: low-risk runtime hardening and diagnostics. -->
+<!-- Celestial Nexus Toolkit v1.8.1: low-risk runtime hardening and diagnostics. -->
 <style id="nexus-v180-runtime-hardening-style">
   /* Hidden modules must not consume layout/paint work. */
   .app-view[hidden] { display: none !important; content-visibility: hidden; contain: strict; }
@@ -53133,7 +53136,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 <script id="nexus-v180-runtime-hardening-script">
 (() => {
   'use strict';
-  const VERSION = '1.8.0';
+  const VERSION = '1.8.1';
   const startedAt = performance.now();
   const diagnostics = window.NEXUS_DIAGNOSTICS = window.NEXUS_DIAGNOSTICS || {
     version: VERSION,
