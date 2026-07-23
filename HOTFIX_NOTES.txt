@@ -1,0 +1,7 @@
+Celestial Nexus v1.9.0 hotfix
+
+- Adds the missing assets/hub/creator-studio.webp artwork.
+- Fixes the Contract Finder renderer by publishing the existing mission-state object
+  to window.nexusMissionState for the upgraded card layout.
+- Does not modify SCMDB data, synchronization scripts, audit scripts, service worker,
+  saved browser projects, or other toolkit modules.

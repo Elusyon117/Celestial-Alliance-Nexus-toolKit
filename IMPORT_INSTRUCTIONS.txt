@@ -1,0 +1,45 @@
+CELESTIAL NEXUS v1.9.0 HOTFIX
+================================
+
+THIS PACKAGE CONTAINS EXACTLY TWO REQUIRED REPOSITORY FILES:
+
+1. index.html
+   - Replace the existing index.html in the repository root.
+   - Fixes Contract Finder records staying on "Loading mission records...".
+   - The synchronized 4.9.0 data was already loading; the upgraded card renderer
+     could not see the shared mission state. This file exposes that existing state
+     to the renderer without changing the contract data.
+
+2. assets/hub/creator-studio.webp
+   - Add this file at the exact path shown.
+   - This is the missing Creator Studio promotional image reported by validation.
+   - Replace the logo image you previously copied to this filename.
+
+DO NOT REPLACE OR DELETE:
+- data/scmdb-missions-live.js
+- data/scmdb-missions-live.json
+- any files inside data/
+- scripts/audit-patch-data.mjs
+- scripts/validate-repo.mjs
+- sw.js
+- VERSION.txt
+
+GITHUB DESKTOP
+1. Open the repository and click Fetch origin / Pull origin.
+2. Extract this ZIP.
+3. Copy index.html into the repository root and choose Replace.
+4. Copy the assets folder into the repository root and allow Windows to merge it.
+   The final path must be assets/hub/creator-studio.webp.
+5. In GitHub Desktop, confirm only these two changes appear:
+   - Modified: index.html
+   - Added or modified: assets/hub/creator-studio.webp
+6. Commit message: Fix Contract Finder rendering and Creator Studio artwork
+7. Click Commit to main, then Push origin.
+8. Wait for GitHub Pages and Validate toolkit to finish.
+9. Open the live site and press Ctrl+Shift+R once.
+10. Open Contract Finder. The left panel should show the synchronized contract cards.
+
+EXPECTED RESULT
+- Validation passes except the existing index-size warning may remain.
+- Contract Finder continues using the existing 4.9.0 LIVE snapshot with 1,778 records.
+- No contract dataset is replaced by this package.
