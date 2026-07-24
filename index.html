@@ -8925,7 +8925,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
     background:
       linear-gradient(180deg, rgba(5,7,11,.25) 0%, rgba(6,8,13,.13) 25%, rgba(6,9,14,.42) 61%, #070b12 98%),
       linear-gradient(90deg, rgba(6,9,14,.88) 0%, rgba(6,9,14,.2) 53%, rgba(6,9,14,.38) 100%),
-      url("https://media.robertsspaceindustries.com/0ou3r51cw87h5/source.jpg") center 46% / cover no-repeat,
+      url("./assets/images/hub/day12-topbanner-bengalfleet-min.jpg") center 50% / cover no-repeat,
       url("./assets/hub/hero-command.webp") center 42% / cover no-repeat,
       #0a0d13;
   }
@@ -9353,6 +9353,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
   }
   #hub-view .hub-rb-module-card[data-view="mission-finder-view"] { --hub-module-accent-rgb: 54, 212, 220; }
   #hub-view .hub-rb-module-card[data-view="cargo-routing-view"] { --hub-module-accent-rgb: 245, 158, 11; }
+  #hub-view .hub-rb-module-card[data-view="cargo-grid-view"] { --hub-module-accent-rgb: 34, 211, 238; }
   #hub-view .hub-rb-module-card[data-view="planner-view"] { --hub-module-accent-rgb: 59, 130, 246; }
   #hub-view .hub-rb-module-card[data-view="loadout-view"] { --hub-module-accent-rgb: 139, 92, 246; }
   #hub-view .hub-rb-module-card[data-view="item-finder-view"] { --hub-module-accent-rgb: 20, 184, 166; }
@@ -9771,6 +9772,21 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
   }
 </style>
 
+
+<style id="nexus-v164-cargo-manual-select-layer-fix">
+/* Keep the shared selection dialog above the standalone cargo-manifest modal. */
+body.cg-manual-open .nexus-select-overlay,
+body.cg-manual-open .nexus-select-overlay.open,
+body.cg-manual-open #nx-stable-select-picker:not([hidden]) {
+  z-index: 2147483600 !important;
+}
+body.cg-manual-open .nexus-select-dialog,
+body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
+  position: relative;
+  z-index: 1;
+}
+</style>
+<!-- Cargo Grid Toolkit V20: full-resolution 7680x3292 Bengal fleet main hub cover -->
 </head>
 <body>
 <section class="app-view nexus-shell" id="hub-view">
@@ -9791,7 +9807,7 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
       <button type="button" onclick="hubRebrandScroll('hub-rb-development')">Development</button>
     </nav>
     <div class="hub-rb-header-actions">
-      <span class="hub-rb-status">12 modules online</span>
+      <span class="hub-rb-status">14 modules online</span>
     </div>
   </header>
 
@@ -27611,7 +27627,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=1.9.0').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -34946,7 +34962,7 @@ button, [role="button"], input, select, summary { touch-action: manipulation; }
     if (typeof original !== 'function' || original.__nx136Cached) return;
     const memory = new Map();
     const inflight = new Map();
-    const cacheName = 'celestial-nexus-api-v1.4.3';
+    const cacheName = 'celestial-nexus-api-v1.9.0';
     const cacheableHost = /(^|\.)(star-citizen\.wiki|uexcorp\.(space|uk)|githubusercontent\.com|github\.io)$/i;
 
     function ttlFor(url) {
@@ -40828,15 +40844,76 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
     {id:'preset-fuel', title:'Hydrogen fuel transfer · Crusader fringe', origin:'crul1', commodity:'hydrogen', payout:42000, dests:[{location:'grimhex',scu:10}], source:'Built-in cargo contract preset'}
   ];
   const state = {initialized:false, contracts:[], lastResult:null};
+  const DYNAMIC_LOCATIONS = new Map();
+  const DYNAMIC_COMMODITIES = new Map();
   const $ = id => document.getElementById(id);
   const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
   const fmt = n => Math.round(Number(n)||0).toLocaleString();
-  const clean = v => String(v ?? '').toLowerCase().replace(/[_-]+/g,' ').trim();
-  const toNum = v => { if(v==null || v==='') return null; const n=Number(String(v).replace(/[^0-9.+-]/g,'')); return Number.isFinite(n) ? n : null; };
-  const locById = id => LOCATIONS.find(loc => loc.id === id) || LOCATIONS[0];
-  const commodityById = id => COMMODITIES.find(item => item.id === id) || COMMODITIES[0];
-  const locOptions = (selected='') => LOCATIONS.map(loc => `<option value="${esc(loc.id)}" ${loc.id===selected?'selected':''}>${esc(loc.name)} · ${esc(loc.detail)}</option>`).join('');
-  const commodityOptions = (selected='') => COMMODITIES.map(item => `<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(item.name)}</option>`).join('');
+  const clean = v => String(v ?? '').toLowerCase().replace(/[._-]+/g,' ').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
+  const toNum = v => { if(v==null || v==='') return null; const match=String(v).replace(/,/g,'').match(/[-+]?\d*\.?\d+/); if(!match) return null; const n=Number(match[0]); return Number.isFinite(n) ? n : null; };
+  const slug = value => clean(value).replace(/\s+/g,'-').replace(/^-+|-+$/g,'').slice(0,72) || 'location';
+  const shortHash = value => { let h=2166136261; for(const ch of String(value||'')){ h^=ch.charCodeAt(0); h=Math.imul(h,16777619); } return (h>>>0).toString(36); };
+  const allLocations = () => [...LOCATIONS, ...DYNAMIC_LOCATIONS.values()];
+  const allCommodities = () => [...COMMODITIES, ...DYNAMIC_COMMODITIES.values()];
+  const UNKNOWN_LOCATION = {id:'source-location-unknown',name:'Location not listed',detail:'The contract source did not expose this location.',kind:'station',mark:'?',x:50,y:50,handling:6,aliases:[]};
+  function locById(id){ return LOCATIONS.find(loc => loc.id === id) || DYNAMIC_LOCATIONS.get(id) || (id ? {...UNKNOWN_LOCATION,id} : UNKNOWN_LOCATION); }
+  function commodityById(id){ return COMMODITIES.find(item => item.id === id) || DYNAMIC_COMMODITIES.get(id) || {id:id||'source-cargo',name:'Cargo',family:'commodity-industrial',mark:'CGO',aliases:[]}; }
+  const locOptions = (selected='') => allLocations().map(loc => `<option value="${esc(loc.id)}" ${loc.id===selected?'selected':''}>${esc(loc.name)} · ${esc(loc.detail)}</option>`).join('');
+  const commodityOptions = (selected='') => allCommodities().map(item => `<option value="${esc(item.id)}" ${item.id===selected?'selected':''}>${esc(item.name)}</option>`).join('');
+  function sourceText(value){
+    if(value == null) return '';
+    try { if(typeof nexusMissionText === 'function') return String(nexusMissionText(value) || '').trim(); } catch(_) {}
+    if(typeof value === 'string' || typeof value === 'number') return String(value).trim();
+    if(Array.isArray(value)) return value.map(sourceText).filter(Boolean).join(' · ');
+    if(typeof value === 'object'){
+      for(const key of ['name','display_name','displayName','title','label','location_name','locationName','value','text']){
+        const text = sourceText(value[key]); if(text) return text;
+      }
+    }
+    return '';
+  }
+  function sourceArray(value){
+    try { if(typeof nexusMissionArray === 'function') return nexusMissionArray(value).filter(Boolean); } catch(_) {}
+    return Array.isArray(value) ? value.filter(Boolean) : value == null ? [] : [value];
+  }
+  function routeAnchor(text){
+    const t=clean(text);
+    const exact=LOCATIONS.find(loc=>[loc.id,loc.name,...(loc.aliases||[])].some(alias=>clean(alias)===t));
+    if(exact) return exact;
+    const matched=LOCATIONS.find(loc=>[loc.id,loc.name,...(loc.aliases||[])].some(alias=>{const a=clean(alias);return a.length>3&&t.includes(a);}));
+    if(matched) return matched;
+    if(/\b(pyro|bloom|monox|terminus|ruin station|patch city|checkmate|orbituary|rustville)\b/.test(t)) return LOCATIONS.find(l=>l.id==='ruinstation') || LOCATIONS[0];
+    if(/\b(microtech|new babbage|port tressler|calliope|clio|euterpe|mt )\b/.test(t)) return LOCATIONS.find(l=>l.id==='newbabbage') || LOCATIONS[0];
+    if(/\b(hurston|lorville|everus|arial|aberdeen|ita|magda|hdms)\b/.test(t)) return LOCATIONS.find(l=>l.id==='lorville') || LOCATIONS[0];
+    if(/\b(crusader|orison|seraphim|daymar|yela|cellin|grim hex|cru )\b/.test(t)) return LOCATIONS.find(l=>l.id==='orison') || LOCATIONS[0];
+    if(/\b(arccorp|area ?18|baijini|wala|lyria|arc )\b/.test(t)) return LOCATIONS.find(l=>l.id==='area18') || LOCATIONS[0];
+    return {id:'route-centre',name:'Stanton route centre',detail:'Approximate route anchor',kind:'station',mark:'ST',x:50,y:48,handling:6};
+  }
+  function locationMark(name){ const parts=String(name||'').replace(/[^a-z0-9 ]/gi,' ').trim().split(/\s+/).filter(Boolean); return (parts.length>1?parts.slice(0,3).map(x=>x[0]).join(''):String(name||'LOC').slice(0,4)).toUpperCase(); }
+  function registerSourceLocation(name, detail='', context=''){
+    name=String(name||'').replace(/\s+/g,' ').trim();
+    detail=String(detail||'').replace(/\s+/g,' ').trim();
+    const combined=[name,detail,context].filter(Boolean).join(' · ');
+    if(!name) return UNKNOWN_LOCATION;
+    const exact=LOCATIONS.find(loc=>[loc.id,loc.name,...(loc.aliases||[])].some(alias=>clean(alias)===clean(name)));
+    if(exact) return exact;
+    const id=`source-${slug(name)}-${shortHash(combined)}`;
+    if(DYNAMIC_LOCATIONS.has(id)) return DYNAMIC_LOCATIONS.get(id);
+    const anchor=routeAnchor(combined);
+    const kind=/outpost|facility|distribution|mining|farm|shelter|site|center|centre/i.test(combined)?'outpost':/city|landing zone/i.test(combined)?'city':/pyro/i.test(combined)?'pyro':'station';
+    const loc={id,name,detail:detail||'Contract-source location',kind,mark:locationMark(name),x:Number(anchor.x)||50,y:Number(anchor.y)||48,handling:Number(anchor.handling)||6,aliases:[name],sourceBacked:true};
+    DYNAMIC_LOCATIONS.set(id,loc); return loc;
+  }
+  function registerSourceCommodity(name, context=''){
+    name=String(name||'').replace(/\s+/g,' ').trim();
+    if(!name) return COMMODITIES[0];
+    const exact=COMMODITIES.find(item=>[item.id,item.name,...(item.aliases||[])].some(alias=>clean(alias)===clean(name)));
+    if(exact) return exact;
+    const id=`source-cargo-${slug(name)}-${shortHash(context||name)}`;
+    if(DYNAMIC_COMMODITIES.has(id)) return DYNAMIC_COMMODITIES.get(id);
+    const t=clean(`${name} ${context}`); const family=/medical|drug|stim|med/.test(t)?'commodity-medical':/food|agri|ration/.test(t)?'commodity-food':/fuel|hydrogen|quantanium/.test(t)?'commodity-fuel':/ore|metal|titanium|agricium|quartz/.test(t)?'commodity-metal':'commodity-industrial';
+    const item={id,name,family,mark:locationMark(name),aliases:[name],sourceBacked:true};DYNAMIC_COMMODITIES.set(id,item);return item;
+  }
   try {
     window.NEXUS_RELEASE = Object.freeze({
       ...(window.NEXUS_RELEASE || {}),
@@ -41004,24 +41081,118 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
     });
     return cargo.slice(0,160);
   }
-  function isOnyxShutteredCargoText(title, payloadText){
-    const t = clean(`${title || ''} ${payloadText || ''}`);
-    return /cargo transfer from shuttered facility/.test(t) || (/(shuttered facilit|old lab|asd)/.test(t) && /red wind|linehaul|cargo|hauling|freight|container|onyx/.test(t));
+  function sourceGet(record, ...keys){ return missionGet(record, ...keys); }
+  function sourceLocationDescriptor(value, fallbackLabel=''){
+    if(value == null || value === '') return null;
+    const name = sourceText(value) || fallbackLabel;
+    if(!name) return null;
+    let meta='';
+    if(value && typeof value === 'object'){
+      const parts=[sourceGet(value,'system.name','system','star_system.name','star_system_name'),sourceGet(value,'planet.name','planet','moon.name','moon'),sourceGet(value,'parent.name','parent_name','parent'),sourceGet(value,'type.name','type_name','type')].map(sourceText).filter(Boolean);
+      meta=[...new Set(parts)].join(' · ');
+    }
+    return {name,meta,raw:value};
   }
-  function recordToContract(record, index=0){
-    const text = missionText(record);
-    const locations = matchedLocations(text);
-    let origin = locations[0]?.id || CARGO_CONTRACT_PRESETS[index % CARGO_CONTRACT_PRESETS.length].origin;
-    if (isOnyxShutteredCargoText(cargoContractTitle(record,index), text)) origin = 'onyx';
-    const fallbackDest = CARGO_CONTRACT_PRESETS[index % CARGO_CONTRACT_PRESETS.length].dests[0].location;
-    const destLocs = locations.filter(loc => loc.id !== origin).slice(0,4);
-    const commodity = matchedCommodity(text);
-    const scuTotal = extractScu(text);
-    const split = destLocs.length ? Math.max(1, Math.floor(scuTotal / destLocs.length)) : scuTotal;
-    const dests = destLocs.length ? destLocs.map((loc, di) => ({location:loc.id, scu: di === destLocs.length-1 ? Math.max(1, scuTotal - split*(destLocs.length-1)) : split})) : [{location:fallbackDest, scu:scuTotal}];
-    const title = cargoContractTitle(record,index);
-    return {origin, commodity:commodity.id, payout:missionRewardNumber(record), dests, missionTitle:title, missionSource:'Contract Finder', missionId:cargoMissionKey(record,index), missionCategory:missionCategory(record)};
+  function firstSourceValue(record, paths){ for(const path of paths){ const value=sourceGet(record,path); if(value !== undefined && value !== null && value !== '') return value; } return null; }
+  function sourceLocationGroups(record){
+    const groups=[];
+    sourceArray(sourceGet(record,'starmap_locations','location_groups','locationSets')).forEach((group,index)=>{
+      const values=sourceArray(sourceGet(group,'locations','items','values')); if(!values.length) return;
+      groups.push({purpose:sourceText(sourceGet(group,'purpose','name','label'))||`Location group ${index+1}`,values});
+    });
+    const merged=sourceGet(record,'merged_locations');
+    if(merged&&typeof merged==='object'&&!Array.isArray(merged)) Object.entries(merged).forEach(([purpose,value])=>{const values=sourceArray(value);if(values.length)groups.push({purpose,values});});
+    if(!groups.length){const values=sourceArray(sourceGet(record,'locations','destinations','available_locations'));if(values.length)groups.push({purpose:'Locations',values});}
+    return groups;
   }
+  function classifyLocationGroups(groups){
+    const pickup=[],delivery=[],other=[];
+    groups.forEach(group=>{const p=clean(group.purpose);const target=/pickup|pick up|origin|source|collect|load|from/.test(p)?pickup:/deliver|drop|hand in|destination|target|to/.test(p)?delivery:other;target.push(...group.values);});
+    return {pickup,delivery,other};
+  }
+  function orderLocationValue(order, role){
+    const originPaths=['origin.name','origin','pickup.name','pickup','pickup_location.name','pickup_location','pickupLocation.name','pickupLocation','from.name','from','source.name','source','collection_location.name','collection_location','start_location.name','start_location'];
+    const destinationPaths=['destination.name','destination','dropoff.name','dropoff','drop_off.name','drop_off','dropoff_location.name','dropoff_location','delivery.name','delivery','delivery_location.name','delivery_location','deliver_to.name','deliver_to','to.name','to','target.name','target','hand_in.name','hand_in','handin.name','handin'];
+    return firstSourceValue(order, role==='origin'?originPaths:destinationPaths);
+  }
+  function orderDestinationValues(order){
+    const plural=firstSourceValue(order,['destinations','dropoffs','drop_offs','deliveries','delivery_locations','hand_ins','handins','targets']);
+    const values=sourceArray(plural); return values.length?values:(orderLocationValue(order,'destination')!=null?[orderLocationValue(order,'destination')]:[]);
+  }
+  function sourceCommodityName(order, fallback='Cargo'){
+    const value=firstSourceValue(order,['commodity.name','commodity','item.name','item.display_name','item','cargo.name','cargo','cargo_name','commodity_name','display_name','name','kind']);
+    return sourceText(value)||fallback;
+  }
+  function sourceScu(order, fallbackText=''){
+    const exactPaths=['scu','amount_scu','cargo_scu','quantity_scu','total_scu','required_scu','max_scu','scu_max','maximum_scu','min_scu','scu_min','minimum_scu','amount','quantity','count','max_amount','amount_max','quantity_max','min_amount','amount_min','quantity_min'];
+    for(const path of exactPaths){const n=toNum(sourceGet(order,path));if(n!==null&&n>=0)return Math.round(n);}
+    const text=deepText(order)||String(fallbackText||'');const m=String(text).match(/(\d{1,5}(?:\.\d+)?)\s*(?:SCU|s\.c\.u\.|standard cargo units?)/i);return m?Math.round(Number(m[1])):0;
+  }
+  function recordToContracts(record, index=0){
+    const raw=record?.__nexusRaw||record||{};
+    const title=cargoContractTitle(record,index);
+    const payloadText=`${title} · ${missionCategory(record)} · ${deepText(raw)}`;
+    const groups=classifyLocationGroups(sourceLocationGroups(raw));
+    const recordOriginValue=firstSourceValue(raw,['origin.name','origin','pickup.name','pickup','pickup_location.name','pickup_location','pickupLocation.name','pickupLocation','from.name','from','source.name','source','start_location.name','start_location','objective.pickup','objectives.pickup']);
+    const recordDestinationValue=firstSourceValue(raw,['destination.name','destination','dropoff.name','dropoff','drop_off.name','drop_off','dropoff_location.name','dropoff_location','delivery.name','delivery','delivery_location.name','delivery_location','deliver_to.name','deliver_to','to.name','to','objective.delivery','objectives.delivery']);
+    const recordCommodity=sourceCommodityName(raw,matchedCommodity(payloadText)?.name||'Cargo');
+    const textLocations=matchedLocations(payloadText);
+    const fallbackOriginDesc=sourceLocationDescriptor(recordOriginValue)||sourceLocationDescriptor(groups.pickup[0])||sourceLocationDescriptor(textLocations[0]?.name)||null;
+    const structuredDestinations=[...sourceArray(recordDestinationValue),...groups.delivery];
+    const fallbackDestinationDescs=(structuredDestinations.length?structuredDestinations:textLocations.slice(fallbackOriginDesc?1:0).map(loc=>loc.name)).map(sourceLocationDescriptor).filter(Boolean);
+    let orders=[];try{orders=typeof nexusMissionHauling==='function'?nexusMissionHauling(record):[];}catch(_){}
+    if(!Array.isArray(orders))orders=sourceArray(orders);
+    const rows=[];
+    orders.filter(Boolean).forEach((order,orderIndex)=>{
+      const originDesc=sourceLocationDescriptor(orderLocationValue(order,'origin'))||fallbackOriginDesc;
+      const destinations=orderDestinationValues(order).map(sourceLocationDescriptor).filter(Boolean);
+      const usableDestinations=destinations.length?destinations:(fallbackDestinationDescs.length?fallbackDestinationDescs:[]);
+      const commodityName=sourceCommodityName(order,recordCommodity);
+      const total=sourceScu(order,payloadText);
+      if(usableDestinations.length){
+        usableDestinations.forEach((destDesc,destIndex)=>{
+          const specific=sourceScu(destDesc.raw,'');
+          const amount=specific||Math.max(0,Math.floor(total/usableDestinations.length)+(destIndex===usableDestinations.length-1?total%usableDestinations.length:0));
+          rows.push({originDesc,destDesc,commodityName,scu:amount,orderIndex});
+        });
+      } else rows.push({originDesc,destDesc:null,commodityName,scu:total,orderIndex});
+    });
+    if(!rows.length){
+      const total=sourceScu(raw,payloadText)||extractScu(payloadText);
+      const destinations=fallbackDestinationDescs.length?fallbackDestinationDescs:[null];
+      destinations.forEach((destDesc,destIndex)=>rows.push({originDesc:fallbackOriginDesc,destDesc,commodityName:recordCommodity,scu:Math.max(0,Math.floor(total/destinations.length)+(destIndex===destinations.length-1?total%destinations.length:0)),orderIndex:0}));
+    }
+    const fallbackOrigin=registerSourceLocation('Origin not listed','The synchronized contract did not expose a pickup location.',payloadText);
+    const fallbackDest=registerSourceLocation('Destination not listed','The synchronized contract did not expose a hand-in location.',payloadText);
+    const normalized=rows.map(row=>{
+      const origin=row.originDesc?registerSourceLocation(row.originDesc.name,row.originDesc.meta,payloadText):fallbackOrigin;
+      const dest=row.destDesc?registerSourceLocation(row.destDesc.name,row.destDesc.meta,payloadText):fallbackDest;
+      const commodity=registerSourceCommodity(row.commodityName,payloadText);
+      return {origin, dest, commodity, scu:Math.max(0,Math.round(Number(row.scu)||0))};
+    });
+    const grouped=new Map();
+    normalized.forEach(row=>{
+      const key=`${row.origin.id}|${row.commodity.id}`;let group=grouped.get(key);if(!group){group={origin:row.origin,commodity:row.commodity,dests:new Map(),scu:0};grouped.set(key,group);}group.scu+=row.scu;group.dests.set(row.dest.id,(group.dests.get(row.dest.id)||0)+row.scu);
+    });
+    const totalScu=[...grouped.values()].reduce((sum,g)=>sum+g.scu,0);
+    const payout=missionRewardNumber(record);
+    const baseId=cargoMissionKey(record,index);
+    const contracts=[...grouped.values()].map((group,groupIndex)=>({
+      origin:group.origin.id,
+      commodity:group.commodity.id,
+      payout:totalScu?Math.round(payout*group.scu/totalScu):(groupIndex===0?payout:0),
+      dests:[...group.dests.entries()].map(([location,scu])=>({location,scu})),
+      missionTitle:grouped.size>1?`${title} · ${group.commodity.name}`:title,
+      missionSource:'Contract Finder',
+      missionId:grouped.size>1?`${baseId}-${groupIndex+1}`:baseId,
+      missionCategory:missionCategory(record)
+    }));
+    return contracts.length?contracts:[{origin:fallbackOrigin.id,commodity:registerSourceCommodity(recordCommodity,payloadText).id,payout,dests:[{location:fallbackDest.id,scu:0}],missionTitle:title,missionSource:'Contract Finder',missionId:baseId,missionCategory:missionCategory(record)}];
+  }
+  function recordToContract(record,index=0){ return recordToContracts(record,index)[0]; }
+  window.nexusCargoParseRecord = recordToContracts;
+  window.nexusCargoLocationById = locById;
+  window.nexusCargoCommodityById = commodityById;
   function renderMissionContractOptions(){
     const select = $('cargo-mission-contract-select');
     const stateLine = $('cargo-mission-source-state');
@@ -41034,9 +41205,11 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
       const category = missionCategory(record) || 'Cargo contracts';
       const key = cargoMissionKey(record,index);
       const reward = missionRewardNumber(record);
-      const scu = extractScu(missionText(record));
-      const commodity = matchedCommodity(missionText(record));
-      const meta = [category, commodity.name, `${fmt(scu)} SCU`].filter(Boolean).join(' · ');
+      const parsed = recordToContracts(record,index);
+      const scu = parsed.reduce((sum,c)=>sum+contractTotal(c),0);
+      const cargoNames = [...new Set(parsed.map(c=>commodityById(c.commodity).name))].join(', ');
+      const routeNames = [...new Set(parsed.flatMap(c=>[locById(c.origin).name,...c.dests.map(d=>locById(d.location).name)]))].slice(0,3).join(' → ');
+      const meta = [category, cargoNames || 'Cargo', `${fmt(scu)} SCU`, routeNames].filter(Boolean).join(' · ');
       const badge = reward ? `${fmt(reward)} aUEC` : 'Contract';
       const label = `${title} · ${meta} · ${badge}`;
       const html = `<option value="mission:${esc(key)}" data-select-name="${esc(title)}" data-select-meta="${esc(meta)}" data-select-badge="${esc(badge)}" title="${esc(label)}">${esc(label)}</option>`;
@@ -41298,34 +41471,45 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
     state.contracts = [defaultContract(0), defaultContract(1), defaultContract(2)];
     renderContracts(true);
   }
-  function loadSelectedMission(){
+  async function loadSelectedMission(){
     const select = $('cargo-mission-contract-select');
     if(!select) return;
     const value = select.value || 'custom';
     if(value === 'custom') { addBlankContract(); return; }
-    let contract = null;
+    let contracts = [];
     if(value.startsWith('preset:')) {
       const preset = CARGO_CONTRACT_PRESETS.find(p => `preset:${p.id}` === value);
-      if(preset) contract = {...JSON.parse(JSON.stringify(preset)), missionTitle:preset.title, missionSource:preset.source, missionId:preset.id, missionCategory:'Preset'};
+      if(preset) contracts = [{...JSON.parse(JSON.stringify(preset)), missionTitle:preset.title, missionSource:preset.source, missionId:preset.id, missionCategory:'Preset'}];
     }
     if(value.startsWith('mission:')){
       const id = value.slice(8);
       const records = cargoMissionRecords();
       const record = records.find((r,i) => cargoMissionKey(r,i) === id || String(r.__nexusCargoId || r.__nexusId || i) === id);
-      if(record) contract = recordToContract(record, records.indexOf(record));
+      if(record){
+        let structured=[];try{structured=typeof nexusMissionHauling==='function'?nexusMissionHauling(record):[];}catch(_){}
+        const raw=record?.__nexusRaw||record||{};
+        const hasLocationData=Boolean(missionGet(raw,'starmap_locations','location_groups','merged_locations','origin','pickup','destination','dropoff','delivery'));
+        if((!Array.isArray(structured)||!structured.length||!hasLocationData)&&record.__nexusDetailState!=='loaded'&&typeof nexusMissionSelect==='function'){
+          const source=$('cargo-mission-source-state');if(source)source.textContent='Loading the complete contract record before adding its cargo, pickup, and hand-in data…';
+          try{nexusMissionSelect(record.__nexusId,false);}catch(_){}
+          const started=Date.now();while(record.__nexusDetailState==='loading'&&Date.now()-started<4500)await new Promise(resolve=>setTimeout(resolve,120));
+        }
+        contracts = recordToContracts(record, records.indexOf(record));
+      }
     }
-    if(!contract) return;
-    const normalized = JSON.parse(JSON.stringify({
+    if(!contracts.length) return;
+    const normalized = contracts.map((contract,index)=>JSON.parse(JSON.stringify({
       ...contract,
-      missionTitle:contract.missionTitle || contract.title || 'Cargo hauling contract',
+      missionTitle:contract.missionTitle || contract.title || `Cargo hauling contract ${index+1}`,
       missionSource:contract.missionSource || contract.source || 'Custom',
-      missionId:contract.missionId || contract.id || `cargo-${Date.now()}`
-    }));
+      missionId:contract.missionId || contract.id || `cargo-${Date.now()}-${index}`
+    })));
     const existing = readContractsFromDom().filter(c => contractTotal(c) > 0 || c.missionTitle || c.missionId);
-    existing.push(normalized);
+    existing.push(...normalized);
     state.contracts = existing.slice(0, 24);
-    const start = $('cargo-start-location'); if(start && existing.length === 1) start.value = normalized.origin;
     renderContracts(true);
+    const source=$('cargo-mission-source-state');
+    if(source){const total=normalized.reduce((sum,c)=>sum+contractTotal(c),0);source.textContent=`Added ${normalized.length} manifest row${normalized.length===1?'':'s'} from ${normalized[0].missionTitle || 'the selected contract'} · ${fmt(total)} SCU total. Current player location was left unchanged.`;}
   }
   function exportPayload(){
     const ship = selectedShip();
@@ -41841,9 +42025,12 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
       const category = recordCategory(record);
       const payout = Number(recordReward(record)||0);
       const payload = `${title} · ${category} · ${deepText(record?.__nexusRaw || record)}`;
-      const commodityName = commodityById(findCommodity(payload, 'medical'))?.name || 'Cargo';
-      const scu = extractScu(payload, 0);
-      const meta = [category, commodityName, scu ? `${Number(scu).toLocaleString()} SCU` : 'SCU varies'].filter(Boolean).join(' · ');
+      let parsed=[];try{parsed=typeof window.nexusCargoParseRecord==='function'?window.nexusCargoParseRecord(record,index):[];}catch(_){}
+      const scu = parsed.reduce((sum,c)=>sum+(c.dests||[]).reduce((s,d)=>s+(Number(d.scu)||0),0),0);
+      const commodityNames=[...new Set(parsed.map(c=>window.nexusCargoCommodityById?.(c.commodity)?.name||'Cargo').filter(Boolean))];
+      const commodityName = commodityNames.length?commodityNames.join(', '):(commodityById(findCommodity(payload, 'medical'))?.name || 'Cargo');
+      const locations=[...new Set(parsed.flatMap(c=>[c.origin,...(c.dests||[]).map(d=>d.location)]).map(id=>window.nexusCargoLocationById?.(id)?.name||'').filter(Boolean))].slice(0,3).join(' → ');
+      const meta = [category, commodityName, scu ? `${Number(scu).toLocaleString()} SCU` : 'SCU not listed', locations].filter(Boolean).join(' · ');
       const badge = payout ? `${payout.toLocaleString()} aUEC` : 'Contract';
       const label = `${title} · ${meta} · ${badge}`;
       return `<option value="mission:${esc(id)}" data-select-name="${esc(title)}" data-select-meta="${esc(meta)}" data-select-badge="${esc(badge)}" title="${esc(label)}">${esc(label)}</option>`;
@@ -51458,48 +51645,6 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 </style>
 
 
-<script id="nexus-cargo-onyx-and-ship-coverage-guard">
-(() => {
-  const ONYX_ID = 'onyx';
-  const ONYX_NAME = 'Onyx Facility';
-  const clean = value => String(value ?? '').toLowerCase().replace(/[._-]+/g,' ').replace(/[^a-z0-9 ]+/g,' ').replace(/\s+/g,' ').trim();
-  const isOnyxCargoTitle = text => /cargo transfer from shuttered facility/.test(clean(text)) || (/(shuttered facilit|old lab|asd)/.test(clean(text)) && /(cargo|hauling|freight|container|red wind|linehaul)/.test(clean(text)));
-  function ensureOnyxOption(select){
-    if(!select || [...select.options].some(o => o.value === ONYX_ID)) return;
-    const opt = document.createElement('option');
-    opt.value = ONYX_ID;
-    opt.textContent = `${ONYX_NAME} · Stanton · ASD shuttered facility network`;
-    select.insertBefore(opt, select.firstChild);
-  }
-  function correctCargoContracts(){
-    document.querySelectorAll('#cargo-routing-view .cargo-contract-card').forEach(card => {
-      const title = [card.dataset.missionTitle, card.querySelector('[data-field="title"]')?.value, card.textContent].filter(Boolean).join(' · ');
-      if(!isOnyxCargoTitle(title)) return;
-      const origin = card.querySelector('select[data-field="origin"]');
-      ensureOnyxOption(origin);
-      if(origin && origin.value !== ONYX_ID){ origin.value = ONYX_ID; origin.dispatchEvent(new Event('change', {bubbles:true})); }
-      const mini = card.querySelector('.cargo-contract-preview .cargo-mini-card:first-child');
-      const strong = mini?.querySelector('strong');
-      const span = mini?.querySelector('span');
-      const art = mini?.querySelector('.cargo-art');
-      if(strong) strong.textContent = ONYX_NAME;
-      if(span) span.innerHTML = 'Stanton · ASD shuttered facility network<br/>Pickup origin visual';
-      if(art){ art.dataset.mark = 'ONYX'; art.classList.add('outpost'); art.innerHTML = '<img class="cargo-art-img" alt="Onyx Facility image" src="./assets/images/locations/onyx-facility.webp">'; art.classList.add('is-photo'); }
-    });
-  }
-  function bind(){
-    const view = document.getElementById('cargo-routing-view');
-    if(!view || view.dataset.onyxGuardBound === 'true') return;
-    view.dataset.onyxGuardBound = 'true';
-    view.addEventListener('change', () => setTimeout(correctCargoContracts, 60), true);
-    view.addEventListener('click', () => setTimeout(correctCargoContracts, 160), true);
-    const observer = new MutationObserver(() => { clearTimeout(observer._t); observer._t = setTimeout(correctCargoContracts, 80); });
-    observer.observe(view, {childList:true, subtree:true});
-    setTimeout(correctCargoContracts, 150);
-  }
-  if(document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind, {once:true}); else bind();
-})();
-</script>
 
 
 <style id="nexus-final-event-blueprint-contract-fix-css">
@@ -71123,7 +71268,7 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
 
   /* Keyboard users get the same discoverability as pointer users. */
-  [data-nexus-tip]:focus-visible {
+  #hub-view [data-nexus-tip]:focus-visible {
     outline-offset: 3px;
   }
 
@@ -71338,6 +71483,42 @@ body.nx-stable-select-open{overflow:hidden!important}
     return normalize(control.getAttribute('aria-label') || control.name || control.placeholder);
   }
 
+
+  function isHubTooltipTarget(node) {
+    const hub = node?.closest?.('#hub-view');
+    return Boolean(hub && !hub.hidden);
+  }
+
+  function removeTooltipMetadata(node) {
+    if (!node || isHubTooltipTarget(node)) return;
+    if (activeTarget === node) hide(node, true);
+    if (node.getAttribute?.('aria-describedby') === tooltip?.id) node.removeAttribute('aria-describedby');
+    delete node.dataset.nexusTip;
+    delete node.dataset.nexusTipTitle;
+    delete node.dataset.nexusTipKicker;
+    delete node.dataset.nexusTipHint;
+    delete node.dataset.nexusTipDescribed;
+    const nativeTitle = normalize(node.getAttribute?.('title'));
+    if (nativeTitle) {
+      /* Preserve a useful accessible name when a title was the only label, but
+         remove the browser tooltip from module controls. */
+      const interactive = node.matches?.('button, a, input, select, textarea, [role="button"], [tabindex]');
+      const visibleName = normalize(node.getAttribute?.('aria-label') || node.textContent);
+      if (interactive && !visibleName) node.setAttribute('aria-label', nativeTitle);
+      node.dataset.nexusNativeTitle = nativeTitle;
+      node.removeAttribute('title');
+    }
+    if (node.classList?.contains('nexus-tip-cue')) node.remove();
+  }
+
+  function stripNonHubTooltips(root = document) {
+    const candidates = [];
+    if (root?.nodeType === 1 && root.matches?.('[title], [data-nexus-tip], .nexus-tip-cue')) candidates.push(root);
+    root?.querySelectorAll?.('[title], [data-nexus-tip], .nexus-tip-cue').forEach(node => candidates.push(node));
+    candidates.forEach(removeTooltipMetadata);
+    if (activeTarget && !isHubTooltipTarget(activeTarget)) hide(activeTarget, true);
+  }
+
   function enhanceHub() {
     document.querySelectorAll('#hub-rb-module-list .hub-rb-module-card').forEach(card => {
       const code = moduleCode(card);
@@ -71429,7 +71610,7 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
 
   function enhanceNativeTitles() {
-    document.querySelectorAll('[title]').forEach(node => {
+    document.querySelectorAll('#hub-view [title]').forEach(node => {
       const nativeTitle = normalize(node.getAttribute('title'));
       if (!nativeTitle || node.dataset.nexusTip) return;
       setTip(node, {
@@ -71443,7 +71624,7 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
 
   function enhanceCommonActions() {
-    document.querySelectorAll('button, a[role="button"], a.btn, [role="button"]').forEach(node => {
+    document.querySelectorAll('#hub-view button, #hub-view a[role="button"], #hub-view a.btn, #hub-view [role="button"]').forEach(node => {
       if (node.dataset.nexusTip) return;
       const text = normalize(node.getAttribute('aria-label') || node.textContent);
       if (!text || text.length > 80) return;
@@ -71458,19 +71639,29 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
 
   function enhanceFormControls() {
-    document.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(control => {
-      if (control.dataset.nexusTip || control.disabled) return;
+    document.querySelectorAll('#hub-view input:not([type="hidden"]), #hub-view select, #hub-view textarea').forEach(control => {
       const label = labelFor(control);
       const type = String(control.type || control.tagName).toLowerCase();
-      if (!label && type !== 'search') return;
+      const isSearchControl = type === 'search' || /search|find/i.test(label) || /search|find/i.test(control.placeholder || '');
 
-      if (type === 'search' || /search|find/i.test(label) || /search|find/i.test(control.placeholder || '')) {
-        setTip(control, {
-          title: label || 'Search',
-          body: 'Searches the records already loaded in this module. Add more specific words to narrow the result set.',
-          kicker: 'Search control'
-        });
-      } else if (type === 'file') {
+      /* Search fields are self-explanatory. Never attach the global context-help
+         tooltip to them, including search inputs rendered after a picker opens. */
+      if (isSearchControl) {
+        if (activeTarget === control) hide(control, true);
+        delete control.dataset.nexusTip;
+        delete control.dataset.nexusTipTitle;
+        delete control.dataset.nexusTipKicker;
+        delete control.dataset.nexusTipHint;
+        delete control.dataset.nexusNativeTitle;
+        if (control.getAttribute('aria-describedby') === tooltip?.id) control.removeAttribute('aria-describedby');
+        control.removeAttribute('title');
+        return;
+      }
+
+      if (control.dataset.nexusTip || control.disabled) return;
+      if (!label) return;
+
+      if (type === 'file') {
         setTip(control, {
           title: label || 'Choose a file',
           body: 'Selects a compatible local file for this module. The file stays on your device unless the interface explicitly states otherwise.',
@@ -71540,7 +71731,7 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
 
   function show(target, immediate = false) {
-    if (!target || !target.dataset.nexusTip) return;
+    if (!isHubTooltipTarget(target) || !target.dataset.nexusTip) return;
     window.clearTimeout(hideTimer);
     window.clearTimeout(showTimer);
     const run = () => {
@@ -71619,20 +71810,30 @@ body.nx-stable-select-open{overflow:hidden!important}
     enhanceNativeTitles();
     enhanceCommonActions();
     enhanceFormControls();
+    stripNonHubTooltips();
     bindEvents();
+
+    window.addEventListener('nexus:viewchange', event => {
+      if (event.detail?.viewId !== 'hub-view') hide(activeTarget, true);
+      stripNonHubTooltips();
+    });
 
     /* Some modules render controls after opening. Enhance newly added controls
        without rebuilding existing tooltip assignments. */
     const observer = new MutationObserver(records => {
-      const hasRelevantAdditions = records.some(record =>
-        record.addedNodes.length && record.target !== tooltip && !tooltip.contains(record.target)
-      );
-      if (!hasRelevantAdditions) return;
+      const additions = records.flatMap(record => [...record.addedNodes])
+        .filter(node => node !== tooltip && !tooltip.contains(node));
+      if (!additions.length) return;
+      additions.forEach(node => {
+        if (node.nodeType === 1) stripNonHubTooltips(node);
+      });
       window.clearTimeout(observer._timer);
       observer._timer = window.setTimeout(() => {
+        enhanceHub();
         enhanceNativeTitles();
         enhanceCommonActions();
         enhanceFormControls();
+        stripNonHubTooltips();
       }, 120);
     });
     observer.observe(document.body, { childList: true, subtree: true });
@@ -71654,6 +71855,1492 @@ body.nx-stable-select-open{overflow:hidden!important}
 <script id="nexus-v141-comprehensive-seller-route-fix">
 /* V141: reconcile complete UEX seller sets and retain valid same-major point-release reports for route planning. */
 </script>
+
+<script id="nexus-v142-search-tooltip-removal">
+/* V142: selection-menu and module search fields no longer receive context-help tooltips. */
+</script>
+
+<script id="nexus-v147-hub-only-tooltips">
+/* V147: context and native title tooltips are restricted to the main hub page. */
+</script>
+
+<section class="app-view nexus-shell" hidden id="cargo-grid-view" data-nexus-module-code="NX-07-2" data-nexus-module-label="Logistics extension">
+  <header class="nexus-topbar">
+    <div class="nexus-topbar-brand">
+      <img alt="Celestial Alliance logo" class="nexus-mini-logo" data-nexus-logo decoding="async" loading="lazy"/>
+      <div class="nexus-mini-copy"><div class="nexus-mini-kicker">Celestial Nexus</div><div class="nexus-mini-title">Cargo Grid Manager</div></div>
+    </div>
+    <div class="nexus-topbar-actions">
+      <span class="created-by">Created by <strong>Elusyon</strong></span>
+      <button class="btn btn-ghost" id="cg-manual-setup" type="button">＋ <span class="nexus-hide-small">Manual manifest</span></button>
+      <button class="btn btn-ghost" id="cg-return-routing" type="button">← <span class="nexus-hide-small">Cargo route</span></button>
+      <button class="btn btn-ghost" onclick="showAppView('hub-view')" type="button">⌂ <span class="nexus-hide-small">Hub</span></button>
+    </div>
+  </header>
+  <main class="cg-shell">
+    <section class="cg-hero">
+      <div class="cg-hero-copy">
+        <div class="cg-kicker">Interactive loading schematic</div>
+        <h1>Cargo Grid Manager</h1>
+        <p>Arrange each contract’s SCU containers on a ship-specific cargo-grid schematic. Contract colors, route-stop numbers, commodities, and destinations stay attached to every crate.</p>
+        <div class="cg-hero-actions">
+          <button class="cargo-btn primary cg-hero-manual" id="cg-manual-hero" type="button">＋ Build manual manifest</button>
+          <span>Choose a ship, enter cargo groups, and define exact SCU container mixes without opening Cargo Hauling Routing.</span>
+        </div>
+      </div>
+      <div class="cg-hero-stats">
+        <div><span>Selected ship</span><strong id="cg-ship-name">No route loaded</strong><small id="cg-profile-label">Waiting for Cargo Hauling Routing</small></div>
+        <div><span>Planned cargo</span><strong id="cg-load-total">0 / 0 SCU</strong><small id="cg-load-state">No manifest</small></div>
+      </div>
+    </section>
+
+    <section class="cg-empty" id="cg-empty-state">
+      <div class="cg-empty-icon">▦</div>
+      <h2>Load a route or build a manifest</h2>
+      <p>Transfer accepted contracts from Cargo Hauling Routing, or choose a ship and enter cargo groups manually without leaving this module.</p>
+      <div class="cg-empty-actions">
+        <button class="cg-empty-action is-manual" id="cg-manual-empty" type="button"><strong>＋ Build manual manifest</strong><span>Select a ship, add cargo groups, choose destinations, and set exact container counts.</span></button>
+        <button class="cg-empty-action" id="cg-open-routing" type="button"><strong>Open Cargo Hauling Routing</strong><span>Transfer accepted contracts, the selected ship, and the optimized delivery route.</span></button>
+      </div>
+    </section>
+
+    <section class="cg-workspace" id="cg-workspace" hidden>
+      <aside class="cg-sidebar">
+        <section class="cg-panel cg-manifest-panel">
+          <header><div><span class="cg-kicker">Cargo manifest</span><h2>Contracts and crates</h2></div><button class="cg-icon-btn" id="cg-collapse-manifest" type="button" aria-label="Collapse manifest">‹</button></header>
+          <div class="cg-manifest-command"><button class="cargo-btn primary" id="cg-manage-manifest" type="button">＋ Add or edit cargo</button><span>Choose the ship, add cargo groups, define exact crate mixes, or revise the current plan.</span></div>
+          <div class="cg-route-context" id="cg-route-context"></div>
+          <div class="cg-contracts" id="cg-contracts"></div>
+        </section>
+      </aside>
+
+      <section class="cg-stage-panel">
+        <div class="cg-toolbar">
+          <div class="cg-view-switch" role="group" aria-label="Cargo grid perspective">
+            <button class="active" data-cg-view="iso" type="button">Isometric</button>
+            <button data-cg-view="free" type="button">Free look</button>
+            <button data-cg-view="top" type="button">Top</button>
+            <button data-cg-view="side" type="button">Side</button>
+            <button data-cg-view="front" type="button">Front</button>
+          </div>
+          <div class="cg-tool-actions">
+            <button class="cargo-btn" id="cg-auto-pack" type="button">Auto-pack</button>
+            <button class="cargo-btn" id="cg-rotate-crate" type="button">Rotate crate</button>
+            <button class="cargo-btn" id="cg-unplace-crate" type="button">Unplace</button>
+            <button class="cargo-btn" id="cg-undo" type="button">Undo</button>
+            <button class="cargo-btn" id="cg-redo" type="button">Redo</button>
+            <button class="cargo-btn" id="cg-reset-camera" type="button">Reset camera</button>
+            <button class="cargo-btn danger" id="cg-reset" type="button">Reset cargo</button>
+          </div>
+        </div>
+        <div class="cg-canvas-wrap" id="cg-canvas-wrap">
+          <canvas id="cg-canvas" tabindex="0" aria-label="Interactive cargo hold schematic"></canvas>
+          <div class="cg-camera-readout" id="cg-camera-readout" hidden></div>
+          <div class="cg-canvas-help" id="cg-canvas-help">Drag crates to move them · drag empty space to pan · wheel to zoom</div>
+          <div class="cg-selection-card" id="cg-selection-card" hidden></div>
+        </div>
+        <div class="cg-statusbar">
+          <div id="cg-placement-status">No cargo loaded.</div>
+          <div><span id="cg-placed-count">0 placed</span><span id="cg-unplaced-count">0 unplaced</span><span id="cg-free-scu">0 SCU free</span></div>
+        </div>
+      </section>
+
+      <aside class="cg-export-panel">
+        <section class="cg-panel">
+          <header><div><span class="cg-kicker">Loading board</span><h2>Export view</h2></div></header>
+          <div class="cg-export-body">
+            <p>Choose the perspective that best matches how you load the ship. The PNG includes the hold schematic, contract legend, crate sizes, route order, and delivery locations.</p>
+            <label class="cg-field"><span>Export perspective</span><select id="cg-export-view"><option value="iso">Isometric</option><option value="free">Current free-look angle</option><option value="top">Top-down</option><option value="side">Side view</option><option value="front">Front view</option></select></label>
+            <button class="cargo-btn primary" id="cg-export-png" type="button">Export cargo loading PNG</button>
+            <button class="cargo-btn" id="cg-copy-manifest" type="button">Copy loading manifest</button>
+          </div>
+        </section>
+        <section class="cg-panel">
+          <header><div><span class="cg-kicker">Color key</span><h2>Contract legend</h2></div></header>
+          <div class="cg-legend" id="cg-legend"></div>
+        </section>
+      </aside>
+    </section>
+  </main>
+</section>
+
+<style id="nexus-v150-cargo-grid-manager-styles">
+html body #cargo-grid-view.app-view.nexus-shell:not(#hub-view){--module-accent:#f59e0b;--module-accent2:#38bdf8;--module-rgb:245,158,11;--module-rgb2:56,189,248;background:linear-gradient(180deg,rgba(2,8,15,.9),rgba(2,8,15,.965) 46%,rgba(2,8,15,.985)),radial-gradient(circle at 10% 0,rgba(56,189,248,.08),transparent 32%),radial-gradient(circle at 92% 12%,rgba(245,158,11,.08),transparent 34%),url("./assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg") center 38%/cover fixed no-repeat,#050b13!important;color:#dbeafe;min-height:100vh}
+#cargo-grid-view .nexus-module-commandbar{width:calc(100vw - 32px)!important;max-width:none!important}
+#cargo-grid-view .nexus-topbar{background:rgba(3,10,18,.88)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom-color:rgba(245,158,11,.22)!important}
+.cg-shell{width:calc(100vw - 32px);margin:0 auto;padding:18px 0 56px}
+.cg-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:minmax(0,1fr) minmax(380px,.58fr);gap:30px;align-items:center;min-height:248px;padding:38px 40px;border:1px solid rgba(245,158,11,.42);border-radius:20px;background:url("./assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg") center 58%/cover no-repeat;box-shadow:0 24px 70px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.04);overflow:hidden}.cg-hero::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgba(245,158,11,.075),transparent 34%,rgba(56,189,248,.045));pointer-events:none}.cg-hero-copy,.cg-hero-stats{position:relative;z-index:1}
+.cg-kicker{color:#fbbf24;font:900 11px/1.2 'Share Tech Mono',monospace;letter-spacing:.15em;text-transform:uppercase}
+.cg-hero h1{margin:8px 0 11px;color:#fff;font-size:clamp(44px,4.8vw,70px);line-height:.94;letter-spacing:-.05em;text-shadow:0 4px 24px rgba(0,0,0,.68)}.cg-hero p{margin:0;max-width:880px;color:#c1d1dc;font-size:14px;line-height:1.68;text-shadow:0 2px 10px rgba(0,0,0,.8)}.cg-hero-actions{display:flex;align-items:center;gap:13px;margin-top:20px;flex-wrap:wrap}.cg-hero-actions .cg-hero-manual{min-height:48px!important;padding:12px 18px!important;font-size:13px!important}.cg-hero-actions span{max-width:520px;color:#b4c5d0;font-size:11px;line-height:1.5;text-shadow:0 2px 8px rgba(0,0,0,.85)}
+.cg-hero-stats{display:grid;grid-template-columns:1fr 1fr;gap:13px}.cg-hero-stats>div{min-height:98px;padding:17px 18px;border:1px solid rgba(56,189,248,.24);border-radius:15px;background:rgba(3,11,20,.82);box-shadow:0 12px 26px rgba(0,0,0,.26);backdrop-filter:blur(8px)}.cg-hero-stats span,.cg-hero-stats small{display:block;color:#91a8b9;font-size:11px}.cg-hero-stats strong{display:block;margin:7px 0 6px;color:#fff;font-size:20px;line-height:1.15}
+.cg-empty{margin-top:18px;padding:58px 28px;text-align:center;border:1px dashed rgba(245,158,11,.34);border-radius:18px;background:linear-gradient(145deg,rgba(5,15,26,.91),rgba(4,11,20,.86));box-shadow:0 20px 52px rgba(0,0,0,.25);backdrop-filter:blur(7px)}.cg-empty-icon{font-size:50px;color:#fbbf24}.cg-empty h2{margin:10px 0 8px;color:#fff}.cg-empty p{max-width:720px;margin:0 auto 24px;color:#9eb2c1;line-height:1.6}
+.cg-workspace{display:grid;grid-template-columns:minmax(310px,370px) minmax(640px,1fr) minmax(280px,330px);gap:14px;margin-top:16px;align-items:start}.cg-sidebar,.cg-export-panel{display:grid;gap:14px}.cg-panel,.cg-stage-panel{border:1px solid rgba(245,158,11,.19);border-radius:16px;background:linear-gradient(145deg,rgba(9,18,31,.97),rgba(4,11,20,.99));box-shadow:0 16px 38px rgba(0,0,0,.2);overflow:hidden}.cg-panel>header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid rgba(245,158,11,.16);background:linear-gradient(90deg,rgba(245,158,11,.09),transparent)}.cg-panel h2{margin:5px 0 0;color:#fff;font-size:18px}.cg-icon-btn{width:32px;height:32px;border:1px solid rgba(148,163,184,.2);border-radius:9px;background:#081321;color:#dbeafe;cursor:pointer}.cg-route-context{padding:11px 14px;border-bottom:1px solid rgba(56,189,248,.12);color:#91a8ba;font-size:11px;line-height:1.5}.cg-contracts{max-height:calc(100vh - 280px);overflow:auto;padding:12px;display:grid;gap:10px}.cg-contract-card{border:1px solid color-mix(in srgb,var(--contract-color) 38%,transparent);border-radius:13px;background:color-mix(in srgb,var(--contract-color) 7%,rgba(4,11,20,.92));overflow:hidden}.cg-contract-head{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:9px;align-items:start;padding:11px 12px}.cg-contract-dot{width:10px;height:10px;margin-top:4px;border-radius:3px;background:var(--contract-color);box-shadow:0 0 14px color-mix(in srgb,var(--contract-color) 65%,transparent)}.cg-contract-head strong{display:block;color:#fff;font-size:12.5px;line-height:1.35}.cg-contract-head span{display:block;margin-top:3px;color:#849bad;font-size:10.5px;line-height:1.35}.cg-contract-head b{color:#dff7ff;font:900 11px 'Share Tech Mono',monospace;white-space:nowrap}.cg-allocation{padding:9px 12px;border-top:1px solid rgba(148,163,184,.1)}.cg-allocation-title{display:flex;justify-content:space-between;gap:8px;color:#a9c0cf;font-size:10.5px}.cg-allocation-title b{color:#fff}.cg-crate-pool{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}.cg-crate-chip{display:inline-flex;align-items:center;gap:5px;padding:6px 8px;border:1px solid color-mix(in srgb,var(--contract-color) 40%,transparent);border-radius:8px;background:color-mix(in srgb,var(--contract-color) 11%,#06101c);color:#ecfeff;font:800 10px 'Share Tech Mono',monospace;cursor:grab;user-select:none}.cg-crate-chip.placed{opacity:.48}.cg-crate-chip.selected{outline:2px solid #fff;outline-offset:1px}.cg-crate-chip i{width:7px;height:7px;border-radius:2px;background:var(--contract-color)}
+.cg-stage-panel{min-width:0}.cg-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 12px;border-bottom:1px solid rgba(245,158,11,.15);background:rgba(6,14,24,.86)}.cg-view-switch{display:flex;gap:4px;padding:4px;border:1px solid rgba(148,163,184,.14);border-radius:11px;background:#06101c}.cg-view-switch button{border:0;border-radius:8px;background:transparent;color:#8fa6b8;padding:8px 10px;font:800 11px Inter,sans-serif;cursor:pointer}.cg-view-switch button.active{background:linear-gradient(135deg,rgba(245,158,11,.7),rgba(56,189,248,.28));color:#fff}.cg-tool-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}.cg-tool-actions .cargo-btn{padding:8px 9px!important;font-size:11.5px!important;min-height:34px!important}
+.cg-canvas-wrap{position:relative;min-height:690px;background:radial-gradient(circle at 50% 35%,rgba(56,189,248,.07),transparent 38%),linear-gradient(180deg,#dfe6ec 0,#cfd8df 100%);overflow:hidden}.cg-canvas-wrap::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(48,66,78,.12) 1px,transparent 1px),linear-gradient(90deg,rgba(48,66,78,.12) 1px,transparent 1px);background-size:28px 28px;mix-blend-mode:multiply}.cg-canvas-wrap canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}.cg-canvas-wrap canvas.dragging{cursor:grabbing}.cg-canvas-help{position:absolute;left:14px;bottom:12px;padding:7px 9px;border-radius:8px;background:rgba(3,10,18,.72);color:#c7d9e4;font:700 10px 'Share Tech Mono',monospace;pointer-events:none}.cg-selection-card{position:absolute;right:12px;top:12px;max-width:290px;padding:11px 12px;border:1px solid rgba(255,255,255,.25);border-radius:11px;background:rgba(3,10,18,.88);box-shadow:0 12px 28px rgba(0,0,0,.25);color:#dff7ff;font-size:11px;line-height:1.5}.cg-selection-card strong{display:block;color:#fff;font-size:13px}.cg-selection-card b{color:#fbbf24}.cg-statusbar{display:flex;justify-content:space-between;gap:12px;padding:10px 13px;border-top:1px solid rgba(245,158,11,.14);background:#06101c;color:#8fa7b9;font-size:11px}.cg-statusbar>div:last-child{display:flex;gap:14px;color:#c7d9e4}
+.cg-export-body{display:grid;gap:11px;padding:14px}.cg-export-body p{margin:0;color:#8da4b6;font-size:11.5px;line-height:1.55}.cg-field{display:grid;gap:6px}.cg-field span{color:#7991a4;font:800 10px 'Share Tech Mono',monospace;letter-spacing:.1em;text-transform:uppercase}.cg-field select{width:100%;border:1px solid rgba(148,163,184,.18);border-radius:9px;background:#07111f;color:#e7f7ff;padding:10px 11px;font:700 12px Inter,sans-serif}.cg-legend{display:grid;gap:8px;padding:12px}.cg-legend-row{display:grid;grid-template-columns:12px minmax(0,1fr);gap:8px;align-items:start;padding:8px;border-radius:9px;background:rgba(255,255,255,.025)}.cg-legend-row i{width:10px;height:10px;margin-top:3px;border-radius:2px;background:var(--contract-color)}.cg-legend-row strong{display:block;color:#fff;font-size:11px}.cg-legend-row span{display:block;margin-top:2px;color:#839bad;font-size:10px;line-height:1.35}
+.cg-routing-prompt{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:center;padding:13px 14px;border:1px solid rgba(56,189,248,.2);border-radius:13px;background:linear-gradient(90deg,rgba(56,189,248,.09),rgba(245,158,11,.055))}.cg-routing-prompt.is-multi{border-color:rgba(245,158,11,.42);box-shadow:0 0 24px rgba(245,158,11,.06)}.cg-routing-prompt strong{display:block;color:#fff;font-size:13px}.cg-routing-prompt span{display:block;margin-top:4px;color:#8fa7b9;font-size:11px;line-height:1.45}
+.cg-workflow-overlay{position:fixed;inset:0;z-index:99990;display:grid;place-items:center;padding:20px;background:rgba(1,6,12,.82);backdrop-filter:blur(14px)}.cg-workflow-overlay[hidden]{display:none}.cg-workflow-card{width:min(720px,100%);border:1px solid rgba(245,158,11,.38);border-radius:20px;background:linear-gradient(145deg,#0a1625,#050c16);box-shadow:0 28px 90px rgba(0,0,0,.62);overflow:hidden}.cg-workflow-head{padding:22px 24px 18px;border-bottom:1px solid rgba(245,158,11,.16)}.cg-workflow-head span{color:#fbbf24;font:900 11px 'Share Tech Mono',monospace;letter-spacing:.14em;text-transform:uppercase}.cg-workflow-head h2{margin:8px 0 5px;color:#fff;font-size:28px}.cg-workflow-head p{margin:0;color:#91a8ba;line-height:1.55}.cg-workflow-steps{display:flex;gap:8px;padding:14px 24px;border-bottom:1px solid rgba(148,163,184,.1)}.cg-workflow-steps i{flex:1;height:5px;border-radius:99px;background:rgba(148,163,184,.14)}.cg-workflow-steps i.active{background:linear-gradient(90deg,#f59e0b,#38bdf8)}.cg-workflow-body{padding:24px}.cg-workflow-stage[hidden]{display:none}.cg-workflow-stage h3{margin:0 0 7px;color:#fff;font-size:20px}.cg-workflow-stage p{margin:0 0 16px;color:#8fa6b8;line-height:1.55}.cg-workflow-stage select{width:100%;border:1px solid rgba(56,189,248,.24);border-radius:12px;background:#06111f;color:#fff;padding:13px 14px;font:800 14px Inter,sans-serif}.cg-workflow-actions{display:flex;justify-content:space-between;gap:10px;padding:0 24px 24px}.cg-workflow-actions>div{display:flex;gap:8px}.cg-guided-setup-btn{margin-left:6px}
+@media(max-width:1250px){.cg-workspace{grid-template-columns:320px minmax(560px,1fr)}.cg-export-panel{grid-column:1/-1;grid-template-columns:1fr 1fr}.cg-contracts{max-height:620px}}
+@media(max-width:900px){.cg-shell{width:calc(100% - 20px)}.cg-hero{grid-template-columns:1fr;min-height:0;padding:28px 24px;background-position:center}.cg-workspace{grid-template-columns:1fr}.cg-export-panel{grid-template-columns:1fr}.cg-canvas-wrap{min-height:560px}.cg-contracts{max-height:none}.cg-toolbar{align-items:flex-start;flex-direction:column}.cg-tool-actions{justify-content:flex-start}.cg-statusbar{flex-direction:column}.cg-hero-stats{grid-template-columns:1fr}.cg-empty-actions{grid-template-columns:1fr}.cg-hero h1{font-size:clamp(42px,12vw,60px)}}
+
+.cg-empty-actions{display:grid;grid-template-columns:repeat(2,minmax(250px,370px));justify-content:center;gap:12px;flex-wrap:wrap}.cg-empty-action{display:grid;gap:6px;min-height:82px;padding:16px 18px;text-align:left;border:1px solid rgba(148,163,184,.2);border-radius:13px;background:rgba(5,16,28,.86);color:#fff;cursor:pointer;box-shadow:0 12px 24px rgba(0,0,0,.2);transition:transform .16s ease,border-color .16s ease,background .16s ease}.cg-empty-action:hover{transform:translateY(-2px);border-color:rgba(56,189,248,.5);background:rgba(7,24,40,.96)}.cg-empty-action.is-manual{display:grid!important;border-color:rgba(245,158,11,.48);background:linear-gradient(135deg,rgba(120,53,15,.35),rgba(7,32,49,.9))}.cg-empty-action strong{font-size:13px}.cg-empty-action span{color:#9eb3c2;font-size:10.5px;line-height:1.45}#cargo-grid-view #cg-manual-empty{display:grid!important}
+.cg-manual-overlay{position:fixed;inset:0;z-index:2147482500;display:grid;place-items:center;padding:20px;background:rgba(1,6,12,.82);backdrop-filter:blur(13px);-webkit-backdrop-filter:blur(13px)}.cg-manual-overlay[hidden]{display:none!important}
+.cg-manual-card{width:min(1120px,calc(100vw - 28px));max-height:min(900px,calc(100vh - 30px));display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;border:1px solid rgba(245,158,11,.36);border-radius:18px;background:linear-gradient(145deg,rgba(10,21,35,.995),rgba(4,10,18,.998));box-shadow:0 32px 90px rgba(0,0,0,.58);overflow:hidden}
+.cg-manual-head{display:flex;justify-content:space-between;gap:20px;padding:21px 23px 17px;border-bottom:1px solid rgba(245,158,11,.18);background:linear-gradient(90deg,rgba(245,158,11,.1),transparent)}.cg-manual-head span{color:#fbbf24;font:900 10px/1.2 'Share Tech Mono',monospace;letter-spacing:.15em;text-transform:uppercase}.cg-manual-head h2{margin:6px 0 5px;color:#fff;font-size:27px}.cg-manual-head p{margin:0;max-width:780px;color:#8fa7b9;font-size:12px;line-height:1.55}.cg-manual-close{align-self:start;width:36px;height:36px;border:1px solid rgba(148,163,184,.22);border-radius:10px;background:#071321;color:#dbeafe;font-size:20px;cursor:pointer}
+.cg-manual-ship-grid{display:grid;grid-template-columns:minmax(280px,1.4fr) minmax(150px,.55fr) minmax(240px,1fr);gap:12px;padding:16px 22px;border-bottom:1px solid rgba(56,189,248,.12)}
+.cg-manual-field{display:grid;gap:6px}.cg-manual-field>span{color:#8fa8ba;font:800 10px/1.2 'Share Tech Mono',monospace;letter-spacing:.06em;text-transform:uppercase}.cg-manual-field input,.cg-manual-field select{width:100%;min-width:0;height:42px;padding:0 11px;border:1px solid rgba(56,189,248,.19);border-radius:10px;background:#061321;color:#eefaff;font:700 12px Inter,system-ui,sans-serif;outline:none}.cg-manual-field input:focus,.cg-manual-field select:focus{border-color:rgba(56,189,248,.62);box-shadow:0 0 0 3px rgba(56,189,248,.09)}
+.cg-manual-body{min-height:0;overflow:auto;padding:16px 22px 20px}.cg-manual-body-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}.cg-manual-body-head h3{margin:0;color:#fff;font-size:17px}.cg-manual-body-head p{margin:3px 0 0;color:#7f98aa;font-size:11px}.cg-manual-rows{display:grid;gap:9px}
+.cg-manual-row{display:grid;grid-template-columns:minmax(155px,1.05fr) minmax(145px,1fr) minmax(170px,1.15fr) 105px 132px 38px;gap:9px;align-items:end;padding:12px;border:1px solid rgba(148,163,184,.14);border-radius:12px;background:rgba(4,13,23,.72)}.cg-manual-row .cg-manual-field input,.cg-manual-row .cg-manual-field select{height:38px}.cg-manual-remove{width:38px;height:38px;border:1px solid rgba(248,113,113,.28);border-radius:9px;background:rgba(127,29,29,.14);color:#fca5a5;font-size:18px;cursor:pointer}.cg-manual-remove:hover{background:rgba(127,29,29,.3)}
+.cg-manual-actions{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 22px;border-top:1px solid rgba(245,158,11,.17);background:rgba(3,10,18,.94)}.cg-manual-status{min-height:18px;color:#fbbf24;font-size:11px;line-height:1.4}.cg-manual-actions>div:last-child{display:flex;gap:9px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:980px){.cg-manual-row{grid-template-columns:1fr 1fr 1fr}.cg-manual-remove{justify-self:end}.cg-manual-ship-grid{grid-template-columns:1fr 1fr}.cg-manual-ship-grid .cg-manual-field:last-child{grid-column:1/-1}}
+@media(max-width:650px){.cg-manual-overlay{padding:8px}.cg-manual-card{width:calc(100vw - 12px);max-height:calc(100vh - 12px)}.cg-manual-head{padding:17px}.cg-manual-ship-grid,.cg-manual-body,.cg-manual-actions{padding-left:14px;padding-right:14px}.cg-manual-ship-grid,.cg-manual-row{grid-template-columns:1fr}.cg-manual-ship-grid .cg-manual-field:last-child{grid-column:auto}.cg-manual-remove{justify-self:start}.cg-manual-actions{align-items:flex-start;flex-direction:column}.cg-manual-actions>div:last-child{width:100%;justify-content:stretch}.cg-manual-actions>div:last-child .cargo-btn{flex:1}}
+</style>
+
+<script id="nexus-v150-cargo-grid-manager-script">
+(() => {
+  'use strict';
+  if (window.__NEXUS_CARGO_GRID_MANAGER__) return;
+  window.__NEXUS_CARGO_GRID_MANAGER__ = true;
+
+  const COLORS = ['#38bdf8','#f59e0b','#34d399','#f472b6','#a78bfa','#fb7185','#22d3ee','#a3e635','#facc15','#60a5fa','#c084fc','#2dd4bf'];
+  const BOX_SIZES = [32,24,16,8,4,2,1];
+  const BOX_DIMS = {
+    32:[2,8,2], 24:[2,6,2], 16:[2,4,2], 8:[2,2,2],
+    4:[2,2,1], 2:[1,2,1], 1:[1,1,1]
+  };
+  const MANUAL_DRAFT_KEY = 'nexus-cargo-grid:manual-draft:v2';
+  const $ = id => document.getElementById(id);
+  const esc = value => String(value ?? '').replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
+  const clean = value => String(value ?? '').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
+  const fmt = value => Math.round(Number(value) || 0).toLocaleString();
+  const clamp = (v,a,b) => Math.max(a,Math.min(b,v));
+  const deepCopy = value => JSON.parse(JSON.stringify(value));
+
+  const state = {
+    initialized:false,
+    payload:null,
+    ship:{name:'',capacity:0},
+    contracts:[],
+    allocations:[],
+    crates:[],
+    profile:null,
+    placements:{},
+    selectedId:null,
+    view:'iso',
+    zoom:1,
+    pan:{x:0,y:0},
+    camera:{yaw:Math.PI/4,pitch:35*Math.PI/180},
+    history:[],
+    future:[],
+    hitRegions:[],
+    transform:null,
+    pointer:null,
+    preview:null,
+    dragVisual:null,
+    status:'',
+    saveTimer:null
+  };
+
+  function zone(id,label,x,y,w,d,h,access='rear'){
+    return {id,label,x,y,w,d,h,access,capacity:w*d*h};
+  }
+
+  function distributedZones(capacity,count,shape={w:8,d:12,h:4},gap=3,label='Cargo bay'){
+    const zones=[];
+    let remaining=Math.max(1,Math.round(capacity));
+    for(let i=0;i<count;i++){
+      const left=count-i;
+      const target=Math.ceil(remaining/left);
+      let h=shape.h;
+      let w=shape.w;
+      let d=Math.max(1,Math.ceil(target/(w*h)));
+      while(w*d*h < target) d++;
+      zones.push(zone(`bay-${i+1}`,`${label} ${i+1}`,i*(w+gap),0,w,d,h));
+      remaining-=target;
+    }
+    return zones;
+  }
+
+  function genericProfile(ship){
+    const cap=Math.max(1,Number(ship.capacity)||1);
+    let h=cap>=1800?8:cap>=700?6:cap>=220?4:cap>=80?3:2;
+    const floor=Math.ceil(cap/h);
+    let w=clamp(Math.round(Math.sqrt(floor/2.3)),2,12);
+    let d=Math.max(2,Math.ceil(floor/w));
+    if(d>36){ w=clamp(Math.ceil(floor/30),2,18); d=Math.ceil(floor/w); }
+    const zones=[];
+    if(cap>=1200){
+      const count=4;
+      const per=Math.ceil(cap/count);
+      const pw=clamp(Math.round(Math.sqrt((per/h)/1.8)),5,12);
+      const pd=Math.ceil(per/(pw*h));
+      for(let i=0;i<count;i++) zones.push(zone(`bay-${i+1}`,`Cargo bay ${i+1}`,(i%2)*(pw+4),Math.floor(i/2)*(pd+4),pw,pd,h));
+    } else if(cap>=420){
+      const count=3;
+      const per=Math.ceil(cap/count);
+      const pw=clamp(Math.round(Math.sqrt((per/h)/2)),4,10);
+      const pd=Math.ceil(per/(pw*h));
+      for(let i=0;i<count;i++) zones.push(zone(`bay-${i+1}`,`Cargo module ${i+1}`,i*(pw+3),0,pw,pd,h));
+    } else zones.push(zone('main','Main cargo grid',0,0,w,d,h));
+    return {key:'generated',label:'Capacity-based cargo-grid schematic',source:'Generated from listed SCU capacity',zones,capacity:cap,accurate:false};
+  }
+
+  function shipProfile(ship){
+    const name=clean(ship.name);
+    const cap=Math.max(1,Number(ship.capacity)||1);
+    let zones=null,label='Ship-specific cargo-grid schematic';
+    if(/\bc1 spirit\b/.test(name)) zones=[zone('main','Main cargo grid',0,0,4,8,2)];
+    else if(/\bzeus( mk ii)? cl\b/.test(name)) zones=[zone('main','Main cargo grid',0,0,4,8,4)];
+    else if(/freelancer max/.test(name)) zones=[zone('main','Main cargo grid',0,0,4,10,3)];
+    else if(/constellation taurus/.test(name)) zones=[zone('main','Main freight deck',0,0,3,14,4),zone('forward','Forward grid',4,2,2,3,1)];
+    else if(/starlancer max/.test(name)) zones=[zone('main','Main cargo deck',0,0,4,14,4)];
+    else if(/\bc2 hercules/.test(name)) zones=[zone('main','Vehicle cargo deck',0,0,6,29,4)];
+    else if(/\bm2 hercules/.test(name)) zones=[zone('main','Military cargo deck',0,0,6,29,3)];
+    else if(/\ba2 hercules/.test(name)) zones=[zone('main','Bomb bay cargo grid',0,0,6,12,3)];
+    else if(/caterpillar/.test(name)) zones=[0,1,2,3].map(i=>zone(`module-${i+1}`,`Cargo module ${i+1}`,i*7,0,4,9,4));
+    else if(/\braft\b/.test(name)) zones=[0,1,2].map(i=>zone(`pod-${i+1}`,`External 32-SCU pod ${i+1}`,i*4,0,2,8,2));
+    else if(/\bhull a\b/.test(name)) zones=[zone('port','Port spindle',0,0,2,8,2),zone('starboard','Starboard spindle',5,0,2,8,2)];
+    else if(/\bhull b\b/.test(name)) zones=[zone('p1','Port forward',0,0,4,12,2),zone('p2','Port aft',0,15,4,12,2),zone('s1','Starboard forward',7,0,4,12,2),zone('s2','Starboard aft',7,15,4,12,2)];
+    else if(/\bhull c\b/.test(name)) zones=[zone('p1','Port upper spindle',0,0,8,18,8),zone('p2','Port lower spindle',0,22,8,18,8),zone('s1','Starboard upper spindle',12,0,8,18,8),zone('s2','Starboard lower spindle',12,22,8,18,8)];
+    else if(/ironclad/.test(name)){
+      const count=4; const per=Math.ceil(cap/count); const h=cap>1800?6:4; const w=8; const d=Math.ceil(per/(w*h));
+      zones=[zone('forward-port','Forward port hold',0,0,w,d,h),zone('forward-starboard','Forward starboard hold',w+5,0,w,d,h),zone('aft-port','Aft port hold',0,d+5,w,d,h),zone('aft-starboard','Aft starboard hold',w+5,d+5,w,d,h)];
+      label='Ironclad multi-bay schematic';
+    }
+    else if(/corsair/.test(name)) zones=[zone('main','Main cargo grid',0,0,4,9,2)];
+    else if(/mercury star runner/.test(name)) zones=[zone('main','Main cargo hold',0,0,3,19,2)];
+    else if(/\bcarrack\b/.test(name)) zones=[0,1,2].map(i=>zone(`pod-${i+1}`,`Cargo pod ${i+1}`,i*7,0,4,19,2));
+    else if(/890 jump/.test(name)) zones=[zone('main','Vehicle and cargo bay',0,0,11,11,4)];
+    else if(/constellation andromeda/.test(name)) zones=[zone('main','Main cargo lift',0,0,4,8,3)];
+    else if(/reclaimer/.test(name)) zones=[zone('main','Cargo processing hold',0,0,5,14,6)];
+    else if(/\bvulture\b/.test(name)) zones=[zone('main','Cargo grid',0,0,2,3,2)];
+    else if(/\bnomad\b/.test(name)) zones=[zone('main','External cargo bed',0,0,2,6,2)];
+    else if(/avenger titan/.test(name)) zones=[zone('main','Rear cargo bay',0,0,2,2,2)];
+    else if(/cutlass black/.test(name)) zones=[zone('main','Main cargo deck',0,0,2,8,3)];
+    if(!zones) return genericProfile(ship);
+    return {key:name,label,source:'Ship-specific planning profile',zones,capacity:cap,accurate:true};
+  }
+
+  function shipCapacityFromSelect(){
+    const select=$('cargo-ship-select');
+    const option=select?.selectedOptions?.[0];
+    const match=String(option?.textContent||'').match(/([0-9,]+)\s*SCU/i);
+    return Number(String(match?.[1]||'0').replace(/,/g,''))||0;
+  }
+
+  function routeContractsFromDom(){
+    const cards=[...document.querySelectorAll('#cargo-contract-list .cargo-contract-card')];
+    return cards.map((card,index)=>{
+      const title=card.querySelector('[data-field="title"]')?.value || card.dataset.missionTitle || `Cargo contract ${index+1}`;
+      const originSelect=card.querySelector('[data-field="origin"]');
+      const commoditySelect=card.querySelector('[data-field="commodity"]');
+      const originName=(originSelect?.selectedOptions?.[0]?.textContent||originSelect?.value||'Origin').split(' · ')[0];
+      const commodityName=(commoditySelect?.selectedOptions?.[0]?.textContent||commoditySelect?.value||'Cargo').split(' · ')[0];
+      const dests=[...card.querySelectorAll('.cargo-dest-row')].map((row,di)=>{
+        const select=row.querySelector('[data-field="destination"]');
+        const name=(select?.selectedOptions?.[0]?.textContent||select?.value||`Destination ${di+1}`).split(' · ')[0];
+        return {id:select?.value||name,name,scu:Math.max(0,Number(row.querySelector('[data-field="scu"]')?.value||0))};
+      }).filter(dest=>dest.scu>0);
+      return {index,title,origin:{id:originSelect?.value||originName,name:originName},commodity:{id:commoditySelect?.value||commodityName,name:commodityName},payout:Number(card.querySelector('[data-field="payout"]')?.value||0),dests};
+    }).filter(contract=>contract.dests.length);
+  }
+
+  function routeOrderFromDom(){
+    return [...document.querySelectorAll('#cargo-route-list .cargo-route-stop')].map((stop,index)=>{
+      const raw=stop.querySelector('.cargo-stop-copy strong')?.textContent || stop.querySelector('strong')?.textContent || `Stop ${index+1}`;
+      return raw.replace(/^\s*\d+\.\s*/,'').trim();
+    }).filter(Boolean);
+  }
+
+  function buildRoutePayload(){
+    const shipSelect=$('cargo-ship-select');
+    const startSelect=$('cargo-start-location');
+    const shipName=shipSelect?.value || (shipSelect?.selectedOptions?.[0]?.textContent||'Cargo ship').split(' · ')[0];
+    const capacity=shipCapacityFromSelect();
+    const contracts=routeContractsFromDom();
+    const start=(startSelect?.selectedOptions?.[0]?.textContent||startSelect?.value||'Starting location').split(' · ')[0];
+    return {ship:{name:shipName,capacity},contracts,routeOrder:routeOrderFromDom(),start,createdAt:new Date().toISOString()};
+  }
+
+  function uniqueDestinations(contracts){
+    const map=new Map();
+    contracts.forEach(c=>c.dests.forEach(d=>map.set(clean(d.name||d.id),d.name||d.id)));
+    return [...map.values()];
+  }
+
+  function normalizeCrateMix(value){
+    const mix={};
+    BOX_SIZES.forEach(size=>{const count=Math.max(0,Math.round(Number(value?.[size]??value?.[String(size)])||0));if(count)mix[size]=count;});
+    return mix;
+  }
+
+  function crateMixScu(value){
+    const mix=normalizeCrateMix(value);
+    return BOX_SIZES.reduce((sum,size)=>sum+size*(mix[size]||0),0);
+  }
+
+  function crateMixLabel(value){
+    const mix=normalizeCrateMix(value);
+    return BOX_SIZES.filter(size=>mix[size]).map(size=>`${mix[size]}×${size}`).join(' · ');
+  }
+
+  function createAllocations(contracts,routeOrder){
+    const normalizedRoute=routeOrder.map(clean);
+    const allocations=[];
+    contracts.forEach((contract,ci)=>{
+      contract.color=COLORS[ci%COLORS.length];
+      contract.dests.forEach((dest,di)=>{
+        let stopIndex=normalizedRoute.findIndex(stop=>stop.includes(clean(dest.name))||clean(dest.name).includes(stop));
+        if(stopIndex<0) stopIndex=routeOrder.length+di;
+        allocations.push({id:`c${ci}-d${di}`,contractIndex:ci,destinationIndex:di,title:contract.title,commodity:contract.commodity.name,destination:dest.name,scu:dest.scu,crateSize:Number(dest.crateSize||contract.crateSize)||0,crateMix:normalizeCrateMix(dest.crateMix||contract.crateMix),color:contract.color,stopIndex:stopIndex+1});
+      });
+    });
+    return allocations;
+  }
+
+  function splitCrates(allocations){
+    const crates=[];
+    allocations.forEach(allocation=>{
+      let remaining=Math.max(0,Math.round(allocation.scu));
+      let serial=1;
+      const addCrate=size=>crates.push({id:`${allocation.id}-b${serial++}`,allocationId:allocation.id,contractIndex:allocation.contractIndex,scu:size,dims:BOX_DIMS[size].slice(),rotated:false,color:allocation.color,commodity:allocation.commodity,destination:allocation.destination,stopIndex:allocation.stopIndex,title:allocation.title});
+      const exact=normalizeCrateMix(allocation.crateMix);
+      if(crateMixScu(exact)===remaining&&remaining>0){
+        BOX_SIZES.forEach(size=>{for(let count=0;count<(exact[size]||0);count++)addCrate(size);});
+        return;
+      }
+      const preferred=BOX_SIZES.includes(Number(allocation.crateSize))?Number(allocation.crateSize):0;
+      const sizes=preferred?[preferred,...BOX_SIZES.filter(size=>size<preferred)]:BOX_SIZES;
+      sizes.forEach(size=>{
+        while(remaining>=size){addCrate(size);remaining-=size;}
+      });
+    });
+    return crates;
+  }
+
+  function profileBounds(profile){
+    const zones=profile?.zones||[];
+    const minX=Math.min(0,...zones.map(z=>z.x));
+    const minY=Math.min(0,...zones.map(z=>z.y));
+    const maxX=Math.max(1,...zones.map(z=>z.x+z.w));
+    const maxY=Math.max(1,...zones.map(z=>z.y+z.d));
+    const maxZ=Math.max(1,...zones.map(z=>z.h));
+    return {minX,minY,maxX,maxY,maxZ,w:maxX-minX,d:maxY-minY};
+  }
+
+  function crateDims(crate,placement){
+    const dims=crate.dims.slice();
+    if(placement?.rotated || crate.rotated) [dims[0],dims[1]]=[dims[1],dims[0]];
+    return dims;
+  }
+
+  function occupiedMap(excludeId=null, placements=state.placements){
+    const map=new Map();
+    state.crates.forEach(crate=>{
+      if(crate.id===excludeId) return;
+      const p=placements[crate.id];
+      if(!p) return;
+      const [dx,dy,dz]=crateDims(crate,p);
+      for(let x=0;x<dx;x++) for(let y=0;y<dy;y++) for(let z=0;z<dz;z++) map.set(`${p.zone}|${p.x+x}|${p.y+y}|${p.z+z}`,crate.id);
+    });
+    return map;
+  }
+
+  function canPlace(crate,p,excludeId=crate.id,placements=state.placements){
+    const z=state.profile?.zones.find(item=>item.id===p.zone);
+    if(!z) return false;
+    const [dx,dy,dz]=crateDims(crate,p);
+    if(!Number.isInteger(p.x)||!Number.isInteger(p.y)||!Number.isInteger(p.z)) return false;
+    if(p.x<0||p.y<0||p.z<0||p.x+dx>z.w||p.y+dy>z.d||p.z+dz>z.h) return false;
+    const occupied=occupiedMap(excludeId,placements);
+    for(let x=0;x<dx;x++) for(let y=0;y<dy;y++) for(let zz=0;zz<dz;zz++) if(occupied.has(`${p.zone}|${p.x+x}|${p.y+y}|${p.z+zz}`)) return false;
+    // A crate above deck level needs complete support under its entire footprint.
+    // This prevents bridges, floating corners, and placements held up by one small box.
+    if(p.z>0){
+      for(let x=0;x<dx;x++) for(let y=0;y<dy;y++) if(!occupied.has(`${p.zone}|${p.x+x}|${p.y+y}|${p.z-1}`)) return false;
+    }
+    return true;
+  }
+
+  function findLowestPlacement(crate,zoneDef,x,y,rotated=false,placements=state.placements){
+    const probe={zone:zoneDef.id,x:Math.round(x),y:Math.round(y),z:0,rotated};
+    const dims=crateDims(crate,probe);
+    for(let z=0;z<=zoneDef.h-dims[2];z++){
+      probe.z=z;
+      if(canPlace(crate,probe,crate.id,placements)) return {...probe};
+    }
+    return null;
+  }
+
+  function zoneDistanceSquared(zoneDef,x,y){
+    const dx=x<zoneDef.x?zoneDef.x-x:x>zoneDef.x+zoneDef.w?x-(zoneDef.x+zoneDef.w):0;
+    const dy=y<zoneDef.y?zoneDef.y-y:y>zoneDef.y+zoneDef.d?y-(zoneDef.y+zoneDef.d):0;
+    return dx*dx+dy*dy;
+  }
+
+  function nearestZoneForWorld(x,y){
+    return [...(state.profile?.zones||[])].sort((a,b)=>zoneDistanceSquared(a,x,y)-zoneDistanceSquared(b,x,y))[0]||null;
+  }
+
+  function findNearestPlacement(crate,zoneDef,x,y,rotated=false,placements=state.placements,maxRadius=4){
+    if(!zoneDef)return null;
+    const dims=crateDims(crate,{rotated}),maxX=zoneDef.w-dims[0],maxY=zoneDef.d-dims[1];
+    if(maxX<0||maxY<0)return null;
+    const baseX=clamp(Math.round(x),0,maxX),baseY=clamp(Math.round(y),0,maxY),tested=new Set();
+    for(let radius=0;radius<=maxRadius;radius++){
+      const candidates=[];
+      for(let ox=-radius;ox<=radius;ox++) for(let oy=-radius;oy<=radius;oy++){
+        if(Math.max(Math.abs(ox),Math.abs(oy))!==radius)continue;
+        const cx=clamp(baseX+ox,0,maxX),cy=clamp(baseY+oy,0,maxY),key=`${cx}|${cy}`;
+        if(tested.has(key))continue;tested.add(key);
+        candidates.push({x:cx,y:cy,score:(cx-x)*(cx-x)+(cy-y)*(cy-y)});
+      }
+      candidates.sort((a,b)=>a.score-b.score);
+      for(const candidate of candidates){const p=findLowestPlacement(crate,zoneDef,candidate.x,candidate.y,rotated,placements);if(p)return p;}
+    }
+    return null;
+  }
+
+  function blockingCratesAbove(crateId,placements=state.placements){
+    const crate=state.crates.find(item=>item.id===crateId),p=placements[crateId];if(!crate||!p)return [];
+    const [dx,dy,dz]=crateDims(crate,p),top=p.z+dz;
+    return state.crates.filter(other=>{
+      if(other.id===crateId)return false;
+      const q=placements[other.id];if(!q||q.zone!==p.zone||q.z!==top)return false;
+      const [odx,ody]=crateDims(other,q);
+      return q.x<p.x+dx&&q.x+odx>p.x&&q.y<p.y+dy&&q.y+ody>p.y;
+    });
+  }
+
+  function saveKey(){
+    const allocations=state.allocations.map(a=>`${a.title}|${a.destination}|${a.scu}|${a.crateSize||'auto'}|${crateMixLabel(a.crateMix)||'auto'}`).join('~');
+    let hash=0; for(let i=0;i<allocations.length;i++) hash=((hash<<5)-hash+allocations.charCodeAt(i))|0;
+    return `nexus-cargo-grid:${clean(state.ship.name)}:${Math.abs(hash)}`;
+  }
+
+  function saveLocal(){
+    clearTimeout(state.saveTimer);
+    state.saveTimer=setTimeout(()=>{
+      try{localStorage.setItem(saveKey(),JSON.stringify({placements:state.placements,view:state.view,zoom:state.zoom,pan:state.pan,camera:state.camera}));}catch(_){}
+    },120);
+  }
+
+  function restoreLocal(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(saveKey())||'null');
+      if(!saved?.placements) return false;
+      const valid={};
+      [...state.crates].sort((a,b)=>(saved.placements[a.id]?.z||0)-(saved.placements[b.id]?.z||0)).forEach(crate=>{const p=saved.placements[crate.id];if(p&&canPlace(crate,p,crate.id,valid))valid[crate.id]=p;});
+      state.placements=valid;
+      state.view=['iso','free','top','side','front'].includes(saved.view)?saved.view:'iso';
+      state.zoom=clamp(Number(saved.zoom)||1,.45,3);
+      state.pan=saved.pan&&Number.isFinite(saved.pan.x)&&Number.isFinite(saved.pan.y)?saved.pan:{x:0,y:0};
+      state.camera=saved.camera&&Number.isFinite(saved.camera.yaw)&&Number.isFinite(saved.camera.pitch)?{yaw:saved.camera.yaw,pitch:clamp(saved.camera.pitch,10*Math.PI/180,80*Math.PI/180)}:{yaw:Math.PI/4,pitch:35*Math.PI/180};
+      return true;
+    }catch(_){return false;}
+  }
+
+  function snapshot(){ return deepCopy(state.placements); }
+  function pushHistory(){
+    state.history.push(snapshot());
+    if(state.history.length>40) state.history.shift();
+    state.future=[];
+  }
+  function restoreSnapshot(value){ state.placements=deepCopy(value||{}); renderAll(); saveLocal(); }
+  function undo(){ if(!state.history.length)return;state.future.push(snapshot());restoreSnapshot(state.history.pop()); }
+  function redo(){ if(!state.future.length)return;state.history.push(snapshot());restoreSnapshot(state.future.pop()); }
+
+  function autoPack(recordHistory=true){
+    if(recordHistory) pushHistory();
+    const placements={};
+    const maxStop=Math.max(1,...state.crates.map(c=>c.stopIndex||1));
+    const sorted=[...state.crates].sort((a,b)=>(b.stopIndex-a.stopIndex)||(b.scu-a.scu)||a.id.localeCompare(b.id));
+    sorted.forEach(crate=>{
+      const late=(crate.stopIndex||1) > maxStop/2;
+      let found=null;
+      for(const z of state.profile.zones){
+        const orientations=[false,true].filter((value,index,array)=>index===0||crate.dims[0]!==crate.dims[1]);
+        for(const rotated of orientations){
+          const dims=crateDims(crate,{rotated});
+          const ys=[]; for(let y=0;y<=z.d-dims[1];y++)ys.push(y); if(late)ys.reverse();
+          for(let zz=0;zz<=z.h-dims[2]&&!found;zz++){
+            for(const y of ys){
+              const xs=[];for(let x=0;x<=z.w-dims[0];x++)xs.push(x);
+              if((crate.contractIndex||0)%2)xs.reverse();
+              for(const x of xs){
+                const p={zone:z.id,x,y,z:zz,rotated};
+                if(canPlace(crate,p,crate.id,placements)){found=p;break;}
+              }
+              if(found)break;
+            }
+          }
+          if(found)break;
+        }
+        if(found)break;
+      }
+      if(found)placements[crate.id]=found;
+    });
+    state.placements=placements;
+    state.status=`Auto-pack placed ${Object.keys(placements).length} of ${state.crates.length} crates. Later route stops were loaded deeper first.`;
+    renderAll();saveLocal();
+  }
+
+  function shade(hex,amount){
+    const raw=hex.replace('#','');
+    const n=parseInt(raw.length===3?raw.split('').map(c=>c+c).join(''):raw,16);
+    const r=clamp((n>>16)+amount,0,255),g=clamp(((n>>8)&255)+amount,0,255),b=clamp((n&255)+amount,0,255);
+    return `rgb(${r},${g},${b})`;
+  }
+
+  function getCanvasMetrics(canvas){
+    const rect=canvas.getBoundingClientRect();
+    const dpr=Math.min(2,window.devicePixelRatio||1);
+    const width=Math.max(320,Math.round(rect.width*dpr)),height=Math.max(420,Math.round(rect.height*dpr));
+    if(canvas.width!==width||canvas.height!==height){canvas.width=width;canvas.height=height;}
+    return {width,height,dpr,cssWidth:rect.width,cssHeight:rect.height};
+  }
+
+  function rawProject(x,y,z,view){
+    if(view==='top')return {x,y};
+    if(view==='side')return {x:x+y*.06,y:-z+y*.02};
+    if(view==='front')return {x:y+x*.06,y:-z+x*.02};
+    if(view==='free'){
+      const yaw=state.camera.yaw,pitch=state.camera.pitch,c=Math.cos(yaw),sn=Math.sin(yaw);
+      const u=x*c-y*sn,depth=x*sn+y*c;
+      return {x:u,y:depth*Math.sin(pitch)-z*Math.cos(pitch)*1.35};
+    }
+    return {x:x-y,y:(x+y)*.5-z*1.18};
+  }
+
+  function scenePoints(profile,view){
+    const points=[];
+    profile.zones.forEach(z=>{
+      [[z.x,z.y,0],[z.x+z.w,z.y,0],[z.x,z.y+z.d,0],[z.x+z.w,z.y+z.d,0],[z.x,z.y,z.h],[z.x+z.w,z.y+z.d,z.h]].forEach(p=>points.push(rawProject(p[0],p[1],p[2],view)));
+    });
+    return points;
+  }
+
+  function buildTransform(width,height,view,pad=50){
+    const points=scenePoints(state.profile,view);
+    const minX=Math.min(...points.map(p=>p.x)),maxX=Math.max(...points.map(p=>p.x));
+    const minY=Math.min(...points.map(p=>p.y)),maxY=Math.max(...points.map(p=>p.y));
+    const rangeX=Math.max(1,maxX-minX),rangeY=Math.max(1,maxY-minY);
+    const base=Math.min((width-pad*2)/rangeX,(height-pad*2)/rangeY);
+    const scale=base*state.zoom;
+    const centerRawX=(minX+maxX)/2,centerRawY=(minY+maxY)/2;
+    return {view,scale,offsetX:width/2-centerRawX*scale+state.pan.x,offsetY:height/2-centerRawY*scale+state.pan.y,minX,minY,maxX,maxY};
+  }
+
+  function project(x,y,z,t=state.transform){
+    const p=rawProject(x,y,z,t.view);
+    return {x:p.x*t.scale+t.offsetX,y:p.y*t.scale+t.offsetY};
+  }
+
+  function inverseFloor(sx,sy,t=state.transform,z=0){
+    const u=(sx-t.offsetX)/t.scale,v=(sy-t.offsetY)/t.scale;
+    if(t.view==='top')return {x:u,y:v};
+    if(t.view==='iso'){const planeV=v+z*1.18;return {x:planeV+u/2,y:planeV-u/2};}
+    if(t.view==='free'){
+      const yaw=state.camera.yaw,pitch=state.camera.pitch,sinPitch=Math.max(.12,Math.sin(pitch));
+      const depth=(v+z*Math.cos(pitch)*1.35)/sinPitch,c=Math.cos(yaw),sn=Math.sin(yaw);
+      return {x:u*c+depth*sn,y:-u*sn+depth*c};
+    }
+    return null;
+  }
+
+  function polygon(ctx,points,fill,stroke,lineWidth=1){
+    if(!points.length)return;
+    ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);for(let i=1;i<points.length;i++)ctx.lineTo(points[i].x,points[i].y);ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=lineWidth;ctx.stroke();}
+  }
+
+  function pointInPoly(point,poly){
+    let inside=false;
+    for(let i=0,j=poly.length-1;i<poly.length;j=i++){
+      const xi=poly[i].x,yi=poly[i].y,xj=poly[j].x,yj=poly[j].y;
+      const intersect=((yi>point.y)!==(yj>point.y))&&(point.x<(xj-xi)*(point.y-yi)/(yj-yi||1e-9)+xi);
+      if(intersect)inside=!inside;
+    }
+    return inside;
+  }
+
+  function drawZone(ctx,z,view){
+    const a=project(z.x,z.y,0),b=project(z.x+z.w,z.y,0),c=project(z.x+z.w,z.y+z.d,0),d=project(z.x,z.y+z.d,0);
+    polygon(ctx,[a,b,c,d],'rgba(179,190,198,.54)','rgba(49,64,74,.75)',1.2);
+    const volume=z.w*z.d*z.h;
+    let step=volume>1800?4:volume>800?2:1;
+    if(view==='iso'||view==='free'||view==='top'){
+      for(let x=0;x<=z.w;x+=step){const p1=project(z.x+x,z.y,0),p2=project(z.x+x,z.y+z.d,0);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle='rgba(64,79,89,.32)';ctx.lineWidth=.75;ctx.stroke();}
+      for(let y=0;y<=z.d;y+=step){const p1=project(z.x,z.y+y,0),p2=project(z.x+z.w,z.y+y,0);ctx.beginPath();ctx.moveTo(p1.x,p1.y);ctx.lineTo(p2.x,p2.y);ctx.strokeStyle='rgba(64,79,89,.32)';ctx.lineWidth=.75;ctx.stroke();}
+    }
+    const label=project(z.x+z.w/2,z.y+z.d/2,0);
+    ctx.save();ctx.font=`800 ${clamp(state.transform.scale*.28,10,15)}px Inter,Arial`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle='rgba(35,48,57,.72)';ctx.fillText(z.label,label.x,label.y);ctx.restore();
+  }
+
+  function crateCorners(crate,p){
+    const zdef=state.profile.zones.find(z=>z.id===p.zone);if(!zdef)return null;
+    const [dx,dy,dz]=crateDims(crate,p);const x=zdef.x+p.x,y=zdef.y+p.y,z=p.z;
+    return {x,y,z,dx,dy,dz,zdef};
+  }
+
+  function vectorNormalize(v){const length=Math.hypot(v[0],v[1],v[2])||1;return [v[0]/length,v[1]/length,v[2]/length];}
+  function vectorDot(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2];}
+  function cameraVector(view=state.transform?.view||state.view){
+    if(view==='top')return [0,0,1];
+    if(view==='side')return vectorNormalize([.06,1,.02]);
+    if(view==='front')return vectorNormalize([1,.06,.02]);
+    if(view==='free'){
+      const yaw=state.camera.yaw,pitch=state.camera.pitch;
+      return vectorNormalize([1.35*Math.sin(yaw)*Math.cos(pitch),1.35*Math.cos(yaw)*Math.cos(pitch),Math.sin(pitch)]);
+    }
+    return vectorNormalize([1.18,1.18,1]);
+  }
+  function projectedArea(points){let sum=0;for(let i=0;i<points.length;i++){const a=points[i],b=points[(i+1)%points.length];sum+=a.x*b.y-b.x*a.y;}return Math.abs(sum*.5);}
+  function pointLerp(a,b,t){return {x:a.x+(b.x-a.x)*t,y:a.y+(b.y-a.y)*t};}
+  function quadPoint(points,u,v){return pointLerp(pointLerp(points[0],points[1],u),pointLerp(points[3],points[2],u),v);}
+  function insetQuad(points,amount=.11){const center=quadPoint(points,.5,.5);return points.map(point=>pointLerp(point,center,amount));}
+  function strokeSegment(ctx,a,b,color,width=1){ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.strokeStyle=color;ctx.lineWidth=width;ctx.stroke();}
+  function crateDepth(crate,p,view=state.transform?.view||state.view){
+    const box=crateCorners(crate,p);if(!box)return 0;
+    const {x,y,z,dx,dy,dz}=box,cam=cameraVector(view);
+    return (x+dx/2)*cam[0]+(y+dy/2)*cam[1]+(z+dz/2)*cam[2];
+  }
+  function crateFaces(crate,p){
+    const box=crateCorners(crate,p);if(!box)return [];
+    const {x,y,z,dx,dy,dz}=box;
+    const v={
+      nnn:[x,y,z],pnn:[x+dx,y,z],npn:[x,y+dy,z],ppn:[x+dx,y+dy,z],
+      nnp:[x,y,z+dz],pnp:[x+dx,y,z+dz],npp:[x,y+dy,z+dz],ppp:[x+dx,y+dy,z+dz]
+    };
+    return [
+      {id:'top',normal:[0,0,1],world:[v.nnp,v.pnp,v.ppp,v.npp]},
+      {id:'bottom',normal:[0,0,-1],world:[v.nnn,v.npn,v.ppn,v.pnn]},
+      {id:'x+',normal:[1,0,0],world:[v.pnn,v.ppn,v.ppp,v.pnp]},
+      {id:'x-',normal:[-1,0,0],world:[v.nnn,v.nnp,v.npp,v.npn]},
+      {id:'y+',normal:[0,1,0],world:[v.npn,v.npp,v.ppp,v.ppn]},
+      {id:'y-',normal:[0,-1,0],world:[v.nnn,v.pnn,v.pnp,v.nnp]}
+    ].map(face=>{
+      face.points=face.world.map(point=>project(point[0],point[1],point[2]));
+      face.center=[face.world.reduce((sum,q)=>sum+q[0],0)/4,face.world.reduce((sum,q)=>sum+q[1],0)/4,face.world.reduce((sum,q)=>sum+q[2],0)/4];
+      face.area=projectedArea(face.points);
+      return face;
+    });
+  }
+  function drawCrateFace(ctx,face,crate,selected=false){
+    const points=face.points,area=face.area;
+    if(area<1)return;
+    const light=vectorNormalize([-.45,-.55,1]),diffuse=vectorDot(face.normal,light);
+    const panelShade=clamp(Math.round(diffuse*28),-28,20),frame=shade(crate.color,-54),panel=shade(crate.color,panelShade);
+    const outline=selected?'rgba(255,255,255,.96)':'rgba(18,31,40,.92)';
+    polygon(ctx,points,frame,outline,selected?2.8:1.25);
+    const inset=insetQuad(points,area>2600?.09:.13);
+    polygon(ctx,inset,panel,'rgba(5,18,28,.76)',Math.max(1,state.transform.scale*.025));
+
+    const edgeA=Math.hypot(inset[1].x-inset[0].x,inset[1].y-inset[0].y),edgeB=Math.hypot(inset[2].x-inset[1].x,inset[2].y-inset[1].y);
+    const detailAlpha=area>700?.42:.27;
+    ctx.save();ctx.globalAlpha*=detailAlpha;
+    const rib='rgba(3,17,27,.9)',highlight='rgba(255,255,255,.42)';
+    // Structural diagonal bracing makes the color-coded block read as a framed cargo container.
+    if(area>900){strokeSegment(ctx,quadPoint(inset,.08,.12),quadPoint(inset,.92,.88),rib,Math.max(1,state.transform.scale*.022));strokeSegment(ctx,quadPoint(inset,.92,.12),quadPoint(inset,.08,.88),rib,Math.max(1,state.transform.scale*.022));}
+    // Long containers receive repeated recessed panels instead of one flat slab.
+    if(edgeA>edgeB*1.25){
+      const count=edgeA>220?4:edgeA>120?3:2;
+      for(let i=1;i<count;i++){const u=i/count;strokeSegment(ctx,quadPoint(inset,u,.06),quadPoint(inset,u,.94),rib,Math.max(1,state.transform.scale*.02));strokeSegment(ctx,quadPoint(inset,u-.012,.06),quadPoint(inset,u-.012,.94),highlight,.7);}
+    }else if(edgeB>edgeA*1.25){
+      const count=edgeB>220?4:edgeB>120?3:2;
+      for(let i=1;i<count;i++){const v=i/count;strokeSegment(ctx,quadPoint(inset,.06,v),quadPoint(inset,.94,v),rib,Math.max(1,state.transform.scale*.02));strokeSegment(ctx,quadPoint(inset,.06,v-.012),quadPoint(inset,.94,v-.012),highlight,.7);}
+    }else if(area>650){
+      strokeSegment(ctx,quadPoint(inset,.5,.06),quadPoint(inset,.5,.94),rib,Math.max(1,state.transform.scale*.02));
+      strokeSegment(ctx,quadPoint(inset,.06,.5),quadPoint(inset,.94,.5),rib,Math.max(1,state.transform.scale*.02));
+    }
+    // Corner locks / tie-down details.
+    if(area>1050){for(const [u,v] of [[.08,.1],[.92,.1],[.92,.9],[.08,.9]]){const bolt=quadPoint(inset,u,v);ctx.beginPath();ctx.arc(bolt.x,bolt.y,Math.max(1.2,state.transform.scale*.035),0,Math.PI*2);ctx.fillStyle='rgba(2,12,20,.86)';ctx.fill();ctx.strokeStyle='rgba(255,255,255,.45)';ctx.lineWidth=.65;ctx.stroke();}}
+    ctx.restore();
+  }
+  function drawCrateLabel(ctx,face,crate){
+    if(!face||face.area<650)return;
+    const p=face.points,edgeA=Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y),edgeB=Math.hypot(p[2].x-p[1].x,p[2].y-p[1].y);
+    let angle=edgeA>=edgeB?Math.atan2(p[1].y-p[0].y,p[1].x-p[0].x):Math.atan2(p[2].y-p[1].y,p[2].x-p[1].x);
+    while(angle>Math.PI/2)angle-=Math.PI;while(angle<-Math.PI/2)angle+=Math.PI;
+    const center=quadPoint(p,.5,.5),available=Math.max(edgeA,edgeB),fontSize=clamp(Math.min(available/7,Math.sqrt(face.area)/5),8,14);
+    const label=`${crate.scu} SCU · C${crate.contractIndex+1}`,plateWidth=Math.min(available*.72,label.length*fontSize*.65+18),plateHeight=fontSize+10;
+    if(plateWidth<42)return;
+    ctx.save();ctx.translate(center.x,center.y);ctx.rotate(angle);ctx.fillStyle='rgba(3,13,21,.82)';ctx.strokeStyle='rgba(255,255,255,.5)';ctx.lineWidth=.8;ctx.beginPath();ctx.roundRect(-plateWidth/2,-plateHeight/2,plateWidth,plateHeight,Math.min(4,plateHeight/3));ctx.fill();ctx.stroke();ctx.fillStyle='#f3fbff';ctx.font=`900 ${fontSize}px 'Share Tech Mono',monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,0,.5);ctx.restore();
+  }
+  function drawCrate(ctx,crate,p,selected=false,alpha=1,interactive=true){
+    const box=crateCorners(crate,p);if(!box)return;
+    const cam=cameraVector(),faces=crateFaces(crate,p).filter(face=>vectorDot(face.normal,cam)>.018&&face.area>1);
+    faces.sort((a,b)=>vectorDot(a.center,cam)-vectorDot(b.center,cam));
+    ctx.save();ctx.globalAlpha=alpha;
+    if((state.transform.view==='iso'||state.transform.view==='free')&&box.z<=.45){
+      const lift=Math.max(0,box.z)*state.transform.scale*.08;
+      const base=[project(box.x,box.y,0),project(box.x+box.dx,box.y,0),project(box.x+box.dx,box.y+box.dy,0),project(box.x,box.y+box.dy,0)].map(point=>({x:point.x+4+lift,y:point.y+6+lift}));
+      polygon(ctx,base,alpha>.8?'rgba(0,8,14,.22)':'rgba(0,8,14,.12)',null);
+    }
+    faces.forEach(face=>drawCrateFace(ctx,face,crate,selected));
+    const labelFace=[...faces].sort((a,b)=>b.area-a.area)[0];drawCrateLabel(ctx,labelFace,crate);
+    ctx.restore();
+    if(interactive){
+      const depth=crateDepth(crate,p);
+      faces.forEach((face,index)=>state.hitRegions.push({id:crate.id,poly:face.points,depth:depth+index*.0001,area:face.area}));
+    }
+  }
+
+  function drawPlacementGuide(ctx,crate,p,valid){
+    if(!p)return;const box=crateCorners(crate,p);if(!box)return;
+    const color=valid?'rgba(16,185,129,.92)':'rgba(248,113,113,.92)',fill=valid?'rgba(16,185,129,.13)':'rgba(248,113,113,.13)';
+    const floor=[project(box.x,box.y,box.z),project(box.x+box.dx,box.y,box.z),project(box.x+box.dx,box.y+box.dy,box.z),project(box.x,box.y+box.dy,box.z)];
+    ctx.save();ctx.setLineDash([8,6]);polygon(ctx,floor,fill,color,2.4);ctx.setLineDash([]);ctx.restore();
+    if(valid)drawCrate(ctx,crate,p,false,.18,false);
+  }
+
+  function renderCanvas(){
+    const canvas=$('cg-canvas');if(!canvas||!state.profile)return;
+    const m=getCanvasMetrics(canvas),ctx=canvas.getContext('2d');
+    ctx.clearRect(0,0,m.width,m.height);
+    const bg=ctx.createLinearGradient(0,0,0,m.height);bg.addColorStop(0,'#e3e9ee');bg.addColorStop(1,'#cdd6dc');ctx.fillStyle=bg;ctx.fillRect(0,0,m.width,m.height);
+    ctx.save();ctx.globalAlpha=.19;ctx.strokeStyle='#5d6a73';ctx.lineWidth=1;const grid=32*m.dpr;for(let x=0;x<m.width;x+=grid){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,m.height);ctx.stroke();}for(let y=0;y<m.height;y+=grid){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(m.width,y);ctx.stroke();}ctx.restore();
+    state.transform=buildTransform(m.width,m.height,state.view,58*m.dpr);
+    state.hitRegions=[];
+    state.profile.zones.forEach(z=>drawZone(ctx,z,state.view));
+    const draggingId=state.pointer?.mode==='crate'&&state.pointer.moved?state.pointer.id:null;
+    const placed=state.crates.filter(c=>state.placements[c.id]&&c.id!==draggingId).sort((a,b)=>crateDepth(a,state.placements[a.id])-crateDepth(b,state.placements[b.id]));
+    placed.forEach(crate=>drawCrate(ctx,crate,state.placements[crate.id],crate.id===state.selectedId));
+    if(state.preview?.placement&&state.preview?.crate)drawPlacementGuide(ctx,state.preview.crate,state.preview.placement,state.preview.valid!==false);
+    if(state.dragVisual?.placement&&state.dragVisual?.crate)drawCrate(ctx,state.dragVisual.crate,state.dragVisual.placement,true,.96,false);
+    state.hitRegions.sort((a,b)=>(b.depth-a.depth)||((a.area||0)-(b.area||0)));
+    ctx.save();ctx.fillStyle='rgba(37,50,59,.7)';ctx.font=`800 ${12*m.dpr}px 'Share Tech Mono',monospace`;ctx.textAlign='right';ctx.fillText(`${state.profile.label} · ${state.view.toUpperCase()} VIEW${state.view==='free'?` · YAW ${Math.round(state.camera.yaw*180/Math.PI)}° · PITCH ${Math.round(state.camera.pitch*180/Math.PI)}°`:''}`,m.width-18*m.dpr,24*m.dpr);ctx.restore();
+  }
+
+  function renderManifest(){
+    const root=$('cg-contracts'),legend=$('cg-legend');if(!root||!legend)return;
+    if(!state.contracts.length){root.innerHTML='<div class="cargo-empty">No contracts transferred.</div>';legend.innerHTML='';return;}
+    root.innerHTML=state.contracts.map((contract,ci)=>{
+      const allocations=state.allocations.filter(a=>a.contractIndex===ci);
+      const crates=state.crates.filter(c=>c.contractIndex===ci);
+      const placed=crates.filter(c=>state.placements[c.id]).reduce((s,c)=>s+c.scu,0);
+      const total=crates.reduce((s,c)=>s+c.scu,0);
+      return `<article class="cg-contract-card" style="--contract-color:${contract.color}" data-contract-index="${ci}">
+        <div class="cg-contract-head"><i class="cg-contract-dot"></i><div><strong>${esc(contract.title)}</strong><span>${esc(contract.origin.name)} · ${esc(contract.commodity.name)}</span></div><div class="cg-contract-meta"><b>${fmt(placed)} / ${fmt(total)} SCU</b><button class="cg-delete-contract" data-cg-delete-contract="${ci}" type="button">Remove</button></div></div>
+        ${allocations.map(a=>{const ac=state.crates.filter(c=>c.allocationId===a.id),mix=ac.reduce((m,c)=>(m[c.scu]=(m[c.scu]||0)+1,m),{});return `<div class="cg-allocation"><div class="cg-allocation-title"><span>Stop ${a.stopIndex} · <b>${esc(a.destination)}</b></span><span>${fmt(a.scu)} SCU</span></div><div class="cg-allocation-mix">${Object.entries(mix).sort((x,y)=>Number(y[0])-Number(x[0])).map(([size,count])=>`${count}×${size}`).join(' · ')}</div><div class="cg-crate-pool">${ac.map(c=>`<button class="cg-crate-chip ${state.placements[c.id]?'placed':''} ${state.selectedId===c.id?'selected':''}" style="--contract-color:${c.color}" draggable="true" data-crate-id="${esc(c.id)}" type="button"><i></i>${c.scu} SCU</button>`).join('')}</div></div>`}).join('')}
+      </article>`;
+    }).join('');
+    legend.innerHTML=state.contracts.map((c,i)=>{
+      const dests=c.dests.map(d=>d.name).join(' · ');return `<div class="cg-legend-row" style="--contract-color:${c.color}"><i></i><div><strong>C${i+1} · ${esc(c.title)}</strong><span>${esc(c.commodity.name)} · ${esc(dests)}</span></div></div>`;
+    }).join('');
+  }
+
+  function renderSummary(){
+    const total=state.crates.reduce((s,c)=>s+c.scu,0),placed=state.crates.filter(c=>state.placements[c.id]),placedScu=placed.reduce((s,c)=>s+c.scu,0),unplaced=state.crates.length-placed.length,free=Math.max(0,state.ship.capacity-placedScu);
+    if($('cg-ship-name'))$('cg-ship-name').textContent=state.ship.name||'Cargo ship';
+    if($('cg-profile-label'))$('cg-profile-label').textContent=`${state.profile?.label||'Cargo grid'} · ${state.profile?.zones.length||0} bay${state.profile?.zones.length===1?'':'s'}`;
+    if($('cg-load-total'))$('cg-load-total').textContent=`${fmt(total)} / ${fmt(state.ship.capacity)} SCU`;
+    if($('cg-load-state'))$('cg-load-state').textContent=total>state.ship.capacity?'Manifest exceeds listed capacity':unplaced?`${unplaced} crate${unplaced===1?'':'s'} still unplaced`:'All cargo assigned to the grid';
+    if($('cg-placed-count'))$('cg-placed-count').textContent=`${placed.length} placed`;
+    if($('cg-unplaced-count'))$('cg-unplaced-count').textContent=`${unplaced} unplaced`;
+    if($('cg-free-scu'))$('cg-free-scu').textContent=`${fmt(free)} SCU free`;
+    if($('cg-placement-status'))$('cg-placement-status').textContent=state.status||`${placedScu} SCU placed. Later stops should remain deeper than the next hand-in cargo.`;
+    const route=$('cg-route-context');if(route)route.innerHTML=`<strong>${esc(state.payload?.start||'Start')}</strong> · ${state.payload?.routeOrder?.length?state.payload.routeOrder.map((r,i)=>`${i+1}. ${esc(r)}`).join(' → '):'Route order unavailable'}`;
+    const selected=state.crates.find(c=>c.id===state.selectedId),card=$('cg-selection-card');
+    if(card){
+      if(!selected){card.hidden=true;}else{const p=state.placements[selected.id];card.hidden=false;card.innerHTML=`<strong>${selected.scu} SCU · Contract ${selected.contractIndex+1}</strong><span><b>${esc(selected.commodity)}</b><br>${esc(selected.destination)} · route stop ${selected.stopIndex}<br>${p?`${esc(state.profile.zones.find(z=>z.id===p.zone)?.label||p.zone)} · X${p.x+1} Y${p.y+1} Z${p.z+1}`:'Unplaced crate'}</span>`;}
+    }
+    document.querySelectorAll('[data-cg-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.cgView===state.view));
+    const help=$('cg-canvas-help');if(help)help.textContent=state.view==='free'?'Drag crates to move · drag empty space to orbit · Shift-drag or middle-drag to pan · wheel to zoom':['iso','top'].includes(state.view)?'Drag crates to move them · drag empty space to pan · wheel to zoom':'Side/front views are inspection views · use Isometric, Free look, or Top to move crates';
+    const readout=$('cg-camera-readout');if(readout){readout.hidden=state.view!=='free';readout.textContent=`Free look · yaw ${Math.round(state.camera.yaw*180/Math.PI)}° · pitch ${Math.round(state.camera.pitch*180/Math.PI)}°`; }
+  }
+
+  function renderAll(){renderManifest();renderSummary();renderCanvas();}
+
+  function loadPayload(payload){
+    state.payload=deepCopy(payload||{});
+    state.ship={name:payload?.ship?.name||'Cargo ship',capacity:Math.max(0,Number(payload?.ship?.capacity)||0)};
+    state.contracts=deepCopy(payload?.contracts||[]);
+    state.allocations=createAllocations(state.contracts,payload?.routeOrder||[]);
+    state.crates=splitCrates(state.allocations);
+    state.profile=shipProfile(state.ship);
+    state.placements={};state.selectedId=null;state.history=[];state.future=[];state.zoom=1;state.pan={x:0,y:0};state.camera={yaw:Math.PI/4,pitch:35*Math.PI/180};state.view='iso';state.preview=null;state.dragVisual=null;state.pointer=null;state.status='';
+    $('cg-empty-state').hidden=state.contracts.length>0;
+    $('cg-workspace').hidden=!state.contracts.length;
+    if(state.contracts.length){
+      if(!restoreLocal())autoPack(false);else{state.status='Restored the saved loading arrangement for this manifest.';renderAll();}
+    }else renderAll();
+  }
+
+
+  function optionCapacity(option){
+    const match=String(option?.textContent||'').match(/([0-9][0-9,]*)\s*SCU/i);
+    return Number(String(match?.[1]||'0').replace(/,/g,''))||0;
+  }
+
+  function optionShipName(option){
+    const text=String(option?.textContent||'').replace(/\s+/g,' ').trim();
+    const label=text.replace(/\s*(?:·|\||—|-)\s*[0-9][0-9,]*\s*SCU.*$/i,'').trim();
+    const value=String(option?.value||'').trim();
+    return value&&!/^(none|select|custom)$/i.test(value)?value:(label||'Cargo ship');
+  }
+
+  function manualRowTemplate(row={}){
+    const mix=normalizeCrateMix(row.crateMix);
+    const contractKey=esc(row.contractKey||`manual-${Date.now()}-${Math.random().toString(36).slice(2,8)}`);
+    return `<div class="cg-manual-row" data-cg-manual-row data-contract-key="${contractKey}" data-origin="${esc(row.origin||'')}">
+      <div class="cg-manual-row-main">
+        <label class="cg-manual-field"><span>Contract / load group</span><input data-cg-manual-field="title" maxlength="70" value="${esc(row.title||'Manual cargo')}" placeholder="Contract or load group"></label>
+        <label class="cg-manual-field"><span>Commodity</span><input data-cg-manual-field="commodity" maxlength="60" value="${esc(row.commodity||'')}" placeholder="e.g. Titanium"></label>
+        <label class="cg-manual-field"><span>Delivery location</span><input data-cg-manual-field="destination" maxlength="80" value="${esc(row.destination||'')}" placeholder="Delivery terminal"></label>
+        <label class="cg-manual-field"><span>Total SCU</span><input data-cg-manual-field="scu" type="number" min="1" step="1" value="${Math.max(1,Number(row.scu)||1)}"></label>
+        <button class="cg-manual-remove" data-cg-manual-remove type="button" aria-label="Remove cargo line">×</button>
+      </div>
+      <div class="cg-crate-mix-editor">
+        <div class="cg-crate-mix-copy"><strong>Exact container mix</strong><span>Leave every count at 0 for automatic splitting, or enter the exact number of each container size.</span></div>
+        <div class="cg-crate-mix-inputs">${BOX_SIZES.map(size=>`<label><span>${size} SCU</span><input data-cg-mix-size="${size}" type="number" min="0" step="1" value="${mix[size]||0}"></label>`).join('')}</div>
+        <div class="cg-crate-mix-status" data-cg-mix-status></div>
+      </div>
+    </div>`;
+  }
+
+  function ensureManualSetup(){
+    if($('cg-manual-overlay'))return;
+    const overlay=document.createElement('div');
+    overlay.id='cg-manual-overlay';overlay.className='cg-manual-overlay';overlay.hidden=true;
+    overlay.innerHTML=`<section class="cg-manual-card" role="dialog" aria-modal="true" aria-labelledby="cg-manual-title">
+      <header class="cg-manual-head"><div><span>Standalone cargo planning</span><h2 id="cg-manual-title">Build a manual cargo manifest</h2><p>Select the ship, add or remove cargo groups, and define the exact 32, 24, 16, 8, 4, 2, and 1 SCU container counts for each delivery when the in-game contract uses a mixed crate stack.</p></div><button class="cg-manual-close" id="cg-manual-close" type="button" aria-label="Close manual manifest">×</button></header>
+      <div class="cg-manual-ship-grid">
+        <label class="cg-manual-field"><span>Ship / vehicle</span><select id="cg-manual-ship"></select></label>
+        <label class="cg-manual-field"><span>Usable capacity</span><input id="cg-manual-capacity" type="number" min="1" step="1" value="1"></label>
+        <label class="cg-manual-field"><span>Starting location (optional)</span><input id="cg-manual-start" maxlength="90" placeholder="e.g. New Babbage"></label>
+      </div>
+      <div class="cg-manual-body"><div class="cg-manual-body-head"><div><h3>Cargo groups</h3><p>Each new cargo line receives its own contract color. Existing multi-delivery contracts remain grouped when you edit them.</p></div><button class="cargo-btn" id="cg-manual-add-row" type="button">＋ Add cargo line</button></div><div class="cg-manual-rows" id="cg-manual-rows"></div></div>
+      <footer class="cg-manual-actions"><div class="cg-manual-status" id="cg-manual-status"></div><div><button class="cargo-btn" id="cg-manual-cancel" type="button">Cancel</button><button class="cargo-btn primary" id="cg-manual-build" type="button">Build cargo grid</button></div></footer>
+    </section>`;
+    document.body.appendChild(overlay);
+  }
+
+  function manualDraftFromPayload(){
+    if(!state.payload||!state.contracts.length)return null;
+    const rows=[];
+    state.contracts.forEach((contract,ci)=>(contract.dests||[]).forEach(dest=>rows.push({contractKey:`contract-${ci}`,origin:contract.origin?.name||state.payload.start||'',title:contract.title||'Manual cargo',commodity:contract.commodity?.name||'Cargo',destination:dest.name||dest.id||'',scu:dest.scu||1,crateMix:normalizeCrateMix(dest.crateMix||contract.crateMix)})));
+    return {shipName:state.ship.name,capacity:state.ship.capacity,start:state.payload.start||'',rows};
+  }
+
+  function storedManualDraft(){
+    try{return JSON.parse(localStorage.getItem(MANUAL_DRAFT_KEY)||'null');}catch(_){return null;}
+  }
+
+  function syncManualShipOptions(draft={}){
+    const source=$('cargo-ship-select'),target=$('cg-manual-ship');if(!target)return;
+    if(source?.options?.length)target.innerHTML=source.innerHTML;
+    if(!target.options.length)target.innerHTML='<option value="Cargo ship">Cargo ship · 1 SCU</option>';
+    const wanted=clean(draft.shipName||state.ship.name||source?.value||'');
+    const match=[...target.options].find(option=>clean(option.value)===wanted||clean(optionShipName(option))===wanted||clean(option.textContent).startsWith(wanted));
+    if(match)target.value=match.value;
+    const capacity=Number(draft.capacity)||optionCapacity(target.selectedOptions?.[0])||shipCapacityFromSelect()||1;
+    if($('cg-manual-capacity'))$('cg-manual-capacity').value=String(capacity);
+  }
+
+  function renderManualRows(rows){
+    const root=$('cg-manual-rows');if(!root)return;
+    const list=Array.isArray(rows)&&rows.length?rows:[{contractKey:`manual-${Date.now()}`,title:'Manual cargo',commodity:'',destination:'',scu:1,crateMix:{}}];
+    root.innerHTML=list.map(manualRowTemplate).join('');
+    root.querySelectorAll('[data-cg-manual-row]').forEach(updateManualMixStatus);
+  }
+
+  function openManualSetup(){
+    ensureManualSetup();
+    const draft=manualDraftFromPayload()||storedManualDraft()||{shipName:$('cargo-ship-select')?.value||'',capacity:shipCapacityFromSelect()||1,start:($('cargo-start-location')?.selectedOptions?.[0]?.textContent||$('cargo-start-location')?.value||'').split(' · ')[0],rows:[]};
+    syncManualShipOptions(draft);
+    if($('cg-manual-start'))$('cg-manual-start').value=draft.start||'';
+    renderManualRows(draft.rows||[]);
+    if($('cg-manual-status'))$('cg-manual-status').textContent='';
+    $('cg-manual-overlay').hidden=false;
+    document.body.classList.add('cg-manual-open');
+  }
+
+  function closeManualSetup(){
+    const overlay=$('cg-manual-overlay');
+    if(overlay)overlay.hidden=true;
+    document.body.classList.remove('cg-manual-open');
+  }
+
+  function collectManualDraft(){
+    const shipSelect=$('cg-manual-ship'),option=shipSelect?.selectedOptions?.[0];
+    const rows=[...document.querySelectorAll('[data-cg-manual-row]')].map((row,index)=>({
+      contractKey:row.dataset.contractKey||`manual-${index+1}`,
+      origin:row.dataset.origin||'',
+      title:row.querySelector('[data-cg-manual-field="title"]')?.value.trim()||`Manual cargo ${index+1}`,
+      commodity:row.querySelector('[data-cg-manual-field="commodity"]')?.value.trim()||'Cargo',
+      destination:row.querySelector('[data-cg-manual-field="destination"]')?.value.trim()||'',
+      scu:Math.max(0,Math.round(Number(row.querySelector('[data-cg-manual-field="scu"]')?.value)||0)),
+      crateSize:0,
+      crateMix:normalizeCrateMix(Object.fromEntries([...row.querySelectorAll('[data-cg-mix-size]')].map(input=>[input.dataset.cgMixSize,Math.max(0,Math.round(Number(input.value)||0))])))
+    }));
+    return {shipName:optionShipName(option),capacity:Math.max(0,Math.round(Number($('cg-manual-capacity')?.value)||0)),start:$('cg-manual-start')?.value.trim()||'Manual loading plan',rows};
+  }
+
+  function buildManualManifest(){
+    const draft=collectManualDraft(),status=$('cg-manual-status');
+    const rows=draft.rows.filter(row=>row.destination&&row.scu>0);
+    if(!draft.shipName||draft.capacity<1){if(status)status.textContent='Choose a ship and enter a usable cargo capacity.';return;}
+    if(!rows.length){if(status)status.textContent='Add at least one cargo line with a delivery location and an SCU amount.';return;}
+    const mismatch=rows.find(row=>crateMixScu(row.crateMix)>0&&crateMixScu(row.crateMix)!==row.scu);
+    if(mismatch){if(status)status.textContent=`${mismatch.title}: the exact crate mix equals ${crateMixScu(mismatch.crateMix)} SCU, but Total SCU is ${mismatch.scu}. Make both totals match or set every crate count to 0 for automatic splitting.`;return;}
+    const grouped=new Map();
+    rows.forEach((row,index)=>{
+      const key=row.contractKey||`${clean(row.title)}|${clean(row.origin||draft.start)}|${clean(row.commodity)}`;
+      if(!grouped.has(key))grouped.set(key,{index:grouped.size,title:row.title,origin:{id:row.origin||draft.start,name:row.origin||draft.start},commodity:{id:row.commodity,name:row.commodity},payout:0,dests:[]});
+      grouped.get(key).dests.push({id:row.destination,name:row.destination,scu:row.scu,crateSize:0,crateMix:normalizeCrateMix(row.crateMix)});
+    });
+    const contracts=[...grouped.values()];
+    const routeOrder=[];rows.forEach(row=>{if(!routeOrder.some(value=>clean(value)===clean(row.destination)))routeOrder.push(row.destination);});
+    const payload={source:'manual',manual:true,ship:{name:draft.shipName,capacity:draft.capacity},contracts,routeOrder,start:draft.start,createdAt:new Date().toISOString()};
+    try{localStorage.setItem(MANUAL_DRAFT_KEY,JSON.stringify({...draft,rows}));}catch(_){}
+    window.NEXUS_CARGO_GRID_HANDOFF=null;
+    loadPayload(payload);
+    state.status=`Manifest loaded: ${rows.reduce((sum,row)=>sum+row.scu,0)} SCU across ${contracts.length} contract${contracts.length===1?'':'s'} and ${rows.length} delivery group${rows.length===1?'':'s'}.`;
+    renderAll();closeManualSetup();
+  }
+
+  function updateManualMixStatus(row){
+    if(!row)return;
+    const total=Math.max(0,Math.round(Number(row.querySelector('[data-cg-manual-field="scu"]')?.value)||0));
+    const mix=normalizeCrateMix(Object.fromEntries([...row.querySelectorAll('[data-cg-mix-size]')].map(input=>[input.dataset.cgMixSize,input.value]))),mixTotal=crateMixScu(mix),status=row.querySelector('[data-cg-mix-status]');
+    row.classList.toggle('mix-mismatch',mixTotal>0&&mixTotal!==total);
+    if(status)status.textContent=mixTotal===0?'Automatic split will be used.':mixTotal===total?`Exact mix confirmed · ${crateMixLabel(mix)} = ${mixTotal} SCU`:`Exact mix totals ${mixTotal} SCU · ${Math.abs(total-mixTotal)} SCU ${mixTotal<total?'still needed':'over'}`;
+  }
+
+  function removeContract(index){
+    index=Number(index);if(!Number.isInteger(index)||index<0||index>=state.contracts.length)return;
+    const removed=state.contracts[index];
+    state.contracts.splice(index,1);
+    state.payload={...(state.payload||{}),contracts:deepCopy(state.contracts)};
+    const destinations=uniqueDestinations(state.contracts),oldRoute=Array.isArray(state.payload.routeOrder)?state.payload.routeOrder:[];
+    const route=oldRoute.filter(stop=>destinations.some(dest=>clean(dest)===clean(stop)||clean(dest).includes(clean(stop))||clean(stop).includes(clean(dest))));
+    destinations.forEach(dest=>{if(!route.some(stop=>clean(stop)===clean(dest)))route.push(dest);});
+    state.payload.routeOrder=route;
+    state.allocations=createAllocations(state.contracts,route);
+    state.crates=splitCrates(state.allocations);
+    state.placements={};state.selectedId=null;state.history=[];state.future=[];
+    $('cg-empty-state').hidden=state.contracts.length>0;$('cg-workspace').hidden=!state.contracts.length;
+    state.status=`Removed ${removed?.title||'contract'} from the cargo-grid manifest.`;
+    if(state.contracts.length)autoPack(false);else renderAll();
+    saveLocal();
+  }
+
+  function resetCamera(){state.camera={yaw:Math.PI/4,pitch:35*Math.PI/180};state.pan={x:0,y:0};state.zoom=1;state.status='Camera returned to the default free-look angle.';renderAll();saveLocal();}
+
+  function selectCrate(id){state.selectedId=id;renderAll();}
+
+  function placeCrateAtPoint(crateId,clientX,clientY){
+    const canvas=$('cg-canvas'),rect=canvas?.getBoundingClientRect();if(!canvas||!rect||!state.transform)return false;
+    if(!['iso','free','top'].includes(state.view)){state.status='Switch to Isometric, Free look, or Top view to place crates.';renderSummary();return false;}
+    const dpr=canvas.width/rect.width;const floor=inverseFloor((clientX-rect.left)*dpr,(clientY-rect.top)*dpr);if(!floor)return false;
+    const crate=state.crates.find(c=>c.id===crateId);if(!crate)return false;
+    const zoneDef=nearestZoneForWorld(floor.x,floor.y);if(!zoneDef)return false;
+    const p=findNearestPlacement(crate,zoneDef,floor.x-zoneDef.x,floor.y-zoneDef.y,state.placements[crateId]?.rotated||crate.rotated||false,state.placements,5);
+    if(p){pushHistory();state.placements[crate.id]=p;state.selectedId=crate.id;state.status=`Placed ${crate.scu} SCU for ${crate.destination}.`;renderAll();saveLocal();return true;}
+    state.status='That crate does not fit near the selected grid position.';renderSummary();return false;
+  }
+
+  function rotateSelected(){
+    const crate=state.crates.find(c=>c.id===state.selectedId);if(!crate)return;
+    const current=state.placements[crate.id],blockers=blockingCratesAbove(crate.id);
+    if(current&&blockers.length){state.status=`Move the ${blockers.length} crate${blockers.length===1?'':'s'} stacked above this container before rotating it.`;renderSummary();return;}
+    pushHistory();
+    if(current){const next={...current,rotated:!current.rotated};if(canPlace(crate,next,crate.id)){state.placements[crate.id]=next;state.status=`Rotated ${crate.scu} SCU crate.`;}else{state.history.pop();state.status='The crate cannot rotate in its current position.';}}
+    else{crate.rotated=!crate.rotated;state.status=`Rotation prepared for the unplaced ${crate.scu} SCU crate.`;}
+    renderAll();saveLocal();
+  }
+
+  function unplaceSelected(){
+    if(!state.selectedId||!state.placements[state.selectedId])return;
+    const blockers=blockingCratesAbove(state.selectedId);if(blockers.length){state.status=`Move the ${blockers.length} crate${blockers.length===1?'':'s'} stacked above this container first.`;renderSummary();return;}
+    pushHistory();delete state.placements[state.selectedId];state.status='Crate returned to the unplaced manifest.';renderAll();saveLocal();
+  }
+
+  function resetGrid(){pushHistory();state.placements={};state.status='Cargo grid cleared. Drag crates from the manifest or use Auto-pack.';renderAll();saveLocal();}
+
+  function canvasPoint(event){const canvas=$('cg-canvas'),rect=canvas.getBoundingClientRect(),dpr=canvas.width/rect.width;return {x:(event.clientX-rect.left)*dpr,y:(event.clientY-rect.top)*dpr,dpr};}
+  function pointSegmentDistance(point,a,b){const vx=b.x-a.x,vy=b.y-a.y,wx=point.x-a.x,wy=point.y-a.y,len=vx*vx+vy*vy||1,t=clamp((wx*vx+wy*vy)/len,0,1);return Math.hypot(point.x-(a.x+vx*t),point.y-(a.y+vy*t));}
+  function pointNearPoly(point,poly,tolerance){for(let i=0;i<poly.length;i++)if(pointSegmentDistance(point,poly[i],poly[(i+1)%poly.length])<=tolerance)return true;return false;}
+  function crateAtPoint(point){const tolerance=7*(point.dpr||1);return state.hitRegions.find(region=>pointInPoly(point,region.poly)||pointNearPoly(point,region.poly,tolerance))?.id||null;}
+
+  function pointerDown(event){
+    if(![0,1,2].includes(event.button))return;event.preventDefault();const point=canvasPoint(event),id=crateAtPoint(point),canvas=$('cg-canvas');canvas.setPointerCapture?.(event.pointerId);
+    state.preview=null;state.dragVisual=null;
+    if(id&&event.button===0){
+      const blockers=blockingCratesAbove(id);state.selectedId=id;
+      if(blockers.length){state.status=`This container supports ${blockers.length} crate${blockers.length===1?'':'s'}. Move the upper cargo first.`;renderAll();return;}
+      const crate=state.crates.find(c=>c.id===id),placement=state.placements[id],zoneDef=state.profile.zones.find(z=>z.id===placement?.zone),dims=crate&&placement?crateDims(crate,placement):[1,1,1];
+      const world=placement?inverseFloor(point.x,point.y,state.transform,placement.z+dims[2]):null;
+      const grab=world&&zoneDef?{x:clamp(world.x-(zoneDef.x+placement.x),0,dims[0]),y:clamp(world.y-(zoneDef.y+placement.y),0,dims[1])}:{x:dims[0]/2,y:dims[1]/2};
+      state.pointer={mode:'crate',id,start:point,last:point,original:deepCopy(placement),grab,moved:false,pointerId:event.pointerId};
+      canvas.classList.add('crate-dragging');
+    } else if(state.view==='free'&&event.button===0&&!event.shiftKey){
+      state.pointer={mode:'orbit',start:point,last:point,origin:{...state.camera},moved:false,pointerId:event.pointerId};
+    } else state.pointer={mode:'pan',start:point,last:point,origin:{...state.pan},moved:false,pointerId:event.pointerId};
+    canvas.classList.add('dragging');renderAll();
+  }
+  function pointerMove(event){
+    const canvas=$('cg-canvas'),point=canvasPoint(event);
+    if(!state.pointer){canvas?.classList.toggle('crate-hover',!!crateAtPoint(point));return;}
+    event.preventDefault();const dx=point.x-state.pointer.start.x,dy=point.y-state.pointer.start.y;if(Math.hypot(dx,dy)>3)state.pointer.moved=true;
+    if(state.pointer.mode==='pan'){state.pan={x:state.pointer.origin.x+dx,y:state.pointer.origin.y+dy};renderCanvas();return;}
+    if(state.pointer.mode==='orbit'){state.camera={yaw:state.pointer.origin.yaw+dx*.006,pitch:clamp(state.pointer.origin.pitch-dy*.005,10*Math.PI/180,80*Math.PI/180)};renderAll();return;}
+    if(state.pointer.mode==='crate'&&state.pointer.moved&&['iso','free','top'].includes(state.view)){
+      const crate=state.crates.find(c=>c.id===state.pointer.id);if(!crate)return;
+      const original=state.pointer.original||{z:0,rotated:false},dims=crateDims(crate,original),floor=inverseFloor(point.x,point.y,state.transform,original.z+dims[2]);
+      if(!floor){state.preview=null;state.dragVisual=null;renderCanvas();return;}
+      const worldX=floor.x-state.pointer.grab.x,worldY=floor.y-state.pointer.grab.y,zoneDef=nearestZoneForWorld(worldX+dims[0]/2,worldY+dims[1]/2);
+      if(!zoneDef){state.preview=null;state.dragVisual=null;renderCanvas();return;}
+      const localX=worldX-zoneDef.x,localY=worldY-zoneDef.y,dragPlacements={...state.placements};delete dragPlacements[crate.id];
+      const target=findNearestPlacement(crate,zoneDef,localX,localY,original.rotated||false,dragPlacements,5);
+      const maxX=Math.max(0,zoneDef.w-dims[0]),maxY=Math.max(0,zoneDef.d-dims[1]);
+      const invalidPlacement={zone:zoneDef.id,x:clamp(Math.round(localX),0,maxX),y:clamp(Math.round(localY),0,maxY),z:0,rotated:original.rotated||false};
+      state.preview={crate,placement:target||invalidPlacement,valid:!!target};
+      state.dragVisual={crate,placement:{zone:zoneDef.id,x:clamp(localX,-dims[0]*.35,zoneDef.w-dims[0]*.65),y:clamp(localY,-dims[1]*.35,zoneDef.d-dims[1]*.65),z:(target?.z??original.z)+.38,rotated:original.rotated||false}};
+      state.status=target?'Release to place the crate on the highlighted cells.':'No collision-free supported position is available here.';
+      renderCanvas();
+    }
+  }
+  function pointerUp(event){
+    if(!state.pointer)return;const pointer=state.pointer;state.pointer=null;const canvas=$('cg-canvas');
+    try{if(canvas?.hasPointerCapture?.(pointer.pointerId))canvas.releasePointerCapture(pointer.pointerId);}catch(_){}
+    canvas?.classList.remove('dragging','crate-dragging');
+    if(pointer.mode==='crate'){
+      if(pointer.moved&&state.preview?.placement&&state.preview.valid!==false){pushHistory();state.placements[pointer.id]={...state.preview.placement};state.selectedId=pointer.id;state.status='Crate released into the nearest collision-free, fully supported grid position.';saveLocal();}
+      else if(pointer.moved){state.status='The crate returned to its original position because the drop area was blocked or unsupported.';}
+      else state.selectedId=pointer.id;
+    } else if(pointer.mode==='orbit'||pointer.mode==='pan') saveLocal();
+    state.preview=null;state.dragVisual=null;renderAll();
+  }
+
+  function manifestText(){
+    const lines=[`Celestial Nexus Cargo Grid Manager`,`Ship: ${state.ship.name} (${fmt(state.ship.capacity)} SCU)`,`Start: ${state.payload?.start||'Not listed'}`,`Route: ${(state.payload?.routeOrder||[]).join(' → ')||'Not listed'}`,''];
+    state.contracts.forEach((c,i)=>{lines.push(`C${i+1}: ${c.title}`,`  ${c.commodity.name} · ${c.dests.map(d=>`${d.scu} SCU to ${d.name}`).join(' · ')}`);const crates=state.crates.filter(x=>x.contractIndex===i);lines.push(`  Crates: ${crates.map(x=>`${x.scu} SCU`).join(', ')}`);});
+    return lines.join('\n');
+  }
+
+  async function copyManifest(){
+    const text=manifestText();try{await navigator.clipboard.writeText(text);state.status='Loading manifest copied.';}catch(_){const ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();state.status='Loading manifest copied.';}renderSummary();
+  }
+
+  function drawExportScene(ctx,x,y,w,h,view){
+    const old={view:state.view,zoom:state.zoom,pan:{...state.pan},camera:{...state.camera},transform:state.transform,hit:state.hitRegions};
+    state.view=view;state.zoom=1;state.pan={x:0,y:0};state.transform=buildTransform(w,h,view,36);state.transform.offsetX+=x;state.transform.offsetY+=y;state.hitRegions=[];
+    state.profile.zones.forEach(z=>drawZone(ctx,z,view));
+    const crates=state.crates.filter(c=>state.placements[c.id]).sort((a,b)=>crateDepth(a,state.placements[a.id],view)-crateDepth(b,state.placements[b.id],view));crates.forEach(c=>drawCrate(ctx,c,state.placements[c.id],false));
+    state.view=old.view;state.zoom=old.zoom;state.pan=old.pan;state.camera=old.camera;state.transform=old.transform;state.hitRegions=old.hit;
+  }
+
+  async function exportPng(){
+    const view=$('cg-export-view')?.value||'top';const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1120;const ctx=canvas.getContext('2d');
+    const bg=ctx.createLinearGradient(0,0,1800,1120);bg.addColorStop(0,'#061321');bg.addColorStop(1,'#030912');ctx.fillStyle=bg;ctx.fillRect(0,0,1800,1120);
+    const glow=ctx.createRadialGradient(1420,0,0,1420,0,780);glow.addColorStop(0,'rgba(245,158,11,.16)');glow.addColorStop(1,'rgba(245,158,11,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,1800,1120);
+    ctx.fillStyle='#fbbf24';ctx.font='900 15px "Share Tech Mono",monospace';ctx.fillText('CELESTIAL NEXUS · CARGO GRID MANAGER',54,48);
+    ctx.fillStyle='#fff';ctx.font='900 42px Inter,Arial';ctx.fillText(`${state.ship.name} loading plan`,54,100);
+    ctx.fillStyle='#8fa8ba';ctx.font='700 17px Inter,Arial';ctx.fillText(`${view.toUpperCase()} VIEW · ${fmt(state.crates.reduce((s,c)=>s+c.scu,0))} / ${fmt(state.ship.capacity)} SCU · ${(state.payload?.routeOrder||[]).length} route stops`,54,136);
+    ctx.fillStyle='#d8e0e6';ctx.fillRect(44,170,1180,830);ctx.strokeStyle='rgba(255,255,255,.2)';ctx.strokeRect(44,170,1180,830);drawExportScene(ctx,64,190,1140,790,view);
+    ctx.fillStyle='rgba(6,17,29,.9)';ctx.fillRect(1250,170,506,830);ctx.strokeStyle='rgba(245,158,11,.28)';ctx.strokeRect(1250,170,506,830);
+    ctx.fillStyle='#fbbf24';ctx.font='900 13px "Share Tech Mono",monospace';ctx.fillText('CONTRACT LEGEND',1280,208);
+    let yy=242;state.contracts.forEach((c,i)=>{ctx.fillStyle=c.color;ctx.fillRect(1280,yy,14,14);ctx.fillStyle='#fff';ctx.font='800 16px Inter,Arial';const title=`C${i+1} · ${c.title}`;ctx.fillText(title.length>46?title.slice(0,43)+'…':title,1308,yy+13);yy+=26;ctx.fillStyle='#9db1bf';ctx.font='600 13px Inter,Arial';c.dests.forEach(d=>{ctx.fillText(`${fmt(d.scu)} SCU ${c.commodity.name} → ${d.name}`,1308,yy);yy+=20;});const sizes=state.crates.filter(x=>x.contractIndex===i).reduce((m,x)=>(m[x.scu]=(m[x.scu]||0)+1,m),{});ctx.fillStyle='#d4e2ea';ctx.fillText(`Crates: ${Object.entries(sizes).sort((a,b)=>b[0]-a[0]).map(([s,n])=>`${n}×${s}`).join(' · ')}`,1308,yy);yy+=34;});
+    ctx.fillStyle='#fbbf24';ctx.font='900 13px "Share Tech Mono",monospace';ctx.fillText('ROUTE ORDER',1280,Math.min(yy+12,900));let ry=Math.min(yy+42,930);ctx.fillStyle='#c5d6e0';ctx.font='700 13px Inter,Arial';(state.payload?.routeOrder||[]).slice(0,8).forEach((r,i)=>{ctx.fillText(`${i+1}. ${r}`,1308,ry);ry+=22;});
+    ctx.fillStyle='#6f8798';ctx.font='700 12px Inter,Arial';ctx.fillText(`Generated ${new Date().toLocaleString()} · Cargo-grid layouts are planning schematics.`,54,1060);ctx.textAlign='right';ctx.fillText('Created by Elusyon',1746,1060);
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',.96));if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`cargo-grid-${clean(state.ship.name).replace(/ /g,'-')}-${view}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),800);state.status=`Exported ${view} cargo loading board.`;renderSummary();
+  }
+
+  function updateRoutingPrompt(){
+    const body=document.querySelector('#cargo-routing-view .cargo-output-panel .cargo-panel-body');if(!body)return;
+    let prompt=$('cg-routing-prompt');if(!prompt){prompt=document.createElement('div');prompt.id='cg-routing-prompt';prompt.className='cg-routing-prompt';body.prepend(prompt);}
+    const payload=buildRoutePayload(),dests=uniqueDestinations(payload.contracts),total=payload.contracts.reduce((s,c)=>s+c.dests.reduce((a,d)=>a+d.scu,0),0);
+    if(!payload.contracts.length){prompt.hidden=true;return;}prompt.hidden=false;prompt.classList.toggle('is-multi',dests.length>1);
+    prompt.innerHTML=`<div><strong>${dests.length>1?`${dests.length} delivery locations detected — organize the cargo before departure`:'Cargo-grid planning is available for this route'}</strong><span>${fmt(total)} SCU across ${payload.contracts.length} contract${payload.contracts.length===1?'':'s'}${dests.length>1?`. Color-code and position crates so each hand-in remains easy to identify.`:'. Build a visual loading board for the selected ship.'}</span></div><button class="cargo-btn primary" id="cg-open-from-route" type="button">Open Cargo Grid Manager</button>`;
+  }
+
+  function openFromRoute(){
+    const payload=buildRoutePayload();window.NEXUS_CARGO_GRID_HANDOFF=payload;loadPayload(payload);showAppView('cargo-grid-view');
+  }
+
+  function injectHubCard(){
+    if(document.querySelector('[data-view="cargo-grid-view"]'))return;
+    const after=document.querySelector('[data-view="cargo-routing-view"]');if(!after)return;
+    const card=document.createElement('button');card.className='hub-rb-module-card';card.type='button';card.dataset.category='logistics operations';card.dataset.view='cargo-grid-view';card.dataset.code='Logistics · NX-07-2';card.dataset.title='Cargo Grid Manager';card.dataset.description='Arrange contract crates on an interactive ship cargo-grid schematic.';card.dataset.image='./assets/images/modules/argo-raft-cargo-grid-manager.webp';card.dataset.remoteImage='./assets/images/modules/argo-raft-cargo-grid-manager.webp';card.dataset.fallbackImage='./assets/images/modules/argo-raft-cargo-grid-manager.webp';card.onclick=()=>{if(typeof window.hubRebrandPreview==='function')window.hubRebrandPreview(card);};
+    card.style.cssText="--hub-module-image:url('./assets/images/modules/argo-raft-cargo-grid-manager.webp');--hub-module-remote:url('./assets/images/modules/argo-raft-cargo-grid-manager.webp');--hub-module-fallback:url('./assets/images/modules/argo-raft-cargo-grid-manager.webp')";
+    card.innerHTML='<span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-07-2</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Cargo Grid Manager</strong><span class="hub-rb-module-copy">Interactive cargo-grid loading plans, contract colors, crate placement, and image export.</span>';
+    after.insertAdjacentElement('afterend',card);
+  }
+
+  const workflow={step:1,dismissed:false};
+  function hasRoutingContracts(){return buildRoutePayload().contracts.length>0;}
+  function ensureWorkflow(){
+    if($('cg-workflow-overlay'))return;
+    const overlay=document.createElement('div');overlay.id='cg-workflow-overlay';overlay.className='cg-workflow-overlay';overlay.hidden=true;overlay.innerHTML=`<div class="cg-workflow-card" role="dialog" aria-modal="true" aria-labelledby="cg-workflow-title"><div class="cg-workflow-head"><span>Guided cargo workflow</span><h2 id="cg-workflow-title">Plan the run in the right order</h2><p>Starting point and ship affect the route and whether the complete cargo stack fits in one load.</p></div><div class="cg-workflow-steps"><i class="active"></i><i></i><i></i></div><div class="cg-workflow-body"><section class="cg-workflow-stage" data-step="1"><h3>1. Where are you starting?</h3><p>The route optimizer begins from this location.</p><select id="cg-workflow-start"></select></section><section class="cg-workflow-stage" data-step="2" hidden><h3>2. Which ship are you using?</h3><p>The selected cargo capacity follows the contracts into Cargo Grid Manager.</p><select id="cg-workflow-ship"></select></section><section class="cg-workflow-stage" data-step="3" hidden><h3>3. Add your cargo contracts</h3><p>The setup is ready. Continue to the Contract Finder catalog, add every accepted contract, and review the optimized route.</p><div class="cg-routing-prompt is-multi"><div><strong>Contract selection is the next step</strong><span>After the route is calculated, Cargo Grid Manager will appear when multiple delivery locations need a loading plan.</span></div></div></section></div><div class="cg-workflow-actions"><button class="cargo-btn" id="cg-workflow-cancel" type="button">Close</button><div><button class="cargo-btn" id="cg-workflow-back" type="button">Back</button><button class="cargo-btn primary" id="cg-workflow-next" type="button">Next</button></div></div></div>`;
+    document.body.appendChild(overlay);
+  }
+  function syncWorkflowOptions(){
+    ensureWorkflow();const start=$('cg-workflow-start'),ship=$('cg-workflow-ship'),sourceStart=$('cargo-start-location'),sourceShip=$('cargo-ship-select');
+    if(start&&sourceStart){start.innerHTML=sourceStart.innerHTML;start.value=sourceStart.value;}
+    if(ship&&sourceShip){ship.innerHTML=sourceShip.innerHTML;ship.value=sourceShip.value;}
+  }
+  function renderWorkflow(){
+    const overlay=$('cg-workflow-overlay');if(!overlay)return;overlay.querySelectorAll('.cg-workflow-stage').forEach(s=>s.hidden=Number(s.dataset.step)!==workflow.step);overlay.querySelectorAll('.cg-workflow-steps i').forEach((i,index)=>i.classList.toggle('active',index<workflow.step));$('cg-workflow-back').style.visibility=workflow.step===1?'hidden':'visible';$('cg-workflow-next').textContent=workflow.step===3?'Open contract selection':'Next';
+  }
+  function openWorkflow(force=false){
+    if(hasRoutingContracts()&&!force){closeWorkflow();return;}
+    if(workflow.dismissed&&!force)return;
+    syncWorkflowOptions();workflow.step=1;const overlay=$('cg-workflow-overlay');if(overlay){overlay.hidden=false;renderWorkflow();}
+  }
+  function closeWorkflow(){const overlay=$('cg-workflow-overlay');if(overlay)overlay.hidden=true;}
+  function enterRoutingWorkflow(){ updateRoutingPrompt(); closeWorkflow(); }
+  function leaveRoutingWorkflow(){workflow.dismissed=false;closeWorkflow();}
+  function nextWorkflow(){
+    if(workflow.step===1){const source=$('cargo-start-location'),value=$('cg-workflow-start')?.value;if(source&&value){source.value=value;source.dispatchEvent(new Event('change',{bubbles:true}));}workflow.step=2;renderWorkflow();return;}
+    if(workflow.step===2){const source=$('cargo-ship-select'),value=$('cg-workflow-ship')?.value;if(source&&value){source.value=value;source.dispatchEvent(new Event('change',{bubbles:true}));}workflow.step=3;renderWorkflow();return;}
+    workflow.dismissed=true;closeWorkflow();setTimeout(()=>document.querySelector('#cargo-mission-contract-select')?.scrollIntoView({behavior:'smooth',block:'center'}),100);
+  }
+
+  function bind(){
+    if(state.initialized)return;state.initialized=true;
+    injectHubCard();ensureManualSetup();
+    document.addEventListener('click',event=>{
+      if(event.target.closest('#cg-open-routing')||event.target.closest('#cg-return-routing')){showAppView('cargo-routing-view');return;}
+      if(event.target.closest('#cg-manual-setup')||event.target.closest('#cg-manual-empty')||event.target.closest('#cg-manual-hero')||event.target.closest('#cg-manage-manifest')){openManualSetup();return;}
+      if(event.target.closest('#cg-manual-close')||event.target.closest('#cg-manual-cancel')){closeManualSetup();return;}
+      if(event.target.closest('#cg-manual-add-row')){const root=$('cg-manual-rows');if(root){root.insertAdjacentHTML('beforeend',manualRowTemplate({contractKey:`manual-${Date.now()}-${root.children.length+1}`,title:`Manual cargo ${root.children.length+1}`,scu:1,crateMix:{}}));updateManualMixStatus(root.lastElementChild);}return;}
+      const removeManual=event.target.closest('[data-cg-manual-remove]');if(removeManual){const row=removeManual.closest('[data-cg-manual-row]'),root=$('cg-manual-rows');row?.remove();if(root&&!root.children.length)renderManualRows([]);return;}
+      if(event.target.closest('#cg-manual-build')){buildManualManifest();return;}
+      if(event.target.closest('#cg-open-from-route')){openFromRoute();return;}
+      if(event.target.closest('#cg-open-routing')){showAppView('cargo-routing-view');return;}
+      if(event.target.closest('#cg-auto-pack')){autoPack();return;}
+      if(event.target.closest('#cg-rotate-crate')){rotateSelected();return;}
+      if(event.target.closest('#cg-unplace-crate')){unplaceSelected();return;}
+      if(event.target.closest('#cg-undo')){undo();return;}
+      if(event.target.closest('#cg-redo')){redo();return;}
+      if(event.target.closest('#cg-reset-camera')){resetCamera();return;}
+      if(event.target.closest('#cg-reset')){resetGrid();return;}
+      if(event.target.closest('#cg-export-png')){exportPng();return;}
+      if(event.target.closest('#cg-copy-manifest')){copyManifest();return;}
+      const viewBtn=event.target.closest('[data-cg-view]');if(viewBtn){state.view=viewBtn.dataset.cgView;state.pan={x:0,y:0};state.zoom=1;renderAll();saveLocal();return;}
+      const deleteContract=event.target.closest('[data-cg-delete-contract]');if(deleteContract){removeContract(deleteContract.dataset.cgDeleteContract);return;}
+      const chip=event.target.closest('.cg-crate-chip');if(chip){selectCrate(chip.dataset.crateId);return;}
+      if(event.target.closest('#cg-workflow-next')){nextWorkflow();return;}
+      if(event.target.closest('#cg-workflow-back')){workflow.step=Math.max(1,workflow.step-1);renderWorkflow();return;}
+      if(event.target.closest('#cg-workflow-cancel')){workflow.dismissed=true;closeWorkflow();return;}
+      if(event.target.closest('.cg-guided-setup-btn')){openWorkflow(true);return;}
+    });
+    document.addEventListener('change',event=>{if(event.target?.id==='cg-manual-ship'){const cap=optionCapacity(event.target.selectedOptions?.[0]);if(cap&&$('cg-manual-capacity'))$('cg-manual-capacity').value=String(cap);}const row=event.target?.closest?.('[data-cg-manual-row]');if(row&&(event.target.matches('[data-cg-mix-size]')||event.target.matches('[data-cg-manual-field="scu"]')))updateManualMixStatus(row);});
+    document.addEventListener('input',event=>{const row=event.target?.closest?.('[data-cg-manual-row]');if(row&&(event.target.matches('[data-cg-mix-size]')||event.target.matches('[data-cg-manual-field="scu"]')))updateManualMixStatus(row);});
+    document.addEventListener('dragstart',event=>{const chip=event.target.closest('.cg-crate-chip');if(!chip)return;event.dataTransfer.setData('text/nexus-crate',chip.dataset.crateId);event.dataTransfer.effectAllowed='move';});
+    const canvas=$('cg-canvas');
+    canvas?.addEventListener('pointerdown',pointerDown);canvas?.addEventListener('pointermove',pointerMove);canvas?.addEventListener('pointerup',pointerUp);canvas?.addEventListener('pointercancel',pointerUp);canvas?.addEventListener('lostpointercapture',event=>{if(state.pointer?.pointerId===event.pointerId)pointerUp(event);});canvas?.addEventListener('pointerleave',()=>{if(!state.pointer)canvas.classList.remove('crate-hover');});canvas?.addEventListener('contextmenu',event=>event.preventDefault());
+    canvas?.addEventListener('wheel',event=>{event.preventDefault();const old=state.zoom;state.zoom=clamp(state.zoom*(event.deltaY<0?1.1:.9),.45,3);if(old!==state.zoom){renderCanvas();saveLocal();}},{passive:false});
+    canvas?.addEventListener('dragover',event=>{event.preventDefault();event.dataTransfer.dropEffect='move';});
+    canvas?.addEventListener('drop',event=>{event.preventDefault();const id=event.dataTransfer.getData('text/nexus-crate');if(id)placeCrateAtPoint(id,event.clientX,event.clientY);});
+    window.addEventListener('resize',()=>{if(!$('cargo-grid-view')?.hidden)renderCanvas();});
+    const cargoView=$('cargo-routing-view');if(cargoView){const observer=new MutationObserver(()=>{clearTimeout(observer._t);observer._t=setTimeout(()=>{updateRoutingPrompt();if(hasRoutingContracts())closeWorkflow();},100);});observer.observe(cargoView,{childList:true,subtree:true,attributes:true,attributeFilter:['value']});cargoView.addEventListener('input',()=>setTimeout(updateRoutingPrompt,80),true);cargoView.addEventListener('change',()=>setTimeout(updateRoutingPrompt,80),true);}
+  }
+
+  const originalShow=window.showAppView;
+  if(typeof originalShow==='function'){
+    window.showAppView=function(viewId,options={}){
+      const result=originalShow.apply(this,arguments);
+      if(viewId==='cargo-grid-view'){
+        leaveRoutingWorkflow();
+        if(!options?.fromHash&&location.hash!=='#cargo-grid')history.replaceState({view:'cargo-grid-view'},'','#cargo-grid');
+        document.title='Celestial Nexus — Cargo Grid Manager';
+        setTimeout(()=>{if(window.NEXUS_CARGO_GRID_HANDOFF&&!state.payload)loadPayload(window.NEXUS_CARGO_GRID_HANDOFF);else if(!state.payload){const payload=buildRoutePayload();if(payload.contracts.length)loadPayload(payload);}renderCanvas();},40);
+      } else if(viewId==='cargo-routing-view') setTimeout(enterRoutingWorkflow,120);
+      else {leaveRoutingWorkflow();closeManualSetup();}
+      return result;
+    };
+  }
+
+  window.addEventListener('hashchange',()=>{if(location.hash==='#cargo-grid'&&!document.getElementById('cargo-grid-view')?.hidden)return;if(location.hash==='#cargo-grid')window.showAppView('cargo-grid-view',{fromHash:true,instant:true});});
+  window.addEventListener('nexus:viewchange',event=>{if(event.detail?.viewId==='cargo-grid-view'){if(window.NEXUS_CARGO_GRID_HANDOFF&&!state.payload)loadPayload(window.NEXUS_CARGO_GRID_HANDOFF);setTimeout(renderCanvas,30);}if(event.detail?.viewId==='cargo-routing-view')setTimeout(updateRoutingPrompt,120);});
+
+  window.nexusInitializeCargoGridManager=function(payload){bind();if(payload)loadPayload(payload);else if(window.NEXUS_CARGO_GRID_HANDOFF)loadPayload(window.NEXUS_CARGO_GRID_HANDOFF);else{const candidate=buildRoutePayload();if(candidate.contracts.length)loadPayload(candidate);}};
+  window.nexusCargoGridOpenFromRoute=openFromRoute;
+  window.nexusCargoGridOpenManual=openManualSetup;
+  window.nexusCargoGridHasRoutingContracts=hasRoutingContracts;
+  window.nexusCargoGridRemoveContract=removeContract;
+  window.NEXUS_CARGO_GRID_STATE=state;
+
+  function init(){bind();updateRoutingPrompt();if(location.hash==='#cargo-grid')window.showAppView('cargo-grid-view',{fromHash:true,instant:true});}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
+})();
+</script>
+
+
+<style id="nexus-v161-cargo-grid-manifest-camera-style">
+#cargo-grid-view #cg-manual-setup{display:none!important}
+html body #cargo-grid-view.app-view:not(#hub-view) .cargo-btn.primary{border-color:rgba(56,189,248,.62)!important;background:linear-gradient(135deg,rgba(14,165,233,.92),rgba(245,158,11,.72))!important;color:#fff!important;box-shadow:0 8px 20px rgba(14,165,233,.12)!important}
+html body #cargo-grid-view.app-view:not(#hub-view) .cargo-btn.primary:hover{filter:brightness(1.08)}
+.cg-manifest-command{display:grid;gap:7px;padding:12px 14px;border-bottom:1px solid rgba(56,189,248,.13);background:linear-gradient(90deg,rgba(14,116,144,.12),rgba(245,158,11,.07))}.cg-manifest-command .cargo-btn{width:100%;min-height:44px!important;font-size:13px!important}.cg-manifest-command span{color:#7f98aa;font-size:10.5px;line-height:1.45}
+.cg-contract-meta{display:grid;justify-items:end;gap:7px}.cg-delete-contract{padding:5px 7px;border:1px solid rgba(248,113,113,.32);border-radius:7px;background:rgba(127,29,29,.16);color:#fca5a5;font:800 9px 'Share Tech Mono',monospace;text-transform:uppercase;cursor:pointer}.cg-delete-contract:hover{background:rgba(127,29,29,.34);color:#fff}.cg-allocation-mix{margin-top:5px;color:#f6c868;font:800 9px 'Share Tech Mono',monospace;letter-spacing:.03em}
+.cg-camera-readout{position:absolute;left:14px;top:12px;z-index:2;padding:7px 9px;border:1px solid rgba(245,158,11,.28);border-radius:8px;background:rgba(3,10,18,.76);color:#f8d787;font:800 10px 'Share Tech Mono',monospace;pointer-events:none}.cg-camera-readout[hidden]{display:none!important}
+.cg-manual-card{width:min(1460px,calc(100vw - 24px));max-height:min(960px,calc(100vh - 24px))}.cg-manual-row{display:grid;grid-template-columns:1fr;gap:10px;padding:13px}.cg-manual-row-main{display:grid;grid-template-columns:minmax(180px,1.2fr) minmax(150px,1fr) minmax(190px,1.25fr) 105px 38px;gap:9px;align-items:end}.cg-crate-mix-editor{display:grid;grid-template-columns:minmax(190px,.8fr) minmax(520px,2fr) minmax(190px,.7fr);gap:12px;align-items:center;padding:10px 11px;border:1px solid rgba(245,158,11,.14);border-radius:10px;background:rgba(245,158,11,.035)}.cg-crate-mix-copy strong{display:block;color:#fff;font-size:11px}.cg-crate-mix-copy span{display:block;margin-top:3px;color:#8299aa;font-size:9.5px;line-height:1.35}.cg-crate-mix-inputs{display:grid;grid-template-columns:repeat(7,minmax(58px,1fr));gap:6px}.cg-crate-mix-inputs label{display:grid;gap:4px}.cg-crate-mix-inputs span{color:#93a9b9;font:800 9px 'Share Tech Mono',monospace;text-align:center}.cg-crate-mix-inputs input{width:100%;height:34px;padding:0 6px;border:1px solid rgba(56,189,248,.18);border-radius:8px;background:#061321;color:#fff;text-align:center;font:800 11px 'Share Tech Mono',monospace}.cg-crate-mix-status{color:#7dd3fc;font-size:9.5px;line-height:1.35}.cg-manual-row.mix-mismatch{border-color:rgba(248,113,113,.44);box-shadow:inset 0 0 0 1px rgba(248,113,113,.1)}.cg-manual-row.mix-mismatch .cg-crate-mix-status{color:#fca5a5}
+@media(max-width:1200px){.cg-manual-row-main{grid-template-columns:1fr 1fr 1fr 105px 38px}.cg-crate-mix-editor{grid-template-columns:1fr}.cg-crate-mix-inputs{grid-template-columns:repeat(7,minmax(52px,1fr))}}
+@media(max-width:760px){.cg-manual-row-main{grid-template-columns:1fr}.cg-crate-mix-inputs{grid-template-columns:repeat(4,1fr)}.cg-manual-remove{justify-self:start}.cg-view-switch{flex-wrap:wrap}}
+</style>
+<script id="nexus-v161-cargo-grid-manifest-camera-release">/* V162: larger logistics-image cargo banner and persistent manual-manifest entry points. */</script>
+
+<style id="nexus-v163-cargo-grid-physical-drag-style">
+#cargo-grid-view #cg-canvas.crate-hover{cursor:grab!important}
+#cargo-grid-view #cg-canvas.crate-dragging,#cargo-grid-view #cg-canvas.crate-dragging.dragging{cursor:grabbing!important}
+#cargo-grid-view .cg-selection-card{pointer-events:none}
+#cargo-grid-view .cg-canvas-wrap:has(#cg-canvas.crate-dragging) .cg-selection-card{border-color:rgba(56,189,248,.6);box-shadow:0 14px 36px rgba(2,132,199,.2)}
+</style>
+<script id="nexus-v163-cargo-grid-physical-drag-release">/* V163: pointer-attached crate dragging, full-face selection, supported stacking, and collision-aware snapping. */</script>
+
+<script id="nexus-v150-cargo-grid-manager-release">
+/* V163: Cargo Grid Manager with physical pointer-attached crate dragging and supported collision-aware placement. */
+</script>
+<script id="nexus-v151-cargo-grid-workflow-release">
+/* V160: persistent cargo readiness board and source-accurate contract manifests. */
+</script>
+
+
+<style id="nexus-v160-cargo-routing-readiness-style">
+#cargo-routing-view .cg-workflow-overlay,#cargo-routing-view~.cg-workflow-overlay,#cg-workflow-overlay{display:none!important}
+#cargo-routing-view .cargo-readiness-board{grid-area:readiness!important;grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:11px;border:1px solid rgba(56,189,248,.18);border-radius:12px;background:linear-gradient(90deg,rgba(8,47,73,.24),rgba(4,13,23,.76),rgba(120,53,15,.13));box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+#cargo-routing-view .cargo-readiness-title{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 2px 2px;color:#dff7ff;font-weight:900;font-size:13px}.cargo-readiness-title small{color:#7893a6;font:800 10px/1.2 "Share Tech Mono",monospace;letter-spacing:.08em;text-transform:uppercase}
+#cargo-routing-view .cargo-readiness-item{display:grid;grid-template-columns:26px minmax(0,1fr);gap:8px;align-items:center;min-height:52px;padding:8px 10px;border:1px solid rgba(148,163,184,.14);border-radius:9px;background:rgba(3,10,18,.52)}
+#cargo-routing-view .cargo-readiness-item i{display:grid;place-items:center;width:25px;height:25px;border-radius:50%;border:1px solid rgba(251,191,36,.38);background:rgba(120,53,15,.18);color:#fbbf24;font-style:normal;font-weight:1000}.cargo-readiness-item strong{display:block;color:#effaff;font-size:12px;line-height:1.2}.cargo-readiness-item span{display:block;margin-top:3px;color:#7893a6;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#cargo-routing-view .cargo-readiness-item.is-ready{border-color:rgba(45,212,191,.25);background:rgba(6,78,59,.13)}#cargo-routing-view .cargo-readiness-item.is-ready i{border-color:rgba(45,212,191,.5);background:rgba(13,148,136,.18);color:#5eead4}
+#cargo-routing-view .cargo-readiness-item.is-warning{border-color:rgba(251,191,36,.32)}
+
+#cargo-routing-view .cargo-toolbar-body{grid-template-areas:
+  "readiness readiness readiness readiness readiness readiness"
+  "catalog ship count start prep risk"
+  "mission mission mission build build build"
+  "state state state state state state"!important}
+@media(max-width:1320px){#cargo-routing-view .cargo-toolbar-body{grid-template-areas:"readiness readiness readiness" "catalog catalog ship" "start prep risk" "count mission mission" "build build build" "state state state"!important}}
+@media(max-width:920px){#cargo-routing-view .cargo-toolbar-body{grid-template-areas:"readiness readiness" "catalog catalog" "ship start" "count prep" "risk risk" "mission mission" "build build" "state state"!important}}
+@media(max-width:650px){#cargo-routing-view .cargo-toolbar-body{grid-template-areas:"readiness" "catalog" "ship" "start" "count" "prep" "risk" "mission" "build" "state"!important}}
+@media(max-width:1100px){#cargo-routing-view .cargo-readiness-board{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:620px){#cargo-routing-view .cargo-readiness-board{grid-template-columns:1fr}}
+</style>
+<script id="nexus-v160-cargo-routing-readiness-script">
+(()=>{
+  const $=id=>document.getElementById(id);
+  function optionText(select){const text=select?.selectedOptions?.[0]?.textContent||'';return text.replace(/\s*·\s*[^·]+$/,'').trim()||select?.value||'';}
+  function ensureBoard(){
+    const toolbar=document.querySelector('#cargo-routing-view .cargo-toolbar-body');if(!toolbar)return null;
+    let board=$('cargo-routing-readiness');if(board)return board;
+    board=document.createElement('section');board.id='cargo-routing-readiness';board.className='cargo-readiness-board';board.setAttribute('aria-label','Cargo route setup status');
+    board.innerHTML=`<div class="cargo-readiness-title"><span>Route setup status</span><small>Updates automatically</small></div>
+      <div class="cargo-readiness-item" data-ready="location"><i>1</i><div><strong>Current location</strong><span>Choose where you are now</span></div></div>
+      <div class="cargo-readiness-item" data-ready="ship"><i>2</i><div><strong>Selected ship</strong><span>Choose a cargo-capable vehicle</span></div></div>
+      <div class="cargo-readiness-item" data-ready="contracts"><i>3</i><div><strong>Accepted contracts</strong><span>Add contracts to the manifest</span></div></div>
+      <div class="cargo-readiness-item" data-ready="data"><i>4</i><div><strong>Manifest data</strong><span>Waiting for cargo and destinations</span></div></div>`;
+    toolbar.prepend(board);return board;
+  }
+  function setItem(key,ready,label,detail,warning=false){const item=document.querySelector(`#cargo-routing-readiness [data-ready="${key}"]`);if(!item)return;item.classList.toggle('is-ready',!!ready);item.classList.toggle('is-warning',!!warning&&!ready);item.querySelector('i').textContent=ready?'✓':({location:'1',ship:'2',contracts:'3',data:'4'}[key]||'•');item.querySelector('strong').textContent=label;item.querySelector('span').textContent=detail;}
+  function update(){
+    if(!ensureBoard())return;
+    const start=$('cargo-start-location'),ship=$('cargo-ship-select');
+    const cards=[...document.querySelectorAll('#cargo-contract-list .cargo-contract-card')];
+    const locationReady=!!start?.value;setItem('location',locationReady,'Current location',locationReady?optionText(start):'Choose where you are now');
+    const shipReady=!!ship?.value;setItem('ship',shipReady,'Selected ship',shipReady?(ship.selectedOptions?.[0]?.textContent||ship.value):'Choose a cargo-capable vehicle');
+    setItem('contracts',cards.length>0,'Accepted contracts',cards.length?`${cards.length} contract${cards.length===1?'':'s'} in the manifest`:'Add synced or manual contracts');
+    let cargo=0,issues=0,destinations=0;
+    cards.forEach(card=>{const origin=card.querySelector('[data-field="origin"]')?.value;if(!origin)issues++;const commodity=card.querySelector('[data-field="commodity"]')?.value;if(!commodity)issues++;const rows=[...card.querySelectorAll('.cargo-dest-row')];if(!rows.length)issues++;rows.forEach(row=>{const dest=row.querySelector('[data-field="destination"]')?.value,scu=Number(row.querySelector('[data-field="scu"]')?.value||0);if(!dest||scu<=0)issues++;else{cargo+=scu;destinations++;}});});
+    const complete=cards.length>0&&issues===0&&cargo>0;setItem('data',complete,'Manifest data',complete?`${Math.round(cargo).toLocaleString()} SCU across ${destinations} hand-in point${destinations===1?'':'s'}`:cards.length?`${issues} incomplete field${issues===1?'':'s'} remaining`:'Waiting for cargo and destinations',cards.length>0&&!complete);
+  }
+  function bind(){
+    document.getElementById('cg-workflow-overlay')?.remove();ensureBoard();update();
+    const view=$('cargo-routing-view');if(!view||view.dataset.readinessBound==='true')return;view.dataset.readinessBound='true';
+    view.addEventListener('input',()=>setTimeout(update,20),true);view.addEventListener('change',()=>setTimeout(update,20),true);view.addEventListener('click',()=>setTimeout(update,120),true);
+    const observer=new MutationObserver(()=>{document.getElementById('cg-workflow-overlay')?.remove();clearTimeout(observer._t);observer._t=setTimeout(update,40)});observer.observe(view,{childList:true,subtree:true});
+    window.nexusCargoUpdateReadiness=update;
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind,{once:true});else bind();
+})();
+</script>
+
+
+<style id="nexus-v163-cargo-grid-cover-style">
+/* V163: larger, unobscured Cargo Grid Manager cover. */
+#cargo-grid-view .cg-hero{
+  min-height:390px!important;
+  padding:52px 48px!important;
+  background-position:center 58%!important;
+  background-size:cover!important;
+}
+#cargo-grid-view .cg-hero::after{display:none!important;background:none!important}
+#cargo-grid-view .cg-hero-copy,
+#cargo-grid-view .cg-hero-stats{position:relative;z-index:1}
+#cargo-grid-view .cg-hero h1{
+  text-shadow:0 3px 4px rgba(0,0,0,.95),0 8px 28px rgba(0,0,0,.78)!important;
+}
+#cargo-grid-view .cg-hero p,
+#cargo-grid-view .cg-hero-actions span,
+#cargo-grid-view .cg-kicker{
+  text-shadow:0 2px 4px rgba(0,0,0,.98),0 5px 16px rgba(0,0,0,.86)!important;
+}
+@media(max-width:900px){
+  #cargo-grid-view .cg-hero{min-height:440px!important;padding:36px 28px!important;background-position:center!important}
+}
+@media(max-width:620px){
+  #cargo-grid-view .cg-hero{min-height:500px!important;padding:28px 20px!important}
+}
+</style>
+<script id="nexus-v163-cargo-grid-cover-release">/* V163: larger cargo cover with the image shown without a tint overlay. */</script>
+
+
+<style id="nexus-v164-cargo-grid-crate-mesh-style">
+/* V164: detailed 3D cargo-container rendering for free-look and exported loading boards. */
+#cargo-grid-view .cg-canvas-wrap canvas{image-rendering:auto}
+</style>
+<script id="nexus-v164-cargo-grid-crate-mesh-release">/* V164: framed 3D crate faces, recessed panels, structural ribs, corner locks, camera-aware face culling, and camera-depth sorting. */</script>
+
+
+<style id="nexus-v165-cargo-contract-preview-sync-style">
+/* V165: distinguish the player's current route start from each contract's actual pickup point. */
+#cargo-routing-view .cargo-contract-preview .cargo-mini-copy span .cargo-preview-role{
+  display:inline-flex;
+  margin-top:4px;
+  padding:3px 6px;
+  border:1px solid rgba(56,189,248,.22);
+  border-radius:999px;
+  background:rgba(14,116,144,.10);
+  color:#9fe8ff;
+  font:800 8px/1.2 "Share Tech Mono",monospace;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+</style>
+<script id="nexus-v165-cargo-contract-preview-sync-script">
+(() => {
+  'use strict';
+  const view = document.getElementById('cargo-routing-view');
+  if (!view || view.dataset.cargoPreviewSyncV165 === 'true') return;
+  view.dataset.cargoPreviewSyncV165 = 'true';
+
+  const cleanText = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[ch]));
+  const markFor = value => {
+    const words = cleanText(value).replace(/[^a-z0-9 ]/gi, ' ').split(/\s+/).filter(Boolean);
+    return (words.length > 1 ? words.slice(0, 3).map(word => word[0]).join('') : (words[0] || 'LOC').slice(0, 4)).toUpperCase();
+  };
+  const optionParts = select => {
+    const option = select?.selectedOptions?.[0];
+    const text = cleanText(option?.textContent || select?.value || '');
+    const pieces = text.split(/\s*·\s*/).filter(Boolean);
+    return {name: pieces[0] || cleanText(select?.value) || 'Location', detail: pieces.slice(1).join(' · ') || 'Contract location'};
+  };
+  const locationInfo = select => {
+    const fallback = optionParts(select);
+    let loc = null;
+    try { loc = window.nexusCargoLocationById?.(select?.value); } catch (_) {}
+    const genericName = /^(city landing zone|orbital station|landing zone|station|outpost|facility)$/i.test(cleanText(loc?.name));
+    return {
+      id: cleanText(select?.value),
+      name: genericName ? fallback.name : cleanText(loc?.name) || fallback.name,
+      detail: cleanText(loc?.detail) || fallback.detail,
+      kind: cleanText(loc?.kind) || (/city|landing zone/i.test(fallback.detail) ? 'city' : /outpost|facility/i.test(fallback.detail) ? 'outpost' : /pyro/i.test(fallback.detail) ? 'pyro' : 'station'),
+      mark: cleanText(loc?.mark) || markFor(genericName ? fallback.name : loc?.name || fallback.name)
+    };
+  };
+  const commodityInfo = select => {
+    const fallback = optionParts(select);
+    let item = null;
+    try { item = window.nexusCargoCommodityById?.(select?.value); } catch (_) {}
+    return {
+      id: cleanText(select?.value),
+      name: cleanText(item?.name) || fallback.name || 'Cargo',
+      family: cleanText(item?.family) || 'commodity-industrial',
+      mark: cleanText(item?.mark) || markFor(item?.name || fallback.name || 'Cargo')
+    };
+  };
+  const totalScu = card => [...card.querySelectorAll('.cargo-dest-row [data-field="scu"]')]
+    .reduce((sum, input) => sum + Math.max(0, Number(input.value || 0)), 0);
+
+  function replaceArt(card, index, className, mark, key) {
+    const mini = card.querySelectorAll('.cargo-contract-preview .cargo-mini-card')[index];
+    if (!mini) return;
+    const oldArt = mini.querySelector('.cargo-art');
+    if (oldArt?.dataset.previewSyncKey === key) return;
+    const art = document.createElement('div');
+    art.className = `cargo-art ${className}`;
+    art.dataset.mark = mark;
+    art.dataset.previewSyncKey = key;
+    oldArt?.replaceWith(art);
+  }
+
+  function syncCard(card, forceImages = false) {
+    if (!card?.matches?.('.cargo-contract-card')) return;
+    const minis = card.querySelectorAll('.cargo-contract-preview .cargo-mini-card');
+    if (minis.length < 2) return;
+
+    const originSelect = card.querySelector('[data-field="origin"]');
+    const commoditySelect = card.querySelector('[data-field="commodity"]');
+    const origin = locationInfo(originSelect);
+    const commodity = commodityInfo(commoditySelect);
+    const amount = Math.round(totalScu(card));
+
+    const originStrong = minis[0].querySelector('.cargo-mini-copy strong');
+    const originCopy = minis[0].querySelector('.cargo-mini-copy span');
+    if (originStrong) originStrong.textContent = origin.name;
+    if (originCopy) originCopy.innerHTML = `${escapeHtml(origin.detail)}<br><span class="cargo-preview-role">Contract pickup point</span>`;
+    replaceArt(card, 0, origin.kind, origin.mark, `origin:${origin.id}:${origin.name}:${origin.kind}`);
+
+    const commodityStrong = minis[1].querySelector('.cargo-mini-copy strong');
+    const commodityCopy = minis[1].querySelector('.cargo-mini-copy span');
+    if (commodityStrong) commodityStrong.textContent = commodity.name;
+    if (commodityCopy) commodityCopy.innerHTML = `${amount.toLocaleString()} SCU assigned<br><span class="cargo-preview-role">Contract commodity</span>`;
+    replaceArt(card, 1, commodity.family, commodity.mark, `commodity:${commodity.id}:${commodity.name}:${commodity.family}`);
+
+    if (forceImages || card.dataset.previewImagesPending !== 'true') {
+      card.dataset.previewImagesPending = 'true';
+      setTimeout(() => {
+        delete card.dataset.previewImagesPending;
+        try { window.nexusCargoApplyImages?.(); } catch (_) {}
+      }, 40);
+    }
+  }
+
+  function syncAll(forceImages = false) {
+    view.querySelectorAll('#cargo-contract-list .cargo-contract-card').forEach(card => syncCard(card, forceImages));
+  }
+
+  view.addEventListener('change', event => {
+    const field = event.target?.closest?.('[data-field="origin"], [data-field="commodity"], [data-field="scu"]');
+    if (!field) return;
+    const card = field.closest('.cargo-contract-card');
+    setTimeout(() => syncCard(card, true), 0);
+  }, true);
+  view.addEventListener('input', event => {
+    const field = event.target?.closest?.('[data-field="scu"]');
+    if (!field) return;
+    const card = field.closest('.cargo-contract-card');
+    setTimeout(() => syncCard(card, false), 0);
+  }, true);
+
+  const list = document.getElementById('cargo-contract-list');
+  if (list) {
+    const observer = new MutationObserver(() => {
+      clearTimeout(observer._cargoPreviewTimer);
+      observer._cargoPreviewTimer = setTimeout(() => syncAll(true), 35);
+    });
+    observer.observe(list, {childList:true, subtree:true});
+  }
+
+  const oldRefresh = window.nexusCargoSyncContractPreviews;
+  window.nexusCargoSyncContractPreviews = () => {
+    try { oldRefresh?.(); } catch (_) {}
+    syncAll(true);
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => setTimeout(() => syncAll(true), 80), {once:true});
+  } else {
+    setTimeout(() => syncAll(true), 80);
+  }
+})();
+</script>
+
+<script id="nexus-v164-cargo-manual-select-layer-release">/* V164: cargo manual-manifest ship picker is layered above its parent modal. */</script>
 </body>
 </html>
 

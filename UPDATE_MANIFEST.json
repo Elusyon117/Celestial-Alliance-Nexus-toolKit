@@ -1,0 +1,54 @@
+{
+  "package": "Celestial Alliance Nexus Toolkit v1.9.0 incremental repository update",
+  "base_repository": "https://github.com/Elusyon117/Celestial-Alliance-Nexus-toolKit",
+  "base_declared_version": "1.8.0",
+  "target_version": "1.9.0",
+  "created_utc": "2026-07-24T21:50:11+00:00",
+  "externalized_embedded_image_occurrences": {
+    "48fe575901b44175af1b9afab4d2e8f73ae27781ed92bdd6e30d72d569970cc0": 1,
+    "fcaa55b89341c648e0fdee618137695e34e81a663e7f3e4ec3d5c4428b86d6f9": 2,
+    "038ec89e93997bd501dc92da83b0b47b715dd03550ec5aa7fb2871ee9c8a969c": 6
+  },
+  "files": [
+    {
+      "path": "PUBLISH_v1.9.0.md",
+      "bytes": 1207,
+      "sha256": "92b595fe0b416c4b0f0ac8a23279282e3ee68eab47882dd4d43709e035de0239"
+    },
+    {
+      "path": "RELEASE_NOTES_v1.9.0.md",
+      "bytes": 2512,
+      "sha256": "3cfe1f65aab9c7fe74db4bbb750fb0b126afecac61393f22f70d4c07c4e00722"
+    },
+    {
+      "path": "VERSION.txt",
+      "bytes": 6,
+      "sha256": "30f4611383aa30a15753789f40effde81332f2f8714e6d3b2940bf0fc4592377"
+    },
+    {
+      "path": "assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg",
+      "bytes": 454596,
+      "sha256": "fcaa55b89341c648e0fdee618137695e34e81a663e7f3e4ec3d5c4428b86d6f9"
+    },
+    {
+      "path": "assets/images/hub/day12-topbanner-bengalfleet-min.jpg",
+      "bytes": 1822977,
+      "sha256": "48fe575901b44175af1b9afab4d2e8f73ae27781ed92bdd6e30d72d569970cc0"
+    },
+    {
+      "path": "assets/images/modules/argo-raft-cargo-grid-manager.webp",
+      "bytes": 156858,
+      "sha256": "038ec89e93997bd501dc92da83b0b47b715dd03550ec5aa7fb2871ee9c8a969c"
+    },
+    {
+      "path": "index.html",
+      "bytes": 9082025,
+      "sha256": "d8dce8e8ce6154a3820294598f86e7469ba34752356d5832dcbd3163e5aa2a75"
+    },
+    {
+      "path": "sw.js",
+      "bytes": 3910,
+      "sha256": "becb3732c7df4fbdc4e1e6bb0d772a7a2ff7d989b883939cf8e10d7e5f3e22b0"
+    }
+  ]
+}
