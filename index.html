@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 
-<html data-nexus-loading-fix="v3" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.9.0" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-loading-fix="v3" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.9.1" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v1.9.0 stable performance release (VLM loading fix v3): lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
+<!-- Celestial Nexus Toolkit v1.9.1 stable performance release (VLM loading fix v3): lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
 <!-- Event Planner v10.1 stability patch: fixed selection-overlay mutation loop and briefing whitespace gap. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#07131f" name="theme-color"/>
-<meta content="1.9.0" name="nexus-version"/>
-<meta content="Celestial Nexus Toolkit v1.9.0" name="generator"/>
+<meta content="1.9.1" name="nexus-version"/>
+<meta content="Celestial Nexus Toolkit v1.9.1" name="generator"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -18,10 +18,10 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://media.starcitizen.tools" rel="preconnect" crossorigin="anonymous"/>
 <link href="https://media.robertsspaceindustries.com" rel="preconnect" crossorigin="anonymous"/>
-<title>Celestial Nexus Toolkit — v1.9.0 Stable Performance Release</title>
-<link href="./icon-192.png?v=1.9.0-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<title>Celestial Nexus Toolkit — v1.9.1 Stable Performance Release</title>
+<link href="./icon-192.png?v=1.9.1-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png?v=1.9.0-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=1.9.1-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -9796,7 +9796,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
       <span class="hub-rb-brand-copy">
         <span class="hub-rb-brand-name">Celestial Nexus</span>
-        <span class="hub-rb-brand-meta">Alliance toolkit · v1.9.0</span>
+        <span class="hub-rb-brand-meta">Alliance toolkit · v1.9.1</span>
       </span>
     </button>
     <nav class="hub-rb-nav" aria-label="Main hub sections">
@@ -10066,7 +10066,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   </main>
 
   <footer class="hub-rb-footer">
-    <span>Celestial Alliance community toolkit · v1.9.0</span>
+    <span>Celestial Alliance community toolkit · v1.9.1</span>
     <span class="hub-rb-footer-nav"><button type="button" onclick="hubRebrandScroll('hub-rb-featured')">Featured</button><button type="button" onclick="hubRebrandScroll('hub-rb-modules')">Modules</button><button type="button" onclick="hubRebrandScroll('hub-rb-development')">WIP</button></span>
     <span>Unofficial Star Citizen fan tool · Community data may change with game patches</span>
   </footer>
@@ -27627,7 +27627,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=1.9.0').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=1.9.1').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -27635,7 +27635,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 window.NEXUS_RELEASE = Object.freeze({
-  version: '1.9.0',
+  version: '1.9.1',
   label: 'Stable Performance Release',
   catalogMode: 'Unified toolkit with hub-only module navigation, corrected cargo contract names, SCMDB-style Contract Finder tags, calculator inputs, requirements, combat breakdowns, and cargo manifests',
   publishedAt: '2026-07-08'
@@ -34962,7 +34962,7 @@ button, [role="button"], input, select, summary { touch-action: manipulation; }
     if (typeof original !== 'function' || original.__nx136Cached) return;
     const memory = new Map();
     const inflight = new Map();
-    const cacheName = 'celestial-nexus-api-v1.9.0';
+    const cacheName = 'celestial-nexus-api-v1.9.1';
     const cacheableHost = /(^|\.)(star-citizen\.wiki|uexcorp\.(space|uk)|githubusercontent\.com|github\.io)$/i;
 
     function ttlFor(url) {
@@ -51254,8 +51254,8 @@ body {
 <script id="nexus-v180-release-stamp">
 (() => {
   'use strict';
-  const VERSION = '1.9.0';
-  const BUILD = '1.9.0-stable-performance';
+  const VERSION = '1.9.1';
+  const BUILD = '1.9.1-stable-performance';
   const LABEL = 'Stable Performance Release';
   try { document.documentElement.setAttribute('data-nexus-version', BUILD); } catch (_) {}
   try { document.title = `Celestial Nexus Toolkit — v${VERSION} ${LABEL}`; } catch (_) {}
@@ -54548,7 +54548,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 </script>
 
 
-<!-- Celestial Nexus Toolkit v1.9.0: low-risk runtime hardening and diagnostics. -->
+<!-- Celestial Nexus Toolkit v1.9.1: low-risk runtime hardening and diagnostics. -->
 <style id="nexus-v180-runtime-hardening-style">
   /* Hidden modules must not consume layout/paint work. */
   .app-view[hidden] { display: none !important; content-visibility: hidden; contain: strict; }
@@ -54567,7 +54567,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 <script id="nexus-v180-runtime-hardening-script">
 (() => {
   'use strict';
-  const VERSION = '1.9.0';
+  const VERSION = '1.9.1';
   const startedAt = performance.now();
   const diagnostics = window.NEXUS_DIAGNOSTICS = window.NEXUS_DIAGNOSTICS || {
     version: VERSION,
@@ -71081,7 +71081,7 @@ body.nx-stable-select-open{overflow:hidden!important}
 
 
 
-<!-- CELESTIAL NEXUS v1.9.0 — EVENT EXPORT + HUB ORDER + CREATOR PROFILE HOTFIX -->
+<!-- CELESTIAL NEXUS v1.9.1 — EVENT EXPORT + HUB ORDER + CREATOR PROFILE HOTFIX -->
 <style id="nexus-v190-hub-event-hotfix-style">
   /* Keep the Event Planner format selector fully visible. The summary now sits
      below the selector instead of competing for horizontal room. */
@@ -71949,7 +71949,7 @@ body.nx-stable-select-open{overflow:hidden!important}
         <section class="cg-panel">
           <header><div><span class="cg-kicker">Loading board</span><h2>Export view</h2></div></header>
           <div class="cg-export-body">
-            <p>Choose the perspective that best matches how you load the ship. The PNG includes the hold schematic, contract legend, crate sizes, route order, and delivery locations.</p>
+            <p>Export a complete professional loading manifest with the selected ship and ship artwork, cargo-grid view, material crate visuals, exact container mixes, contract pickups, delivery locations, route order, capacity, and placement status.</p>
             <label class="cg-field"><span>Export perspective</span><select id="cg-export-view"><option value="iso">Isometric</option><option value="free">Current free-look angle</option><option value="top">Top-down</option><option value="side">Side view</option><option value="front">Front view</option></select></label>
             <button class="cargo-btn primary" id="cg-export-png" type="button">Export cargo loading PNG</button>
             <button class="cargo-btn" id="cg-copy-manifest" type="button">Copy loading manifest</button>
@@ -72159,7 +72159,8 @@ html body #cargo-grid-view.app-view.nexus-shell:not(#hub-view){--module-accent:#
     const capacity=shipCapacityFromSelect();
     const contracts=routeContractsFromDom();
     const start=(startSelect?.selectedOptions?.[0]?.textContent||startSelect?.value||'Starting location').split(' · ')[0];
-    return {ship:{name:shipName,capacity},contracts,routeOrder:routeOrderFromDom(),start,createdAt:new Date().toISOString()};
+    const shipImage=document.querySelector('#cargo-routing-view .cargo-ship-image')?.src||'';
+    return {ship:{name:shipName,capacity,image:shipImage},contracts,routeOrder:routeOrderFromDom(),start,createdAt:new Date().toISOString()};
   }
 
   function uniqueDestinations(contracts){
@@ -72932,20 +72933,186 @@ html body #cargo-grid-view.app-view.nexus-shell:not(#hub-view){--module-accent:#
     state.view=old.view;state.zoom=old.zoom;state.pan=old.pan;state.camera=old.camera;state.transform=old.transform;state.hitRegions=old.hit;
   }
 
+  function cgExportRoundRect(ctx,x,y,w,h,r){
+    const radius=Math.max(0,Math.min(r,w/2,h/2));
+    ctx.beginPath();ctx.moveTo(x+radius,y);ctx.lineTo(x+w-radius,y);ctx.quadraticCurveTo(x+w,y,x+w,y+radius);ctx.lineTo(x+w,y+h-radius);ctx.quadraticCurveTo(x+w,y+h,x+w-radius,y+h);ctx.lineTo(x+radius,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-radius);ctx.lineTo(x,y+radius);ctx.quadraticCurveTo(x,y,x+radius,y);ctx.closePath();
+  }
+
+  function cgExportPanel(ctx,x,y,w,h,fill='rgba(5,17,29,.92)',stroke='rgba(148,163,184,.18)',radius=22,lineWidth=1.2){
+    cgExportRoundRect(ctx,x,y,w,h,radius);ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=lineWidth;ctx.stroke();
+  }
+
+  function cgExportFit(ctx,text,maxWidth){
+    let value=String(text??'');if(ctx.measureText(value).width<=maxWidth)return value;
+    while(value.length>2&&ctx.measureText(`${value}…`).width>maxWidth)value=value.slice(0,-1);
+    return `${value}…`;
+  }
+
+  function cgExportText(ctx,text,x,y,maxWidth,size=18,color='#eaf7ff',weight='700',font='Inter,Arial,sans-serif',align='left'){
+    ctx.save();ctx.font=`${weight} ${size}px ${font}`;ctx.fillStyle=color;ctx.textBaseline='top';ctx.textAlign=align;
+    const tx=align==='right'?x+maxWidth:align==='center'?x+maxWidth/2:x;ctx.fillText(cgExportFit(ctx,text,maxWidth),tx,y);ctx.restore();
+  }
+
+  function cgExportMono(ctx,text,x,y,maxWidth,size=13,color='#67e8f9',align='left'){
+    cgExportText(ctx,String(text??'').toUpperCase(),x,y,maxWidth,size,color,'800','"Share Tech Mono",Consolas,monospace',align);
+  }
+
+  function cgExportWrap(ctx,text,x,y,maxWidth,lineHeight=24,size=16,color='#c6d9e5',weight='650',maxLines=3){
+    ctx.save();ctx.font=`${weight} ${size}px Inter,Arial,sans-serif`;ctx.fillStyle=color;ctx.textBaseline='top';
+    const words=String(text??'').replace(/\s+/g,' ').trim().split(' ').filter(Boolean);let row='',lines=[];
+    words.forEach(word=>{const probe=row?`${row} ${word}`:word;if(ctx.measureText(probe).width>maxWidth&&row){lines.push(row);row=word;}else row=probe;});if(row)lines.push(row);
+    if(lines.length>maxLines){lines=lines.slice(0,maxLines);let last=lines[maxLines-1];while(last.length>2&&ctx.measureText(`${last}…`).width>maxWidth)last=last.slice(0,-1);lines[maxLines-1]=`${last}…`;}
+    lines.forEach((line,index)=>ctx.fillText(line,x,y+index*lineHeight));ctx.restore();return y+lines.length*lineHeight;
+  }
+
+  function cgExportCover(ctx,img,x,y,w,h){
+    if(!img)return false;const iw=img.naturalWidth||img.width,ih=img.naturalHeight||img.height;if(!iw||!ih)return false;
+    const scale=Math.max(w/iw,h/ih),dw=iw*scale,dh=ih*scale;ctx.drawImage(img,x+(w-dw)/2,y+(h-dh)/2,dw,dh);return true;
+  }
+
+  async function cgExportLoadImage(src,timeoutMs=3000){
+    if(!src||typeof src!=='string')return null;
+    try{
+      if(src.startsWith('data:')||src.startsWith('blob:')||src.startsWith('./')||src.startsWith('/')||src.startsWith(location.origin)){
+        return await new Promise(resolve=>{const img=new Image();const timer=setTimeout(()=>resolve(null),timeoutMs);img.onload=()=>{clearTimeout(timer);resolve(img);};img.onerror=()=>{clearTimeout(timer);resolve(null);};img.src=src;});
+      }
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs);
+      const response=await fetch(src,{mode:'cors',cache:'force-cache',signal:controller.signal});clearTimeout(timer);if(!response.ok)return null;
+      const blob=await response.blob(),url=URL.createObjectURL(blob);
+      return await new Promise(resolve=>{const img=new Image();img.onload=()=>resolve(Object.assign(img,{__url:url}));img.onerror=()=>{URL.revokeObjectURL(url);resolve(null);};img.src=url;});
+    }catch(_){return null;}
+  }
+
+  async function cgResolveShipArtwork(){
+    const routeImage=document.querySelector('#cargo-routing-view .cargo-ship-image')?.src||'';
+    const candidates=[state.payload?.ship?.imageUrl,state.payload?.ship?.image,state.ship?.imageUrl,state.ship?.image,routeImage].filter(Boolean);
+    const preferred=candidates.filter(src=>!String(src).startsWith('data:image/svg'));
+    for(const src of preferred){const image=await cgExportLoadImage(src);if(image)return {image,credit:'Selected ship artwork'};}
+    try{
+      const query=/c2 hercules/i.test(state.ship.name)?'Crusader C2 Hercules Starlifter':`${state.ship.name} Star Citizen ship`;
+      const params=new URLSearchParams({action:'query',format:'json',origin:'*',redirects:'1',generator:'search',gsrsearch:query,gsrnamespace:'0',gsrlimit:'5',prop:'pageimages|info',piprop:'thumbnail|original|name',pithumbsize:'1800',inprop:'url'});
+      const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),3600);
+      const response=await fetch(`https://starcitizen.tools/api.php?${params.toString()}`,{cache:'force-cache',signal:controller.signal});clearTimeout(timer);
+      if(response.ok){
+        const payload=await response.json();const pages=Object.values(payload?.query?.pages||{}).filter(page=>page?.original?.source||page?.thumbnail?.source);
+        pages.sort((a,b)=>Number(String(b.title||'').toLowerCase().includes(clean(state.ship.name)))-Number(String(a.title||'').toLowerCase().includes(clean(state.ship.name))));
+        const page=pages[0],src=String(page?.original?.source||page?.thumbnail?.source||'').replace(/^\/\//,'https://');
+        const image=await cgExportLoadImage(src,4200);if(image)return {image,credit:'Star Citizen Wiki / starcitizen.tools'};
+      }
+    }catch(_){}
+    return {image:null,credit:'Generated ship profile'};
+  }
+
+  function cgExportMaterialData(){
+    const materials=new Map();
+    state.contracts.forEach((contract,contractIndex)=>{
+      const name=contract.commodity?.name||'Cargo',key=clean(name)||`cargo-${contractIndex}`;
+      if(!materials.has(key))materials.set(key,{name,totalScu:0,contracts:[],destinations:new Set(),crateCounts:{},colors:[]});
+      const material=materials.get(key),crates=state.crates.filter(crate=>crate.contractIndex===contractIndex),total=crates.reduce((sum,crate)=>sum+crate.scu,0);
+      material.totalScu+=total;material.contracts.push(contractIndex+1);if(contract.color&&!material.colors.includes(contract.color))material.colors.push(contract.color);
+      (contract.dests||[]).forEach(dest=>material.destinations.add(dest.name||dest.id||'Delivery location'));
+      crates.forEach(crate=>material.crateCounts[crate.scu]=(material.crateCounts[crate.scu]||0)+1);
+    });
+    return [...materials.values()];
+  }
+
+  function cgExportCrateMixForContract(contractIndex){
+    return state.crates.filter(crate=>crate.contractIndex===contractIndex).reduce((mix,crate)=>(mix[crate.scu]=(mix[crate.scu]||0)+1,mix),{});
+  }
+
+  function cgExportCrateMixLabel(mix){
+    return Object.entries(mix||{}).sort((a,b)=>Number(b[0])-Number(a[0])).map(([size,count])=>`${count}×${size} SCU`).join(' · ')||'No containers';
+  }
+
+  function cgDrawMiniCrate(ctx,x,y,w,h,color,label,offset=0){
+    const topH=h*.25,sideW=w*.20,front=[{x:x+sideW,y:y+topH},{x:x+w,y:y},{x:x+w,y:y+h-topH},{x:x+sideW,y:y+h}],top=[{x:x,y:y+topH},{x:x+w-sideW,y:y},{x:x+w,y:y+topH},{x:x+sideW,y:y+topH*2}],side=[{x:x,y:y+topH},{x:x+sideW,y:y+topH*2},{x:x+sideW,y:y+h},{x:x,y:y+h-topH}];
+    const poly=(points,fill,stroke='rgba(2,12,20,.9)',lw=2)=>{ctx.beginPath();ctx.moveTo(points[0].x,points[0].y);points.slice(1).forEach(p=>ctx.lineTo(p.x,p.y));ctx.closePath();ctx.fillStyle=fill;ctx.fill();ctx.strokeStyle=stroke;ctx.lineWidth=lw;ctx.stroke();};
+    poly(side,shade(color,-45));poly(front,shade(color,-12));poly(top,shade(color,18));
+    ctx.save();ctx.strokeStyle='rgba(3,14,22,.72)';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(front[0].x+w*.14,front[0].y+h*.15);ctx.lineTo(front[2].x-w*.14,front[2].y-h*.14);ctx.moveTo(front[1].x-w*.14,front[1].y+h*.16);ctx.lineTo(front[3].x+w*.14,front[3].y-h*.13);ctx.stroke();
+    ctx.fillStyle='rgba(2,10,18,.78)';cgExportRoundRect(ctx,x+w*.32,y+h*.42,w*.46,h*.23,7);ctx.fill();ctx.fillStyle='#f8fafc';ctx.font=`900 ${Math.max(11,Math.min(18,h*.15))}px "Share Tech Mono",monospace`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,x+w*.55,y+h*.535);ctx.restore();
+  }
+
+  function cgExportDrawShipFallback(ctx,x,y,w,h){
+    const glow=ctx.createRadialGradient(x+w*.5,y+h*.48,20,x+w*.5,y+h*.48,w*.5);glow.addColorStop(0,'rgba(56,189,248,.25)');glow.addColorStop(1,'rgba(56,189,248,0)');ctx.fillStyle=glow;ctx.fillRect(x,y,w,h);
+    ctx.save();ctx.translate(x+w*.5,y+h*.48);ctx.fillStyle='rgba(20,86,118,.72)';ctx.strokeStyle='rgba(103,232,249,.86)';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(-w*.36,h*.03);ctx.lineTo(-w*.17,-h*.13);ctx.lineTo(0,-h*.23);ctx.lineTo(w*.17,-h*.13);ctx.lineTo(w*.36,h*.03);ctx.lineTo(w*.15,h*.12);ctx.lineTo(w*.05,h*.08);ctx.lineTo(0,h*.22);ctx.lineTo(-w*.05,h*.08);ctx.lineTo(-w*.15,h*.12);ctx.closePath();ctx.fill();ctx.stroke();ctx.restore();
+  }
+
   async function exportPng(){
-    const view=$('cg-export-view')?.value||'top';const canvas=document.createElement('canvas');canvas.width=1800;canvas.height=1120;const ctx=canvas.getContext('2d');
-    const bg=ctx.createLinearGradient(0,0,1800,1120);bg.addColorStop(0,'#061321');bg.addColorStop(1,'#030912');ctx.fillStyle=bg;ctx.fillRect(0,0,1800,1120);
-    const glow=ctx.createRadialGradient(1420,0,0,1420,0,780);glow.addColorStop(0,'rgba(245,158,11,.16)');glow.addColorStop(1,'rgba(245,158,11,0)');ctx.fillStyle=glow;ctx.fillRect(0,0,1800,1120);
-    ctx.fillStyle='#fbbf24';ctx.font='900 15px "Share Tech Mono",monospace';ctx.fillText('CELESTIAL NEXUS · CARGO GRID MANAGER',54,48);
-    ctx.fillStyle='#fff';ctx.font='900 42px Inter,Arial';ctx.fillText(`${state.ship.name} loading plan`,54,100);
-    ctx.fillStyle='#8fa8ba';ctx.font='700 17px Inter,Arial';ctx.fillText(`${view.toUpperCase()} VIEW · ${fmt(state.crates.reduce((s,c)=>s+c.scu,0))} / ${fmt(state.ship.capacity)} SCU · ${(state.payload?.routeOrder||[]).length} route stops`,54,136);
-    ctx.fillStyle='#d8e0e6';ctx.fillRect(44,170,1180,830);ctx.strokeStyle='rgba(255,255,255,.2)';ctx.strokeRect(44,170,1180,830);drawExportScene(ctx,64,190,1140,790,view);
-    ctx.fillStyle='rgba(6,17,29,.9)';ctx.fillRect(1250,170,506,830);ctx.strokeStyle='rgba(245,158,11,.28)';ctx.strokeRect(1250,170,506,830);
-    ctx.fillStyle='#fbbf24';ctx.font='900 13px "Share Tech Mono",monospace';ctx.fillText('CONTRACT LEGEND',1280,208);
-    let yy=242;state.contracts.forEach((c,i)=>{ctx.fillStyle=c.color;ctx.fillRect(1280,yy,14,14);ctx.fillStyle='#fff';ctx.font='800 16px Inter,Arial';const title=`C${i+1} · ${c.title}`;ctx.fillText(title.length>46?title.slice(0,43)+'…':title,1308,yy+13);yy+=26;ctx.fillStyle='#9db1bf';ctx.font='600 13px Inter,Arial';c.dests.forEach(d=>{ctx.fillText(`${fmt(d.scu)} SCU ${c.commodity.name} → ${d.name}`,1308,yy);yy+=20;});const sizes=state.crates.filter(x=>x.contractIndex===i).reduce((m,x)=>(m[x.scu]=(m[x.scu]||0)+1,m),{});ctx.fillStyle='#d4e2ea';ctx.fillText(`Crates: ${Object.entries(sizes).sort((a,b)=>b[0]-a[0]).map(([s,n])=>`${n}×${s}`).join(' · ')}`,1308,yy);yy+=34;});
-    ctx.fillStyle='#fbbf24';ctx.font='900 13px "Share Tech Mono",monospace';ctx.fillText('ROUTE ORDER',1280,Math.min(yy+12,900));let ry=Math.min(yy+42,930);ctx.fillStyle='#c5d6e0';ctx.font='700 13px Inter,Arial';(state.payload?.routeOrder||[]).slice(0,8).forEach((r,i)=>{ctx.fillText(`${i+1}. ${r}`,1308,ry);ry+=22;});
-    ctx.fillStyle='#6f8798';ctx.font='700 12px Inter,Arial';ctx.fillText(`Generated ${new Date().toLocaleString()} · Cargo-grid layouts are planning schematics.`,54,1060);ctx.textAlign='right';ctx.fillText('Created by Elusyon',1746,1060);
-    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',.96));if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`cargo-grid-${clean(state.ship.name).replace(/ /g,'-')}-${view}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),800);state.status=`Exported ${view} cargo loading board.`;renderSummary();
+    const view=$('cg-export-view')?.value||'iso',materials=cgExportMaterialData(),routeOrder=(state.payload?.routeOrder||[]).filter(Boolean);
+    const planned=state.crates.reduce((sum,crate)=>sum+crate.scu,0),placedCrates=state.crates.filter(crate=>state.placements[crate.id]),placedScu=placedCrates.reduce((sum,crate)=>sum+crate.scu,0),unplaced=state.crates.length-placedCrates.length;
+    const capacity=Math.max(0,Number(state.ship.capacity)||0),utilization=capacity?Math.round(planned/capacity*100):0,totalPayout=state.contracts.reduce((sum,contract)=>sum+(Number(contract.payout)||0),0);
+    const destinations=[...new Set(state.contracts.flatMap(contract=>(contract.dests||[]).map(dest=>dest.name||dest.id).filter(Boolean)))];
+    const materialCardH=182,materialsSectionH=74+Math.max(1,materials.length)*materialCardH+16,routeSectionH=92+Math.max(1,routeOrder.length||destinations.length)*34+26;
+    const W=2560,margin=64,gap=24,headerH=124,heroY=142,heroH=320,bodyY=486,leftW=1690,rightW=W-margin*2-leftW-gap;
+    const bodyH=Math.max(980,materialsSectionH+routeSectionH+gap),contractRows=Math.ceil(Math.max(1,state.contracts.length)/2),contractsH=state.contracts.length?100+contractRows*192:0,H=bodyY+bodyH+(contractsH?gap+contractsH:0)+98;
+    const canvas=document.createElement('canvas');canvas.width=W;canvas.height=H;const ctx=canvas.getContext('2d',{alpha:false});
+    if(document.fonts?.ready){try{await Promise.race([document.fonts.ready,new Promise(resolve=>setTimeout(resolve,900))]);}catch(_){}}
+    const [shipArt,logoImg]=await Promise.all([cgResolveShipArtwork(),cgExportLoadImage(document.querySelector('[data-nexus-logo]')?.src||'')]);
+    const bg=ctx.createLinearGradient(0,0,W,H);bg.addColorStop(0,'#06131f');bg.addColorStop(.5,'#040d17');bg.addColorStop(1,'#02070d');ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+    const blueGlow=ctx.createRadialGradient(W*.72,80,0,W*.72,80,1050);blueGlow.addColorStop(0,'rgba(56,189,248,.14)');blueGlow.addColorStop(1,'rgba(56,189,248,0)');ctx.fillStyle=blueGlow;ctx.fillRect(0,0,W,H);
+    const amberGlow=ctx.createRadialGradient(W,0,0,W,0,800);amberGlow.addColorStop(0,'rgba(245,158,11,.15)');amberGlow.addColorStop(1,'rgba(245,158,11,0)');ctx.fillStyle=amberGlow;ctx.fillRect(0,0,W,H);
+    ctx.save();ctx.globalAlpha=.16;ctx.fillStyle='#dffcff';for(let i=0;i<160;i++){const px=(i*263)%W,py=(i*419)%H,r=i%11===0?1.6:.65;ctx.beginPath();ctx.arc(px,py,r,0,Math.PI*2);ctx.fill();}ctx.restore();
+
+    if(logoImg){const ratio=(logoImg.naturalWidth||logoImg.width)/(logoImg.naturalHeight||logoImg.height||1),lh=62,lw=Math.min(160,lh*ratio);ctx.drawImage(logoImg,margin,34,lw,lh);cgExportMono(ctx,'Celestial Alliance · Logistics Command',margin+lw+24,49,900,15,'#5eead4');}
+    else{cgExportMono(ctx,'Celestial Alliance · Logistics Command',margin,46,900,15,'#5eead4');}
+    cgExportText(ctx,'Cargo Loading Manifest',margin,78,1100,38,'#f8fafc','900');
+    cgExportMono(ctx,`NX-07-2 · ${view==='free'?'Free-look':view} perspective`,W-margin-720,44,720,14,'#fbbf24','right');
+    cgExportText(ctx,new Date().toLocaleString(),W-margin-720,74,720,14,'#7893a4','700','Inter,Arial,sans-serif','right');
+
+    const shipX=margin,shipW=850,summaryX=shipX+shipW+gap,summaryW=W-margin-summaryX;
+    cgExportPanel(ctx,shipX,heroY,shipW,heroH,'rgba(4,15,25,.92)','rgba(56,189,248,.30)',24,1.5);
+    ctx.save();cgExportRoundRect(ctx,shipX,heroY,shipW,heroH,24);ctx.clip();if(!cgExportCover(ctx,shipArt.image,shipX,heroY,shipW,heroH))cgExportDrawShipFallback(ctx,shipX,heroY,shipW,heroH);
+    const shipOverlay=ctx.createLinearGradient(shipX,heroY,shipX,heroY+heroH);shipOverlay.addColorStop(0,'rgba(2,8,15,.04)');shipOverlay.addColorStop(.52,'rgba(2,8,15,.18)');shipOverlay.addColorStop(1,'rgba(2,8,15,.96)');ctx.fillStyle=shipOverlay;ctx.fillRect(shipX,heroY,shipW,heroH);ctx.restore();
+    cgExportMono(ctx,'Selected ship',shipX+28,heroY+24,320,13,'#67e8f9');cgExportText(ctx,state.ship.name||'Cargo ship',shipX+28,heroY+heroH-94,shipW-56,30,'#fff','900');
+    cgExportText(ctx,`${fmt(planned)} / ${fmt(capacity)} SCU planned · ${state.profile?.zones?.length||0} cargo bay${state.profile?.zones?.length===1?'':'s'}`,shipX+28,heroY+heroH-51,shipW-56,16,'#b9cbd7','700');
+    cgExportText(ctx,shipArt.credit||'Ship artwork',shipX+28,heroY+heroH-27,shipW-56,10,'rgba(185,203,215,.62)','700');
+
+    cgExportPanel(ctx,summaryX,heroY,summaryW,heroH,'rgba(5,17,29,.91)','rgba(245,158,11,.25)',24,1.4);
+    cgExportMono(ctx,'Operational loading brief',summaryX+30,heroY+25,summaryW-60,13,'#fbbf24');
+    cgExportText(ctx,state.ship.name||'Cargo ship',summaryX+30,heroY+52,summaryW-60,36,'#f8fafc','900');
+    const startName=state.payload?.start||state.contracts[0]?.origin?.name||'Starting location not listed';const orderedStops=(routeOrder.length?routeOrder:destinations).filter((stop,index,array)=>clean(stop)!==clean(startName)&&array.findIndex(item=>clean(item)===clean(stop))===index);const routeText=[startName,...orderedStops].join('  →  ');
+    cgExportWrap(ctx,routeText,summaryX+30,heroY+103,summaryW-60,22,16,'#8fa8ba','650',2);
+    const metrics=[['Planned cargo',`${fmt(planned)} SCU`],['Ship capacity',`${fmt(capacity)} SCU`],['Utilization',`${utilization}%`],['Contracts',fmt(state.contracts.length)],['Delivery points',fmt(destinations.length)],['Placement',unplaced?`${unplaced} unplaced`:'Grid ready']];
+    if(totalPayout>0)metrics[5]=['Total payout',`${fmt(totalPayout)} aUEC`];
+    const metricGap=14,metricW=(summaryW-60-metricGap*(metrics.length-1))/metrics.length,metricY=heroY+184;
+    metrics.forEach((metric,index)=>{const x=summaryX+30+index*(metricW+metricGap);cgExportPanel(ctx,x,metricY,metricW,102,'rgba(4,13,23,.82)','rgba(125,211,252,.13)',14,1);cgExportMono(ctx,metric[0],x+14,metricY+16,metricW-28,10,'#7894a6');cgExportText(ctx,metric[1],x+14,metricY+47,metricW-28,21,index===2&&utilization>100?'#fb7185':'#eaf7ff','900','"Share Tech Mono",Consolas,monospace');});
+
+    const gridX=margin,gridY=bodyY,gridH=bodyH,rightX=gridX+leftW+gap;
+    cgExportPanel(ctx,gridX,gridY,leftW,gridH,'rgba(5,17,29,.92)','rgba(56,189,248,.24)',24,1.4);
+    cgExportMono(ctx,'Cargo hold arrangement',gridX+30,gridY+24,leftW-60,13,'#67e8f9');cgExportText(ctx,`${view==='free'?'Current free-look':view[0].toUpperCase()+view.slice(1)} loading view`,gridX+30,gridY+50,leftW-60,27,'#f8fafc','900');
+    const sceneX=gridX+26,sceneY=gridY+98,sceneW=leftW-52,sceneH=gridH-174;ctx.fillStyle='#d9e1e7';cgExportRoundRect(ctx,sceneX,sceneY,sceneW,sceneH,18);ctx.fill();ctx.strokeStyle='rgba(125,211,252,.25)';ctx.lineWidth=1.2;ctx.stroke();drawExportScene(ctx,sceneX+18,sceneY+18,sceneW-36,sceneH-36,view);
+    cgExportText(ctx,`${placedCrates.length} / ${state.crates.length} containers placed · ${fmt(placedScu)} / ${fmt(planned)} SCU positioned`,gridX+30,gridY+gridH-54,leftW-60,15,unplaced?'#fbbf24':'#6ee7b7','800');
+    cgExportText(ctx,`${state.profile?.label||'Cargo grid schematic'} · ${state.profile?.source||'Planning profile'}`,gridX+30,gridY+gridH-30,leftW-60,11,'#6f8798','700');
+
+    let rightY=gridY;cgExportPanel(ctx,rightX,rightY,rightW,materialsSectionH,'rgba(5,17,29,.93)','rgba(245,158,11,.25)',24,1.4);cgExportMono(ctx,'Material and crate manifest',rightX+26,rightY+22,rightW-52,13,'#fbbf24');
+    if(!materials.length){cgExportText(ctx,'No cargo materials loaded.',rightX+26,rightY+64,rightW-52,18,'#8fa8ba','700');}
+    materials.forEach((material,index)=>{
+      const cardY=rightY+58+index*materialCardH,cardX=rightX+20,cardW=rightW-40,cardH=materialCardH-14,primary=material.colors[0]||COLORS[index%COLORS.length];
+      cgExportPanel(ctx,cardX,cardY,cardW,cardH,'rgba(3,12,21,.86)',`${primary}70`,16,1.2);ctx.fillStyle=primary;cgExportRoundRect(ctx,cardX,cardY,7,cardH,4);ctx.fill();
+      const crateSizes=Object.entries(material.crateCounts).sort((a,b)=>Number(b[0])-Number(a[0]));const visualX=cardX+22,visualY=cardY+26;
+      crateSizes.slice(0,3).forEach(([size],crateIndex)=>{const color=material.colors[crateIndex%Math.max(1,material.colors.length)]||primary;cgDrawMiniCrate(ctx,visualX+crateIndex*34,visualY+crateIndex*13,128,92,color,`${size} SCU`,crateIndex);});
+      cgExportText(ctx,material.name,cardX+218,cardY+19,cardW-242,22,'#fff','900');cgExportText(ctx,`${fmt(material.totalScu)} SCU · Contract${material.contracts.length===1?'':'s'} ${material.contracts.map(number=>`C${number}`).join(', ')}`,cardX+218,cardY+51,cardW-242,14,'#9fb7c5','750');
+      cgExportWrap(ctx,cgExportCrateMixLabel(material.crateCounts),cardX+218,cardY+78,cardW-242,20,14,'#d7e8f1','800',2);cgExportWrap(ctx,[...material.destinations].join(' · '),cardX+218,cardY+119,cardW-242,18,12,'#7893a4','650',2);
+      let swatchX=cardX+25;material.colors.forEach(color=>{ctx.fillStyle=color;ctx.fillRect(swatchX,cardY+cardH-20,22,5);swatchX+=28;});
+    });
+    rightY+=materialsSectionH+gap;cgExportPanel(ctx,rightX,rightY,rightW,routeSectionH,'rgba(5,17,29,.93)','rgba(56,189,248,.23)',24,1.4);cgExportMono(ctx,'Route order',rightX+26,rightY+22,rightW-52,13,'#67e8f9');
+    const routeRows=routeOrder.length?routeOrder:destinations;let routeY=rightY+58;if(!routeRows.length)cgExportText(ctx,'No route order supplied.',rightX+26,routeY,rightW-52,16,'#8fa8ba','700');
+    routeRows.forEach((stop,index)=>{ctx.fillStyle=index===0?'#fbbf24':'#38bdf8';ctx.beginPath();ctx.arc(rightX+39,routeY+10,8,0,Math.PI*2);ctx.fill();cgExportText(ctx,`${index+1}. ${stop}`,rightX+60,routeY,rightW-86,15,'#d9e8f0','800');routeY+=34;});
+
+    if(state.contracts.length){
+      const contractsY=bodyY+bodyH+gap;cgExportPanel(ctx,margin,contractsY,W-margin*2,contractsH,'rgba(5,17,29,.93)','rgba(148,163,184,.18)',24,1.3);cgExportMono(ctx,'Contract detail',margin+28,contractsY+22,W-margin*2-56,13,'#5eead4');cgExportText(ctx,'Pickup, delivery, material, payout, and exact crate allocation',margin+28,contractsY+47,W-margin*2-56,21,'#f8fafc','900');
+      const colGap=20,colW=(W-margin*2-56-colGap)/2,cardH=168;
+      state.contracts.forEach((contract,index)=>{
+        const col=index%2,row=Math.floor(index/2),x=margin+28+col*(colW+colGap),y=contractsY+88+row*192,color=contract.color||COLORS[index%COLORS.length],crates=state.crates.filter(crate=>crate.contractIndex===index),total=crates.reduce((sum,crate)=>sum+crate.scu,0),mix=cgExportCrateMixForContract(index);
+        cgExportPanel(ctx,x,y,colW,cardH,'rgba(3,12,21,.82)',`${color}68`,15,1.1);ctx.fillStyle=color;cgExportRoundRect(ctx,x,y,7,cardH,4);ctx.fill();ctx.fillStyle=color;ctx.beginPath();ctx.arc(x+30,y+28,9,0,Math.PI*2);ctx.fill();
+        cgExportText(ctx,`C${index+1} · ${contract.title||'Cargo contract'}`,x+48,y+15,colW-68,19,'#fff','900');cgExportText(ctx,`${contract.origin?.name||state.payload?.start||'Pickup not listed'} · ${contract.commodity?.name||'Cargo'} · ${fmt(total)} SCU${Number(contract.payout)>0?` · ${fmt(contract.payout)} aUEC`:''}`,x+22,y+49,colW-44,13,'#9fb7c5','750');
+        const deliveries=(contract.dests||[]).map(dest=>`${fmt(dest.scu)} SCU → ${dest.name||dest.id}`).join(' · ');cgExportWrap(ctx,deliveries||'Delivery not listed',x+22,y+76,colW-44,20,14,'#d9e8f0','750',2);cgExportWrap(ctx,`Containers: ${cgExportCrateMixLabel(mix)}`,x+22,y+122,colW-44,18,12,'#7893a4','700',2);
+      });
+    }
+
+    const footerY=H-66;ctx.strokeStyle='rgba(148,163,184,.16)';ctx.beginPath();ctx.moveTo(margin,footerY-18);ctx.lineTo(W-margin,footerY-18);ctx.stroke();cgExportText(ctx,'Cargo-grid layouts are planning schematics. Verify in-game grid restrictions and contract details before departure.',margin,footerY,W-margin*2-360,11,'#587384','700','"Share Tech Mono",Consolas,monospace');cgExportText(ctx,'Created by Elusyon',W-margin-280,footerY,280,13,'#7893a4','800','Inter,Arial,sans-serif','right');
+    window.NEXUS_CARGO_GRID_LAST_EXPORT_CANVAS=canvas;
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/png',.96));if(!blob)return;const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=`cargo-loading-manifest-${clean(state.ship.name).replace(/\s+/g,'-')}-${view}.png`;a.click();setTimeout(()=>URL.revokeObjectURL(url),900);[shipArt.image,logoImg].forEach(image=>{if(image?.__url)try{URL.revokeObjectURL(image.__url);}catch(_){}});state.status=`Exported professional ${view} cargo loading manifest.`;renderSummary();
   }
 
   function updateRoutingPrompt(){
@@ -73190,6 +73357,7 @@ html body #cargo-grid-view.app-view:not(#hub-view) .cargo-btn.primary:hover{filt
 /* V164: detailed 3D cargo-container rendering for free-look and exported loading boards. */
 #cargo-grid-view .cg-canvas-wrap canvas{image-rendering:auto}
 </style>
+<script id="nexus-v171-professional-cargo-grid-export">/* V171: professional cargo loading manifest export with ship artwork and material crate cards. */</script>
 <script id="nexus-v164-cargo-grid-crate-mesh-release">/* V164: framed 3D crate faces, recessed panels, structural ribs, corner locks, camera-aware face culling, and camera-depth sorting. */</script>
 
 

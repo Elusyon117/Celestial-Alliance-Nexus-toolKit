@@ -1,6 +1,6 @@
-/* Celestial Alliance Nexus Toolkit v1.9.0 service worker */
+/* Celestial Alliance Nexus Toolkit v1.9.1 service worker */
 
-const VERSION = '1.9.0';
+const VERSION = '1.9.1';
 const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
 const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
 const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;
