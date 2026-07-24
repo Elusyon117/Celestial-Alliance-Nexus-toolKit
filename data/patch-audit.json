@@ -1,6 +1,6 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-07-24T14:15:23.804Z",
+  "generatedAt": "2026-07-24T19:49:20.760Z",
   "status": "failed",
   "patch": "4.9.0",
   "channel": "LIVE",
@@ -19,6 +19,7 @@
     "4.8.0",
     "4.8.1",
     "4.8.2",
+    "4.8.3",
     "4.9.0"
   ],
   "checks": [
@@ -80,7 +81,7 @@
       "name": "index-patch-reference-review",
       "ok": false,
       "severity": "warning",
-      "detail": "Non-current patch strings: 4.0.0, 4.1.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2"
+      "detail": "Non-current patch strings: 4.0.0, 4.1.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.8.3"
     }
   ]
 }
