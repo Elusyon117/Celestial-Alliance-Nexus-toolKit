@@ -39,7 +39,7 @@ check('status-count-consistent', Number(module?.totalCount) === missions.length,
 check('patch-consistent', Boolean(payloadPatch && statusPatch && payloadPatch === statusPatch), `payload=${payloadPatch}; status=${statusPatch}`);
 check('channel-consistent', Boolean(payloadChannel && statusChannel && payloadChannel === statusChannel), `payload=${payloadChannel}; status=${statusChannel}`);
 check('status-current', module?.status === 'current', module?.status || 'missing', 'warning');
-check('index-version-1.9.0', /name="nexus-version"[^>]*content="1\.9\.0"|content="1\.8\.0"[^>]*name="nexus-version"/.test(index), 'nexus-version meta');
+check('index-version-1.9.2', /name="nexus-version"[^>]*content="1\.9\.0"|content="1\.8\.0"[^>]*name="nexus-version"/.test(index), 'nexus-version meta');
 
 const patchRefs = [...new Set((index.match(/\b4\.\d+(?:\.\d+)?\b/g)||[]).map(norm))].sort();
 const staleRefs = patchRefs.filter(v => statusPatch && v !== statusPatch);
