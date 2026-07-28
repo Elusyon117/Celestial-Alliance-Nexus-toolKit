@@ -1,13 +1,13 @@
-/* Celestial Alliance Nexus Toolkit v1.9.1-r2 service worker */
+/* Celestial Alliance Nexus Toolkit v1.9.1-r3 service worker */
 
-const VERSION = '1.9.1-r2';
+const VERSION = '1.9.1-r3';
 const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
 const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
 const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;
 const CACHE_PREFIX = 'celestial-nexus-';
 
 const SHELL = [
-  './', './index.html', './404.html', './manifest.webmanifest',
+  './', './index.html', './404.html', './manifest.webmanifest', './release.json',
   './icon-192.png', './icon-512.png', './icons/icon-192.png', './icons/icon-512.png',
   './assets/wikelo/ana-endro.webp', './assets/wikelo/bokto.webp',
   './assets/wikelo/boomtube-clanguard.webp', './assets/wikelo/geist-snow.webp',

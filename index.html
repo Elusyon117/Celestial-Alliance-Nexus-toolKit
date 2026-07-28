@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 
-<html data-nexus-loading-fix="v3" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.9.1" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.9.1" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v1.9.1 stable performance release (VLM loading fix v3): lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
+<!-- Celestial Nexus Toolkit v1.9.1 stable performance release (VLM loading fix v4): lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
 <!-- Event Planner v10.1 stability patch: fixed selection-overlay mutation loop and briefing whitespace gap. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -27767,7 +27767,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=1.9.1-r2').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=1.9.1-r3').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -76715,7 +76715,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
       ['Special editions',counts.teach&&counts.wikelo&&counts.executive?'PASS':'WARN',`${counts.teach} Teach’s · ${counts.wikelo} Wikelo · ${counts.executive} Executive/PYAM entries.`],
       ['Duplicate selection names',ambiguous?'WARN':'PASS',ambiguous?`${ambiguous} duplicate display-name groups remain; exact class identifiers are retained for resolver selection.`:'No unresolved duplicate display-name groups.'],
       ['Selected vehicle stock',vehicle.tone==='ok'?'PASS':vehicle.tone==='warn'?'WARN':'INFO',vehicle.detail],
-      ['Component completeness',state.componentAudits.size?'PASS':'INFO',state.componentAudits.size?`${[...state.componentAudits.values()].reduce((sum,row)=>sum+row.expanded,0)} additional compatible options recovered by size-only scans.`:'Open a component picker to run its complete type-and-size audit.'],
+      ['Component completeness',state.componentAudits.size?'PASS':'INFO',state.componentAudits.size?`${[...state.componentAudits.values()].reduce((sum,row)=>sum+row.expanded,0)} compatible options verified by bounded type-and-size catalog requests.`:'Open a component picker to run its bounded compatible-component audit.'],
       ['Price patch alignment',pricing.older||pricing.historical?'WARN':pricing.current?'PASS':'INFO',pricing.current?`${pricing.current} shopping lines match the current version family.`:'Refresh an upgrade shopping list to validate prices and locations.'],
       ['Route distance',state.distanceReady?'PASS':state.distancePairs?'WARN':'INFO',state.distanceReady?'Full selected terminal matrix uses UEX gigameter distances.':state.distancePairs?'Some route legs use UEX distance and others use hierarchy fallback.':'Refresh a shopping list and choose a starting point to calculate terminal distances.']
     ];
@@ -76772,6 +76772,382 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',install,{once:true});else install();
 })();
 
+</script>
+
+
+<!-- NEXUS VLM — v1.9.1-r3 progressive component catalog integrity hotfix -->
+<style id="nexus-vlm-integrity-hotfix-r3-style">
+  #loadout-component-picker-overlay .nx-vlm-refresh-note {
+    margin: 0 0 10px; padding: 9px 11px; border: 1px solid rgba(59,130,246,.24);
+    border-radius: 7px; background: rgba(59,130,246,.07); color: var(--text2);
+    font-size: 12px; line-height: 1.45;
+  }
+  #loadout-component-picker-overlay .nx-vlm-refresh-note[data-state="ready"] {
+    border-color: rgba(16,185,129,.25); background: rgba(16,185,129,.07); color: #a7f3d0;
+  }
+  #loadout-component-picker-overlay .nx-vlm-refresh-note[data-state="warning"] {
+    border-color: rgba(245,158,11,.28); background: rgba(245,158,11,.07); color: #fde68a;
+  }
+</style>
+<script id="nexus-vlm-integrity-hotfix-r3-script">
+(() => {
+  'use strict';
+  const VERSION = '1.9.1-r3';
+  if (window.NEXUS_VLM_INTEGRITY_HOTFIX?.version === VERSION) return;
+
+  const previousOpen = typeof window.nexusLoadoutOpenComponentPicker === 'function'
+    ? window.nexusLoadoutOpenComponentPicker
+    : null;
+  const catalogCache = new Map();
+  const CACHE_TTL_MS = 5 * 60 * 1000;
+  const TOTAL_REFRESH_TIMEOUT_MS = 12000;
+  const REQUEST_TIMEOUT_MS = 7000;
+  const MAX_PAGES_PER_ALIAS_SIZE = 2;
+  const MAX_CONCURRENCY = 4;
+
+  function loadoutState() {
+    try { return nexusLoadoutState; }
+    catch (_) { return window.nexusLoadoutState || null; }
+  }
+
+  function normalized(value) {
+    return String(value || '').trim().toLowerCase();
+  }
+
+  function categoryFor(type) {
+    try { return categoryForComponentType(type) || ''; }
+    catch (_) { return ''; }
+  }
+
+  function aliasesFor(type) {
+    try {
+      const rows = typeof nexusLoadoutTypeAliases === 'function'
+        ? nexusLoadoutTypeAliases(type)
+        : [type];
+      return [...new Set((rows || []).filter(Boolean))];
+    } catch (_) {
+      return [type].filter(Boolean);
+    }
+  }
+
+  function itemCategory(item) {
+    try {
+      if (typeof nexusLoadoutCategoryFromItem === 'function') {
+        const value = nexusLoadoutCategoryFromItem(item);
+        if (value) return value;
+      }
+    } catch (_) {}
+    const source = item?.type || item?.item_type || item?.component_type || item?.sub_type || item?.subtype || item?.classification || item?.classification_label || '';
+    return categoryFor(source);
+  }
+
+  function manufacturerName(item) {
+    try {
+      if (typeof vehicleManufacturerName === 'function') return vehicleManufacturerName(item) || '';
+    } catch (_) {}
+    return String(item?.manufacturer?.name || item?.manufacturer || '').trim();
+  }
+
+  function optionFromItem(item, fallbackSize, source) {
+    const size = Number(item?.size || item?.weapon_size || item?.vehicle_weapon?.size) || Number(fallbackSize) || 0;
+    const uuid = item?.uuid || item?.class_name || item?.slug || `${item?.name || 'item'}|${size}`;
+    let label = `${item?.name || 'Unnamed component'} — S${size || '?'}`;
+    try {
+      if (typeof actualItemLabel === 'function') label = actualItemLabel({...item, size});
+    } catch (_) {}
+    return {
+      uuid,
+      name:String(item?.name || '').trim(),
+      size,
+      manufacturer:manufacturerName(item),
+      grade:String(item?.grade || item?.component_grade || '').trim(),
+      componentClass:String(item?.component_class || item?.componentClass || item?.class || item?.classification_label || item?.classification || '').trim(),
+      subType:String(item?.sub_type_label || item?.subtype_label || item?.sub_type || item?.subtype || '').trim(),
+      classification:String(item?.classification_label || item?.classification || '').trim(),
+      record:item,
+      recordSummary:item,
+      label,
+      catalogSource:source
+    };
+  }
+
+  function optionKey(option) {
+    const uuid = normalized(option?.uuid || option?.class_name || option?.slug);
+    return uuid || `${normalized(option?.name)}|${Number(option?.size) || 0}`;
+  }
+
+  function mergeOption(map, option) {
+    if (!option?.name) return;
+    const key = optionKey(option);
+    const current = map.get(key);
+    if (!current) {
+      map.set(key, option);
+      return;
+    }
+    const merged = {...current};
+    for (const [field, value] of Object.entries(option)) {
+      if (value !== undefined && value !== null && value !== '') merged[field] = value;
+    }
+    map.set(key, merged);
+  }
+
+  async function fetchPage(alias, size, pageNumber, signal) {
+    const query = new URLSearchParams();
+    query.set('filter[type]', alias);
+    query.set('filter[size]', String(size));
+    query.set('per_page', '200');
+    query.set('page[size]', '200');
+    query.set('page[number]', String(pageNumber));
+    const url = `${SHIP_DATA_API}/items?${query.toString()}`;
+    const options = {
+      mode:'cors', credentials:'omit', cache:'no-store', referrerPolicy:'no-referrer', signal
+    };
+    const response = typeof fetchWithTimeout === 'function'
+      ? await fetchWithTimeout(url, options, REQUEST_TIMEOUT_MS)
+      : await fetch(url, options);
+    if (!response.ok) throw new Error(`Component catalog returned HTTP ${response.status}.`);
+    const payload = await response.json();
+    const rows = Array.isArray(payload?.data) ? payload.data : [];
+    const next = payload?.links?.next;
+    const current = Number(payload?.meta?.current_page || payload?.meta?.currentPage || payload?.meta?.page || pageNumber);
+    const last = Number(payload?.meta?.last_page || payload?.meta?.lastPage || payload?.meta?.total_pages || current);
+    return {rows, hasNext:Boolean(next) || (current && last && current < last)};
+  }
+
+  async function mapLimit(items, limit, worker) {
+    let cursor = 0;
+    const runners = Array.from({length:Math.min(limit, items.length)}, async () => {
+      while (cursor < items.length) {
+        const index = cursor++;
+        await worker(items[index], index);
+      }
+    });
+    await Promise.all(runners);
+  }
+
+  async function repairedFetchCompleteItems(type, minSize, maxSize) {
+    const targetCategory = categoryFor(type);
+    const start = Math.max(0, Number(minSize) || Number(maxSize) || 0);
+    const end = Math.max(start, Number(maxSize) || start);
+    const cacheKey = `${targetCategory || normalized(type)}|${start}|${end}`;
+    const cached = catalogCache.get(cacheKey);
+    if (cached?.rows && Date.now() - cached.savedAt < CACHE_TTL_MS) return cached.rows;
+    if (cached?.promise) return cached.promise;
+
+    const promise = (async () => {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), TOTAL_REFRESH_TIMEOUT_MS);
+      const merged = new Map();
+      const failures = [];
+      try {
+        const aliases = aliasesFor(type);
+        const jobs = [];
+        for (let size = start; size <= end; size++) {
+          for (const alias of aliases) jobs.push({alias, size});
+        }
+        await mapLimit(jobs, MAX_CONCURRENCY, async job => {
+          try {
+            for (let page = 1; page <= MAX_PAGES_PER_ALIAS_SIZE; page++) {
+              if (controller.signal.aborted) break;
+              const result = await fetchPage(job.alias, job.size, page, controller.signal);
+              for (const item of result.rows) {
+                if (!item?.name || /placeholder|test[_\s-]*item|^empty$/i.test(item.name)) continue;
+                const size = Number(item.size || item.weapon_size || item?.vehicle_weapon?.size) || job.size;
+                if (size < start || size > end) continue;
+                const category = itemCategory(item);
+                if (targetCategory && category && category !== targetCategory) continue;
+                mergeOption(merged, optionFromItem(item, size, 'bounded type-and-size query'));
+              }
+              if (!result.hasNext || !result.rows.length) break;
+            }
+          } catch (error) {
+            failures.push(`${job.alias} S${job.size}: ${error?.message || error}`);
+          }
+        });
+      } finally {
+        clearTimeout(timer);
+      }
+
+      const rows = [...merged.values()].sort((a,b) =>
+        (Number(a.size) || 0) - (Number(b.size) || 0) ||
+        String(a.name || '').localeCompare(String(b.name || ''), undefined, {numeric:true, sensitivity:'base'})
+      );
+      if (!rows.length) {
+        const error = new Error(failures[0] || 'No compatible component records were returned.');
+        error.name = 'ComponentCatalogUnavailableError';
+        throw error;
+      }
+      Object.defineProperty(rows, 'nxPartial', {value:failures.length > 0, enumerable:false});
+
+      catalogCache.set(cacheKey, {rows, savedAt:Date.now()});
+      try {
+        const auditState = window.NEXUS_VEHICLE_DATA_REVIEW?.state;
+        if (auditState?.componentAudits?.set) {
+          auditState.componentAudits.set(cacheKey, {
+            category:targetCategory || type,
+            start,
+            end,
+            total:rows.length,
+            expanded:rows.length,
+            method:'bounded type-and-size',
+            checkedAt:new Date().toISOString()
+          });
+        }
+      } catch (_) {}
+      return rows;
+    })();
+
+    catalogCache.set(cacheKey, {promise, savedAt:Date.now()});
+    try { return await promise; }
+    catch (error) {
+      catalogCache.delete(cacheKey);
+      throw error;
+    }
+  }
+
+  function mergeGroupOptions(group, rows) {
+    const merged = new Map();
+    for (const option of group.options || []) mergeOption(merged, option);
+    for (const option of rows || []) mergeOption(merged, option);
+    const hasStock = [...merged.values()].some(option =>
+      String(option.uuid || '') === String(group.stockUuid || '') ||
+      normalized(option.name) === normalized(group.stockName)
+    );
+    if (group.stockName && !hasStock) {
+      mergeOption(merged, {
+        uuid:group.stockUuid || `stock:${group.stockName}`,
+        name:group.stockName,
+        size:group.stockSize || group.maxSize,
+        manufacturer:group.stockManufacturer || '',
+        grade:group.stockGrade || '',
+        componentClass:'', classification:'', subType:'',
+        label:`${group.stockName} — stock`, catalogSource:'stock fallback'
+      });
+    }
+    group.options = [...merged.values()].sort((a,b) =>
+      (Number(a.size) || 0) - (Number(b.size) || 0) ||
+      String(a.name || '').localeCompare(String(b.name || ''), undefined, {numeric:true, sensitivity:'base'})
+    );
+  }
+
+  function refreshNote(list, text, state) {
+    if (!list) return;
+    let note = list.querySelector(':scope > .nx-vlm-refresh-note');
+    if (!note) {
+      note = document.createElement('div');
+      note.className = 'nx-vlm-refresh-note';
+      list.prepend(note);
+    }
+    note.dataset.state = state || 'loading';
+    note.textContent = text;
+  }
+
+  function renderCurrentPicker(group, trigger) {
+    const overlay = nexusLoadoutEnsureComponentPicker();
+    try { nexusLoadoutActiveComponentPickerGroupId = group.id; } catch (_) {}
+    try { nexusLoadoutComponentPickerReturnFocus = trigger || document.activeElement; } catch (_) {}
+    const meta = (typeof ACTUAL_COMPONENT_CATEGORIES !== 'undefined' && ACTUAL_COMPONENT_CATEGORIES?.[group.category]) || {singular:'Component', label:'Components'};
+    const title = document.getElementById('loadout-component-picker-title');
+    const kicker = document.getElementById('loadout-component-picker-kicker');
+    const subtitle = document.getElementById('loadout-component-picker-subtitle');
+    const list = document.getElementById('loadout-component-picker-list');
+    const count = document.getElementById('loadout-component-picker-count');
+    const search = document.getElementById('loadout-component-picker-search');
+    if (kicker) kicker.textContent = `${meta.label || 'Components'} · compatible catalog`;
+    if (title) title.textContent = `Choose ${group.utilitySlotLabel || meta.singular || 'component'}`;
+    if (subtitle) subtitle.textContent = `Installed: ${group.selectedName || 'Empty'} · Stock: ${group.stockName || 'Empty'}`;
+    if (list) {
+      list.innerHTML = typeof nexusLoadoutComponentPickerListHtml === 'function'
+        ? nexusLoadoutComponentPickerListHtml(group)
+        : '<div class="loadout-component-picker-empty">Current compatible choices are unavailable.</div>';
+      refreshNote(list, 'Showing cached and stock choices now. Refreshing the live compatible catalog…', 'loading');
+    }
+    if (count) count.textContent = `${(group.options || []).length} available now`;
+    if (search) {
+      search.value = '';
+      search.placeholder = 'Search component, manufacturer, class, grade, or size…';
+    }
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    requestAnimationFrame(() => {
+      overlay.classList.add('open');
+      setTimeout(() => search?.focus(), 80);
+    });
+    return {overlay, subtitle, list, count, search};
+  }
+
+  function repairedOpenComponentPicker(groupId, trigger) {
+    const state = loadoutState();
+    const group = state?.setup?.groups?.find(row => String(row.id) === String(groupId));
+    if (!group) return previousOpen?.apply(this, arguments);
+    if (group.category === 'weapons') return previousOpen?.apply(this, arguments);
+    if (typeof nexusLoadoutEnsureComponentPicker !== 'function') return previousOpen?.apply(this, arguments);
+
+    const ui = renderCurrentPicker(group, trigger);
+    const token = Number(group.__nxR3CatalogToken || 0) + 1;
+    group.__nxR3CatalogToken = token;
+    group.__nxCatalogStatus = 'loading';
+
+    repairedFetchCompleteItems(group.type, group.minSize, group.maxSize).then(rows => {
+      if (group.__nxR3CatalogToken !== token) return;
+      mergeGroupOptions(group, rows);
+      const partial = Boolean(rows.nxPartial);
+      group.__nxFullCatalogLoaded = !partial;
+      group.__nxCatalogStatus = partial ? 'partial' : 'ready';
+      let activeGroupId = '';
+      try { activeGroupId = nexusLoadoutActiveComponentPickerGroupId || ''; } catch (_) {}
+      const active = !ui.overlay.hidden && String(activeGroupId) === String(groupId);
+      if (!active) return;
+      if (ui.list) {
+        ui.list.innerHTML = nexusLoadoutComponentPickerListHtml(group);
+        refreshNote(ui.list, partial
+          ? `Partial live catalog loaded: ${group.options.length} usable choices. Reopen to retry missing sources.`
+          : `Live catalog ready: ${group.options.length} compatible choices.`, partial ? 'warning' : 'ready');
+        ui.list.scrollTop = 0;
+      }
+      if (ui.count) ui.count.textContent = `${group.options.length} compatible${partial ? ' · partial refresh' : ''}`;
+      if (ui.subtitle) ui.subtitle.textContent = `Installed: ${group.selectedName || 'Empty'} · Stock: ${group.stockName || 'Empty'} · ${partial ? 'Partial live catalog.' : 'Live catalog verified.'}`;
+      if (ui.search?.value) nexusLoadoutFilterComponentPicker(ui.search.value);
+    }).catch(error => {
+      if (group.__nxR3CatalogToken !== token) return;
+      group.__nxFullCatalogLoaded = false;
+      group.__nxCatalogStatus = 'partial';
+      console.warn('Compatible component catalog refresh unavailable; existing options remain usable.', error);
+      if (!ui.overlay.hidden) {
+        refreshNote(ui.list, 'Live refresh was unavailable or timed out. Existing and stock choices remain usable; close and reopen to retry.', 'warning');
+        if (ui.count) ui.count.textContent = `${(group.options || []).length} available · refresh unavailable`;
+        if (ui.subtitle) ui.subtitle.textContent = `Installed: ${group.selectedName || 'Empty'} · Stock: ${group.stockName || 'Empty'} · Using current cached choices.`;
+      }
+    });
+  }
+
+  function clearCatalogCache() {
+    catalogCache.clear();
+    try { if (typeof actualItemCache !== 'undefined') actualItemCache.clear(); } catch (_) {}
+    try { if (typeof nexusLoadoutCompleteItemCache !== 'undefined') nexusLoadoutCompleteItemCache.clear(); } catch (_) {}
+    try { if (typeof nexusLoadoutAllItemsBySizeCache !== 'undefined') nexusLoadoutAllItemsBySizeCache.clear(); } catch (_) {}
+    const state = loadoutState();
+    for (const group of state?.setup?.groups || []) {
+      group.__nxFullCatalogLoaded = false;
+      group.__nxCatalogStatus = 'idle';
+      group.__nxR3CatalogToken = Number(group.__nxR3CatalogToken || 0) + 1;
+    }
+  }
+
+  try { nexusLoadoutFetchCompleteCompatibleItems = repairedFetchCompleteItems; } catch (_) {}
+  try { nexusLoadoutOpenComponentPicker = repairedOpenComponentPicker; } catch (_) {}
+  Object.assign(window, {
+    nexusLoadoutFetchCompleteCompatibleItems:repairedFetchCompleteItems,
+    nexusLoadoutOpenComponentPicker:repairedOpenComponentPicker,
+    nexusLoadoutClearComponentCatalogCache:clearCatalogCache,
+    NEXUS_VLM_INTEGRITY_HOTFIX:{
+      version:VERSION,
+      cache:catalogCache,
+      clearCatalogCache,
+      fetchCompleteCompatibleItems:repairedFetchCompleteItems
+    }
+  });
+})();
 </script>
 
 </body>

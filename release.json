@@ -1,0 +1,7 @@
+{
+  "schema": "celestial-nexus.release.v1",
+  "appVersion": "1.9.1",
+  "cacheRevision": "1.9.1-r3",
+  "releaseLabel": "v1.9.1-r3 integrity hotfix",
+  "notes": "Progressive Vehicle Loadout Manager catalog loading, corrected repository validation, and aligned PWA metadata."
+}
