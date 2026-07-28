@@ -1,15 +1,17 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-07-27T19:58:03.111Z",
-  "status": "failed",
+  "generatedAt": "2026-07-28T03:40:20.948Z",
+  "status": "passed-with-warnings",
+  "appVersion": "1.9.1",
   "patch": "4.9.0",
   "channel": "LIVE",
   "missionCount": 1778,
-  "errors": 1,
-  "warnings": 2,
+  "errors": 0,
+  "warnings": 1,
   "patchReferences": [
     "4.0.0",
     "4.1.0",
+    "4.10.0",
     "4.2.0",
     "4.3.0",
     "4.4.0",
@@ -72,16 +74,16 @@
       "detail": "stale-upstream-unavailable"
     },
     {
-      "name": "index-version-1.9.0",
-      "ok": false,
+      "name": "index-version",
+      "ok": true,
       "severity": "error",
-      "detail": "nexus-version meta"
+      "detail": "expected=1.9.1; actual=1.9.1"
     },
     {
-      "name": "index-patch-reference-review",
-      "ok": false,
+      "name": "index-current-patch-reference",
+      "ok": true,
       "severity": "warning",
-      "detail": "Non-current patch strings: 4.0.0, 4.1.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.8.3"
+      "detail": "current=4.9.0; references=4.0.0, 4.1.0, 4.10.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.8.3, 4.9.0"
     }
   ]
 }
