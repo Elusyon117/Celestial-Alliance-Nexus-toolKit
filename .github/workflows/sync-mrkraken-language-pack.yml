@@ -15,61 +15,146 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out complete repository history
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - name: Download latest StarStrings LIVE release
+
+      - name: Download and validate latest StarStrings LIVE release
+        id: mirror
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p "$RUNNER_TEMP/mrkraken"
-          curl --fail --location --retry 4 --retry-all-errors \
-            -H 'Accept: application/vnd.github+json' \
-            -H 'X-GitHub-Api-Version: 2022-11-28' \
-            'https://api.github.com/repos/MrKraken/StarStrings/releases/latest' \
-            -o "$RUNNER_TEMP/mrkraken/release.json"
-          ASSET_URL="$(jq -r '[.assets[] | select(.name == "StarStrings-LIVE.zip")][0].browser_download_url // [.assets[] | select(.name | test("LIVE.*\\.zip$";"i"))][0].browser_download_url // empty' "$RUNNER_TEMP/mrkraken/release.json")"
-          ASSET_NAME="$(jq -r '[.assets[] | select(.name == "StarStrings-LIVE.zip")][0].name // [.assets[] | select(.name | test("LIVE.*\\.zip$";"i"))][0].name // empty' "$RUNNER_TEMP/mrkraken/release.json")"
-          test -n "$ASSET_URL" || { echo 'No LIVE ZIP asset found in latest MrKraken release.' >&2; exit 1; }
-          curl --fail --location --retry 4 --retry-all-errors "$ASSET_URL" -o "$RUNNER_TEMP/mrkraken/$ASSET_NAME"
-          unzip -q -o "$RUNNER_TEMP/mrkraken/$ASSET_NAME" -d "$RUNNER_TEMP/mrkraken/extracted"
-          INI_PATH="$(find "$RUNNER_TEMP/mrkraken/extracted" -type f -ipath '*/Data/Localization/english/global.ini' -print -quit)"
-          test -s "$INI_PATH" || { echo 'Data/Localization/english/global.ini not found.' >&2; exit 1; }
-          ENTRY_COUNT="$(grep -c '=' "$INI_PATH" || true)"
-          test "$ENTRY_COUNT" -ge 10000 || { echo "Mirror is incomplete: $ENTRY_COUNT entries." >&2; exit 1; }
-          cp "$INI_PATH" data/mrkraken-global.ini
-          export ENTRY_COUNT ASSET_NAME
-          python3 - <<'PY'
-          import json, os, pathlib, datetime
-          release=json.loads(pathlib.Path(os.environ['RUNNER_TEMP'],'mrkraken','release.json').read_text())
-          target=pathlib.Path('data/mrkraken-global.ini')
-          meta={
-            'source_repository':'MrKraken/StarStrings',
-            'release_name':release.get('name') or release.get('tag_name') or '',
-            'tag_name':release.get('tag_name') or '',
-            'published_at':release.get('published_at') or '',
-            'html_url':release.get('html_url') or '',
-            'asset_name':os.environ['ASSET_NAME'],
-            'entry_count':int(os.environ['ENTRY_COUNT']),
-            'byte_count':target.stat().st_size,
-            'synced_at':datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z')
-          }
-          pathlib.Path('data/mrkraken-release.json').write_text(json.dumps(meta,indent=2)+'\n')
+          TEMP_DIR="$RUNNER_TEMP/mrkraken"
+          rm -rf "$TEMP_DIR"
+          mkdir -p "$TEMP_DIR/extracted"
+
+          validate_existing() {
+            python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          ini = Path('data/mrkraken-global.ini')
+          meta_path = Path('data/mrkraken-release.json')
+          if not ini.is_file() or not meta_path.is_file():
+              raise SystemExit(1)
+          meta = json.loads(meta_path.read_text(encoding='utf-8'))
+          size = ini.stat().st_size
+          entries = sum(1 for line in ini.open('r', encoding='utf-8', errors='replace') if '=' in line)
+          valid = (
+              entries >= 10000
+              and size >= 1000000
+              and int(meta.get('entry_count', -1)) == entries
+              and int(meta.get('byte_count', -1)) == size
+          )
+          if not valid:
+              raise SystemExit(1)
+          print(f'Existing mirror is valid: {entries} entries, {size} bytes.')
           PY
+          }
+
+          if ! (
+            set -euo pipefail
+            curl --fail --silent --show-error --location --retry 4 --retry-all-errors \
+              -H 'Accept: application/vnd.github+json' \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              'https://api.github.com/repos/MrKraken/StarStrings/releases/latest' \
+              -o "$TEMP_DIR/release.json"
+
+            ASSET_URL="$(jq -r '[.assets[] | select(.name == "StarStrings-LIVE.zip")][0].browser_download_url // [.assets[] | select(.name | test("LIVE.*\\.zip$";"i"))][0].browser_download_url // empty' "$TEMP_DIR/release.json")"
+            ASSET_NAME="$(jq -r '[.assets[] | select(.name == "StarStrings-LIVE.zip")][0].name // [.assets[] | select(.name | test("LIVE.*\\.zip$";"i"))][0].name // empty' "$TEMP_DIR/release.json")"
+            test -n "$ASSET_URL"
+            test -n "$ASSET_NAME"
+
+            curl --fail --silent --show-error --location --retry 4 --retry-all-errors \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              "$ASSET_URL" -o "$TEMP_DIR/$ASSET_NAME"
+            unzip -q -o "$TEMP_DIR/$ASSET_NAME" -d "$TEMP_DIR/extracted"
+
+            INI_PATH="$(find "$TEMP_DIR/extracted" -type f -ipath '*/Data/Localization/english/global.ini' -print -quit)"
+            test -n "$INI_PATH"
+            test -s "$INI_PATH"
+
+            ENTRY_COUNT="$(grep -c '=' "$INI_PATH" || true)"
+            BYTE_COUNT="$(wc -c < "$INI_PATH")"
+            test "$ENTRY_COUNT" -ge 10000
+            test "$BYTE_COUNT" -ge 1000000
+
+            cp "$INI_PATH" data/mrkraken-global.ini
+            export ENTRY_COUNT BYTE_COUNT ASSET_NAME TEMP_DIR
+            python3 - <<'PY'
+          import datetime
+          import json
+          import os
+          from pathlib import Path
+
+          release = json.loads(Path(os.environ['TEMP_DIR'], 'release.json').read_text(encoding='utf-8'))
+          meta = {
+              'source_repository': 'MrKraken/StarStrings',
+              'release_name': release.get('name') or release.get('tag_name') or '',
+              'tag_name': release.get('tag_name') or '',
+              'published_at': release.get('published_at') or '',
+              'html_url': release.get('html_url') or '',
+              'asset_name': os.environ['ASSET_NAME'],
+              'entry_count': int(os.environ['ENTRY_COUNT']),
+              'byte_count': int(os.environ['BYTE_COUNT']),
+              'synced_at': datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00', 'Z')
+          }
+          Path('data/mrkraken-release.json').write_text(json.dumps(meta, indent=2) + '\n', encoding='utf-8')
+          PY
+          ); then
+            echo 'The latest MrKraken release could not be downloaded or validated.' >&2
+            if validate_existing; then
+              echo 'preserved=true' >> "$GITHUB_OUTPUT"
+              echo 'A temporary upstream failure occurred; the last verified mirror was preserved.' >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo 'No valid existing mirror is available.' >&2
+            exit 1
+          fi
+
+          validate_existing
+          echo 'preserved=false' >> "$GITHUB_OUTPUT"
+
       - name: Commit language mirror
+        shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add data/mrkraken-global.ini data/mrkraken-release.json
-          if git diff --cached --quiet; then echo 'No language-pack changes.'; exit 0; fi
-          git commit -m "Sync MrKraken language pack"
+
+          if git diff --cached --quiet; then
+            echo 'No language-pack changes.'
+            exit 0
+          fi
+
+          git commit -m 'Sync MrKraken language pack'
           for attempt in 1 2 3; do
             git pull --rebase origin "$GITHUB_REF_NAME"
-            if git push origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              exit 0
+            fi
             sleep $((attempt * 3))
           done
+
+          echo 'Push failed after three attempts.' >&2
           exit 1
+
+      - name: Add summary
+        if: always()
+        shell: bash
+        run: |
+          {
+            echo '## MrKraken language-pack synchronization'
+            if [ -f data/mrkraken-release.json ]; then
+              jq -r '"- Release: `\(.release_name)`\n- Asset: `\(.asset_name)`\n- Entries: `\(.entry_count)`\n- Bytes: `\(.byte_count)`\n- Synced: `\(.synced_at)`"' data/mrkraken-release.json
+            else
+              echo '- Release metadata was not produced.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

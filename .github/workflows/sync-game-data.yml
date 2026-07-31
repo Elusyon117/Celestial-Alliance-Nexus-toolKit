@@ -27,47 +27,74 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     env:
       MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
       MISSION_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
-      MIN_MISSION_COUNT: 100
+      MIN_MISSION_COUNT: '100'
     steps:
-      - uses: actions/checkout@v5
+      - name: Check out complete repository history
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v5
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
-      - name: Validate scripts
-        run: |
-          node --check scripts/sync-scmdb-missions.mjs
-          node --check scripts/audit-patch-data.mjs
-      - name: Synchronize mission catalog
-        run: node scripts/sync-scmdb-missions.mjs
-      - name: Audit generated data
-        run: node scripts/audit-patch-data.mjs
-      - name: Commit generated files
+
+      - name: Validate synchronization scripts
+        shell: bash
         run: |
           set -euo pipefail
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/scmdb-missions-live.json data/scmdb-missions-live.js data/game-data-status.json data/patch-audit.json
+          node --check scripts/sync-scmdb-missions.mjs
+          node --check scripts/audit-patch-data.mjs
+          node --check scripts/validate-repo.mjs
+
+      - name: Synchronize mission catalog
+        run: node scripts/sync-scmdb-missions.mjs
+
+      - name: Audit generated data
+        run: node scripts/audit-patch-data.mjs
+
+      - name: Commit generated files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add \
+            data/scmdb-missions-live.json \
+            data/scmdb-missions-live.js \
+            data/game-data-status.json \
+            data/patch-audit.json
+
           if git diff --cached --quiet; then
-            echo "No data changes."
+            echo 'No game-data changes.'
             exit 0
           fi
-          git commit -m "Sync latest game data"
+
+          git commit -m 'Sync latest game data'
           for attempt in 1 2 3; do
             git pull --rebase origin "$GITHUB_REF_NAME"
-            if git push origin "HEAD:$GITHUB_REF_NAME"; then exit 0; fi
+            if git push origin "HEAD:$GITHUB_REF_NAME"; then
+              exit 0
+            fi
             sleep $((attempt * 3))
           done
+
+          echo 'Push failed after three attempts.' >&2
           exit 1
+
       - name: Add summary
         if: always()
+        shell: bash
         run: |
-          echo "## Game-data synchronization" >> "$GITHUB_STEP_SUMMARY"
-          if [ -f data/game-data-status.json ]; then
-            jq -r '.modules.contractFinder | "- Status: `\(.status)`\n- Patch: `\(.patch)`\n- Channel: `\(.channel)`\n- Missions: `\(.totalCount)`\n- Last error: `\(.lastError // "")`"' data/game-data-status.json >> "$GITHUB_STEP_SUMMARY"
-          fi
+          {
+            echo '## Game-data synchronization'
+            if [ -f data/game-data-status.json ]; then
+              jq -r '.modules.contractFinder | "- Status: `\(.status)`\n- Patch: `\(.patch)`\n- Channel: `\(.channel)`\n- Missions: `\(.totalCount)`\n- Last error: `\(.lastError // "")`"' data/game-data-status.json
+            else
+              echo '- Status file was not produced.'
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

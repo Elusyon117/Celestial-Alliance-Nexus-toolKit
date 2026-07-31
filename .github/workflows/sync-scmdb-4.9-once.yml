@@ -18,24 +18,26 @@ env:
 jobs:
   restore-or-sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-
+    timeout-minutes: 30
     steps:
       - name: Check out complete repository history
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v5
+        uses: actions/setup-node@v7
         with:
           node-version: '24'
 
       - name: Validate SCMDB scripts
+        shell: bash
         run: |
+          set -euo pipefail
           node --check scripts/recover-scmdb-from-history.mjs
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
+          node --check scripts/validate-repo.mjs
 
       - name: Check current tracked snapshot
         id: current
@@ -52,27 +54,30 @@ jobs:
             const state = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
             missionCount = Array.isArray(payload.missions) ? payload.missions.length : 0;
             status = state?.modules?.contractFinder?.status || 'unknown';
-            valid = payload.targetPatch === '4.9.0'
+            valid = payload.schema === 'celestial-nexus.scmdb-missions.v2'
+              && payload.targetPatch === '4.9.0'
               && payload.targetChannel === 'LIVE'
               && payload.patchVerified === true
               && Number(payload.missionCount) === missionCount
+              && Number(state?.modules?.contractFinder?.totalCount) === missionCount
+              && ['current', 'stale-upstream-unavailable'].includes(status)
               && missionCount >= 100;
           } catch (_) {}
 
           fs.appendFileSync(process.env.GITHUB_OUTPUT, `valid=${valid}\nmission_count=${missionCount}\nstatus=${status}\n`);
           if (valid) {
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-              `## Existing SCMDB snapshot accepted\n\nThe repository already contains ${missionCount} verified and normalized 4.9.0 LIVE missions. No download or release asset is required.\n`);
+              `## Existing SCMDB snapshot accepted\n\nThe repository already contains ${missionCount} verified and normalized 4.9.0 LIVE missions with status \`${status}\`.\n`);
           }
           NODE
 
-      - name: Recover and normalize verified contracts from repository history
+      - name: Recover verified contracts from repository history
         if: ${{ steps.current.outputs.valid != 'true' }}
         id: history
         continue-on-error: true
         run: node scripts/recover-scmdb-from-history.mjs
 
-      - name: Try the direct SCMDB 4.9 LIVE asset
+      - name: Try direct SCMDB 4.9 LIVE snapshot
         if: ${{ steps.current.outputs.valid != 'true' && steps.history.outcome != 'success' }}
         id: upstream
         continue-on-error: true
@@ -81,7 +86,7 @@ jobs:
           SCMDB_MISSIONS_URL: 'https://scmdb.net/data/merged-4.9.0-live.12232306.json'
         run: node scripts/sync-scmdb-missions.mjs
 
-      - name: Verify a usable snapshot now exists
+      - name: Verify a usable snapshot exists
         shell: bash
         run: |
           node --input-type=module <<'NODE'
@@ -103,8 +108,8 @@ jobs:
 
           if (!valid) {
             fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,
-              `## SCMDB recovery failed\n\nNo verified and normalized 4.9.0 LIVE snapshot could be recovered. Restore your preserved data files, then rerun this workflow.\n`);
-            throw new Error(`No usable SCMDB snapshot exists. Current status=${module.status || 'unknown'}, missions=${count}, declared=${payload.missionCount}.`);
+              `## SCMDB recovery failed\n\nNo verified and normalized 4.9.0 LIVE snapshot could be recovered. Restore the preserved data files, then rerun this workflow.\n`);
+            throw new Error(`No usable SCMDB snapshot exists. status=${module.status || 'unknown'}, missions=${count}, declared=${payload.missionCount}.`);
           }
 
           fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,

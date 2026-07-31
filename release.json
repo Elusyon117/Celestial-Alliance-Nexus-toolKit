@@ -1,7 +1,7 @@
 {
   "schema": "celestial-nexus.release.v1",
   "appVersion": "1.9.1",
-  "cacheRevision": "1.9.1-r3",
-  "releaseLabel": "v1.9.1-r3 integrity hotfix",
-  "notes": "Progressive Vehicle Loadout Manager catalog loading, corrected repository validation, and aligned PWA metadata."
+  "cacheRevision": "1.9.1-r4",
+  "releaseLabel": "v1.9.1-r4 FPS dashboard and workflow reliability update",
+  "notes": "Full-width FPS dashboard with restored performance, spread, and recoil charts; reliable weapon image fallback; Wikelo text export; and hardened GitHub validation and synchronization workflows."
 }
