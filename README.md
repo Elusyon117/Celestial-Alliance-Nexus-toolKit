@@ -58,13 +58,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/events/tactical-strike-groups.webp" alt="NX-01 Event Planner" width="100%">
       <h3>NX-01 · Event Planner</h3>
       <p>Build alliance-ready operations from the first briefing through final crew assignments.</p>
       <p><strong>Includes:</strong> event identity and cover art, mission briefing fields, ship and unit sections, editable crew roles, priority levels, participant assignments, drag-and-drop ordering, roster integration, saved setups, Discord-ready text, and image exports.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/polaris-bit-reference.webp" alt="NX-02 Vehicle Loadout Manager" width="100%">
       <h3>NX-02 · Vehicle Loadout Manager</h3>
       <p>Configure ship hardpoints and evaluate component choices before deployment.</p>
       <p><strong>Includes:</strong> vehicle selection, compatible component discovery, stock and custom parts, hardpoint configuration, crafted-quality modelling, stat comparisons, performance charts, pricing, shopping lists, checklists, saved builds, import/export, and loadout images.</p>
@@ -72,13 +70,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/locations/onyx-facility.webp" alt="NX-03 Contract Finder" width="100%">
       <h3>NX-03 · Contract Finder</h3>
       <p>Search the verified mission catalog and turn contract data into actionable planning intelligence.</p>
       <p><strong>Includes:</strong> reward, reputation, location, legality, requirement, mission-chain, employer, and category filtering; detailed mission records; live-refresh handling; repository snapshot fallbacks; and mission-data import/export support.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/r97-crimson-reference.webp" alt="NX-04 Item Finder" width="100%">
       <h3>NX-04 · Item Finder</h3>
       <p>Research equipment, specifications, store locations, pricing, and availability from one workspace.</p>
       <p><strong>Includes:</strong> category and text search, item specifications, manufacturer and classification details, store and terminal records, current price listings, marketplace references, image fallbacks, and links to supporting data sources.</p>
@@ -86,13 +82,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/monde-crimson-reference.svg" alt="NX-05 Blueprint Finder" width="100%">
       <h3>NX-05 · Blueprint Finder</h3>
       <p>Trace fabrication requirements before committing time, materials, or organization resources.</p>
       <p><strong>Includes:</strong> blueprint and recipe search, unlock and acquisition information, required materials, crafted outputs, quality controls, projected stat effects, visual component symbols, and fabrication-focused filters.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/modules/argo-raft-cargo-grid-manager.webp" alt="NX-06 Cargo Hauling Routing" width="100%">
       <h3>NX-06 · Cargo Hauling Routing</h3>
       <p>Build multi-stop hauling plans with capacity, time, cost, and payout validation.</p>
       <p><strong>Includes:</strong> contract and route sequencing, ship-capacity checks, cargo totals, pickup and delivery legs, travel assumptions, fuel estimates, ETA calculations, profitability summaries, route swapping, and CSV, JSON, PNG, and briefing exports.</p>
@@ -100,13 +94,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/ana-endro.webp" alt="NX-07 Wikelo Trade Center" width="100%">
       <h3>NX-07 · Wikelo Trade Center</h3>
       <p>Track alien trade requirements and organize the resources needed to complete favor exchanges.</p>
       <p><strong>Includes:</strong> trade and reward records, favor requirements, completion-cost calculations, organization material tracking, reputation guidance, completion status, special-item identification, and full trade-plan text export.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg" alt="NX-08 Commodity Trading" width="100%">
       <h3>NX-08 · Commodity Trading</h3>
       <p>Compare market opportunities while accounting for cargo limits, travel, and confidence.</p>
       <p><strong>Includes:</strong> commodity and terminal research, buy and sell comparisons, ship cargo capacity, route profitability, investment and revenue estimates, fuel-aware calculations, market confidence, route reversal, and reusable trade plans.</p>
@@ -114,13 +106,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/embedded-03-44b347223ad8.jpg" alt="NX-09 Mining Resources Command" width="100%">
       <h3>NX-09 · Mining Resources Command</h3>
       <p>Turn resource data into practical field routes and mining configurations.</p>
       <p><strong>Includes:</strong> resource and region discovery, planetary and asteroid guidance, mining-platform selection, mining heads, modules and gadgets, fracture and extraction guidance, favorite resources, location recommendations, and field-ready loadout planning.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/celestial-alliance-logo-953272130c49.png" alt="NX-10 Language Pack Lab" width="100%">
       <h3>NX-10 · Language Pack Lab</h3>
       <p>Create a clearer and more personalized Star Citizen localization file.</p>
       <p><strong>Includes:</strong> repository-mirrored StarStrings data, clean <code>global.ini</code> import, search and filtering, custom terminology, aliases, direct key editing, previews, reset controls, downloadable files, and install-ready ZIP generation.</p>
@@ -128,13 +118,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/hub/day12-topbanner-bengalfleet-min.jpg" alt="NX-11 Org Picture Creator" width="100%">
       <h3>NX-11 · Org Picture Creator</h3>
       <p>Produce alliance-ready graphics without leaving the toolkit.</p>
       <p><strong>Includes:</strong> reusable templates, image uploads, custom canvas sizes, text, lines and shapes, branding palettes, safe-area guides, layer-aware editing, undo/redo, project save/load, reusable styles, and high-quality PNG export.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/geist-snow.webp" alt="NX-12 Game Status and Intel" width="100%">
       <h3>NX-12 · Game Status &amp; Intel</h3>
       <p>Monitor the current environment and keep official information separate from community intelligence.</p>
       <p><strong>Includes:</strong> RSI service-health information, live-build and patch details, official news, Wiki intelligence, source labels, refresh controls, network fallbacks, and clearly identified optional community or datamined information.</p>
@@ -142,13 +130,11 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/embedded-09-86c083fb3412.webp" alt="NX-13 Flight Profile Builder" width="100%">
       <h3>NX-13 · Flight Profile Builder <sup>WIP</sup></h3>
       <p>A development workspace for building and sharing flight-control configurations.</p>
       <p><strong>Planned and previewed capabilities:</strong> device profiles, joystick and throttle ordering, bindings, response curves, dead zones, input testing, reusable presets, project files, and Star Citizen-compatible XML exports.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/killshot-dominion-reference.webp" alt="NX-14 FPS Weapon Loadout Manager" width="100%">
       <h3>NX-14 · FPS Weapon Loadout Manager</h3>
       <p>Configure personal weapons and understand how attachments and quality settings change performance.</p>
       <p><strong>Includes:</strong> weapon selection, compatible attachment ports, optics, barrels, underbarrel devices, magazines, crafted-quality presets, complete stat deltas, recoil and spread visualization, relative-performance charts, saved builds, and JSON export.</p>
