@@ -1,7 +1,7 @@
 {
   "schema": "celestial-nexus.release.v1",
-  "appVersion": "1.9.1",
-  "cacheRevision": "1.9.1-r4",
-  "releaseLabel": "v1.9.1-r4 FPS dashboard and workflow reliability update",
-  "notes": "Full-width FPS dashboard with restored performance, spread, and recoil charts; reliable weapon image fallback; Wikelo text export; and hardened GitHub validation and synchronization workflows."
+  "appVersion": "2.0.0",
+  "cacheRevision": "2.0.0-r1",
+  "releaseLabel": "v2.0.0 Loadout & Contract Intelligence Release",
+  "notes": "Improved Vehicle Loadout Manager landscape exports with subtler system colors, weapon-size color identity, larger vehicle artwork, and improved readability. Contract Finder catalog options now expose operational tags including ACE, ILLEGAL, PRISON, BLUEPRINT, REP GATE, CHAIN, SHAREABLE, COMBAT, and HAULING when supported by mission data."
 }

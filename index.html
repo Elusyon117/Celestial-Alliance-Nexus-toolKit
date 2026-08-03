@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 
-<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="1.9.1" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="2.0.0" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v1.9.1 stable performance release (VLM loading fix v4): lower canvas FPS, pause hidden animations, defer hidden logos, add paint containment, resilient data workflows and cache lifecycle. -->
+<!-- Celestial Nexus Toolkit v2.0.0 Loadout & Contract Intelligence Release: clearer engineering exports, weapon-size color identity, operational contract tags, resilient data workflows, and cache lifecycle. -->
 <!-- Event Planner v10.1 stability patch: fixed selection-overlay mutation loop and briefing whitespace gap. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#07131f" name="theme-color"/>
-<meta content="1.9.1" name="nexus-version"/>
-<meta content="Celestial Nexus Toolkit v1.9.1" name="generator"/>
+<meta content="2.0.0" name="nexus-version"/>
+<meta content="Celestial Nexus Toolkit v2.0.0" name="generator"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -18,10 +18,10 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://media.starcitizen.tools" rel="preconnect" crossorigin="anonymous"/>
 <link href="https://media.robertsspaceindustries.com" rel="preconnect" crossorigin="anonymous"/>
-<title>Celestial Nexus Toolkit — v1.9.1 Stable Performance Release</title>
-<link href="./icon-192.png?v=1.9.1-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<title>Celestial Nexus Toolkit — v2.0.0 Loadout & Contract Intelligence Release</title>
+<link href="./icon-192.png?v=2.0.0-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png?v=1.9.1-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=2.0.0-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -9808,7 +9808,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
       <span class="hub-rb-brand-copy">
         <span class="hub-rb-brand-name">Celestial Nexus</span>
-        <span class="hub-rb-brand-meta">Alliance toolkit · v1.9.1</span>
+        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.0</span>
       </span>
     </button>
     <nav class="hub-rb-nav" aria-label="Main hub sections">
@@ -10081,7 +10081,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   </main>
 
   <footer class="hub-rb-footer">
-    <span>Celestial Alliance community toolkit · v1.9.1</span>
+    <span>Celestial Alliance community toolkit · v2.0.0</span>
     <span class="hub-rb-footer-nav"><button type="button" onclick="hubRebrandScroll('hub-rb-featured')">Featured</button><button type="button" onclick="hubRebrandScroll('hub-rb-modules')">Modules</button><button type="button" onclick="hubRebrandScroll('hub-rb-development')">WIP</button></span>
     <span>Unofficial Star Citizen fan tool · Community data may change with game patches</span>
   </footer>
@@ -27929,7 +27929,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=1.9.1-r4').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=2.0.0-r1').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -27937,8 +27937,8 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 window.NEXUS_RELEASE = Object.freeze({
-  version: '1.9.1',
-  label: 'Stable Performance Release',
+  version: '2.0.0',
+  label: 'Loadout & Contract Intelligence Release',
   catalogMode: 'Unified toolkit with hub-only module navigation, corrected cargo contract names, SCMDB-style Contract Finder tags, calculator inputs, requirements, combat breakdowns, and cargo manifests',
   publishedAt: '2026-07-08'
 });
@@ -33675,27 +33675,27 @@ nexusInitializeCommodityTrading=function(){
   function v133SectionHeader(ctx, section, x, y, width, height = 34) {
     const visual = section.visual;
     const gradient = ctx.createLinearGradient(x, y, x + width, y);
-    gradient.addColorStop(0, nexusLoadoutExportHexAlpha(visual.accent, .18));
-    gradient.addColorStop(.55, nexusLoadoutExportHexAlpha(visual.accent, .055));
+    gradient.addColorStop(0, nexusLoadoutExportHexAlpha(visual.accent, .10));
+    gradient.addColorStop(.55, nexusLoadoutExportHexAlpha(visual.accent, .025));
     gradient.addColorStop(1, 'rgba(8,12,19,.38)');
-    fillRoundedRect(ctx, x, y, width, height, 8, gradient, nexusLoadoutExportHexAlpha(visual.accent, .34));
+    fillRoundedRect(ctx, x, y, width, height, 8, gradient, nexusLoadoutExportHexAlpha(visual.accent, .22));
     ctx.fillStyle = visual.accent;
-    ctx.fillRect(x, y, 4, height);
+    ctx.fillRect(x, y, 3, height);
     const meta = ACTUAL_COMPONENT_CATEGORIES[section.category] || {icon:'⚙️'};
     const heading = `${meta.icon || '⚙'}  ${String(visual.label || section.category).toUpperCase()}`;
     ctx.fillStyle = '#f8fafc';
-    ctx.font = '700 15px Inter, Arial, sans-serif';
+    ctx.font = '750 16.5px Inter, Arial, sans-serif';
     ctx.fillText(heading, x + 14, y + 22);
     const labelWidth = ctx.measureText(heading).width;
     if (width > 800 && visual.note) {
       const noteX = x + Math.max(270, labelWidth + 40);
-      ctx.fillStyle = nexusLoadoutExportHexAlpha(visual.accent, .82);
-      ctx.font = '500 10.5px Inter, Arial, sans-serif';
+      ctx.fillStyle = nexusLoadoutExportHexAlpha(visual.accent, .68);
+      ctx.font = '500 11px Inter, Arial, sans-serif';
       ctx.fillText(fitCanvasText(ctx, visual.note, Math.max(120, width - (noteX - x) - 180)), noteX, y + 22);
     }
     ctx.textAlign = 'right';
     ctx.fillStyle = '#cbd5e1';
-    ctx.font = '700 10px "Share Tech Mono", monospace';
+    ctx.font = '700 10.5px "Share Tech Mono", monospace';
     ctx.fillText(`${section.cards.length} MOUNT${section.cards.length === 1 ? '' : 'S'} · ${section.slotCount} SLOT${section.slotCount === 1 ? '' : 'S'}`, x + width - 12, y + 22);
     ctx.textAlign = 'left';
   }
@@ -33705,78 +33705,107 @@ nexusInitializeCommodityTrading=function(){
     let cy = y;
     let rows = 1;
     for (const chip of chips.slice(0, 6)) {
-      ctx.font = '700 9.2px "Share Tech Mono", monospace';
+      ctx.font = '700 9.8px "Share Tech Mono", monospace';
       const text = String(chip.text || '').toUpperCase();
-      const desired = Math.min(160, Math.max(48, ctx.measureText(text).width + 14));
+      const desired = Math.min(184, Math.max(52, ctx.measureText(text).width + 16));
       if (cx + desired > x + maxWidth && rows < maxRows) {
         rows += 1;
         cx = x;
-        cy += 21;
+        cy += 22;
       }
       if (cx + desired > x + maxWidth) break;
-      fillRoundedRect(ctx, cx, cy, desired, 18, 5,
-        chip.tone === 'strong' ? nexusLoadoutExportHexAlpha(visual.accent, .15) : 'rgba(7,11,18,.78)',
-        chip.tone === 'strong' ? nexusLoadoutExportHexAlpha(visual.accent, .48) : nexusLoadoutExportHexAlpha(visual.accent, .22));
+      fillRoundedRect(ctx, cx, cy, desired, 19, 5,
+        chip.tone === 'strong' ? nexusLoadoutExportHexAlpha(visual.accent, .10) : 'rgba(7,11,18,.72)',
+        chip.tone === 'strong' ? nexusLoadoutExportHexAlpha(visual.accent, .36) : nexusLoadoutExportHexAlpha(visual.accent, .16));
       ctx.fillStyle = chip.tone === 'strong' ? visual.accent : '#aeb8c9';
       ctx.textAlign = 'center';
-      ctx.fillText(fitCanvasText(ctx, text, desired - 8), cx + desired / 2, cy + 12.5);
+      ctx.fillText(fitCanvasText(ctx, text, desired - 10), cx + desired / 2, cy + 13.3);
       ctx.textAlign = 'left';
-      cx += desired + 6;
+      cx += desired + 7;
     }
     return rows;
+  }
+
+  function v200WeaponSizeAccent(value) {
+    const size = Number(value) || 0;
+    if (size <= 1) return '#67e8f9';
+    if (size === 2) return '#38bdf8';
+    if (size === 3) return '#a78bfa';
+    if (size === 4) return '#f59e0b';
+    if (size === 5) return '#f97316';
+    return '#fb7185';
+  }
+
+  function v200DrawWeaponSizeLegend(ctx, x, y) {
+    const rows = [1,2,3,4,5,6];
+    ctx.fillStyle = '#748097';
+    ctx.font = '700 9.8px "Share Tech Mono", monospace';
+    ctx.fillText('WEAPON SIZE COLOR', x, y + 14);
+    let cursor = x + 144;
+    rows.forEach(size => {
+      const accent = v200WeaponSizeAccent(size);
+      fillRoundedRect(ctx, cursor, y, 43, 22, 6, nexusLoadoutExportHexAlpha(accent, .09), nexusLoadoutExportHexAlpha(accent, .30));
+      ctx.fillStyle = accent;
+      ctx.textAlign = 'center';
+      ctx.font = '800 9.8px "Share Tech Mono", monospace';
+      ctx.fillText(`S${size}`, cursor + 21.5, y + 14.5);
+      ctx.textAlign = 'left';
+      cursor += 49;
+    });
   }
 
   function v133DrawCard(ctx, card, x, y, width, height, visual, isWeapon = false) {
     const group = card.group;
     const details = card.details;
+    const tone = isWeapon ? {...visual, accent:v200WeaponSizeAccent(details.size)} : visual;
     const changed = group.selectedUuid !== group.stockUuid || group.selectedName !== group.stockName;
     const gradient = ctx.createLinearGradient(x, y, x + width, y + height);
-    gradient.addColorStop(0, nexusLoadoutExportHexAlpha(visual.accent, .10));
-    gradient.addColorStop(.32, '#171b27');
+    gradient.addColorStop(0, nexusLoadoutExportHexAlpha(tone.accent, .055));
+    gradient.addColorStop(.28, '#171b27');
     gradient.addColorStop(1, '#131722');
-    fillRoundedRect(ctx, x, y, width, height, 9, gradient, changed ? nexusLoadoutExportHexAlpha(visual.accent, .72) : nexusLoadoutExportHexAlpha(visual.accent, .3));
-    ctx.fillStyle = visual.accent;
-    ctx.fillRect(x, y, width, 3);
-    ctx.fillStyle = nexusLoadoutExportHexAlpha(visual.accent, .065);
-    ctx.beginPath(); ctx.arc(x + width - 20, y + 21, 31, 0, Math.PI * 2); ctx.fill();
+    fillRoundedRect(ctx, x, y, width, height, 9, gradient, changed ? nexusLoadoutExportHexAlpha(tone.accent, .52) : nexusLoadoutExportHexAlpha(tone.accent, .20));
+    ctx.fillStyle = tone.accent;
+    ctx.fillRect(x, y, width, 2);
+    ctx.fillStyle = nexusLoadoutExportHexAlpha(tone.accent, .035);
+    ctx.beginPath(); ctx.arc(x + width - 20, y + 21, 28, 0, Math.PI * 2); ctx.fill();
 
     const codeW = isWeapon ? 44 : 42;
-    fillRoundedRect(ctx, x + 11, y + 12, codeW, 42, 7, nexusLoadoutExportHexAlpha(visual.accent, .14), nexusLoadoutExportHexAlpha(visual.accent, .42));
-    ctx.fillStyle = visual.accent;
+    fillRoundedRect(ctx, x + 11, y + 12, codeW, 44, 7, nexusLoadoutExportHexAlpha(tone.accent, .09), nexusLoadoutExportHexAlpha(tone.accent, .32));
+    ctx.fillStyle = tone.accent;
     ctx.textAlign = 'center';
-    ctx.font = '800 10.5px "Share Tech Mono", monospace';
+    ctx.font = '800 11.2px "Share Tech Mono", monospace';
     ctx.fillText(card.code, x + 11 + codeW / 2, y + 30);
     ctx.fillStyle = '#dbeafe';
-    ctx.font = '700 9px "Share Tech Mono", monospace';
-    ctx.fillText(details.size ? `S${details.size}` : 'SIZE —', x + 11 + codeW / 2, y + 46);
+    ctx.font = '700 9.4px "Share Tech Mono", monospace';
+    ctx.fillText(details.size ? `S${details.size}` : 'SIZE —', x + 11 + codeW / 2, y + 48);
     ctx.textAlign = 'left';
 
     const statusText = changed ? 'CUSTOM FIT' : 'FACTORY STOCK';
-    ctx.font = '700 8.8px "Share Tech Mono", monospace';
-    const statusW = Math.max(76, ctx.measureText(statusText).width + 15);
-    fillRoundedRect(ctx, x + width - statusW - 10, y + 11, statusW, 20, 10,
-      changed ? nexusLoadoutExportHexAlpha(visual.accent, .18) : 'rgba(16,185,129,.09)',
-      changed ? nexusLoadoutExportHexAlpha(visual.accent, .55) : 'rgba(52,211,153,.32)');
-    ctx.fillStyle = changed ? visual.accent : '#6ee7b7';
+    ctx.font = '700 9.4px "Share Tech Mono", monospace';
+    const statusW = Math.max(82, ctx.measureText(statusText).width + 16);
+    fillRoundedRect(ctx, x + width - statusW - 10, y + 11, statusW, 21, 10.5,
+      changed ? nexusLoadoutExportHexAlpha(tone.accent, .12) : 'rgba(16,185,129,.07)',
+      changed ? nexusLoadoutExportHexAlpha(tone.accent, .38) : 'rgba(52,211,153,.25)');
+    ctx.fillStyle = changed ? tone.accent : '#6ee7b7';
     ctx.textAlign = 'center';
-    ctx.fillText(statusText, x + width - statusW / 2 - 10, y + 24.5);
+    ctx.fillText(statusText, x + width - statusW / 2 - 10, y + 25);
     ctx.textAlign = 'left';
 
-    const textX = x + 64;
+    const textX = x + 68;
     const nameMax = Math.max(70, width - 84 - statusW);
-    ctx.fillStyle = nexusLoadoutExportHexAlpha(visual.accent, .94);
-    ctx.font = '700 8.8px "Share Tech Mono", monospace';
-    ctx.fillText(String(visual.label || group.category || 'component').toUpperCase(), textX, y + 20);
+    ctx.fillStyle = nexusLoadoutExportHexAlpha(tone.accent, .86);
+    ctx.font = '700 9.4px "Share Tech Mono", monospace';
+    ctx.fillText(String(tone.label || group.category || 'component').toUpperCase(), textX, y + 21);
     ctx.fillStyle = '#ffffff';
-    ctx.font = isWeapon ? '750 14.5px Inter, Arial, sans-serif' : '750 15.2px Inter, Arial, sans-serif';
-    ctx.fillText(fitCanvasText(ctx, group.selectedName || 'Empty hardpoint', nameMax), textX, y + 40);
+    ctx.font = isWeapon ? '760 16.2px Inter, Arial, sans-serif' : '760 16.6px Inter, Arial, sans-serif';
+    ctx.fillText(fitCanvasText(ctx, group.selectedName || 'Empty hardpoint', nameMax), textX, y + 43);
     ctx.fillStyle = '#8893a7';
-    ctx.font = '500 9.7px Inter, Arial, sans-serif';
-    ctx.fillText(fitCanvasText(ctx, details.meta || componentRangeLabel(group), width - 76), textX, y + 55);
+    ctx.font = '500 10.5px Inter, Arial, sans-serif';
+    ctx.fillText(fitCanvasText(ctx, details.meta || componentRangeLabel(group), width - 80), textX, y + 60);
 
-    const chipRows = v133TagRows(ctx, details.chips.length ? details.chips : [{text:componentRangeLabel(group)}], x + 11, y + 65, width - 22, visual, isWeapon ? 2 : 1);
-    const footerLineY = isWeapon ? y + 109 : y + 89;
-    ctx.strokeStyle = nexusLoadoutExportHexAlpha(visual.accent, .2);
+    const chipRows = v133TagRows(ctx, details.chips.length ? details.chips : [{text:componentRangeLabel(group)}], x + 11, y + 72, width - 22, tone, isWeapon ? 2 : 1);
+    const footerLineY = isWeapon ? y + 120 : y + 98;
+    ctx.strokeStyle = nexusLoadoutExportHexAlpha(tone.accent, .12);
     ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(x + 11, footerLineY); ctx.lineTo(x + width - 11, footerLineY); ctx.stroke();
     ctx.setLineDash([]);
@@ -33784,18 +33813,18 @@ nexusInitializeCommodityTrading=function(){
     if (card.craft.enabled) {
       const craftY = footerLineY + 9;
       ctx.fillStyle = '#c4b5fd';
-      ctx.font = '700 9px "Share Tech Mono", monospace';
+      ctx.font = '700 9.4px "Share Tech Mono", monospace';
       ctx.fillText(card.craft.badge, x + 11, craftY + 10);
       const summary = card.bonuses.slice(0, 2).map(bonus => `${bonus.label} ${bonus.text}`).join(' · ') || card.craft.material;
       ctx.fillStyle = '#8d96a9';
-      ctx.font = '500 9.2px Inter, Arial, sans-serif';
+      ctx.font = '500 9.6px Inter, Arial, sans-serif';
       ctx.fillText(fitCanvasText(ctx, summary, width - 112), x + 96, craftY + 10);
     } else {
       ctx.fillStyle = '#778197';
-      ctx.font = '700 8.7px "Share Tech Mono", monospace';
+      ctx.font = '700 9px "Share Tech Mono", monospace';
       ctx.fillText('BASE QUALITY', x + 11, footerLineY + 17);
       ctx.fillStyle = changed ? '#cbd5e1' : '#707b90';
-      ctx.font = '500 9.2px Inter, Arial, sans-serif';
+      ctx.font = '500 9.6px Inter, Arial, sans-serif';
       ctx.fillText(fitCanvasText(ctx, `Factory baseline: ${group.stockName || 'Empty'}`, width - 106), x + 94, footerLineY + 17);
     }
   }
@@ -33841,50 +33870,50 @@ nexusInitializeCommodityTrading=function(){
       catch (_) {}
     }
 
-    const width = 2400;
-    const margin = 40;
+    const width = 2560;
+    const margin = 44;
     const contentWidth = width - margin * 2;
-    const topY = 28;
-    const topHeight = 360;
-    const coverWidth = 840;
-    const panelGap = 18;
+    const topY = 30;
+    const topHeight = 420;
+    const coverWidth = 1020;
+    const panelGap = 20;
     const rightX = margin + coverWidth + panelGap;
     const rightWidth = contentWidth - coverWidth - panelGap;
-    const basePanelHeight = 106;
-    const performanceY = topY + basePanelHeight + 14;
-    const performanceHeight = topHeight - basePanelHeight - 14;
+    const basePanelHeight = 118;
+    const performanceY = topY + basePanelHeight + 16;
+    const performanceHeight = topHeight - basePanelHeight - 16;
     const groups = setup.groups || [];
     const sections = v133BuildSections(groups);
     const weapons = sections.find(section => section.category === 'weapons') || null;
     const supports = sections.filter(section => section !== weapons);
-    const weaponColumns = 6;
-    const weaponCardHeight = 142;
-    const weaponCardGap = 10;
-    const weaponHeaderHeight = 34;
+    const weaponColumns = 5;
+    const weaponCardHeight = 156;
+    const weaponCardGap = 12;
+    const weaponHeaderHeight = 38;
     const weaponRows = weapons ? Math.ceil(weapons.cards.length / weaponColumns) : 0;
     const weaponBlockHeight = weapons ? weaponHeaderHeight + 10 + weaponRows * weaponCardHeight + Math.max(0, weaponRows - 1) * weaponCardGap : 0;
 
-    const laneCount = 4;
-    const laneGap = 12;
+    const laneCount = 3;
+    const laneGap = 14;
     const laneWidth = (contentWidth - 40 - laneGap * (laneCount - 1)) / laneCount;
-    const supportCardHeight = 116;
-    const supportCardGap = 8;
-    const supportSectionGap = 12;
+    const supportCardHeight = 134;
+    const supportCardGap = 10;
+    const supportSectionGap = 14;
     const lanes = Array.from({length:laneCount}, () => ({height:0, sections:[]}));
     supports.forEach(section => {
-      section.blockHeight = v133SupportSectionHeight(section, supportCardHeight, supportCardGap, 34);
+      section.blockHeight = v133SupportSectionHeight(section, supportCardHeight, supportCardGap, 38);
       const lane = lanes.reduce((best, current) => current.height < best.height ? current : best, lanes[0]);
       lane.sections.push(section);
       lane.height += (lane.sections.length > 1 ? supportSectionGap : 0) + section.blockHeight;
     });
     const supportHeight = supports.length ? Math.max(...lanes.map(lane => lane.height)) : 0;
-    const componentsTitleHeight = 66;
-    const componentsInnerTop = 14;
-    const betweenBlocks = weapons && supports.length ? 16 : 0;
-    const componentsBottomPad = 18;
+    const componentsTitleHeight = 92;
+    const componentsInnerTop = 12;
+    const betweenBlocks = weapons && supports.length ? 18 : 0;
+    const componentsBottomPad = 22;
     const componentsHeight = componentsTitleHeight + componentsInnerTop + weaponBlockHeight + betweenBlocks + supportHeight + componentsBottomPad;
     const yComponents = topY + topHeight + 22;
-    const footerHeight = 48;
+    const footerHeight = 54;
     const height = yComponents + componentsHeight + footerHeight + 20;
 
     const outputScale = Math.max(1, Math.min(2, Number(scale) || 2));
@@ -33895,18 +33924,18 @@ nexusInitializeCommodityTrading=function(){
     ctx.scale(outputScale, outputScale);
     ctx.textBaseline = 'alphabetic';
 
-    ctx.fillStyle = '#090b10';
+    ctx.fillStyle = '#080b10';
     ctx.fillRect(0, 0, width, height);
     ctx.save();
-    ctx.strokeStyle = 'rgba(59,130,246,0.038)';
-    for (let x = 0; x <= width; x += 72) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
-    for (let y = 0; y <= height; y += 72) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
+    ctx.strokeStyle = 'rgba(59,130,246,0.026)';
+    for (let x = 0; x <= width; x += 80) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke(); }
+    for (let y = 0; y <= height; y += 80) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke(); }
     ctx.restore();
-    ctx.fillStyle = '#8b5cf6';
-    ctx.fillRect(0, 0, width, 4);
+    ctx.fillStyle = 'rgba(139,92,246,.72)';
+    ctx.fillRect(0, 0, width, 3);
 
     // Wide cover card.
-    fillRoundedRect(ctx, margin, topY, coverWidth, topHeight, 12, '#10141e', '#2e3548');
+    fillRoundedRect(ctx, margin, topY, coverWidth, topHeight, 12, '#10141e', '#293043');
     const coverElement = document.getElementById('loadout-vehicle-image');
     const coverImage = await nexusLoadoutLoadSafeExportImage(coverElement?.src || '');
     if (coverImage) drawImageCover(ctx, coverImage, margin, topY, coverWidth, topHeight, 0);
@@ -33916,79 +33945,79 @@ nexusInitializeCommodityTrading=function(){
       ctx.fillStyle = fallback; ctx.fillRect(margin, topY, coverWidth, topHeight);
     }
     const coverOverlay = ctx.createLinearGradient(margin, 0, margin + coverWidth, 0);
-    coverOverlay.addColorStop(0, 'rgba(5,7,12,.96)');
-    coverOverlay.addColorStop(.58, 'rgba(5,7,12,.58)');
-    coverOverlay.addColorStop(1, 'rgba(5,7,12,.12)');
+    coverOverlay.addColorStop(0, 'rgba(5,7,12,.90)');
+    coverOverlay.addColorStop(.58, 'rgba(5,7,12,.50)');
+    coverOverlay.addColorStop(1, 'rgba(5,7,12,.08)');
     ctx.fillStyle = coverOverlay; ctx.fillRect(margin, topY, coverWidth, topHeight);
     const coverBottom = ctx.createLinearGradient(0, topY + topHeight * .35, 0, topY + topHeight);
-    coverBottom.addColorStop(0, 'rgba(5,7,12,0)'); coverBottom.addColorStop(1, 'rgba(5,7,12,.91)');
+    coverBottom.addColorStop(0, 'rgba(5,7,12,0)'); coverBottom.addColorStop(1, 'rgba(5,7,12,.84)');
     ctx.fillStyle = coverBottom; ctx.fillRect(margin, topY, coverWidth, topHeight);
-    ctx.strokeStyle = '#2e3548'; ctx.strokeRect(margin + .5, topY + .5, coverWidth - 1, topHeight - 1);
+    ctx.strokeStyle = '#293043'; ctx.strokeRect(margin + .5, topY + .5, coverWidth - 1, topHeight - 1);
 
     let logo = null;
     try { logo = await nexusLoadoutLoadSafeExportImage(document.getElementById('org-logo')?.src || ''); } catch (_) {}
     if (logo) {
-      const logoScale = Math.min(52 / logo.naturalWidth, 44 / logo.naturalHeight);
+      const logoScale = Math.min(58 / logo.naturalWidth, 50 / logo.naturalHeight);
       ctx.drawImage(logo, margin + 20, topY + 18, logo.naturalWidth * logoScale, logo.naturalHeight * logoScale);
     }
-    const brandX = margin + (logo ? 82 : 22);
-    ctx.fillStyle = '#c4b5fd'; ctx.font = '700 12px "Share Tech Mono", monospace';
+    const brandX = margin + (logo ? 90 : 24);
+    ctx.fillStyle = '#c4b5fd'; ctx.font = '700 13px "Share Tech Mono", monospace';
     ctx.fillText('CELESTIAL NEXUS · ENGINEERING REPORT', brandX, topY + 34);
-    ctx.fillStyle = '#7f899d'; ctx.font = '500 10.5px Inter, Arial, sans-serif';
+    ctx.fillStyle = '#8a95a8'; ctx.font = '500 11.5px Inter, Arial, sans-serif';
     ctx.fillText('LANDSCAPE LOADOUT · component quality · calculated performance', brandX, topY + 52);
     ctx.textAlign = 'right'; ctx.fillStyle = '#7f899d'; ctx.font = '500 10px "Share Tech Mono", monospace';
     ctx.fillText(new Date().toLocaleString(), margin + coverWidth - 18, topY + 34); ctx.textAlign = 'left';
 
     const manufacturer = vehicleManufacturerName(vehicle) || 'STAR CITIZEN VEHICLE';
-    ctx.fillStyle = '#a78bfa'; ctx.font = '700 12px "Share Tech Mono", monospace';
-    ctx.fillText(String(manufacturer).toUpperCase(), margin + 22, topY + 184);
-    ctx.fillStyle = '#ffffff'; ctx.font = '800 47px Inter, Arial, sans-serif';
-    ctx.fillText(fitCanvasText(ctx, vehicle.name || setup.shipName || 'Vehicle', coverWidth - 70), margin + 22, topY + 230);
-    ctx.fillStyle = '#c4cad7'; ctx.font = '500 15px Inter, Arial, sans-serif';
-    const descLines = nexusLoadoutCanvasText(ctx, nexusLoadoutVehicleDescription(vehicle), margin + 22, topY + 256, coverWidth - 80, 19, 2);
+    ctx.fillStyle = '#a78bfa'; ctx.font = '700 13.5px "Share Tech Mono", monospace';
+    ctx.fillText(String(manufacturer).toUpperCase(), margin + 24, topY + 220);
+    ctx.fillStyle = '#ffffff'; ctx.font = '820 56px Inter, Arial, sans-serif';
+    ctx.fillText(fitCanvasText(ctx, vehicle.name || setup.shipName || 'Vehicle', coverWidth - 84), margin + 24, topY + 270);
+    ctx.fillStyle = '#d0d5df'; ctx.font = '500 17px Inter, Arial, sans-serif';
+    const descLines = nexusLoadoutCanvasText(ctx, nexusLoadoutVehicleDescription(vehicle), margin + 24, topY + 302, coverWidth - 96, 21, 2);
     const craftedGroups = groups.filter(group => group.craft?.enabled).length;
     const changedGroups = groups.filter(group => group.selectedUuid !== group.stockUuid || group.selectedName !== group.stockName).length;
-    const badgeY = topY + 278 + descLines * 19;
-    let badgeX = margin + 22;
+    const badgeY = topY + 326 + descLines * 21;
+    let badgeX = margin + 24;
     badgeX += nexusLoadoutCanvasPill(ctx, `${groups.reduce((sum, group) => sum + (Number(group.count) || 1), 0)} COMPONENT SLOTS`, badgeX, badgeY, 'rgba(59,130,246,.17)', 'rgba(59,130,246,.48)', '#93c5fd') + 8;
     badgeX += nexusLoadoutCanvasPill(ctx, `${changedGroups} CUSTOM GROUP${changedGroups === 1 ? '' : 'S'}`, badgeX, badgeY, 'rgba(20,184,166,.13)', 'rgba(20,184,166,.4)', '#5eead4') + 8;
     nexusLoadoutCanvasPill(ctx, `${craftedGroups} CRAFTED`, badgeX, badgeY, 'rgba(139,92,246,.18)', 'rgba(139,92,246,.5)', '#c4b5fd');
 
     // Vehicle profile panel.
     fillRoundedRect(ctx, rightX, topY, rightWidth, basePanelHeight, 12, '#111520', '#2e3548');
-    ctx.fillStyle = '#8b5cf6'; ctx.fillRect(rightX, topY, 5, basePanelHeight);
-    ctx.fillStyle = '#a78bfa'; ctx.font = '700 11px "Share Tech Mono", monospace';
+    ctx.fillStyle = 'rgba(139,92,246,.62)'; ctx.fillRect(rightX, topY, 4, basePanelHeight);
+    ctx.fillStyle = '#b9a6fb'; ctx.font = '700 12px "Share Tech Mono", monospace';
     ctx.fillText('VEHICLE PROFILE', rightX + 18, topY + 24);
     const base = nexusLoadoutBaseMetrics(vehicle);
     const baseStats = [['Hull',base.hull,'HP'],['SCM speed',base.scm,'m/s'],['NAV speed',base.nav,'m/s'],['Cargo',base.cargo,'SCU'],['Crew',base.crew,''],['Component groups',groups.length,'']];
     const baseGap = 8;
-    const baseCardW = (rightWidth - 36 - baseGap * (baseStats.length - 1)) / baseStats.length;
+    const baseCardW = (rightWidth - 40 - baseGap * (baseStats.length - 1)) / baseStats.length;
     baseStats.forEach(([label,value,unit], index) => {
-      const x = rightX + 18 + index * (baseCardW + baseGap);
-      fillRoundedRect(ctx, x, topY + 37, baseCardW, 54, 7, '#171c29', '#292f40');
+      const x = rightX + 20 + index * (baseCardW + baseGap);
+      fillRoundedRect(ctx, x, topY + 40, baseCardW, 62, 7, '#171c29', '#292f40');
       ctx.fillStyle = '#69748b'; ctx.font = '700 9.5px "Share Tech Mono", monospace';
-      ctx.fillText(String(label).toUpperCase(), x + 10, topY + 54);
-      ctx.fillStyle = '#f8fafc'; ctx.font = '750 19px Inter, Arial, sans-serif';
-      ctx.fillText(`${nexusLoadoutFormat(value,1)}${unit ? ' ' + unit : ''}`, x + 10, topY + 80);
+      ctx.fillText(String(label).toUpperCase(), x + 11, topY + 60);
+      ctx.fillStyle = '#f8fafc'; ctx.font = '760 20.5px Inter, Arial, sans-serif';
+      ctx.fillText(`${nexusLoadoutFormat(value,1)}${unit ? ' ' + unit : ''}`, x + 11, topY + 91);
     });
 
     // Compact performance dashboard to the right of the ship art.
     fillRoundedRect(ctx, rightX, performanceY, rightWidth, performanceHeight, 12, '#10141e', '#2e3548');
-    ctx.fillStyle = '#3b82f6'; ctx.fillRect(rightX, performanceY, 5, performanceHeight);
+    ctx.fillStyle = 'rgba(59,130,246,.62)'; ctx.fillRect(rightX, performanceY, 4, performanceHeight);
     const performanceView = nexusLoadoutState.performanceView === 'detailed' ? 'detailed' : 'summary';
     const stats = nexusLoadoutStatDefinitions(nexusLoadoutSnapshot(false), nexusLoadoutSnapshot(true), performanceView);
     const statRows = Math.min(3, Math.max(2, Math.ceil(stats.length / 7)));
     const statColumns = Math.ceil(stats.length / statRows);
     const statGap = 8;
-    const perfHeader = 52;
+    const perfHeader = 58;
     const statCardHeight = Math.floor((performanceHeight - perfHeader - 14 - statGap * (statRows - 1)) / statRows);
     const statCardWidth = (rightWidth - 36 - statGap * (statColumns - 1)) / statColumns;
-    ctx.fillStyle = '#93c5fd'; ctx.font = '700 11px "Share Tech Mono", monospace';
+    ctx.fillStyle = '#a9d0ff'; ctx.font = '700 12px "Share Tech Mono", monospace';
     ctx.fillText('CALCULATED OUTPUT', rightX + 18, performanceY + 23);
-    ctx.fillStyle = '#ffffff'; ctx.font = '750 23px Inter, Arial, sans-serif';
-    ctx.fillText(performanceView === 'summary' ? 'Vehicle performance summary' : 'Vehicle performance details', rightX + 18, performanceY + 45);
+    ctx.fillStyle = '#ffffff'; ctx.font = '760 25px Inter, Arial, sans-serif';
+    ctx.fillText(performanceView === 'summary' ? 'Vehicle performance summary' : 'Vehicle performance details', rightX + 18, performanceY + 48);
     ctx.textAlign = 'right'; ctx.fillStyle = '#6f7a90'; ctx.font = '500 10px Inter, Arial, sans-serif';
-    ctx.fillText(`${performanceView === 'summary' ? 'SUMMARY' : 'DETAILED'} · compared with factory stock`, rightX + rightWidth - 18, performanceY + 39); ctx.textAlign = 'left';
+    ctx.fillText(`${performanceView === 'summary' ? 'SUMMARY' : 'DETAILED'} · compared with factory stock`, rightX + rightWidth - 18, performanceY + 41); ctx.textAlign = 'left';
     const current = nexusLoadoutSnapshot(false);
     const stock = nexusLoadoutSnapshot(true);
     stats.forEach((def,index) => {
@@ -34003,9 +34032,9 @@ nexusInitializeCommodityTrading=function(){
       const improved = def.lower ? delta < -1e-8 : delta > 1e-8;
       const worsened = def.lower ? delta > 1e-8 : delta < -1e-8;
       fillRoundedRect(ctx, x, y, statCardWidth, statCardHeight, 7, '#171b27', '#292f40');
-      ctx.fillStyle = '#6f7a90'; ctx.font = '700 8.7px "Share Tech Mono", monospace';
+      ctx.fillStyle = '#748097'; ctx.font = '700 9.5px "Share Tech Mono", monospace';
       ctx.fillText(fitCanvasText(ctx, String(def.label).toUpperCase(), statCardWidth - 16), x + 8, y + 15);
-      ctx.fillStyle = '#ffffff'; ctx.font = '750 15.5px Inter, Arial, sans-serif';
+      ctx.fillStyle = '#ffffff'; ctx.font = '760 17px Inter, Arial, sans-serif';
       const digits = Math.abs(value) < 100 ? 2 : 1;
       ctx.fillText(fitCanvasText(ctx, `${nexusLoadoutFormat(value,digits)}${def.unit ? ' ' + def.unit : ''}`, statCardWidth - 16), x + 8, y + 35);
       ctx.fillStyle = improved ? '#6ee7b7' : worsened ? '#fca5a5' : '#6f7a90';
@@ -34016,13 +34045,14 @@ nexusInitializeCommodityTrading=function(){
 
     // Landscape component dashboard.
     fillRoundedRect(ctx, margin, yComponents, contentWidth, componentsHeight, 12, '#10141e', '#2e3548');
-    ctx.fillStyle = '#8b5cf6'; ctx.fillRect(margin, yComponents, 5, componentsHeight);
-    ctx.fillStyle = '#c4b5fd'; ctx.font = '700 11px "Share Tech Mono", monospace';
+    ctx.fillStyle = 'rgba(139,92,246,.58)'; ctx.fillRect(margin, yComponents, 4, componentsHeight);
+    ctx.fillStyle = '#c9bcfa'; ctx.font = '700 12px "Share Tech Mono", monospace';
     ctx.fillText('INSTALLED HARDPOINT CONFIGURATION', margin + 18, yComponents + 23);
-    ctx.fillStyle = '#ffffff'; ctx.font = '750 25px Inter, Arial, sans-serif';
-    ctx.fillText('Component systems and installed configuration', margin + 18, yComponents + 48);
+    ctx.fillStyle = '#ffffff'; ctx.font = '760 28px Inter, Arial, sans-serif';
+    ctx.fillText('Component systems and installed configuration', margin + 18, yComponents + 51);
     ctx.textAlign = 'right'; ctx.fillStyle = '#6f7a90'; ctx.font = '500 11px Inter, Arial, sans-serif';
-    ctx.fillText(`${groups.length} independent slots · ${sections.length} systems · ${craftedGroups} crafted · LANDSCAPE REPORT`, margin + contentWidth - 18, yComponents + 40); ctx.textAlign = 'left';
+    ctx.fillText(`${groups.length} independent slots · ${sections.length} systems · ${craftedGroups} crafted · LANDSCAPE REPORT`, margin + contentWidth - 18, yComponents + 42); ctx.textAlign = 'left';
+    if (weapons) v200DrawWeaponSizeLegend(ctx, margin + 18, yComponents + 61);
 
     let cursorY = yComponents + componentsTitleHeight + componentsInnerTop;
     const innerX = margin + 20;
@@ -34047,8 +34077,8 @@ nexusInitializeCommodityTrading=function(){
         let laneY = cursorY;
         lane.sections.forEach((section,sectionIndex) => {
           if (sectionIndex) laneY += supportSectionGap;
-          v133SectionHeader(ctx, section, x, laneY, laneWidth, 34);
-          laneY += 43;
+          v133SectionHeader(ctx, section, x, laneY, laneWidth, 38);
+          laneY += 47;
           section.cards.forEach((card,index) => {
             const cardH = supportCardHeight + (card.craft.enabled ? 22 : 0);
             v133DrawCard(ctx, card, x, laneY, laneWidth, cardH, section.visual, false);
@@ -34060,9 +34090,9 @@ nexusInitializeCommodityTrading=function(){
 
     const footerY = height - footerHeight;
     ctx.strokeStyle = '#252b3b'; ctx.beginPath(); ctx.moveTo(margin, footerY + 8); ctx.lineTo(width - margin, footerY + 8); ctx.stroke();
-    ctx.fillStyle = '#667085'; ctx.font = '500 10.5px Inter, Arial, sans-serif';
+    ctx.fillStyle = '#737f93'; ctx.font = '500 11.5px Inter, Arial, sans-serif';
     ctx.fillText('Performance values are calculated from selected component records, exact blueprint curves when available, and manual crafted overrides.', margin, footerY + 30);
-    ctx.textAlign = 'right'; ctx.fillStyle = '#596378'; ctx.font = '500 10px "Share Tech Mono", monospace';
+    ctx.textAlign = 'right'; ctx.fillStyle = '#657086'; ctx.font = '500 10.5px "Share Tech Mono", monospace';
     ctx.fillText(`${setup.version || vehicle.game_version || 'CURRENT GAME DATA'} · LANDSCAPE EXPORT`, width - margin, footerY + 30); ctx.textAlign = 'left';
     return canvas;
   };
@@ -35277,7 +35307,7 @@ button, [role="button"], input, select, summary { touch-action: manipulation; }
     if (typeof original !== 'function' || original.__nx136Cached) return;
     const memory = new Map();
     const inflight = new Map();
-    const cacheName = 'celestial-nexus-api-v1.9.1';
+    const cacheName = 'celestial-nexus-api-v2.0.0';
     const cacheableHost = /(^|\.)(star-citizen\.wiki|uexcorp\.(space|uk)|githubusercontent\.com|github\.io)$/i;
 
     function ttlFor(url) {
@@ -51569,9 +51599,9 @@ body {
 <script id="nexus-v180-release-stamp">
 (() => {
   'use strict';
-  const VERSION = '1.9.1';
-  const BUILD = '1.9.1-stable-performance';
-  const LABEL = 'Stable Performance Release';
+  const VERSION = '2.0.0';
+  const BUILD = '2.0.0-loadout-contract-intelligence';
+  const LABEL = 'Loadout & Contract Intelligence Release';
   try { document.documentElement.setAttribute('data-nexus-version', BUILD); } catch (_) {}
   try { document.title = `Celestial Nexus Toolkit — v${VERSION} ${LABEL}`; } catch (_) {}
   try {
@@ -54864,7 +54894,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 </script>
 
 
-<!-- Celestial Nexus Toolkit v1.9.1: low-risk runtime hardening and diagnostics. -->
+<!-- Celestial Nexus Toolkit v2.0.0: low-risk runtime hardening and diagnostics. -->
 <style id="nexus-v180-runtime-hardening-style">
   /* Hidden modules must not consume layout/paint work. */
   .app-view[hidden] { display: none !important; content-visibility: hidden; contain: strict; }
@@ -54883,7 +54913,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 <script id="nexus-v180-runtime-hardening-script">
 (() => {
   'use strict';
-  const VERSION = '1.9.1';
+  const VERSION = '2.0.0';
   const startedAt = performance.now();
   const diagnostics = window.NEXUS_DIAGNOSTICS = window.NEXUS_DIAGNOSTICS || {
     version: VERSION,
@@ -71507,7 +71537,7 @@ body.nx-stable-select-open{overflow:hidden!important}
 
 
 
-<!-- CELESTIAL NEXUS v1.9.1 — EVENT EXPORT + HUB ORDER + CREATOR PROFILE HOTFIX -->
+<!-- CELESTIAL NEXUS v2.0.0 — EVENT EXPORT + HUB ORDER + CREATOR PROFILE HOTFIX -->
 <style id="nexus-v190-hub-event-hotfix-style">
   /* Keep the Event Planner format selector fully visible. The summary now sits
      below the selector instead of competing for horizontal room. */
@@ -74862,7 +74892,7 @@ html body #cargo-grid-view.app-view:not(#hub-view) .cargo-btn.primary:hover{filt
 
 
 <style id="nexus-performance-optimization-v192">
-/* v1.9.2 optimization pass: self-contained artwork compression and conservative paint safeguards. */
+/* v2.0.0 optimization baseline: self-contained artwork compression and conservative paint safeguards. */
 .app-view[hidden] {
   content-visibility: hidden;
   contain: strict;
@@ -74909,7 +74939,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
   }, {passive:true});
 
   window.NEXUS_DIAGNOSTICS = Object.assign(window.NEXUS_DIAGNOSTICS || {}, {
-    optimizationVersion: '1.9.2-local',
+    optimizationVersion: '2.0.0-baseline',
     selfContainedArtwork: true,
     embeddedArtworkFormat: 'webp',
     embeddedArtworkDeduplicated: true,
@@ -77070,7 +77100,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
 </script>
 
 
-<!-- NEXUS VLM — v1.9.1-r4 FPS dashboard and workflow reliability update -->
+<!-- NEXUS VLM — v2.0.0-r1 FPS dashboard and workflow reliability update -->
 <style id="nexus-vlm-integrity-hotfix-r3-style">
   #loadout-component-picker-overlay .nx-vlm-refresh-note {
     margin: 0 0 10px; padding: 9px 11px; border: 1px solid rgba(59,130,246,.24);
@@ -77087,7 +77117,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
 <script id="nexus-vlm-integrity-hotfix-r3-script">
 (() => {
   'use strict';
-  const VERSION = '1.9.1-r4';
+  const VERSION = '2.0.0-r1';
   if (window.NEXUS_VLM_INTEGRITY_HOTFIX?.version === VERSION) return;
 
   const previousOpen = typeof window.nexusLoadoutOpenComponentPicker === 'function'
@@ -77587,6 +77617,198 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
     }
   };
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',setup,{once:true});else setup();
+})();
+</script>
+
+
+
+<style id="nexus-v200-contract-catalog-tags-style">
+/* v2.0.0 — compact operational tags in the filtered Contract Finder catalog. */
+.nexus-select-overlay.is-mission-catalog .nexus-select-option{min-height:86px!important;align-items:start!important}
+.nexus-select-overlay.is-mission-catalog .nexus-select-option-copy{gap:5px!important}
+.nexus-select-overlay.is-mission-catalog .nexus-select-option-tags{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag{display:inline-flex;align-items:center;min-height:17px;padding:3px 6px;border:1px solid rgba(148,163,184,.18);border-radius:2px;background:rgba(148,163,184,.055);color:#9cafbd;font:850 7px/1 "Share Tech Mono","JetBrains Mono",monospace;letter-spacing:.07em;text-transform:uppercase;white-space:nowrap}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-illegal{border-color:rgba(251,113,133,.38);background:rgba(190,24,93,.11);color:#fda4af}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-ace{border-color:rgba(251,191,36,.40);background:rgba(180,83,9,.12);color:#fde68a}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-prison{border-color:rgba(248,113,113,.32);background:rgba(127,29,29,.12);color:#fecaca}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-wip{border-color:rgba(244,114,182,.34);background:rgba(157,23,77,.10);color:#fbcfe8}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-blueprint{border-color:rgba(167,139,250,.38);background:rgba(109,40,217,.11);color:#ddd6fe}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-gate{border-color:rgba(250,204,21,.32);background:rgba(161,98,7,.10);color:#fef08a}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-chain{border-color:rgba(129,140,248,.34);background:rgba(67,56,202,.10);color:#c7d2fe}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-shareable{border-color:rgba(74,222,128,.32);background:rgba(21,128,61,.10);color:#bbf7d0}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-combat{border-color:rgba(248,113,113,.28);background:rgba(153,27,27,.08);color:#fecaca}
+.nexus-select-overlay.is-mission-catalog .nexus-contract-tag.tag-hauling{border-color:rgba(45,212,191,.30);background:rgba(15,118,110,.09);color:#99f6e4}
+</style>
+<script id="nexus-v200-loadout-contract-intelligence-script">
+(() => {
+  'use strict';
+  if (window.__NEXUS_V200_LOADOUT_CONTRACT_INTELLIGENCE__) return;
+  window.__NEXUS_V200_LOADOUT_CONTRACT_INTELLIGENCE__ = true;
+  const VERSION = '2.0.0';
+  const CACHE_REVISION = '2.0.0-r1';
+
+  const clean = value => String(value ?? '').replace(/\s+/g,' ').trim();
+  const truthy = value => value === true || value === 1 || /^(?:1|true|yes|enabled|available)$/i.test(clean(value));
+  const getPath = (object,path) => clean(path).split('.').reduce((value,key) => value && typeof value === 'object' ? value[key] : undefined, object);
+  const get = (record,...paths) => {
+    try {
+      if (typeof window.nexusMissionGet === 'function') {
+        const value = window.nexusMissionGet(record,...paths);
+        if (value !== undefined && value !== null && value !== '') return value;
+      }
+    } catch (_) {}
+    for (const path of paths) {
+      const value = getPath(record,path);
+      if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return undefined;
+  };
+  const flag = (record,...paths) => {
+    try { if (typeof window.nexusMissionBool === 'function' && window.nexusMissionBool(record,...paths)) return true; } catch (_) {}
+    return paths.some(path => truthy(get(record,path)));
+  };
+  const arrayValue = value => Array.isArray(value) ? value : value && typeof value === 'object' ? Object.values(value) : value ? [value] : [];
+
+  function hasAcePilot(record) {
+    if (flag(record,'has_ace_pilot','hasAcePilot','ace_pilot','acePilot','ace_pilot_spawns','acePilotSpawns','spawns_ace_pilot','spawnsAcePilot')) return true;
+    const count = Number(get(record,'ace_pilot_count','acePilotCount','ace_count','aceCount'));
+    if (Number.isFinite(count) && count > 0) return true;
+    const raw = record?.__nexusRaw || record;
+    const queue = [{value:raw,depth:0}];
+    const seen = new Set();
+    while (queue.length) {
+      const {value,depth} = queue.shift();
+      if (!value || typeof value !== 'object' || seen.has(value) || depth > 5) continue;
+      seen.add(value);
+      for (const [key,entry] of Object.entries(value).slice(0,250)) {
+        if (/(?:^|_)(?:has_?)?ace(?:_?pilot)?(?:_?spawn|_?count)?(?:$|_)/i.test(key) && (truthy(entry) || Number(entry) > 0)) return true;
+        if (entry && typeof entry === 'object') queue.push({value:entry,depth:depth+1});
+      }
+    }
+    const summary = [get(record,'title','name'),get(record,'description','briefing','text'),get(record,'debug_name','internal_name')].map(clean).join(' ');
+    return /\bACE(?:\s+PILOT)?\b/i.test(summary) && /\b(?:pilot|spawn|reinforcement|wave|ship|target)\b/i.test(summary);
+  }
+
+  function tagsFor(record) {
+    const tags = [];
+    const add = value => { if (value && !tags.includes(value)) tags.push(value); };
+    if (flag(record,'illegal','is_illegal')) add('ILLEGAL');
+    if (hasAcePilot(record)) add('ACE');
+    let released = true;
+    try { if (typeof window.nexusMissionReleased === 'function') released = window.nexusMissionReleased(record); } catch (_) {}
+    if (!released) add('WIP');
+    if (flag(record,'available_in_prison','availableInPrison','prison')) add('PRISON');
+    let blueprints = arrayValue(get(record,'blueprints','blueprintRewards','blueprint_rewards','rewards.blueprints','reward_blueprints')).length > 0 || flag(record,'has_blueprints');
+    try { if (typeof window.nexusMissionBlueprints === 'function') blueprints = blueprints || window.nexusMissionBlueprints(record).length > 0; } catch (_) {}
+    if (blueprints) add('BLUEPRINT');
+    if (get(record,'prerequisites','prerequisite_groups','requiredIntros') || flag(record,'has_prerequisites','prerequisites')) add('REP GATE');
+    if (get(record,'subContractIds','parentId','has_chain','chain') || flag(record,'has_chain')) add('CHAIN');
+    if (flag(record,'shareable','is_shareable','canBeShared')) add('SHAREABLE');
+    if (flag(record,'has_combat','combat','hasCombat')) add('COMBAT');
+    let hauling = flag(record,'has_hauling','hauling');
+    try { if (typeof window.nexusMissionHauling === 'function') hauling = hauling || window.nexusMissionHauling(record).length > 0; } catch (_) {}
+    if (hauling) add('HAULING');
+    return tags.slice(0,6);
+  }
+
+  function recordFor(id) {
+    const records = window.nexusMissionState?.records || [];
+    return records.find(record => String(record?.__nexusId || record?.uuid || record?.id || '') === String(id || '')) || null;
+  }
+
+  function decorateCatalogOptions() {
+    const select = document.getElementById('mission-catalog-select');
+    if (!select) return;
+    Array.from(select.options).forEach(option => {
+      if (!option.value || option.disabled) return;
+      const record = recordFor(option.value);
+      if (!record) return;
+      const label = clean(option.textContent);
+      const split = label.split(/\s+—\s+/,2);
+      const name = split[0] || clean(get(record,'title','name')) || 'Unnamed contract';
+      const meta = split[1] || label;
+      const tags = tagsFor(record);
+      option.dataset.selectName = name;
+      option.dataset.selectMeta = meta;
+      option.dataset.selectBadge = 'CONTRACT';
+      option.dataset.group = 'Filtered contracts';
+      option.dataset.selectTags = tags.join('|');
+      option.title = tags.length ? `${name} — ${tags.join(', ')}` : name;
+    });
+  }
+
+  function tagClass(tag) {
+    return ({ILLEGAL:'illegal',ACE:'ace',PRISON:'prison',WIP:'wip',BLUEPRINT:'blueprint','REP GATE':'gate',CHAIN:'chain',SHAREABLE:'shareable',COMBAT:'combat',HAULING:'hauling'})[tag] || 'general';
+  }
+
+  function decorateMissionOverlay() {
+    const overlay = document.getElementById('nexus-select-overlay');
+    const select = document.getElementById('mission-catalog-select');
+    if (!overlay?.classList.contains('is-mission-catalog') || !select) return;
+    overlay.querySelectorAll('.nexus-select-option[data-option-index]').forEach(button => {
+      const option = select.options[Number(button.dataset.optionIndex)];
+      const copy = button.querySelector('.nexus-select-option-copy');
+      if (!option || !copy) return;
+      const tags = clean(option.dataset.selectTags).split('|').map(clean).filter(Boolean);
+      let row = copy.querySelector('.nexus-select-option-tags');
+      if (!tags.length) { row?.remove(); return; }
+      if (!row) { row = document.createElement('span'); row.className = 'nexus-select-option-tags'; copy.appendChild(row); }
+      row.innerHTML = tags.map(tag => `<span class="nexus-contract-tag tag-${tagClass(tag)}">${tag.replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}</span>`).join('');
+      button.dataset.search = `${button.dataset.search || ''} ${tags.join(' ').toLowerCase()}`;
+    });
+  }
+
+  function bindCatalog() {
+    decorateCatalogOptions();
+    const select = document.getElementById('mission-catalog-select');
+    if (select && select.dataset.nexusV200TagsBound !== '1') {
+      select.dataset.nexusV200TagsBound = '1';
+      new MutationObserver(() => { decorateCatalogOptions(); requestAnimationFrame(decorateMissionOverlay); }).observe(select,{childList:true,subtree:true});
+    }
+    const overlay = document.getElementById('nexus-select-overlay');
+    if (overlay && overlay.dataset.nexusV200TagsBound !== '1') {
+      overlay.dataset.nexusV200TagsBound = '1';
+      new MutationObserver(() => requestAnimationFrame(decorateMissionOverlay)).observe(overlay,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});
+    }
+  }
+
+  document.addEventListener('pointerdown', event => {
+    const shell = event.target instanceof Element ? event.target.closest('.nexus-select-shell') : null;
+    if (shell?.querySelector('#mission-catalog-select')) decorateCatalogOptions();
+  }, true);
+
+  const install = () => {
+    bindCatalog();
+    [120,420,900,1800].forEach(delay => setTimeout(bindCatalog,delay));
+    try {
+      document.documentElement.dataset.nexusVersion = VERSION;
+      const meta = document.querySelector('meta[name="nexus-version"]');
+      if (meta) meta.content = VERSION;
+      document.title = `Celestial Nexus Toolkit — v${VERSION} Loadout & Contract Intelligence Release`;
+      document.querySelectorAll('.hub-rb-brand-meta,.hub-rb-footer span').forEach(node => {
+        if (node.textContent) node.textContent = node.textContent.replace(/v\d+\.\d+\.\d+(?:-r\d+)?/gi,`v${VERSION}`);
+      });
+      window.NEXUS_RELEASE = Object.freeze({
+        ...(window.NEXUS_RELEASE || {}),
+        version: VERSION,
+        cacheRevision: CACHE_REVISION,
+        label: 'Loadout & Contract Intelligence Release',
+        catalogMode: 'Readable landscape engineering reports with weapon-size identity and operational Contract Finder catalog tags',
+        publishedAt: '2026-08-03',
+        channel: 'stable'
+      });
+      window.NEXUS_DIAGNOSTICS = Object.assign(window.NEXUS_DIAGNOSTICS || {}, {
+        version: VERSION,
+        loadoutExport: 'v2.0.0-readable-landscape',
+        contractCatalogTags: 'v2.0.0-operational-tags'
+      });
+    } catch (_) {}
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded',install,{once:true});
+  else install();
+  window.addEventListener('nexus:viewchange',event => {
+    if (event?.detail?.viewId === 'mission-finder-view') setTimeout(bindCatalog,0);
+  });
 })();
 </script>
 
