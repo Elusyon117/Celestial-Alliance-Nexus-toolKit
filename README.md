@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" width="150">
+  <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" width="150">
 
 # Celestial Alliance Nexus Toolkit
 
@@ -17,7 +17,7 @@
 </div>
 
 <p align="center">
-  <img src="assets/images/hub/day12-topbanner-bengalfleet-min.jpg" alt="Celestial Nexus Star Citizen operations banner" width="100%">
+  <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/hub/day12-topbanner-bengalfleet-min.jpg" alt="Celestial Nexus Star Citizen operations banner" width="100%">
 </p>
 
 > [!NOTE]
@@ -58,13 +58,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
 <table>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/event-planner.webp" alt="NX-01 Event Planner" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/events/tactical-strike-groups.webp" alt="NX-01 Event Planner" width="100%">
       <h3>NX-01 · Event Planner</h3>
       <p>Build alliance-ready operations from the first briefing through final crew assignments.</p>
       <p><strong>Includes:</strong> event identity and cover art, mission briefing fields, ship and unit sections, editable crew roles, priority levels, participant assignments, drag-and-drop ordering, roster integration, saved setups, Discord-ready text, and image exports.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/vehicle-loadout.webp" alt="NX-02 Vehicle Loadout Manager" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/polaris-bit-reference.webp" alt="NX-02 Vehicle Loadout Manager" width="100%">
       <h3>NX-02 · Vehicle Loadout Manager</h3>
       <p>Configure ship hardpoints and evaluate component choices before deployment.</p>
       <p><strong>Includes:</strong> vehicle selection, compatible component discovery, stock and custom parts, hardpoint configuration, crafted-quality modelling, stat comparisons, performance charts, pricing, shopping lists, checklists, saved builds, import/export, and loadout images.</p>
@@ -72,13 +72,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/contract-cinematic.png" alt="NX-03 Contract Finder" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/locations/onyx-facility.webp" alt="NX-03 Contract Finder" width="100%">
       <h3>NX-03 · Contract Finder</h3>
       <p>Search the verified mission catalog and turn contract data into actionable planning intelligence.</p>
       <p><strong>Includes:</strong> reward, reputation, location, legality, requirement, mission-chain, employer, and category filtering; detailed mission records; live-refresh handling; repository snapshot fallbacks; and mission-data import/export support.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/item-finder-hq.jpg" alt="NX-04 Item Finder" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/r97-crimson-reference.webp" alt="NX-04 Item Finder" width="100%">
       <h3>NX-04 · Item Finder</h3>
       <p>Research equipment, specifications, store locations, pricing, and availability from one workspace.</p>
       <p><strong>Includes:</strong> category and text search, item specifications, manufacturer and classification details, store and terminal records, current price listings, marketplace references, image fallbacks, and links to supporting data sources.</p>
@@ -86,13 +86,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/blueprint-cinematic.webp" alt="NX-05 Blueprint Finder" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/monde-crimson-reference.svg" alt="NX-05 Blueprint Finder" width="100%">
       <h3>NX-05 · Blueprint Finder</h3>
       <p>Trace fabrication requirements before committing time, materials, or organization resources.</p>
       <p><strong>Includes:</strong> blueprint and recipe search, unlock and acquisition information, required materials, crafted outputs, quality controls, projected stat effects, visual component symbols, and fabrication-focused filters.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/cargo-routing-hq.jpg" alt="NX-06 Cargo Hauling Routing" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/modules/argo-raft-cargo-grid-manager.webp" alt="NX-06 Cargo Hauling Routing" width="100%">
       <h3>NX-06 · Cargo Hauling Routing</h3>
       <p>Build multi-stop hauling plans with capacity, time, cost, and payout validation.</p>
       <p><strong>Includes:</strong> contract and route sequencing, ship-capacity checks, cargo totals, pickup and delivery legs, travel assumptions, fuel estimates, ETA calculations, profitability summaries, route swapping, and CSV, JSON, PNG, and briefing exports.</p>
@@ -100,13 +100,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/wikelo-trade.jpg" alt="NX-07 Wikelo Trade Center" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/ana-endro.webp" alt="NX-07 Wikelo Trade Center" width="100%">
       <h3>NX-07 · Wikelo Trade Center</h3>
       <p>Track alien trade requirements and organize the resources needed to complete favor exchanges.</p>
       <p><strong>Includes:</strong> trade and reward records, favor requirements, completion-cost calculations, organization material tracking, reputation guidance, completion status, special-item identification, and full trade-plan text export.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/commodity-trading.jpg" alt="NX-08 Commodity Trading" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg" alt="NX-08 Commodity Trading" width="100%">
       <h3>NX-08 · Commodity Trading</h3>
       <p>Compare market opportunities while accounting for cargo limits, travel, and confidence.</p>
       <p><strong>Includes:</strong> commodity and terminal research, buy and sell comparisons, ship cargo capacity, route profitability, investment and revenue estimates, fuel-aware calculations, market confidence, route reversal, and reusable trade plans.</p>
@@ -114,13 +114,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/mining-cinematic.png" alt="NX-09 Mining Resources Command" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/embedded-03-44b347223ad8.jpg" alt="NX-09 Mining Resources Command" width="100%">
       <h3>NX-09 · Mining Resources Command</h3>
       <p>Turn resource data into practical field routes and mining configurations.</p>
       <p><strong>Includes:</strong> resource and region discovery, planetary and asteroid guidance, mining-platform selection, mining heads, modules and gadgets, fracture and extraction guidance, favorite resources, location recommendations, and field-ready loadout planning.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/language-pack-cinematic.jpg" alt="NX-10 Language Pack Lab" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/celestial-alliance-logo-953272130c49.png" alt="NX-10 Language Pack Lab" width="100%">
       <h3>NX-10 · Language Pack Lab</h3>
       <p>Create a clearer and more personalized Star Citizen localization file.</p>
       <p><strong>Includes:</strong> repository-mirrored StarStrings data, clean <code>global.ini</code> import, search and filtering, custom terminology, aliases, direct key editing, previews, reset controls, downloadable files, and install-ready ZIP generation.</p>
@@ -128,13 +128,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/org-picture-cinematic.jpg" alt="NX-11 Org Picture Creator" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/hub/day12-topbanner-bengalfleet-min.jpg" alt="NX-11 Org Picture Creator" width="100%">
       <h3>NX-11 · Org Picture Creator</h3>
       <p>Produce alliance-ready graphics without leaving the toolkit.</p>
       <p><strong>Includes:</strong> reusable templates, image uploads, custom canvas sizes, text, lines and shapes, branding palettes, safe-area guides, layer-aware editing, undo/redo, project save/load, reusable styles, and high-quality PNG export.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/game-status.jpg" alt="NX-12 Game Status and Intel" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/geist-snow.webp" alt="NX-12 Game Status and Intel" width="100%">
       <h3>NX-12 · Game Status &amp; Intel</h3>
       <p>Monitor the current environment and keep official information separate from community intelligence.</p>
       <p><strong>Includes:</strong> RSI service-health information, live-build and patch details, official news, Wiki intelligence, source labels, refresh controls, network fallbacks, and clearly identified optional community or datamined information.</p>
@@ -142,13 +142,13 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
   </tr>
   <tr>
     <td width="50%" valign="top">
-      <img src="assets/hub/game/flight-profile.jpg" alt="NX-13 Flight Profile Builder" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/embedded-09-86c083fb3412.webp" alt="NX-13 Flight Profile Builder" width="100%">
       <h3>NX-13 · Flight Profile Builder <sup>WIP</sup></h3>
       <p>A development workspace for building and sharing flight-control configurations.</p>
       <p><strong>Planned and previewed capabilities:</strong> device profiles, joystick and throttle ordering, bindings, response curves, dead zones, input testing, reusable presets, project files, and Star Citizen-compatible XML exports.</p>
     </td>
     <td width="50%" valign="top">
-      <img src="assets/wikelo/killshot-dominion-reference.webp" alt="NX-14 FPS Weapon Loadout Manager" width="100%">
+      <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/wikelo/killshot-dominion-reference.webp" alt="NX-14 FPS Weapon Loadout Manager" width="100%">
       <h3>NX-14 · FPS Weapon Loadout Manager</h3>
       <p>Configure personal weapons and understand how attachments and quality settings change performance.</p>
       <p><strong>Includes:</strong> weapon selection, compatible attachment ports, optics, barrels, underbarrel devices, magazines, crafted-quality presets, complete stat deltas, recoil and spread visualization, relative-performance charts, saved builds, and JSON export.</p>
@@ -161,7 +161,7 @@ The current hub contains **14 numbered modules**. NX-01 through NX-12 and NX-14 
 ## Integrated utility · Cargo Grid Manager
 
 <p align="center">
-  <img src="assets/images/modules/argo-raft-cargo-grid-manager.webp" alt="Cargo Grid Manager" width="90%">
+  <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/images/modules/argo-raft-cargo-grid-manager.webp" alt="Cargo Grid Manager" width="90%">
 </p>
 
 Cargo Grid Manager extends the NX-06 logistics workflow with a visual cargo-placement workspace. It supports crate placement, grid-aware positioning, automatic packing, view rotation, placement history, capacity feedback, cargo manifests, and image exports. It is documented separately because it functions like a complete workspace while remaining part of the broader hauling and logistics toolset.
@@ -248,20 +248,146 @@ The repository intentionally tracks validated or operational data such as:
 
 These files are part of the application and should not be deleted as ordinary generated clutter.
 
-### Source network
+## Data sources and reference network
 
-The toolkit references or adapts information from sources including:
+The following pages, APIs, mirrors, and reference systems are currently wired into the toolkit. A source can be used directly by the browser, by a GitHub synchronization workflow, as a manual verification link, or as a fallback when another provider is unavailable.
 
-- Roberts Space Industries / Cloud Imperium Games
-- SCMDB
-- UEX Corp
-- Star Citizen Wiki and its public API
-- MrKraken StarStrings / localization resources
-- Cornerstone / CStone
-- The Space Coder Armory
-- Clearly labeled community intelligence sources
+> [!IMPORTANT]
+> Not every source is queried by every module. Some services are primary structured-data providers, while others are verification references, image sources, historical methodology references, or read-through transports. The toolkit labels cached, mirrored, fallback, and community-derived information wherever possible.
 
-Availability, schemas, prices, missions, items, and game behavior may change between patches. The interface uses source labels, status records, verified snapshots, and fallbacks to make those limitations visible.
+### Official Cloud Imperium Games and Roberts Space Industries
+
+| Page or endpoint | Used for |
+|---|---|
+| [RSI Service Status](https://status.robertsspaceindustries.com/) | Public service-health dashboard |
+| [RSI status JSON](https://status.robertsspaceindustries.com/index.json) | Machine-readable service status for NX-12 |
+| [Persistent Universe incident history](https://status.robertsspaceindustries.com/affected/persistent-universe/index.html) | Persistent Universe outage and incident history |
+| [Official Patch Notes](https://robertsspaceindustries.com/en/patch-notes) | Current and historical release information |
+| [Official Comm-Link](https://robertsspaceindustries.com/en/comm-link) | News, development posts, events, media, and ship articles |
+| [Alpha 4.9 Known Issues](https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues) | Current known-issue summaries and build references |
+| [PTU installation and status guidance](https://support.robertsspaceindustries.com/hc/en-us/articles/360000668488-Install-the-Star-Citizen-PTU) | PTU availability and installation reference |
+| [CIG Devtracker](https://robertsspaceindustries.com/en/community/devtracker) | Official developer activity and PTU confirmation |
+| [Issue Council](https://issue-council.robertsspaceindustries.com/) | Official issue and bug-report reference |
+| [Celestial Alliance organization roster](https://robertsspaceindustries.com/en/orgs/CAELITE/members) | Organization member and roster information |
+| `https://robertsspaceindustries.com/en/citizens/{handle}` | Citizen profile lookups used by roster and creator displays |
+| [RSI Mining Basics](https://support.robertsspaceindustries.com/hc/en-us/articles/360007611573-Mining-Basics) | Official mining workflow reference |
+| [The Shipyard: Fuel Mechanics](https://robertsspaceindustries.com/comm-link/engineering/16517-The-Shipyard-Fuel-Mechanics) | Fuel and travel-calculation methodology reference |
+
+### Star Citizen Wiki and Star Citizen Tools
+
+| Page or endpoint | Used for |
+|---|---|
+| [Star Citizen Wiki API](https://api.star-citizen.wiki/api) | Primary structured vehicle, item, blueprint, mission, commodity, game-version, weapon, and attachment data |
+| `https://api.star-citizen.wiki/api/game-versions` | Current game-version identity |
+| `https://api.star-citizen.wiki/api/vehicles` | Vehicle records and loadout-supporting data |
+| `https://api.star-citizen.wiki/api/items` | Components, equipment, weapons, attachments, and item specifications |
+| `https://api.star-citizen.wiki/api/blueprints` | Fabrication recipes and blueprint records |
+| `https://api.star-citizen.wiki/api/missions` | Mission and Wikelo-related reference records |
+| `https://api.star-citizen.wiki/api/commodities` | Commodity metadata |
+| [Star Citizen Tools](https://starcitizen.tools/) | Human-readable Wiki verification pages |
+| [MediaWiki API](https://starcitizen.tools/api.php) | Article, image, and page metadata fallbacks |
+| [Star Citizen Tools media](https://media.starcitizen.tools/) | Vehicle, item, location, and article imagery |
+
+The API routes use pagination, filters, item UUIDs, blueprint IDs, vehicle identifiers, and mission slugs dynamically. The table lists endpoint families rather than every generated request URL.
+
+### SCMDB mission and contract data
+
+| Page or endpoint | Used for |
+|---|---|
+| [SCMDB](https://scmdb.net/) | Human-readable mission and contract reference |
+| [SCMDB versions manifest](https://scmdb.net/data/versions.json) | Automatic LIVE dataset discovery |
+| [SCMDB alternate versions manifest](https://scmdb.net/data/game-versions.json) | Secondary automatic dataset discovery |
+| Dynamically selected `merged-<patch>-<channel>.<build>.json` file | Raw mission catalog used to generate the verified repository snapshot |
+| `data/scmdb-missions-live.json` | Tracked, normalized mission snapshot used by Contract Finder |
+| `data/scmdb-missions-live.js` | Browser-ready copy of the tracked mission snapshot |
+| `data/game-data-status.json` | Source, patch, channel, freshness, and upstream-error status |
+| `data/patch-audit.json` | Patch-sensitive consistency report |
+
+When SCMDB blocks or fails a scheduled request, the workflow preserves the last verified snapshot instead of overwriting it with incomplete data.
+
+### UEX Corp economy, item, and marketplace data
+
+| Page or endpoint | Used for |
+|---|---|
+| [UEX Corp](https://uexcorp.space/) | Human-readable economy and item reference |
+| [UEX API 2.0](https://api.uexcorp.space/2.0) | Primary item categories, items, prices, terminals, commodities, vehicles, and marketplace records |
+| [UEX alternate API host](https://api.uexcorp.uk/2.0) | Fallback API host |
+| `https://api.uexcorp.space/2.0/categories` | Item and armory category discovery |
+| `https://api.uexcorp.space/2.0/items` | Item and FPS catalog fallback |
+| `https://api.uexcorp.space/2.0/items_prices` | Store and terminal price records |
+| `https://api.uexcorp.space/2.0/marketplace_listings` | Community marketplace listings |
+| [UEX Items](https://uexcorp.space/items) | Human-readable item verification |
+| [UEX Marketplace](https://uexcorp.space/marketplace/) | Human-readable marketplace verification |
+| [UEX item-price API documentation](https://uexcorp.space/api/documentation/id/get_items_prices/) | API field and behavior reference |
+| [UEX terminal-distance API documentation](https://uexcorp.space/api/documentation/id/get_terminals_distances/) | Route-distance methodology reference |
+
+### Vehicle and combat verification references
+
+These sites are exposed primarily as cross-check links because the toolkit does not treat them as stable browser-safe public APIs.
+
+| Page | Used for |
+|---|---|
+| [Erkul Games](https://www.erkul.games/) | Vehicle component, hardpoint, and performance verification |
+| [Erkul ship list](https://www.erkul.games/live/ships) | Vehicle lookup and dynamic ship links |
+| [SPViewer](https://www.spviewer.eu/) | Ship performance, armor, and component-layout verification |
+| `https://www.spviewer.eu/performance?ship={code}` | Dynamic ship-performance verification |
+
+### Item, blueprint, and armory references
+
+| Page or endpoint | Used for |
+|---|---|
+| [Cornerstone / CStone Finder](https://finder.cstone.space/) | Item lookup, identifiers, and image fallbacks |
+| `https://cstone.space/uifimages/{item-id}.{extension}` | Game UI item-artwork fallback |
+| [The Space Coder Armory](https://armory.thespacecoder.space/) | Additional equipment and armory verification |
+| [SCMDB Fabrication page](https://scmdb.net/?page=fab) | Crafting and fabrication reference |
+| Dynamic Star Citizen Tools item pages | Item, vehicle, weapon, and location verification |
+
+### Localization and Language Pack Lab
+
+| Page or endpoint | Used for |
+|---|---|
+| [MrKraken StarStrings](https://github.com/MrKraken/StarStrings) | Primary localization project |
+| [Latest StarStrings release API](https://api.github.com/repos/MrKraken/StarStrings/releases/latest) | Latest release and downloadable ZIP discovery |
+| `data/mrkraken-global.ini` | Repository-mirrored, validated LIVE localization file |
+| `data/mrkraken-release.json` | Mirror release, asset, entry-count, and freshness metadata |
+| [MrKraken component strings](https://raw.githubusercontent.com/MrKraken/StarStrings/master/components.ini) | Legacy/direct fallback layer |
+| [MrKraken contract strings](https://raw.githubusercontent.com/MrKraken/StarStrings/master/contracts.ini) | Legacy/direct fallback layer |
+| [MrKraken mining strings](https://raw.githubusercontent.com/MrKraken/StarStrings/master/mining.ini) | Legacy/direct fallback layer |
+| [MrKraken ordnance strings](https://raw.githubusercontent.com/MrKraken/StarStrings/master/ordnance.ini) | Legacy/direct fallback layer |
+| [Dymerz English localization](https://raw.githubusercontent.com/Dymerz/StarCitizen-Localization/main/data/Localization/english/global.ini) | Additional clean localization fallback |
+
+### Mining and hauling methodology references
+
+| Page | Used for |
+|---|---|
+| [Regolith](https://regolith.rocks/) | Mining and logistics workflow methodology |
+| [Schaulers / SC Haulers](https://schaulers.space/app) | Route freshness, stock, capital exposure, container-size, and hauling-workflow methodology |
+| [Star Citizen Tools: Mining](https://starcitizen.tools/Mining) | Mining mechanics and resource verification |
+| [Star Citizen Tools: Refueling](https://starcitizen.tools/Refueling) | Refueling and travel reference |
+
+Schaulers and Regolith are not counted as independent confirmations of UEX prices. They are presented as methodology and workflow references.
+
+### Optional community intelligence
+
+| Page or endpoint | Used for |
+|---|---|
+| [r/starcitizen](https://www.reddit.com/r/starcitizen/) | Clearly labeled community information |
+| `https://www.reddit.com/r/starcitizen/search.json` | Optional search feed for recent community, leak, datamine, or Evocati discussions |
+
+Community information is separated from official CIG reporting and should not be treated as confirmed game data without independent verification.
+
+### Read-through and delivery services
+
+These services help the browser reach a source when direct requests are blocked by CORS or return browser-incompatible pages. They transport source content; they are **not** treated as the original source.
+
+| Service | Role |
+|---|---|
+| [AllOrigins](https://api.allorigins.win/) | JSON and text read-through fallback |
+| [Jina Reader](https://r.jina.ai/) | HTML-to-text read-through fallback for official and roster pages |
+| GitHub repository mirrors | Version-controlled fallback for mission and localization data |
+| Service-worker runtime caches | Previously successful same-origin data and image responses |
+
+Availability, schemas, prices, missions, items, and game behavior can change between patches. The interface uses source labels, timestamps, status records, audits, local mirrors, and cache indicators to make those limitations visible.
 
 ---
 
@@ -390,7 +516,7 @@ Community feedback, testing, data providers, localization maintainers, Wiki cont
 ---
 
 <div align="center">
-  <img src="assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance" width="90">
+  <img src="https://raw.githubusercontent.com/Elusyon117/Celestial-Alliance-Nexus-toolKit/main/assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance" width="90">
 
   **Plan clearly. Configure deliberately. Fly together.**
 
