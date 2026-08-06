@@ -1,6 +1,6 @@
 {
   "schema": "celestial-nexus.game-data-status.v1",
-  "generatedAt": "2026-08-05T19:57:25.326Z",
+  "generatedAt": "2026-08-06T03:42:26.737Z",
   "detectedPatch": "4.9.0",
   "detectedChannel": "LIVE",
   "modules": {
@@ -20,7 +20,7 @@
       "totalCount": 1778,
       "fingerprint": "96cfdcd8b63960fd15d41f6048d72a32e5313e6e3ad17c12b5622a417477886d",
       "lastError": "HTTP 403 for https://scmdb.net/data/merged-4.9.0-live.12344265.json",
-      "lastAttemptAt": "2026-08-05T19:57:25.328Z"
+      "lastAttemptAt": "2026-08-06T03:42:26.739Z"
     }
   }
 }
