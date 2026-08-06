@@ -1,6 +1,6 @@
-/* Celestial Alliance Nexus Toolkit v2.0.0-r1 service worker */
+/* Celestial Alliance Nexus Toolkit v2.0.0-r2 service worker */
 
-const VERSION = '2.0.0-r1';
+const VERSION = '2.0.0-r2';
 const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
 const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
 const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;
@@ -18,7 +18,8 @@ const SHELL = [
   './assets/images/events/tactical-strike-groups.webp',
   './assets/images/hub/day12-topbanner-bengalfleet-min.jpg',
   './assets/images/cargo-grid/josh-van-zuylen-logistics22.jpg',
-  './assets/images/modules/argo-raft-cargo-grid-manager.webp'
+  './assets/images/modules/argo-raft-cargo-grid-manager.webp',
+  './assets/images/modules/fps-loadout-br2-blueprint-banner.png'
 ];
 
 self.addEventListener('install', event => {

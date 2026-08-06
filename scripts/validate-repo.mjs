@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-/** Celestial Nexus v1.9.1-r4 repository and workflow integrity validator. */
-import { access, mkdir, readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
+/** Celestial Nexus v2.0.0-r2 repository and workflow integrity validator. */
+import { access, mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
@@ -66,7 +66,6 @@ const manifestIcons = Array.isArray(manifest?.icons) ? manifest.icons.map(icon =
 check('manifest-stable-id', Boolean(manifest?.id) && !String(manifest.id).includes('?v='), String(manifest?.id || 'missing'));
 check('manifest-icon-version', manifestIcons.length >= 2 && manifestIcons.every(value => String(value).includes(`v=${appVersion}`)), manifestIcons.join(', ') || 'missing icon references');
 
-// Only IDs present in the static document tree count. Script and style source text is removed first.
 const staticMarkup = index
   .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, match => match.replace(/>[\s\S]*<\/script>/i, '></script>'))
   .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, match => match.replace(/>[\s\S]*<\/style>/i, '></style>'));
@@ -74,7 +73,6 @@ const ids = [...staticMarkup.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(matc
 const duplicateIds = [...new Set(ids.filter((id, indexOfId) => ids.indexOf(id) !== indexOfId))];
 check('unique-static-dom-ids', duplicateIds.length === 0, duplicateIds.join(', ') || `${ids.length} unique IDs`);
 
-// Parse every inline JavaScript block without executing it.
 const scriptTags = [...index.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
 const syntaxErrors = [];
 let checkedClassic = 0;
@@ -112,14 +110,19 @@ const featureMarkers = [
   ['sadaryx-key', 'items_commodities_sadaryx_desc'],
   ['killshot-key', 'item_Descnone_rifle_multi_01_collector01'],
   ['fps-relative-performance-chart', 'Relative performance profile'],
-  ['fps-spread-chart', 'Hip-fire and ADS spread'],
-  ['fps-recoil-chart', 'Recoil pattern']
+  ['fps-material-quality-controls', 'Material quality controls'],
+  ['fps-blueprint-output-modifiers', 'Blueprint output modifiers'],
+  ['blueprint-crafted-output-performance', 'Crafted output performance'],
+  ['blueprint-source-isolation', 'Data identity & community cross-check'],
+  ['studio-transparent-output', 'Transparent PNG · elements only'],
+  ['studio-focus-protection', 'Keep a selected background area sharp']
 ];
 for (const [name, marker] of featureMarkers) check(`feature:${name}`, index.includes(marker), marker);
 
 const requiredFiles = [
   'index.html', 'release.json', 'manifest.webmanifest', 'VERSION.txt', 'sw.js', 'SHA256SUMS.txt',
   'icon-192.png', 'icon-512.png', 'icons/icon-192.png', 'icons/icon-512.png',
+  'assets/images/modules/fps-loadout-br2-blueprint-banner.png',
   'data/scmdb-missions-live.json', 'data/scmdb-missions-live.js', 'data/game-data-status.json',
   'data/patch-audit.json', 'data/roster.json', 'data/mrkraken-global.ini', 'data/mrkraken-release.json',
   'scripts/sync-scmdb-missions.mjs', 'scripts/audit-patch-data.mjs',
@@ -168,14 +171,12 @@ try {
   check('mrkraken-integrity', false, error.message);
 }
 
-// Resolve static local HTML references. Query strings and fragments are ignored.
 const localMarkupRefs = [...index.matchAll(/(?:src|href)\s*=\s*["'](\.\/[^"'#?]+)[^"']*["']/gi)]
   .map(match => match[1].replace(/^\.\//, ''));
 const missingMarkupRefs = [];
 for (const rel of [...new Set(localMarkupRefs)]) if (!(await exists(rel))) missingMarkupRefs.push(rel);
 check('local-markup-references', missingMarkupRefs.length === 0, missingMarkupRefs.join(', ') || `${new Set(localMarkupRefs).size} local references resolved`);
 
-// Resolve every local file listed in the service-worker shell.
 const shellMatch = serviceWorker.match(/const\s+SHELL\s*=\s*\[([\s\S]*?)\];/);
 const shellRefs = shellMatch ? [...shellMatch[1].matchAll(/["'](\.\/[^"']+)["']/g)].map(match => match[1]) : [];
 const missingShellRefs = [];
@@ -186,8 +187,6 @@ for (const raw of shellRefs) {
 }
 check('service-worker-shell-files', shellRefs.length > 0 && missingShellRefs.length === 0, missingShellRefs.join(', ') || `${shellRefs.length} shell entries resolved`);
 
-// Workflow checks deliberately use no third-party YAML package. GitHub parses workflow YAML itself;
-// these checks verify repository-specific structure, action versions, permissions, and file references.
 try {
   const workflowDir = resolve('.github/workflows');
   const workflowNames = (await readdir(workflowDir)).filter(name => /\.ya?ml$/i.test(name)).sort();

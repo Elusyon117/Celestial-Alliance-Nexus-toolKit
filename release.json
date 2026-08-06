@@ -1,7 +1,7 @@
 {
   "schema": "celestial-nexus.release.v1",
   "appVersion": "2.0.0",
-  "cacheRevision": "2.0.0-r1",
-  "releaseLabel": "v2.0.0 Loadout & Contract Intelligence Release",
-  "notes": "Improved Vehicle Loadout Manager landscape exports with subtler system colors, weapon-size color identity, larger vehicle artwork, and improved readability. Contract Finder catalog options now expose operational tags including ACE, ILLEGAL, PRISON, BLUEPRINT, REP GATE, CHAIN, SHAREABLE, COMBAT, and HAULING when supported by mission data."
+  "cacheRevision": "2.0.0-r2",
+  "releaseLabel": "v2.0.0 Creator, FPS & Blueprint Reliability Update",
+  "notes": "Adds transparent and selective-focus exports to Org Picture Creator; expands FPS crafted-blueprint material controls and banner presentation; fixes Blueprint Finder selection races, keyboard quality controls, source identity checks, and blueprint-affected stat reporting. The service-worker cache revision is advanced without changing existing GitHub Actions or synchronized data workflows."
 }
