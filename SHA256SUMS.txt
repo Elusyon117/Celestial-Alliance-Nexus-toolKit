@@ -9,4 +9,3 @@ c28fcca53637bc88e124af1725df13cb98c69dedefd62fb3cdbe1cdb6b760624  VERSION.txt
 bc1d13691b59e8161d6f5a9abab5592e818822f513caffc2a36d1d31af6909b2  .github/workflows/sync-game-data.yml
 ee3409a8d485aadc54fabab8b9c1cee723f4245d678d50619b9ce53034ebf4c7  .github/workflows/sync-mrkraken-language-pack.yml
 f293a68d47715facaaaaf936be8b6e6e972fc0763d9d0027d1c4d758086847b9  .github/workflows/sync-scmdb-4.9-once.yml
-491266950f2053f2fb97c78f405b03b5a1fdb29b50e14ce5d18e5064f796942a  docs/RELEASE_NOTES_v1.9.1-r4.md
