@@ -1,0 +1,16 @@
+Pyro Hangar Watch — Global Sync Accuracy Fix
+
+Replace these repository files with the versions in this package:
+- index.html
+- data/pyro-hangar-sync.json
+- scripts/sync-pyro-hangar.mjs
+- SHA256SUMS.txt
+
+What changed:
+1. The global feed is seeded from the ExecTimer screenshot supplied on 2026-08-10 (Green Phase 1/5, 05:29 remaining in the 185-minute cycle).
+2. Old browser/manual anchors are rejected unless they came from a verified repository global feed.
+3. A pending/unverified repo feed now shows GLOBAL SYNC UNAVAILABLE instead of a stale countdown.
+4. The client checks the repository timing feed every 60 seconds.
+5. The GitHub scraper uses ExecTimer's canonical index URL and refuses to publish unless Last Sync and a known live phase have loaded.
+
+The existing sync-game-data.yml already schedules the Pyro sync every 5 minutes. After these files are published, its next successful scheduled run will replace the screenshot seed with a verified ExecTimer scrape.

@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = path.join(ROOT, 'data', 'pyro-hangar-sync.json');
-const SOURCE_URL = process.env.PYRO_HANGAR_SOURCE_URL || 'https://exectimer.com/en';
+const SOURCE_URL = process.env.PYRO_HANGAR_SOURCE_URL || 'https://exectimer.com/index.html?lang=en';
 const CYCLE_MINUTES = 185;
 const CYCLE_MS = CYCLE_MINUTES * 60 * 1000;
 const ANCHOR_CHANGE_THRESHOLD_MS = 5000;
@@ -57,9 +57,11 @@ function extractState(text) {
   if (!(remainingMs > 0 && remainingMs <= CYCLE_MS)) throw new Error(`Unexpected cycle remaining value: ${cycleMatch[1]}`);
 
   const lastSync = (text.match(/Last Sync:\s*([^\n]+)/i) || [])[1]?.trim() || '';
+  if (!lastSync || lastSync === '--') throw new Error('ExecTimer global Last Sync has not loaded; refusing to publish an unverified clock.');
   const version = (text.match(/\bv\d+\.\d+\.\d+\b/i) || [])[0] || 'ExecTimer';
   const build = (text.match(/\b\d+\.\d+\.\d+-(?:live|ptu|eptu)\.\d+\b/i) || [])[0] || '';
   const status = (text.match(/Current Status\s+([^\n]+)/i) || [])[1]?.trim() || '';
+  if (!status || /unknown/i.test(status)) throw new Error('ExecTimer live phase status has not loaded; refusing to publish an unverified clock.');
   return { remainingMs, remainingText: cycleMatch[1], lastSync, version, build, status };
 }
 

@@ -12785,7 +12785,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
     <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUIN / TIMER DOOR</div><div class="phw-panel-title">Ghost Arena vault cycle</div><div class="phw-panel-note">The Ruin Station timer door repeats independently: approximately 20 minutes closed followed by 1 minute open. Sync when you personally see it open.</div></div><span class="phw-source-pill">Star Citizen Wiki</span></div><div class="phw-vault-body"><div class="phw-vault-clock"><div class="phw-vault-status" id="phw-vault-status">UNSYNCED</div><div class="phw-vault-time" id="phw-vault-time">--:--</div><div class="phw-vault-copy" id="phw-vault-copy">Click when the vault door opens to align the repeating 21-minute cycle.</div><div class="phw-timer-actions"><button class="phw-btn primary" id="phw-vault-open-now" type="button">Door opened now</button><button class="phw-btn danger" id="phw-vault-clear" type="button">Clear vault sync</button></div></div><div class="phw-vault-info"><div class="phw-info-card"><span>Open window</span><strong>1 minute</strong></div><div class="phw-info-card"><span>Closed window</span><strong>20 minutes</strong></div><div class="phw-info-card"><span>Pre-open cue</span><strong>Blue lights ~30s before opening</strong></div><div class="phw-info-card"><span>Board route</span><strong>Boards 5 & 6 are tied to Ruin / Vault access.</strong></div><div class="phw-info-card"><span>Exec requirement</span><strong>All 7 unique compboards</strong></div><div class="phw-info-card"><span>Safety rule</span><strong>Confirm in-game state before committing items.</strong></div></div></div></section>
 
     <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">REF-DATA / SOURCES</div><div class="phw-panel-title">Timing references</div><div class="phw-panel-note">Pyro timings are patch-sensitive. These links are deliberately visible so the Alliance can verify the assumptions behind the dashboard.</div></div></div><div class="phw-sources"><a class="phw-source-card" href="https://exectimer.com/en" target="_blank" rel="noopener noreferrer"><span>Primary community reference</span><strong>ExecTimer</strong><p>Executive Hangar 185-minute phase model and community support-timer presets.</p></a><a class="phw-source-card" href="https://starcitizen.tools/Guide%3AExecutive_Hangars" target="_blank" rel="noopener noreferrer"><span>Mechanics cross-check</span><strong>Star Citizen Wiki</strong><p>Executive Hangar access conditions, keycard locations, board route, and Ruin timer-door behavior.</p></a><a class="phw-source-card" href="https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues" target="_blank" rel="noopener noreferrer"><span>Official patch warning</span><strong>RSI Alpha 4.9 Known Issues</strong><p>Current CIG notice that keycard printer timers are not working reliably.</p></a><a class="phw-source-card" href="https://exec.redline-arsenal.net/" target="_blank" rel="noopener noreferrer"><span>Community cross-check</span><strong>REDLINE Hangar Timer</strong><p>Independent 120m charging / 60m active / 5m reset phase reference.</p></a></div></section>
-    <div class="phw-footer-note">Unofficial Celestial Alliance planning tool. No game memory, client files, or protected services are accessed. Timer accuracy depends on current patch behavior, your device clock, and the quality of your manual synchronization.</div>
+    <div class="phw-footer-note">Unofficial Celestial Alliance planning tool. No game memory, client files, or protected services are accessed. The Executive Hangar clock uses the shared ExecTimer alignment feed; local Contested Zone support timers remain manual.</div>
   </main>
 </section>
 
@@ -12817,11 +12817,11 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
     {id:'sup-34',zone:'supervisor',group:'Red keycard',name:'PYAM-SUPVISR-3-4',minutes:30,source:'Wiki'},
     {id:'sup-35',zone:'supervisor',group:'Red keycard',name:'PYAM-SUPVISR-3-5',minutes:30,source:'Wiki'}
   ];
-  const fresh=()=>({hangarAnchor:null,hangarSyncAt:null,hangarFeedFetchedAt:null,hangarSourceLastSync:'',hangarSourceVersion:'',hangarFeedState:'connecting',vaultOpenAt:null,zone:'checkmate',timers:{},durations:{},boards:{}});
+  const fresh=()=>({hangarAnchor:null,hangarSyncAt:null,hangarFeedFetchedAt:null,hangarSourceLastSync:'',hangarSourceVersion:'',hangarFeedState:'connecting',hangarFeedProvenance:'',vaultOpenAt:null,zone:'checkmate',timers:{},durations:{},boards:{}});
   let state=fresh(), tickHandle=0, syncRefreshHandle=0, initialized=false, syncPromise=null;
   const $=id=>document.getElementById(id);
   const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(_){}};
-  function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const parsed=JSON.parse(raw);state={...fresh(),...parsed,timers:{...(parsed.timers||{})},durations:{...(parsed.durations||{})},boards:{...(parsed.boards||{})}};}}catch(_){state=fresh();}}
+  function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const parsed=JSON.parse(raw);state={...fresh(),...parsed,timers:{...(parsed.timers||{})},durations:{...(parsed.durations||{})},boards:{...(parsed.boards||{})}};if(state.hangarFeedProvenance!=='repo-global-v2'){state.hangarAnchor=null;state.hangarSyncAt=null;state.hangarFeedFetchedAt=null;state.hangarSourceLastSync='';state.hangarSourceVersion='';state.hangarFeedState='connecting';state.hangarFeedProvenance='';}}}catch(_){state=fresh();}}
   const fmtClock=ms=>{ms=Math.max(0,ms);const total=Math.ceil(ms/1000),h=Math.floor(total/3600),m=Math.floor((total%3600)/60),s=total%60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`};
   const fmtTime=ts=>ts?new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Unknown';
   const fmtDateTime=ts=>ts?new Date(ts).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'Never';
@@ -12843,15 +12843,20 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
         state.hangarSourceLastSync=String(data.sourceLastSync||'');
         state.hangarSourceVersion=String(data.sourceVersion||'ExecTimer');
         state.hangarFeedState='live';
+        state.hangarFeedProvenance='repo-global-v2';
         save();
         const age=Math.max(0,Date.now()-state.hangarFeedFetchedAt);
         setFeedStatus(`GLOBAL LIVE · ${state.hangarSourceVersion}${age>6*60*60*1000?' · feed is aging':''}`,'live');
         renderHangar();
         return true;
       }catch(error){
-        const hasCached=Number.isFinite(Number(state.hangarAnchor));
-        state.hangarFeedState=hasCached?'cached':'error';
-        setFeedStatus(hasCached?'Using last verified global alignment · refresh unavailable':'Global timing feed unavailable · awaiting repository sync',state.hangarFeedState);
+        const trustedCached=state.hangarFeedProvenance==='repo-global-v2'&&Number.isFinite(Number(state.hangarAnchor));
+        if(!trustedCached){
+          state.hangarAnchor=null;state.hangarSyncAt=null;state.hangarFeedFetchedAt=null;state.hangarSourceLastSync='';state.hangarSourceVersion='';state.hangarFeedProvenance='';
+        }
+        state.hangarFeedState=trustedCached?'cached':'error';
+        setFeedStatus(trustedCached?'Verified global alignment cached · source refresh unavailable':'Global timing feed unavailable · no verified fallback is being shown',state.hangarFeedState);
+        save();
         renderHangar();
         return false;
       }finally{syncPromise=null;}
@@ -12870,7 +12875,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
     status.className='phw-status '+(p?p.type:'unknown');
     if(!p){status.textContent=state.hangarFeedState==='connecting'?'SYNCING GLOBAL CLOCK':'GLOBAL SYNC UNAVAILABLE';count.textContent='--:--:--';$('phw-countdown-caption').textContent=state.hangarFeedState==='connecting'?'Connecting to the Celestial global timing feed…':'The shared feed has not produced a verified cycle anchor yet.';$('phw-next-open').textContent='Unknown';$('phw-next-close').textContent='Unknown';$('phw-cycle-position').textContent='-- / 185m';$('phw-last-sync').textContent='Awaiting global feed';$('phw-led-copy').textContent='Unknown';$('phw-cycle-progress').style.width='0%';document.querySelectorAll('#phw-leds .phw-led').forEach(n=>n.className='phw-led');return;}
     const now=Date.now();status.textContent=p.status;count.textContent=fmtClock(p.nextMs);$('phw-countdown-caption').textContent=`Global clock · until ${p.nextLabel}.`;$('phw-next-open').textContent=p.openIn<=0?'Open now':`${fmtClock(p.openIn)} · ${fmtTime(now+p.openIn)}`;$('phw-next-close').textContent=p.type==='open'?`${fmtClock(p.closeIn)} · ${fmtTime(now+p.closeIn)}`:fmtTime(now+p.closeIn);$('phw-cycle-position').textContent=`${(p.pos/60000).toFixed(1)} / 185m`;
-    const sourceBits=[];if(state.hangarSourceVersion)sourceBits.push(state.hangarSourceVersion);if(state.hangarSyncAt)sourceBits.push(`verified ${fmtDateTime(state.hangarSyncAt)}`);$('phw-last-sync').textContent=sourceBits.join(' · ')||'Cached global alignment';$('phw-cycle-progress').style.width=`${Math.min(100,p.pos/CYCLE_MS*100)}%`;
+    const sourceBits=[];if(state.hangarSourceVersion)sourceBits.push(state.hangarSourceVersion);if(state.hangarSourceLastSync)sourceBits.push(`source sync ${state.hangarSourceLastSync}`);if(state.hangarSyncAt)sourceBits.push(`checked ${fmtDateTime(state.hangarSyncAt)}`);$('phw-last-sync').textContent=sourceBits.join(' · ')||'Global alignment unavailable';$('phw-cycle-progress').style.width=`${Math.min(100,p.pos/CYCLE_MS*100)}%`;
     const leds=[...document.querySelectorAll('#phw-leds .phw-led')];leds.forEach((led,i)=>{let cls='phw-led';if(p.type==='reset')cls+=' reset';else if(i<p.green)cls+=' green';else if(i<p.green+p.red)cls+=' red';led.className=cls;});
     $('phw-led-copy').textContent=p.type==='reset'?'All lights off':p.red?`${p.green} green · ${p.red} red`:`${p.green} green · ${p.off} off`;
   }
