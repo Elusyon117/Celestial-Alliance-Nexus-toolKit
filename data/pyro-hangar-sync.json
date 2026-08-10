@@ -1,17 +1,17 @@
 {
   "schema": "celestial-nexus.pyro-hangar-sync.v1",
   "status": "ok",
-  "source": "https://exectimer.com/en",
-  "sourceVersion": "ExecTimer live (user-verified seed)",
+  "source": "https://exectimer.com/index.html?lang=en",
+  "sourceVersion": "v1.65.9",
   "sourceBuild": "4.9.0-live.12344265",
-  "sourceLastSync": "User-verified screenshot 2026-08-10 16:30 local",
-  "sourceStatus": "Green Phase (Active) - 1/5 LEDs",
+  "sourceLastSync": "08/02/2026 12:16 PM",
+  "sourceStatus": "Red Phase (Charging) - 1/5 LEDs",
   "cycleMinutes": 185,
-  "cycleRemainingMs": 329000,
-  "cycleRemainingText": "00h 05m 29s",
-  "anchorEpochMs": 1786390247335,
-  "observedAt": "2026-08-10T22:30:18.335000Z",
-  "fetchedAt": "2026-08-10T22:30:18.335000Z",
-  "seed": "Derived from the user-provided ExecTimer screenshot at upload time. Scheduled sync replaces this seed after a verified live scrape.",
-  "note": "User-verified initial alignment; automated source requires a populated Last Sync and known live phase before publishing."
+  "cycleRemainingMs": 9011000,
+  "cycleRemainingText": "02h 30m 11s",
+  "anchorEpochMs": 1786401277530,
+  "observedAt": "2026-08-10T23:09:26.530Z",
+  "fetchedAt": "2026-08-10T23:09:26.530Z",
+  "scrapeDurationMs": 11413,
+  "note": "Derived from ExecTimer live Total Cycle countdown in a UTC-configured headless Chromium session."
 }
