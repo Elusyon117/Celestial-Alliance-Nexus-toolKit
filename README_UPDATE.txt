@@ -1,13 +1,13 @@
-Pyro Hangar Watch — Deep Red UI update
+Celestial Nexus Hub — three-column module directory
 
 Changes:
-- Deep-red module identity and accents
-- All active manual timers now appear in Next Local Opportunities
-- The active timer list scrolls only when its visible height is exceeded
-- Next Opening and Expected Close are visually emphasized
-- Opening/closing timestamps use the viewer's browser-resolved local timezone
-- Existing global-sync and timer logic otherwise preserved
+- Expanded the module preview/cover area toward the left edge on large desktops.
+- Expanded the Hub directory working width.
+- Added a dedicated third module column on large desktops.
+- Pyro Hangar Watch is the first card in column three.
+- Existing modules remain arranged through columns one and two.
+- Existing tablet/mobile layout behavior is preserved.
+- No Pyro Hangar timer or sync logic was changed.
 
-Replace index.html and SHA256SUMS.txt in the repository.
-The cover image is included for completeness and uses the existing path:
-assets/hub/game/pyro-hangar-watch-cover.webp
+Replace index.html and SHA256SUMS.txt.
+The existing Pyro Hangar cover is included for completeness.

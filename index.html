@@ -9562,6 +9562,53 @@ html[data-nexus-performance-mode="balanced"][data-nexus-motion-profile="restored
     #hub-view .hub-rb-source-grid { grid-template-columns: 1fr; }
     #hub-view .hub-rb-footer { align-items: flex-start; flex-direction: column; }
   }
+
+  /* Hub directory desktop expansion: wider module artwork + dedicated third rail. */
+  @media (min-width: 1280px) {
+    #hub-view .hub-rb-section-inner {
+      width: min(1680px, calc(100% - 32px));
+    }
+    #hub-view .hub-rb-directory-layout {
+      grid-template-columns: minmax(500px, 1.04fr) minmax(0, 1.76fr);
+      gap: 18px;
+    }
+    #hub-view .hub-rb-module-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-auto-flow: row;
+      align-content: start;
+      gap: 11px;
+    }
+    #hub-view .hub-rb-module-list > .hub-rb-module-card:not([data-view="pyro-hangar-watch-view"]):nth-child(odd) {
+      grid-column: 1;
+    }
+    #hub-view .hub-rb-module-list > .hub-rb-module-card:not([data-view="pyro-hangar-watch-view"]):nth-child(even) {
+      grid-column: 2;
+    }
+    #hub-view .hub-rb-module-list > .hub-rb-module-card[data-view="pyro-hangar-watch-view"] {
+      grid-column: 3;
+      grid-row: 1;
+      align-self: start;
+    }
+    #hub-view .hub-rb-module-preview {
+      min-height: 760px;
+    }
+    #hub-view .hub-rb-module-preview-content {
+      padding: 38px 34px 32px;
+    }
+    #hub-view .hub-rb-preview-copy {
+      max-width: 540px;
+    }
+  }
+
+  @media (min-width: 1680px) {
+    #hub-view .hub-rb-section-inner {
+      width: min(1760px, calc(100% - 44px));
+    }
+    #hub-view .hub-rb-directory-layout {
+      grid-template-columns: minmax(590px, 1.08fr) minmax(0, 1.72fr);
+      gap: 22px;
+    }
+  }
 </style>
 
 
@@ -10887,9 +10934,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
             <button class="hub-rb-module-card" type="button" data-category="industry" data-view="mining-view" data-code="Industry · NX-09" data-title="Mining Resources Command" data-description="Locate resources, mining regions, and practical field routes." data-image="./assets/hub/game/mining-cinematic.png" data-remote-image="https://robertsspaceindustries.com/media/6rqqefw64em90r/source/01-Mining-Laser-4.png" data-fallback-image="./assets/hub/mining-command.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/mining-cinematic.png');--hub-module-remote:url('https://robertsspaceindustries.com/media/6rqqefw64em90r/source/01-Mining-Laser-4.png');--hub-module-fallback:url('./assets/hub/mining-command.webp')">
               <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-09</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Mining Resources Command</strong><span class="hub-rb-module-copy">Resources, regions, fracture guidance, loadouts, and field routes.</span>
             </button>
-            <button class="hub-rb-module-card" type="button" data-category="operations intelligence" data-view="pyro-hangar-watch-view" data-code="Pyro Operations · NX-15" data-title="Pyro Hangar Watch" data-description="Live Executive Hangar cycle, Contested Zone boards, keycard cooldowns, and Pyro run timing." data-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-remote-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-fallback-image="./assets/hub/game/pyro-hangar-watch-cover.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-remote:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-fallback:url('./assets/hub/game/pyro-hangar-watch-cover.webp')">
-              <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-15</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Pyro Hangar Watch</strong><span class="hub-rb-module-copy">Live Executive Hangar cycle, compboards, keycards, vault timing, and run coordination.</span>
-            </button>
+            
             <button class="hub-rb-module-card" type="button" data-category="customization systems" data-view="language-pack-view" data-code="Customization · NX-10" data-title="Language Pack Lab" data-description="Build a clearer, customized global.ini for local game files." data-image="./assets/hub/game/language-pack-cinematic.jpg" data-remote-image="https://media.starcitizen.tools/5/5d/Drake-defensecon-hologram-corsair-02.jpg" data-fallback-image="./assets/hub/language-pack.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/language-pack-cinematic.jpg');--hub-module-remote:url('https://media.starcitizen.tools/5/5d/Drake-defensecon-hologram-corsair-02.jpg');--hub-module-fallback:url('./assets/hub/language-pack.webp')">
               <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-10</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Language Pack Lab</strong><span class="hub-rb-module-copy">Localized strings, clearer labels, and custom game terminology.</span>
             </button>
@@ -10898,6 +10943,9 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
             </button>
             <button class="hub-rb-module-card" type="button" data-category="systems intelligence" data-view="health-view" data-code="Systems · NX-12" data-title="Game Status & Intel" data-description="Review service health, patch information, official news, and community intelligence." data-image="./assets/hub/game/game-status.jpg" data-remote-image="https://support.robertsspaceindustries.com/hc/article_attachments/32719684821527" data-fallback-image="./assets/hub/game-status.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/game-status.jpg');--hub-module-remote:url('https://support.robertsspaceindustries.com/hc/article_attachments/32719684821527');--hub-module-fallback:url('./assets/hub/game-status.webp')">
               <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-12</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Game Status & Intel</strong><span class="hub-rb-module-copy">Service health, live build information, patch notes, and intelligence.</span>
+            </button>
+            <button class="hub-rb-module-card" type="button" data-category="operations intelligence" data-view="pyro-hangar-watch-view" data-code="Pyro Operations · NX-15" data-title="Pyro Hangar Watch" data-description="Live Executive Hangar cycle, Contested Zone boards, keycard cooldowns, and Pyro run timing." data-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-remote-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-fallback-image="./assets/hub/game/pyro-hangar-watch-cover.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-remote:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-fallback:url('./assets/hub/game/pyro-hangar-watch-cover.webp')">
+              <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-15</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Pyro Hangar Watch</strong><span class="hub-rb-module-copy">Live Executive Hangar cycle, compboards, keycards, vault timing, and run coordination.</span>
             </button>
           </div>
         </div>
