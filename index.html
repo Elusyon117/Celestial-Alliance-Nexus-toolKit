@@ -12641,61 +12641,62 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
 </section>
 <style id="pyro-hangar-watch-styles">
   #pyro-hangar-watch-view {
-    --phw-accent:#e8873c;
-    --phw-accent-soft:rgba(232,135,60,.12);
-    --phw-red:#ef6464;
+    --phw-accent:#8b1e2d;
+    --phw-accent-bright:#c53b50;
+    --phw-accent-soft:rgba(139,30,45,.18);
+    --phw-red:#d94b5f;
     --phw-green:#43d17b;
-    --phw-amber:#e9b949;
-    --phw-cyan:#56c7df;
-    --phw-bg:#090d13;
-    --phw-surface:#0d121a;
-    --phw-surface-2:#10161f;
-    --phw-line:#242c38;
-    --phw-line-strong:#354051;
-    --phw-muted:#7f8a9b;
+    --phw-amber:#e0b04d;
+    --phw-cyan:#7f9daa;
+    --phw-bg:#090b10;
+    --phw-surface:#0d1118;
+    --phw-surface-2:#11151d;
+    --phw-line:#2b2931;
+    --phw-line-strong:#40333a;
+    --phw-muted:#85818a;
   }
   #pyro-hangar-watch-view { background:#080c12; }
   #pyro-hangar-watch-view .nexus-topbar {
-    border-bottom:1px solid #1d2530;
-    background:rgba(8,12,18,.96);
+    border-bottom:1px solid rgba(139,30,45,.44);
+    background:rgba(8,10,15,.97);
     backdrop-filter:blur(12px);
   }
   #pyro-hangar-watch-view .btn { border-radius:3px; }
 
-  .phw-shell { width:min(1480px,calc(100% - 48px)); margin:0 auto; padding:24px 0 64px; }
+  .phw-shell { width:min(2200px,calc(100% - 32px)); margin:0 auto; padding:24px 0 64px; }
 
   /* Cover / module identity */
   .phw-hero {
-    position:relative; min-height:286px; overflow:hidden;
+    position:relative; min-height:410px; overflow:hidden;
     display:flex; justify-content:space-between; gap:32px; align-items:flex-end;
-    padding:30px 32px; border:1px solid #29313c; border-radius:4px;
+    padding:42px 46px; border:1px solid #3a252c; border-radius:4px;
     background-image:
-      linear-gradient(90deg,rgba(6,9,14,.96) 0%,rgba(6,9,14,.76) 43%,rgba(6,9,14,.23) 72%,rgba(6,9,14,.12) 100%),
-      linear-gradient(0deg,rgba(6,9,14,.88),rgba(6,9,14,0) 55%),
+      linear-gradient(90deg,rgba(7,8,12,.97) 0%,rgba(10,8,12,.79) 43%,rgba(28,8,13,.30) 72%,rgba(47,9,17,.16) 100%),
+      linear-gradient(0deg,rgba(7,8,12,.90),rgba(7,8,12,0) 55%),
       url('./assets/hub/game/pyro-hangar-watch-cover.webp');
     background-size:cover; background-position:center 51%;
   }
   .phw-hero::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--phw-accent); opacity:.9; }
   .phw-hero-copy,.phw-hero-meta { position:relative; z-index:1; }
-  .phw-hero-copy { max-width:760px; }
+  .phw-hero-copy { max-width:920px; }
   .phw-eyebrow { color:#cfd6df; font:600 10px 'Share Tech Mono',monospace; letter-spacing:.14em; text-transform:uppercase; }
-  .phw-title { margin-top:9px; color:#fff; font-size:clamp(38px,4vw,56px); line-height:1; letter-spacing:-.04em; font-weight:700; }
-  .phw-subtitle { max-width:690px; margin-top:12px; color:#aeb7c4; font-size:13px; line-height:1.65; }
-  .phw-hero-meta { min-width:250px; display:grid; gap:0; align-self:flex-end; border-top:1px solid rgba(255,255,255,.23); }
+  .phw-title { margin-top:11px; color:#fff; font-size:clamp(46px,4.4vw,72px); line-height:.98; letter-spacing:-.045em; font-weight:700; }
+  .phw-subtitle { max-width:860px; margin-top:15px; color:#aeb7c4; font-size:14px; line-height:1.68; }
+  .phw-hero-meta { min-width:330px; display:grid; gap:0; align-self:flex-end; border-top:1px solid rgba(255,255,255,.23); }
   .phw-meta-chip { display:flex; justify-content:space-between; gap:20px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.14); background:none; color:#aeb7c4; font:9.6px 'Share Tech Mono',monospace; }
   .phw-meta-chip strong { color:#fff; font-weight:600; }
 
-  .phw-alert { margin-top:10px; padding:10px 12px; border:0; border-left:2px solid var(--phw-amber); border-radius:0; background:#10141b; color:#aeb6c3; font-size:11px; line-height:1.5; }
+  .phw-alert { margin-top:12px; padding:10px 12px; border:0; border-left:2px solid var(--phw-amber); border-radius:0; background:#10141b; color:#aeb6c3; font-size:11px; line-height:1.5; }
   .phw-alert strong { color:#e8c76f; }
 
   /* Layout */
-  .phw-grid { display:grid; grid-template-columns:minmax(0,1.72fr) minmax(300px,.68fr); gap:10px; margin-top:10px; }
+  .phw-grid { display:grid; grid-template-columns:minmax(0,1.82fr) minmax(340px,.58fr); gap:12px; margin-top:12px; }
   .phw-panel { border:1px solid var(--phw-line); border-radius:4px; background:var(--phw-surface); box-shadow:none; overflow:hidden; }
   .phw-panel-head { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:13px 15px 12px; border-bottom:1px solid var(--phw-line); background:none; }
-  .phw-panel-kicker { color:#9ba5b3; font:600 9px 'Share Tech Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+  .phw-panel-kicker { color:#ad6672; font:600 9px 'Share Tech Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
   .phw-panel-title { margin-top:3px; color:#f4f7fa; font-size:16px; font-weight:650; letter-spacing:-.01em; }
   .phw-panel-note { max-width:610px; margin-top:3px; color:#717d8f; font-size:10.5px; line-height:1.45; }
-  .phw-source-pill { flex:0 0 auto; padding:4px 6px; border:1px solid #2f4550; border-radius:2px; background:transparent; color:#8fd6e5; font:8.8px 'Share Tech Mono',monospace; letter-spacing:.04em; }
+  .phw-source-pill { flex:0 0 auto; padding:4px 6px; border:1px solid rgba(197,59,80,.38); border-radius:2px; background:rgba(139,30,45,.08); color:#d47988; font:8.8px 'Share Tech Mono',monospace; letter-spacing:.04em; }
 
   /* Main executive clock */
   .phw-exec-body { padding:0; }
@@ -12704,16 +12705,20 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   .phw-status-label { color:#707c8d; font:9.5px 'Share Tech Mono',monospace; letter-spacing:.11em; text-transform:uppercase; }
   .phw-status { margin-top:7px; color:#cbd5e1; font:650 15px 'Share Tech Mono',monospace; letter-spacing:.055em; }
   .phw-status.open { color:var(--phw-green); }
-  .phw-status.closed { color:#ed8d8d; }
+  .phw-status.closed { color:#dc7584; }
   .phw-status.reset { color:var(--phw-amber); }
   .phw-status.unknown { color:#8994a3; }
   .phw-countdown { margin-top:12px; color:#f8fafc; font:600 clamp(48px,6vw,76px) 'Share Tech Mono',monospace; letter-spacing:-.065em; line-height:.9; font-variant-numeric:tabular-nums; }
   .phw-countdown-caption { margin-top:11px; color:#788496; font-size:10.5px; }
-  .phw-phase-details { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; margin-top:22px; border-top:1px solid var(--phw-line); }
-  .phw-phase-stat { padding:9px 12px 0 0; border:0; border-radius:0; background:none; }
+  .phw-local-zone { margin-top:20px; color:#7d7278; font:8.4px 'Share Tech Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
+  .phw-phase-details { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; margin-top:7px; border-top:0; }
+  .phw-phase-stat { min-width:0; padding:10px 12px; border:1px solid var(--phw-line); border-radius:3px; background:#0d1219; }
   .phw-phase-stat + .phw-phase-stat { padding-left:12px; border-left:1px solid var(--phw-line); }
-  .phw-phase-stat span { display:block; color:#647083; font:8.2px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
-  .phw-phase-stat strong { display:block; margin-top:4px; color:#d8dee7; font-size:10px; line-height:1.35; }
+  .phw-phase-stat span { display:block; color:#716d76; font:8.2px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
+  .phw-phase-stat strong { display:block; margin-top:5px; color:#d8dee7; font-size:10.5px; line-height:1.35; overflow-wrap:anywhere; }
+  .phw-phase-stat:nth-child(-n+2) { border-color:rgba(197,59,80,.42); background:linear-gradient(180deg,rgba(139,30,45,.17),rgba(139,30,45,.07)); box-shadow:inset 0 2px 0 rgba(197,59,80,.6); }
+  .phw-phase-stat:nth-child(-n+2) span { color:#b87480; }
+  .phw-phase-stat:nth-child(-n+2) strong { color:#fff; font:600 12.5px 'Share Tech Mono',monospace; letter-spacing:-.015em; }
 
   .phw-led-console { padding:24px 24px 20px; border:0; border-radius:0; background:#0d121a; }
   .phw-led-title { display:flex; justify-content:space-between; gap:12px; color:#9aa5b4; font:9.5px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.06em; }
@@ -12740,9 +12745,9 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   .phw-select:focus,.phw-input:focus { border-color:#7c8796; }
   .phw-btn { min-height:34px; padding:7px 10px; border-radius:2px; border:1px solid #303948; background:#111823; color:#b8c1ce; cursor:pointer; font:600 10px 'Inter',sans-serif; transition:border-color .12s,background .12s,color .12s; }
   .phw-btn:hover { border-color:#586476; color:#fff; background:#161e2a; }
-  .phw-btn.primary { border-color:#a75b26; background:#9f5120; color:#fff; }
-  .phw-btn.primary:hover { border-color:#c87435; background:#b86127; }
-  .phw-btn.danger { border-color:#613337; color:#d99298; background:#161014; }
+  .phw-btn.primary { border-color:#a72f42; background:#7f1d2d; color:#fff; }
+  .phw-btn.primary:hover { border-color:#c8475a; background:#98263a; }
+  .phw-btn.danger { border-color:#67313b; color:#d88794; background:#171015; }
 
   /* Run overview */
   .phw-overview-body { padding:14px; }
@@ -12754,14 +12759,18 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   .phw-board-dot { min-height:27px; border:1px solid #2c3542; border-radius:2px; display:grid; place-items:center; color:#5e6a7a; background:#0a1018; font:600 9px 'Share Tech Mono',monospace; }
   .phw-board-dot.on { color:#aee7c4; border-color:#367b55; background:#12261c; }
   .phw-next-title { margin:15px 0 7px; color:#8995a5; font:600 9px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
-  .phw-next-list { display:grid; gap:0; border-top:1px solid var(--phw-line); }
-  .phw-next-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:9px 2px; border:0; border-bottom:1px solid var(--phw-line); border-radius:0; background:none; }
+  .phw-next-list { display:grid; gap:0; max-height:232px; overflow-y:auto; overflow-x:hidden; border-top:1px solid var(--phw-line); scrollbar-width:thin; scrollbar-color:#6f2634 transparent; }
+  .phw-next-list::-webkit-scrollbar { width:6px; }
+  .phw-next-list::-webkit-scrollbar-track { background:transparent; }
+  .phw-next-list::-webkit-scrollbar-thumb { background:#642331; border-radius:6px; }
+  .phw-next-list::-webkit-scrollbar-thumb:hover { background:#8b3041; }
+  .phw-next-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:9px 4px 9px 2px; border:0; border-bottom:1px solid var(--phw-line); border-radius:0; background:none; }
   .phw-next-item strong { color:#cfd6df; font-size:10.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .phw-next-item span { color:#d7ad57; font:600 10px 'Share Tech Mono',monospace; }
+  .phw-next-item span { color:#d77887; font:600 10px 'Share Tech Mono',monospace; }
   .phw-empty { padding:14px 0; color:#606c7c; text-align:left; font-size:10.5px; line-height:1.45; }
 
   /* Contested Zone timers */
-  .phw-section { margin-top:10px; }
+  .phw-section { margin-top:12px; }
   .phw-zone-tabs { display:flex; flex-wrap:wrap; gap:0; padding:0 14px; border-bottom:1px solid var(--phw-line); }
   .phw-zone-tab { padding:11px 12px 9px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; color:#727e8e; cursor:pointer; font:600 9px 'Share Tech Mono',monospace; }
   .phw-zone-tab:hover { color:#c3cbd6; }
@@ -12775,7 +12784,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   .phw-timer-clock { margin-top:9px; color:#f2f5f8; font:600 24px 'Share Tech Mono',monospace; letter-spacing:-.035em; font-variant-numeric:tabular-nums; }
   .phw-timer-state { margin-top:1px; color:#606c7d; font:8.5px 'Share Tech Mono',monospace; text-transform:uppercase; }
   .phw-timer-card.ready .phw-timer-clock,.phw-timer-card.ready .phw-timer-state { color:#69d494; }
-  .phw-timer-card.running { box-shadow:inset 2px 0 0 #9b7433; padding-left:10px; }
+  .phw-timer-card.running { box-shadow:inset 2px 0 0 var(--phw-accent-bright); padding-left:10px; }
   .phw-timer-actions { display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
   .phw-timer-actions button { min-height:28px; padding:5px 8px; }
   .phw-collected { margin-left:auto !important; }
@@ -12803,18 +12812,25 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   .phw-source-card p { margin-top:6px; color:#667284; font-size:9.5px; line-height:1.45; }
   .phw-footer-note { margin-top:10px; color:#576273; font-size:9.5px; line-height:1.5; text-align:left; }
 
+  @media (min-width:1600px) {
+    .phw-exec-top{grid-template-columns:minmax(390px,.82fr) minmax(520px,1.18fr)}
+    .phw-status-box{padding:30px 34px 26px}
+    .phw-led-console{padding:28px 30px 24px}
+    .phw-overview-body{padding:16px 18px}
+    .phw-timers-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:0 24px;padding-left:18px;padding-right:18px}
+  }
   @media (max-width:1080px) {
     .phw-grid{grid-template-columns:1fr}
     .phw-exec-top{grid-template-columns:1fr}
     .phw-status-box{border-right:0;border-bottom:1px solid var(--phw-line)}
     .phw-phase-details{grid-template-columns:repeat(2,minmax(0,1fr))}
-    .phw-phase-stat:nth-child(3){padding-left:0;border-left:0}
+    .phw-phase-stat:nth-child(3){padding-left:12px;border-left:1px solid var(--phw-line)}
     .phw-sources{grid-template-columns:repeat(2,1fr)}
     .phw-source-card:nth-child(2){border-right:0}
     .phw-source-card:nth-child(-n+2){border-bottom:1px solid var(--phw-line)}
   }
   @media (max-width:720px) {
-    .phw-shell{width:min(100% - 24px,1480px);padding-top:14px}
+    .phw-shell{width:min(100% - 24px,2200px);padding-top:14px}
     .phw-hero{min-height:360px;padding:22px 20px;align-items:flex-end;flex-direction:column;justify-content:flex-end;background-image:linear-gradient(0deg,rgba(6,9,14,.97) 0%,rgba(6,9,14,.58) 58%,rgba(6,9,14,.22) 100%),url('./assets/hub/game/pyro-hangar-watch-cover.webp');background-position:center}
     .phw-hero-copy{width:100%}.phw-hero-meta{width:100%;min-width:0}
     .phw-title{font-size:40px}.phw-subtitle{font-size:12px}
@@ -12847,7 +12863,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
         <div class="phw-panel-head"><div><div class="phw-panel-kicker">EXECUTIVE HANGAR / GLOBAL CLOCK</div><div class="phw-panel-title">Executive Hangar</div><div class="phw-panel-note">Global cycle alignment with live phase, light state, and next opening window.</div></div><span class="phw-source-pill">AUTO · GLOBAL SYNC</span></div>
         <div class="phw-exec-body">
           <div class="phw-exec-top">
-            <div class="phw-status-box"><div class="phw-status-label">Current hangar status</div><div class="phw-status unknown" id="phw-hangar-status">SYNCING GLOBAL CLOCK</div><div class="phw-countdown" id="phw-hangar-countdown">--:--:--</div><div class="phw-countdown-caption" id="phw-countdown-caption">Connecting to the Celestial global timing feed…</div><div class="phw-phase-details"><div class="phw-phase-stat"><span>Next opening</span><strong id="phw-next-open">Connecting…</strong></div><div class="phw-phase-stat"><span>Expected close</span><strong id="phw-next-close">Connecting…</strong></div><div class="phw-phase-stat"><span>Cycle position</span><strong id="phw-cycle-position">-- / 185m</strong></div><div class="phw-phase-stat"><span>Global source</span><strong id="phw-last-sync">Connecting…</strong></div></div></div>
+            <div class="phw-status-box"><div class="phw-status-label">Current hangar status</div><div class="phw-status unknown" id="phw-hangar-status">SYNCING GLOBAL CLOCK</div><div class="phw-countdown" id="phw-hangar-countdown">--:--:--</div><div class="phw-countdown-caption" id="phw-countdown-caption">Connecting to the Celestial global timing feed…</div><div class="phw-local-zone" id="phw-local-zone">Times shown in your local timezone</div><div class="phw-phase-details"><div class="phw-phase-stat"><span>Next opening · local</span><strong id="phw-next-open">Connecting…</strong></div><div class="phw-phase-stat"><span>Expected close · local</span><strong id="phw-next-close">Connecting…</strong></div><div class="phw-phase-stat"><span>Cycle position</span><strong id="phw-cycle-position">-- / 185m</strong></div><div class="phw-phase-stat"><span>Global source</span><strong id="phw-last-sync">Connecting…</strong></div></div></div>
             <div class="phw-led-console"><div class="phw-led-title"><span>PYAM status lights</span><span id="phw-led-copy">Unknown</span></div><div class="phw-leds" id="phw-leds"><span class="phw-led" data-index="1"></span><span class="phw-led" data-index="2"></span><span class="phw-led" data-index="3"></span><span class="phw-led" data-index="4"></span><span class="phw-led" data-index="5"></span></div><div class="phw-progress"><div class="phw-progress-fill" id="phw-cycle-progress"></div></div><div class="phw-cycle-key"><span>CHARGE · 120m</span><span>OPEN · 60m</span><span>RESET · 5m</span></div></div>
           </div>
           <div class="phw-sync"><div class="phw-sync-row"><div class="phw-info-card" style="flex:1 1 360px"><span>Global timing feed</span><strong id="phw-global-feed-status">Connecting to ExecTimer reference…</strong></div><button class="phw-btn primary" id="phw-refresh-global" type="button">Refresh global clock</button></div><div class="phw-sync-note">Automatic global alignment. A scheduled Celestial GitHub sync reads ExecTimer’s live rendered cycle, calculates the shared 185-minute epoch, and publishes only the tiny timing reference used here. This module refreshes that feed automatically and keeps the last good alignment as an offline fallback.</div></div>
@@ -12900,8 +12916,9 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   const save=()=>{try{localStorage.setItem(STORAGE_KEY,JSON.stringify(state));}catch(_){}};
   function load(){try{const raw=localStorage.getItem(STORAGE_KEY);if(raw){const parsed=JSON.parse(raw);state={...fresh(),...parsed,timers:{...(parsed.timers||{})},durations:{...(parsed.durations||{})},boards:{...(parsed.boards||{})}};if(state.hangarFeedProvenance!=='repo-global-v2'){state.hangarAnchor=null;state.hangarSyncAt=null;state.hangarFeedFetchedAt=null;state.hangarSourceLastSync='';state.hangarSourceVersion='';state.hangarFeedState='connecting';state.hangarFeedProvenance='';}}}catch(_){state=fresh();}}
   const fmtClock=ms=>{ms=Math.max(0,ms);const total=Math.ceil(ms/1000),h=Math.floor(total/3600),m=Math.floor((total%3600)/60),s=total%60;return h?`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`:`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`};
-  const fmtTime=ts=>ts?new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'Unknown';
-  const fmtDateTime=ts=>ts?new Date(ts).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}):'Never';
+  const USER_TIME_ZONE=(()=>{try{return Intl.DateTimeFormat().resolvedOptions().timeZone||'Local time';}catch(_){return 'Local time';}})();
+  const fmtTime=ts=>ts?new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'Unknown';
+  const fmtDateTime=ts=>ts?new Date(ts).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'Never';
   function durationFor(def){const v=Number(state.durations[def.id]);return Number.isFinite(v)&&v>0?v:def.minutes;}
   function setFeedStatus(text,stateName=''){const el=$('phw-global-feed-status');if(el)el.textContent=text;if(stateName)state.hangarFeedState=stateName;}
   async function refreshGlobalHangarSync({quiet=false}={}){
@@ -12951,7 +12968,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
     const p=phaseAt();const status=$('phw-hangar-status'),count=$('phw-hangar-countdown');if(!status||!count)return;
     status.className='phw-status '+(p?p.type:'unknown');
     if(!p){status.textContent=state.hangarFeedState==='connecting'?'SYNCING GLOBAL CLOCK':'GLOBAL SYNC UNAVAILABLE';count.textContent='--:--:--';$('phw-countdown-caption').textContent=state.hangarFeedState==='connecting'?'Connecting to the Celestial global timing feed…':'The shared feed has not produced a verified cycle anchor yet.';$('phw-next-open').textContent='Unknown';$('phw-next-close').textContent='Unknown';$('phw-cycle-position').textContent='-- / 185m';$('phw-last-sync').textContent='Awaiting global feed';$('phw-led-copy').textContent='Unknown';$('phw-cycle-progress').style.width='0%';document.querySelectorAll('#phw-leds .phw-led').forEach(n=>n.className='phw-led');return;}
-    const now=Date.now();status.textContent=p.status;count.textContent=fmtClock(p.nextMs);$('phw-countdown-caption').textContent=`Global clock · until ${p.nextLabel}.`;$('phw-next-open').textContent=p.openIn<=0?'Open now':`${fmtClock(p.openIn)} · ${fmtTime(now+p.openIn)}`;$('phw-next-close').textContent=p.type==='open'?`${fmtClock(p.closeIn)} · ${fmtTime(now+p.closeIn)}`:fmtTime(now+p.closeIn);$('phw-cycle-position').textContent=`${(p.pos/60000).toFixed(1)} / 185m`;
+    const now=Date.now();status.textContent=p.status;count.textContent=fmtClock(p.nextMs);$('phw-countdown-caption').textContent=`Global clock · until ${p.nextLabel}.`;const zoneEl=$('phw-local-zone');if(zoneEl)zoneEl.textContent=`YOUR LOCAL TIME · ${USER_TIME_ZONE.replaceAll('_',' ')}`;$('phw-next-open').textContent=p.openIn<=0?'OPEN NOW':`${fmtClock(p.openIn)} · ${fmtTime(now+p.openIn)}`;$('phw-next-close').textContent=p.type==='open'?`${fmtClock(p.closeIn)} · ${fmtTime(now+p.closeIn)}`:fmtTime(now+p.closeIn);$('phw-cycle-position').textContent=`${(p.pos/60000).toFixed(1)} / 185m`;
     const sourceBits=[];if(state.hangarSourceVersion)sourceBits.push(state.hangarSourceVersion);if(state.hangarSourceLastSync)sourceBits.push(`source sync ${state.hangarSourceLastSync}`);if(state.hangarSyncAt)sourceBits.push(`checked ${fmtDateTime(state.hangarSyncAt)}`);$('phw-last-sync').textContent=sourceBits.join(' · ')||'Global alignment unavailable';$('phw-cycle-progress').style.width=`${Math.min(100,p.pos/CYCLE_MS*100)}%`;
     const leds=[...document.querySelectorAll('#phw-leds .phw-led')];leds.forEach((led,i)=>{let cls='phw-led';if(p.type==='reset')cls+=' reset';else if(i<p.green)cls+=' green';else if(i<p.green+p.red)cls+=' red';led.className=cls;});
     $('phw-led-copy').textContent=p.type==='reset'?'All lights off':p.red?`${p.green} green · ${p.red} red`:`${p.green} green · ${p.off} off`;
@@ -12960,7 +12977,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   function timerRemaining(def,now=Date.now()){const end=Number(state.timers[def.id]);return Number.isFinite(end)?end-now:null;}
   function renderTimers(){const grid=$('phw-timers-grid');if(!grid)return;const zone=state.zone||'checkmate';document.querySelectorAll('#phw-zone-tabs .phw-zone-tab').forEach(b=>b.classList.toggle('active',b.dataset.zone===zone));const defs=timerDefs.filter(d=>zone==='all'||d.zone===zone);grid.innerHTML=defs.map(def=>{const rem=timerRemaining(def),running=rem!==null&&rem>0,ready=rem!==null&&rem<=0,dur=durationFor(def),collected=def.board&&state.boards[def.board];return `<article class="phw-timer-card ${running?'running':ready?'ready':''}" data-timer-id="${def.id}"><div class="phw-timer-top"><div><div class="phw-timer-type">${def.group}</div><div class="phw-timer-name">${def.name}</div></div><span class="phw-timer-source">${def.source}</span></div><div class="phw-timer-clock" data-role="clock">${running?fmtClock(rem):ready?'READY':`${String(dur).padStart(2,'0')}:00`}</div><div class="phw-timer-state" data-role="state">${running?'Cooldown running':ready?'Available / verify in game':`Standby · ${dur}m preset`}</div><div class="phw-timer-actions"><button class="phw-btn primary" data-action="start" type="button">Start</button><button class="phw-btn" data-action="reset" type="button">Reset</button><button class="phw-btn" data-action="edit" type="button">Edit ${dur}m</button>${def.board?`<button class="phw-btn phw-collected ${collected?'on':''}" data-action="collect" type="button">${collected?'✓ Board '+def.board:'Board '+def.board}</button>`:''}</div></article>`;}).join('');renderNext();}
   function updateTimerClocks(){const now=Date.now();document.querySelectorAll('#phw-timers-grid .phw-timer-card').forEach(card=>{const def=timerDefs.find(d=>d.id===card.dataset.timerId);if(!def)return;const rem=timerRemaining(def,now),clock=card.querySelector('[data-role="clock"]'),label=card.querySelector('[data-role="state"]');if(rem===null)return;if(rem>0){card.classList.add('running');card.classList.remove('ready');clock.textContent=fmtClock(rem);label.textContent='Cooldown running';}else{card.classList.remove('running');card.classList.add('ready');clock.textContent='READY';label.textContent='Available / verify in game';}});renderNext();}
-  function renderNext(){const list=$('phw-next-list');if(!list)return;const now=Date.now();const active=timerDefs.map(d=>({d,rem:timerRemaining(d,now)})).filter(x=>x.rem!==null&&x.rem>0).sort((a,b)=>a.rem-b.rem).slice(0,6);if(!active.length){list.innerHTML='<div class="phw-empty">No active cooldowns. Start timers as your team uses printers or tablets.</div>';return;}list.innerHTML=active.map(x=>`<div class="phw-next-item"><strong>${x.d.name}</strong><span>${fmtClock(x.rem)}</span></div>`).join('');}
+  function renderNext(){const list=$('phw-next-list');if(!list)return;const now=Date.now();const active=timerDefs.map(d=>({d,rem:timerRemaining(d,now)})).filter(x=>x.rem!==null&&x.rem>0).sort((a,b)=>a.rem-b.rem);if(!active.length){list.innerHTML='<div class="phw-empty">No active cooldowns. Start timers as your team uses printers or tablets.</div>';return;}list.innerHTML=active.map(x=>`<div class="phw-next-item"><strong>${x.d.name}</strong><span>${fmtClock(x.rem)}</span></div>`).join('');}
   function renderVault(){const status=$('phw-vault-status');if(!status)return;if(!Number.isFinite(state.vaultOpenAt)){status.textContent='UNSYNCED';$('phw-vault-time').textContent='--:--';$('phw-vault-copy').textContent='Click when the vault door opens to align the repeating 21-minute cycle.';return;}const now=Date.now(),pos=((now-state.vaultOpenAt)%VAULT_CYCLE_MS+VAULT_CYCLE_MS)%VAULT_CYCLE_MS;if(pos<VAULT_OPEN_MS){status.textContent='OPEN WINDOW';$('phw-vault-time').textContent=fmtClock(VAULT_OPEN_MS-pos);$('phw-vault-copy').textContent='Door should be open or opening. Verify visually before moving through.';}else{const rem=VAULT_CYCLE_MS-pos;status.textContent=rem<=30000?'OPENING SOON':'CLOSED';$('phw-vault-time').textContent=fmtClock(rem);$('phw-vault-copy').textContent=rem<=30000?'Blue pre-open lighting may be visible now.':'Expected time until the next one-minute open window.';}}
   function tick(){renderHangar();updateTimerClocks();renderVault();}
   function bind(){
