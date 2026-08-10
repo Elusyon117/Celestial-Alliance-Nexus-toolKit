@@ -1,0 +1,37 @@
+Pyro Hangar Watch — Automatic Global Sync Update
+==================================================
+
+Replace/add these files at the same paths in the repository:
+
+  index.html
+  data/pyro-hangar-sync.json
+  scripts/sync-pyro-hangar.mjs
+  .github/workflows/sync-game-data.yml
+  SHA256SUMS.txt
+
+After publishing the files:
+
+1. Open GitHub > Actions > Sync game data.
+2. Choose Run workflow once.
+3. The workflow opens https://exectimer.com/en in headless Chromium, reads the live Total Cycle countdown, derives the shared 185-minute cycle anchor, and saves it to data/pyro-hangar-sync.json.
+4. After that first initialization, Pyro Hangar Watch loads the shared timer automatically for every member.
+5. The workflow checks ExecTimer every 5 minutes. It commits a new sync file only when the global anchor/source synchronization actually changes, so it does not create a commit every 5 minutes.
+
+Runtime behavior
+----------------
+- Pyro Hangar Watch fetches data/pyro-hangar-sync.json automatically when opened.
+- It refreshes the feed every 60 seconds while the module is open.
+- The 185-minute Executive Hangar cycle continues locally at one-second resolution from the shared global anchor.
+- If the feed is temporarily unavailable, the last verified global anchor is retained in localStorage as an offline fallback.
+- Manual Executive Hangar synchronization controls have been removed.
+- Contested Zone support timers remain local/manual because ExecTimer also treats those as manual support timers.
+
+Source model
+------------
+ExecTimer currently documents the Executive Hangar model as:
+- 120 minutes power-up / charging (24 minutes per LED)
+- 60 minutes accessible / power-down (12 minutes per LED)
+- 5 minutes cooldown / death-zone reset
+- 185 minutes total
+
+The automated sync derives the epoch from ExecTimer's live rendered Total Cycle countdown instead of depending on a private API.

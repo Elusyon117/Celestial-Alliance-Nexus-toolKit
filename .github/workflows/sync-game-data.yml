@@ -15,6 +15,7 @@ on:
         type: choice
         options: [LIVE, PTU, EPTU]
   schedule:
+    - cron: '*/5 * * * *'
     - cron: '17 */6 * * *'
 
 permissions:
@@ -49,15 +50,50 @@ jobs:
           set -euo pipefail
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
+          node --check scripts/sync-pyro-hangar.mjs
           node --check scripts/validate-repo.mjs
 
+      - name: Synchronize Pyro Executive Hangar global clock
+        id: pyro_sync
+        continue-on-error: true
+        run: node scripts/sync-pyro-hangar.mjs
+
+      - name: Commit Pyro Executive Hangar clock
+        if: steps.pyro_sync.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/pyro-hangar-sync.json
+
+          if git diff --cached --quiet; then
+            echo 'Pyro Hangar global clock is unchanged.'
+          else
+            git commit -m 'Sync Pyro Hangar global timer'
+            for attempt in 1 2 3; do
+              git pull --rebase origin "$GITHUB_REF_NAME"
+              if git push origin "HEAD:$GITHUB_REF_NAME"; then
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then
+                echo 'Pyro timer push failed after three attempts.' >&2
+                exit 1
+              fi
+              sleep $((attempt * 3))
+            done
+          fi
+
       - name: Synchronize mission catalog
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Audit generated data
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
         run: node scripts/audit-patch-data.mjs
 
-      - name: Commit generated files
+      - name: Commit generated game-data files
+        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
         shell: bash
         run: |
           set -euo pipefail
@@ -91,10 +127,13 @@ jobs:
         shell: bash
         run: |
           {
-            echo '## Game-data synchronization'
-            if [ -f data/game-data-status.json ]; then
-              jq -r '.modules.contractFinder | "- Status: `\(.status)`\n- Patch: `\(.patch)`\n- Channel: `\(.channel)`\n- Missions: `\(.totalCount)`\n- Last error: `\(.lastError // "")`"' data/game-data-status.json
+            echo '## Synchronization summary'
+            if [ -f data/pyro-hangar-sync.json ]; then
+              jq -r '"- Pyro Hangar: `\(.status)`\n- ExecTimer source: `\(.sourceVersion // "pending")`\n- Global anchor: `\(.anchorEpochMs // "pending")`"' data/pyro-hangar-sync.json
             else
-              echo '- Status file was not produced.'
+              echo '- Pyro Hangar sync file was not produced.'
+            fi
+            if [ -f data/game-data-status.json ]; then
+              jq -r '.modules.contractFinder | "- Mission status: `\(.status)`\n- Patch: `\(.patch)`\n- Channel: `\(.channel)`\n- Missions: `\(.totalCount)`\n- Last error: `\(.lastError // "")`"' data/game-data-status.json
             fi
           } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,9 @@
+{
+  "schema": "celestial-nexus.pyro-hangar-sync.v1",
+  "status": "pending",
+  "source": "https://exectimer.com/en",
+  "cycleMinutes": 185,
+  "anchorEpochMs": null,
+  "fetchedAt": null,
+  "message": "Run the Sync game data workflow once after publishing this update to initialize the shared Executive Hangar clock."
+}
