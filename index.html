@@ -10887,8 +10887,8 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
             <button class="hub-rb-module-card" type="button" data-category="industry" data-view="mining-view" data-code="Industry · NX-09" data-title="Mining Resources Command" data-description="Locate resources, mining regions, and practical field routes." data-image="./assets/hub/game/mining-cinematic.png" data-remote-image="https://robertsspaceindustries.com/media/6rqqefw64em90r/source/01-Mining-Laser-4.png" data-fallback-image="./assets/hub/mining-command.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/mining-cinematic.png');--hub-module-remote:url('https://robertsspaceindustries.com/media/6rqqefw64em90r/source/01-Mining-Laser-4.png');--hub-module-fallback:url('./assets/hub/mining-command.webp')">
               <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-09</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Mining Resources Command</strong><span class="hub-rb-module-copy">Resources, regions, fracture guidance, loadouts, and field routes.</span>
             </button>
-            <button class="hub-rb-module-card" type="button" data-category="operations intelligence" data-view="pyro-hangar-watch-view" data-code="Pyro Operations · NX-15" data-title="Pyro Hangar Watch" data-description="Track Executive Hangar phases, Contested Zone compboard cycles, keycards, and Pyro run timers." data-image="https://media.starcitizen.tools/7/7c/PYAM-EXHANG-0-1_Map.png" data-remote-image="https://media.starcitizen.tools/7/7c/PYAM-EXHANG-0-1_Map.png" data-fallback-image="./assets/hub/contract-finder.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('https://media.starcitizen.tools/7/7c/PYAM-EXHANG-0-1_Map.png');--hub-module-remote:url('https://media.starcitizen.tools/7/7c/PYAM-EXHANG-0-1_Map.png');--hub-module-fallback:url('./assets/hub/contract-finder.webp')">
-              <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-15</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Pyro Hangar Watch</strong><span class="hub-rb-module-copy">Executive Hangar phases, compboard cycles, keycards, vault timing, and run coordination.</span>
+            <button class="hub-rb-module-card" type="button" data-category="operations intelligence" data-view="pyro-hangar-watch-view" data-code="Pyro Operations · NX-15" data-title="Pyro Hangar Watch" data-description="Live Executive Hangar cycle, Contested Zone boards, keycard cooldowns, and Pyro run timing." data-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-remote-image="./assets/hub/game/pyro-hangar-watch-cover.webp" data-fallback-image="./assets/hub/game/pyro-hangar-watch-cover.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-remote:url('./assets/hub/game/pyro-hangar-watch-cover.webp');--hub-module-fallback:url('./assets/hub/game/pyro-hangar-watch-cover.webp')">
+              <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-15</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Pyro Hangar Watch</strong><span class="hub-rb-module-copy">Live Executive Hangar cycle, compboards, keycards, vault timing, and run coordination.</span>
             </button>
             <button class="hub-rb-module-card" type="button" data-category="customization systems" data-view="language-pack-view" data-code="Customization · NX-10" data-title="Language Pack Lab" data-description="Build a clearer, customized global.ini for local game files." data-image="./assets/hub/game/language-pack-cinematic.jpg" data-remote-image="https://media.starcitizen.tools/5/5d/Drake-defensecon-hologram-corsair-02.jpg" data-fallback-image="./assets/hub/language-pack.webp" onclick="hubRebrandPreview(this)" style="--hub-module-image:url('./assets/hub/game/language-pack-cinematic.jpg');--hub-module-remote:url('https://media.starcitizen.tools/5/5d/Drake-defensecon-hologram-corsair-02.jpg');--hub-module-fallback:url('./assets/hub/language-pack.webp')">
               <span class="hub-rb-module-top"><span class="hub-rb-module-code">NX-10</span><span class="hub-rb-module-state">Online</span></span><strong class="hub-rb-module-title">Language Pack Lab</strong><span class="hub-rb-module-copy">Localized strings, clearer labels, and custom game terminology.</span>
@@ -12641,115 +12641,192 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
 </section>
 <style id="pyro-hangar-watch-styles">
   #pyro-hangar-watch-view {
-    --phw-orange:#f97316; --phw-amber:#f59e0b; --phw-red:#ef4444; --phw-green:#22c55e;
-    --phw-cyan:#22d3ee; --phw-panel:rgba(13,17,26,.94); --phw-panel2:rgba(18,24,35,.92);
+    --phw-accent:#e8873c;
+    --phw-accent-soft:rgba(232,135,60,.12);
+    --phw-red:#ef6464;
+    --phw-green:#43d17b;
+    --phw-amber:#e9b949;
+    --phw-cyan:#56c7df;
+    --phw-bg:#090d13;
+    --phw-surface:#0d121a;
+    --phw-surface-2:#10161f;
+    --phw-line:#242c38;
+    --phw-line-strong:#354051;
+    --phw-muted:#7f8a9b;
   }
-  #pyro-hangar-watch-view .nexus-topbar { border-bottom-color:rgba(249,115,22,.26); }
-  .phw-shell { width:min(1500px,calc(100% - 40px)); margin:0 auto; padding:30px 0 64px; }
-  .phw-hero { position:relative; overflow:hidden; display:flex; justify-content:space-between; gap:24px; align-items:flex-end; padding:28px; border:1px solid rgba(249,115,22,.28); border-radius:16px; background:linear-gradient(145deg,rgba(38,20,12,.96),rgba(10,14,22,.98) 58%,rgba(14,24,31,.98)); box-shadow:0 22px 54px rgba(0,0,0,.28); }
-  .phw-hero::before { content:''; position:absolute; inset:0; pointer-events:none; background:radial-gradient(circle at 18% 0%,rgba(249,115,22,.20),transparent 38%),radial-gradient(circle at 95% 20%,rgba(34,211,238,.10),transparent 32%); }
+  #pyro-hangar-watch-view { background:#080c12; }
+  #pyro-hangar-watch-view .nexus-topbar {
+    border-bottom:1px solid #1d2530;
+    background:rgba(8,12,18,.96);
+    backdrop-filter:blur(12px);
+  }
+  #pyro-hangar-watch-view .btn { border-radius:3px; }
+
+  .phw-shell { width:min(1480px,calc(100% - 48px)); margin:0 auto; padding:24px 0 64px; }
+
+  /* Cover / module identity */
+  .phw-hero {
+    position:relative; min-height:286px; overflow:hidden;
+    display:flex; justify-content:space-between; gap:32px; align-items:flex-end;
+    padding:30px 32px; border:1px solid #29313c; border-radius:4px;
+    background-image:
+      linear-gradient(90deg,rgba(6,9,14,.96) 0%,rgba(6,9,14,.76) 43%,rgba(6,9,14,.23) 72%,rgba(6,9,14,.12) 100%),
+      linear-gradient(0deg,rgba(6,9,14,.88),rgba(6,9,14,0) 55%),
+      url('./assets/hub/game/pyro-hangar-watch-cover.webp');
+    background-size:cover; background-position:center 51%;
+  }
+  .phw-hero::before { content:''; position:absolute; left:0; top:0; bottom:0; width:2px; background:var(--phw-accent); opacity:.9; }
   .phw-hero-copy,.phw-hero-meta { position:relative; z-index:1; }
-  .phw-eyebrow { color:#fdba74; font:600 10.8px 'Share Tech Mono',monospace; letter-spacing:.16em; text-transform:uppercase; }
-  .phw-title { margin-top:7px; color:#fff; font-size:clamp(38px,5vw,64px); line-height:.98; letter-spacing:-.045em; }
-  .phw-subtitle { max-width:820px; margin-top:11px; color:#aab3c4; font-size:14px; line-height:1.7; }
-  .phw-hero-meta { min-width:250px; display:grid; gap:8px; }
-  .phw-meta-chip { display:flex; justify-content:space-between; gap:14px; padding:9px 11px; border:1px solid rgba(255,255,255,.09); border-radius:8px; background:rgba(8,11,17,.58); color:#94a3b8; font:10.8px 'Share Tech Mono',monospace; }
-  .phw-meta-chip strong { color:#f8fafc; font-weight:600; }
-  .phw-alert { margin-top:14px; padding:12px 14px; border:1px solid rgba(245,158,11,.28); border-left:3px solid var(--phw-amber); border-radius:9px; background:rgba(245,158,11,.075); color:#cbd5e1; font-size:12px; line-height:1.55; }
-  .phw-alert strong { color:#fde68a; }
-  .phw-grid { display:grid; grid-template-columns:minmax(0,1.65fr) minmax(320px,.75fr); gap:14px; margin-top:14px; }
-  .phw-panel { border:1px solid var(--border2); border-radius:13px; background:var(--phw-panel); box-shadow:0 14px 34px rgba(0,0,0,.18); overflow:hidden; }
-  .phw-panel-head { display:flex; justify-content:space-between; gap:16px; align-items:flex-start; padding:15px 16px; border-bottom:1px solid var(--border); background:rgba(255,255,255,.018); }
-  .phw-panel-kicker { color:#fb923c; font:600 9.6px 'Share Tech Mono',monospace; letter-spacing:.14em; text-transform:uppercase; }
-  .phw-panel-title { margin-top:4px; color:#fff; font-size:18px; font-weight:680; }
-  .phw-panel-note { max-width:520px; margin-top:4px; color:var(--text3); font-size:11px; line-height:1.5; }
-  .phw-source-pill { flex:0 0 auto; padding:5px 8px; border:1px solid rgba(34,211,238,.24); border-radius:999px; background:rgba(34,211,238,.07); color:#a5f3fc; font:9.6px 'Share Tech Mono',monospace; }
-  .phw-exec-body { padding:18px; }
-  .phw-exec-top { display:grid; grid-template-columns:minmax(250px,.9fr) minmax(300px,1.1fr); gap:18px; align-items:stretch; }
-  .phw-status-box { min-height:230px; padding:20px; display:flex; flex-direction:column; justify-content:center; border:1px solid rgba(249,115,22,.20); border-radius:12px; background:linear-gradient(145deg,rgba(249,115,22,.075),rgba(5,8,14,.52)); }
-  .phw-status-label { color:#94a3b8; font:10.8px 'Share Tech Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
-  .phw-status { margin-top:7px; color:#cbd5e1; font:700 17px 'Share Tech Mono',monospace; letter-spacing:.08em; }
-  .phw-status.open { color:#86efac; } .phw-status.closed { color:#fca5a5; } .phw-status.reset { color:#fde68a; } .phw-status.unknown { color:#94a3b8; }
-  .phw-countdown { margin-top:12px; color:#fff; font:700 clamp(40px,6vw,72px) 'Share Tech Mono',monospace; letter-spacing:-.055em; line-height:.94; }
-  .phw-countdown-caption { margin-top:9px; color:#94a3b8; font-size:11px; }
-  .phw-phase-details { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:8px; margin-top:14px; }
-  .phw-phase-stat { padding:8px 9px; border:1px solid var(--border); border-radius:8px; background:rgba(255,255,255,.02); }
-  .phw-phase-stat span { display:block; color:var(--text3); font:9px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.09em; }
-  .phw-phase-stat strong { display:block; margin-top:4px; color:#e2e8f0; font-size:11px; line-height:1.35; }
-  .phw-led-console { padding:18px; border:1px solid var(--border); border-radius:12px; background:rgba(6,9,15,.55); }
-  .phw-led-title { display:flex; justify-content:space-between; gap:12px; color:#cbd5e1; font:10.8px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-leds { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:18px; }
-  .phw-led { position:relative; aspect-ratio:1; border-radius:50%; border:1px solid #3f4758; background:#171b24; box-shadow:inset 0 0 0 5px rgba(0,0,0,.28); transition:.2s; }
-  .phw-led::after { content:attr(data-index); position:absolute; inset:0; display:grid; place-items:center; color:#64748b; font:600 12px 'Share Tech Mono',monospace; }
-  .phw-led.green { border-color:#4ade80; background:#16a34a; box-shadow:0 0 18px rgba(34,197,94,.46),inset 0 0 0 5px rgba(255,255,255,.08); }
-  .phw-led.green::after { color:#dcfce7; }
-  .phw-led.red { border-color:#f87171; background:#b91c1c; box-shadow:0 0 16px rgba(239,68,68,.32),inset 0 0 0 5px rgba(255,255,255,.06); }
-  .phw-led.red::after { color:#fee2e2; }
-  .phw-led.reset { border-color:#f59e0b; background:#7c2d12; box-shadow:0 0 13px rgba(245,158,11,.28); }
-  .phw-progress { margin-top:18px; height:8px; overflow:hidden; border-radius:999px; background:#171b24; border:1px solid #252b38; }
-  .phw-progress-fill { width:0%; height:100%; background:linear-gradient(90deg,#f97316,#f59e0b,#22c55e); transition:width .35s linear; }
-  .phw-cycle-key { display:grid; grid-template-columns:120fr 60fr 5fr; gap:3px; margin-top:8px; }
-  .phw-cycle-key span { padding:5px 3px; text-align:center; border-radius:4px; color:#94a3b8; background:rgba(255,255,255,.025); font:8.8px 'Share Tech Mono',monospace; }
-  .phw-sync { margin-top:16px; padding-top:15px; border-top:1px solid var(--border); }
-  .phw-sync-row { display:grid; grid-template-columns:minmax(220px,1fr) auto auto; gap:8px; }
-  .phw-select,.phw-input { width:100%; min-height:38px; padding:8px 10px; border:1px solid var(--border2); border-radius:7px; background:var(--bg3); color:var(--text); font:12px 'Inter',sans-serif; outline:none; }
-  .phw-select:focus,.phw-input:focus { border-color:var(--phw-orange); }
-  .phw-btn { min-height:38px; padding:8px 11px; border-radius:7px; border:1px solid var(--border2); background:#171c28; color:#cbd5e1; cursor:pointer; font:600 10.8px 'Inter',sans-serif; transition:.15s; }
-  .phw-btn:hover { border-color:#4b5567; color:#fff; background:#202735; }
-  .phw-btn.primary { border-color:#c2410c; background:#ea580c; color:#fff; }
-  .phw-btn.primary:hover { background:#c2410c; }
-  .phw-btn.danger { border-color:#7f1d1d; color:#fca5a5; background:rgba(127,29,29,.12); }
-  .phw-sync-note { margin-top:8px; color:var(--text3); font-size:10px; line-height:1.45; }
+  .phw-hero-copy { max-width:760px; }
+  .phw-eyebrow { color:#cfd6df; font:600 10px 'Share Tech Mono',monospace; letter-spacing:.14em; text-transform:uppercase; }
+  .phw-title { margin-top:9px; color:#fff; font-size:clamp(38px,4vw,56px); line-height:1; letter-spacing:-.04em; font-weight:700; }
+  .phw-subtitle { max-width:690px; margin-top:12px; color:#aeb7c4; font-size:13px; line-height:1.65; }
+  .phw-hero-meta { min-width:250px; display:grid; gap:0; align-self:flex-end; border-top:1px solid rgba(255,255,255,.23); }
+  .phw-meta-chip { display:flex; justify-content:space-between; gap:20px; padding:8px 0; border-bottom:1px solid rgba(255,255,255,.14); background:none; color:#aeb7c4; font:9.6px 'Share Tech Mono',monospace; }
+  .phw-meta-chip strong { color:#fff; font-weight:600; }
+
+  .phw-alert { margin-top:10px; padding:10px 12px; border:0; border-left:2px solid var(--phw-amber); border-radius:0; background:#10141b; color:#aeb6c3; font-size:11px; line-height:1.5; }
+  .phw-alert strong { color:#e8c76f; }
+
+  /* Layout */
+  .phw-grid { display:grid; grid-template-columns:minmax(0,1.72fr) minmax(300px,.68fr); gap:10px; margin-top:10px; }
+  .phw-panel { border:1px solid var(--phw-line); border-radius:4px; background:var(--phw-surface); box-shadow:none; overflow:hidden; }
+  .phw-panel-head { display:flex; justify-content:space-between; gap:18px; align-items:flex-start; padding:13px 15px 12px; border-bottom:1px solid var(--phw-line); background:none; }
+  .phw-panel-kicker { color:#9ba5b3; font:600 9px 'Share Tech Mono',monospace; letter-spacing:.12em; text-transform:uppercase; }
+  .phw-panel-title { margin-top:3px; color:#f4f7fa; font-size:16px; font-weight:650; letter-spacing:-.01em; }
+  .phw-panel-note { max-width:610px; margin-top:3px; color:#717d8f; font-size:10.5px; line-height:1.45; }
+  .phw-source-pill { flex:0 0 auto; padding:4px 6px; border:1px solid #2f4550; border-radius:2px; background:transparent; color:#8fd6e5; font:8.8px 'Share Tech Mono',monospace; letter-spacing:.04em; }
+
+  /* Main executive clock */
+  .phw-exec-body { padding:0; }
+  .phw-exec-top { display:grid; grid-template-columns:minmax(310px,.92fr) minmax(360px,1.08fr); gap:0; min-height:322px; }
+  .phw-status-box { min-height:0; padding:25px 26px 22px; display:flex; flex-direction:column; justify-content:center; border:0; border-right:1px solid var(--phw-line); border-radius:0; background:#0a0f16; }
+  .phw-status-label { color:#707c8d; font:9.5px 'Share Tech Mono',monospace; letter-spacing:.11em; text-transform:uppercase; }
+  .phw-status { margin-top:7px; color:#cbd5e1; font:650 15px 'Share Tech Mono',monospace; letter-spacing:.055em; }
+  .phw-status.open { color:var(--phw-green); }
+  .phw-status.closed { color:#ed8d8d; }
+  .phw-status.reset { color:var(--phw-amber); }
+  .phw-status.unknown { color:#8994a3; }
+  .phw-countdown { margin-top:12px; color:#f8fafc; font:600 clamp(48px,6vw,76px) 'Share Tech Mono',monospace; letter-spacing:-.065em; line-height:.9; font-variant-numeric:tabular-nums; }
+  .phw-countdown-caption { margin-top:11px; color:#788496; font-size:10.5px; }
+  .phw-phase-details { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; margin-top:22px; border-top:1px solid var(--phw-line); }
+  .phw-phase-stat { padding:9px 12px 0 0; border:0; border-radius:0; background:none; }
+  .phw-phase-stat + .phw-phase-stat { padding-left:12px; border-left:1px solid var(--phw-line); }
+  .phw-phase-stat span { display:block; color:#647083; font:8.2px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
+  .phw-phase-stat strong { display:block; margin-top:4px; color:#d8dee7; font-size:10px; line-height:1.35; }
+
+  .phw-led-console { padding:24px 24px 20px; border:0; border-radius:0; background:#0d121a; }
+  .phw-led-title { display:flex; justify-content:space-between; gap:12px; color:#9aa5b4; font:9.5px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .phw-leds { display:grid; grid-template-columns:repeat(5,minmax(48px,1fr)); gap:8px; margin-top:28px; }
+  .phw-led { position:relative; height:56px; aspect-ratio:auto; border-radius:3px; border:1px solid #364151; background:#121923; box-shadow:none; transition:background .2s,border-color .2s,color .2s; }
+  .phw-led::after { content:attr(data-index); position:absolute; inset:0; display:grid; place-items:center; color:#697587; font:600 11px 'Share Tech Mono',monospace; }
+  .phw-led.green { border-color:#43b875; background:#153c2a; box-shadow:inset 0 -2px 0 #43d17b; }
+  .phw-led.green::after { color:#b8f0ce; }
+  .phw-led.red { border-color:#a94b4b; background:#35191d; box-shadow:inset 0 -2px 0 #e05b5b; }
+  .phw-led.red::after { color:#efb3b3; }
+  .phw-led.reset { border-color:#8a6a2f; background:#2d2415; box-shadow:inset 0 -2px 0 #d6a43d; }
+  .phw-progress { margin-top:30px; height:3px; overflow:hidden; border-radius:0; background:#202734; border:0; }
+  .phw-progress-fill { width:0%; height:100%; background:var(--phw-accent); transition:width .35s linear; }
+  .phw-cycle-key { display:grid; grid-template-columns:120fr 60fr 5fr; gap:1px; margin-top:8px; }
+  .phw-cycle-key span { padding:4px 2px; text-align:center; border-radius:0; color:#687486; background:#111822; font:8px 'Share Tech Mono',monospace; }
+
+  .phw-sync { margin:0; padding:11px 14px; border-top:1px solid var(--phw-line); background:#0a0f16; }
+  .phw-sync-row { display:grid; grid-template-columns:minmax(220px,1fr) auto; gap:10px; align-items:center; }
+  .phw-sync .phw-info-card { padding:0; border:0; background:none; }
+  .phw-sync-note { margin-top:5px; color:#5f6b7b; font-size:9.5px; line-height:1.4; }
+
+  /* Controls */
+  .phw-select,.phw-input { width:100%; min-height:36px; padding:7px 9px; border:1px solid #303948; border-radius:2px; background:#0b1119; color:#d8dee7; font:11px 'Inter',sans-serif; outline:none; }
+  .phw-select:focus,.phw-input:focus { border-color:#7c8796; }
+  .phw-btn { min-height:34px; padding:7px 10px; border-radius:2px; border:1px solid #303948; background:#111823; color:#b8c1ce; cursor:pointer; font:600 10px 'Inter',sans-serif; transition:border-color .12s,background .12s,color .12s; }
+  .phw-btn:hover { border-color:#586476; color:#fff; background:#161e2a; }
+  .phw-btn.primary { border-color:#a75b26; background:#9f5120; color:#fff; }
+  .phw-btn.primary:hover { border-color:#c87435; background:#b86127; }
+  .phw-btn.danger { border-color:#613337; color:#d99298; background:#161014; }
+
+  /* Run overview */
   .phw-overview-body { padding:14px; }
-  .phw-run-progress { padding:12px; border:1px solid rgba(34,197,94,.18); border-radius:10px; background:rgba(34,197,94,.045); }
+  .phw-run-progress { padding:0 0 14px; border:0; border-radius:0; background:none; border-bottom:1px solid var(--phw-line); }
   .phw-run-progress-top { display:flex; justify-content:space-between; gap:10px; align-items:end; }
-  .phw-run-progress-top span { color:#94a3b8; font:9.6px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-run-progress-top strong { color:#fff; font:700 26px 'Share Tech Mono',monospace; }
-  .phw-board-dots { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; margin-top:10px; }
-  .phw-board-dot { min-height:30px; border:1px solid var(--border); border-radius:6px; display:grid; place-items:center; color:#64748b; background:rgba(255,255,255,.02); font:600 10px 'Share Tech Mono',monospace; }
-  .phw-board-dot.on { color:#dcfce7; border-color:rgba(34,197,94,.38); background:rgba(34,197,94,.15); }
-  .phw-next-title { margin:15px 0 7px; color:#cbd5e1; font:600 10.8px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
-  .phw-next-list { display:grid; gap:6px; }
-  .phw-next-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:8px 9px; border:1px solid var(--border); border-radius:7px; background:rgba(255,255,255,.018); }
-  .phw-next-item strong { color:#e2e8f0; font-size:10.8px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .phw-next-item span { color:#fbbf24; font:600 10.8px 'Share Tech Mono',monospace; }
-  .phw-empty { padding:14px; color:var(--text3); text-align:center; font-size:11px; line-height:1.5; }
-  .phw-section { margin-top:14px; }
-  .phw-zone-tabs { display:flex; flex-wrap:wrap; gap:6px; padding:12px 14px; border-bottom:1px solid var(--border); }
-  .phw-zone-tab { padding:7px 10px; border:1px solid var(--border); border-radius:999px; background:transparent; color:#94a3b8; cursor:pointer; font:600 10px 'Share Tech Mono',monospace; }
-  .phw-zone-tab.active { color:#fff7ed; border-color:rgba(249,115,22,.45); background:rgba(249,115,22,.12); }
-  .phw-timers-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; padding:14px; }
-  .phw-timer-card { min-width:0; padding:12px; border:1px solid var(--border); border-radius:10px; background:rgba(255,255,255,.018); }
-  .phw-timer-top { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
-  .phw-timer-type { color:#fb923c; font:600 8.8px 'Share Tech Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
-  .phw-timer-name { margin-top:3px; color:#f8fafc; font-size:12px; font-weight:650; line-height:1.35; }
-  .phw-timer-source { flex:0 0 auto; color:#64748b; font:8.4px 'Share Tech Mono',monospace; }
-  .phw-timer-clock { margin-top:12px; color:#fff; font:700 27px 'Share Tech Mono',monospace; letter-spacing:-.04em; }
-  .phw-timer-state { margin-top:2px; color:#64748b; font:9px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-timer-card.ready .phw-timer-clock,.phw-timer-card.ready .phw-timer-state { color:#86efac; }
-  .phw-timer-card.running { border-color:rgba(245,158,11,.25); }
-  .phw-timer-actions { display:flex; flex-wrap:wrap; gap:5px; margin-top:10px; }
-  .phw-timer-actions button { min-height:29px; padding:5px 8px; }
+  .phw-run-progress-top span { color:#727e8f; font:9px 'Share Tech Mono',monospace; text-transform:uppercase; }
+  .phw-run-progress-top strong { color:#f2f5f8; font:600 25px 'Share Tech Mono',monospace; }
+  .phw-board-dots { display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-top:10px; }
+  .phw-board-dot { min-height:27px; border:1px solid #2c3542; border-radius:2px; display:grid; place-items:center; color:#5e6a7a; background:#0a1018; font:600 9px 'Share Tech Mono',monospace; }
+  .phw-board-dot.on { color:#aee7c4; border-color:#367b55; background:#12261c; }
+  .phw-next-title { margin:15px 0 7px; color:#8995a5; font:600 9px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
+  .phw-next-list { display:grid; gap:0; border-top:1px solid var(--phw-line); }
+  .phw-next-item { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:8px; padding:9px 2px; border:0; border-bottom:1px solid var(--phw-line); border-radius:0; background:none; }
+  .phw-next-item strong { color:#cfd6df; font-size:10.5px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .phw-next-item span { color:#d7ad57; font:600 10px 'Share Tech Mono',monospace; }
+  .phw-empty { padding:14px 0; color:#606c7c; text-align:left; font-size:10.5px; line-height:1.45; }
+
+  /* Contested Zone timers */
+  .phw-section { margin-top:10px; }
+  .phw-zone-tabs { display:flex; flex-wrap:wrap; gap:0; padding:0 14px; border-bottom:1px solid var(--phw-line); }
+  .phw-zone-tab { padding:11px 12px 9px; border:0; border-bottom:2px solid transparent; border-radius:0; background:transparent; color:#727e8e; cursor:pointer; font:600 9px 'Share Tech Mono',monospace; }
+  .phw-zone-tab:hover { color:#c3cbd6; }
+  .phw-zone-tab.active { color:#fff; border-bottom-color:var(--phw-accent); background:transparent; }
+  .phw-timers-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:0 20px; padding:4px 15px 14px; }
+  .phw-timer-card { min-width:0; padding:12px 0 11px; border:0; border-bottom:1px solid var(--phw-line); border-radius:0; background:none; }
+  .phw-timer-top { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; }
+  .phw-timer-type { color:#8d98a8; font:600 8px 'Share Tech Mono',monospace; letter-spacing:.08em; text-transform:uppercase; }
+  .phw-timer-name { margin-top:3px; color:#e5e9ee; font-size:11.5px; font-weight:620; line-height:1.35; }
+  .phw-timer-source { flex:0 0 auto; color:#596576; font:8px 'Share Tech Mono',monospace; }
+  .phw-timer-clock { margin-top:9px; color:#f2f5f8; font:600 24px 'Share Tech Mono',monospace; letter-spacing:-.035em; font-variant-numeric:tabular-nums; }
+  .phw-timer-state { margin-top:1px; color:#606c7d; font:8.5px 'Share Tech Mono',monospace; text-transform:uppercase; }
+  .phw-timer-card.ready .phw-timer-clock,.phw-timer-card.ready .phw-timer-state { color:#69d494; }
+  .phw-timer-card.running { box-shadow:inset 2px 0 0 #9b7433; padding-left:10px; }
+  .phw-timer-actions { display:flex; flex-wrap:wrap; gap:5px; margin-top:9px; }
+  .phw-timer-actions button { min-height:28px; padding:5px 8px; }
   .phw-collected { margin-left:auto !important; }
-  .phw-collected.on { color:#86efac; border-color:rgba(34,197,94,.35); background:rgba(34,197,94,.10); }
-  .phw-vault-body { display:grid; grid-template-columns:minmax(240px,.65fr) minmax(300px,1.35fr); gap:14px; padding:14px; }
-  .phw-vault-clock { padding:18px; border:1px solid rgba(34,211,238,.20); border-radius:11px; background:rgba(34,211,238,.045); }
-  .phw-vault-status { color:#a5f3fc; font:600 10px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-vault-time { margin-top:8px; color:#fff; font:700 42px 'Share Tech Mono',monospace; }
-  .phw-vault-copy { margin-top:7px; color:#94a3b8; font-size:11px; line-height:1.5; }
-  .phw-vault-info { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; align-content:start; }
-  .phw-info-card { padding:11px; border:1px solid var(--border); border-radius:9px; background:rgba(255,255,255,.018); }
-  .phw-info-card span { display:block; color:#64748b; font:8.8px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-info-card strong { display:block; margin-top:4px; color:#e2e8f0; font-size:11px; line-height:1.4; }
-  .phw-sources { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:8px; padding:14px; }
-  .phw-source-card { display:block; min-height:120px; padding:12px; border:1px solid var(--border); border-radius:9px; background:rgba(255,255,255,.018); color:inherit; text-decoration:none; transition:.15s; }
-  .phw-source-card:hover { transform:translateY(-2px); border-color:rgba(249,115,22,.38); }
-  .phw-source-card span { color:#fb923c; font:8.8px 'Share Tech Mono',monospace; text-transform:uppercase; }
-  .phw-source-card strong { display:block; margin-top:5px; color:#fff; font-size:12px; }
-  .phw-source-card p { margin-top:6px; color:#7f8a9d; font-size:10px; line-height:1.45; }
-  .phw-footer-note { margin-top:10px; color:#64748b; font-size:10px; line-height:1.55; text-align:center; }
-  @media (max-width:1050px){ .phw-grid{grid-template-columns:1fr}.phw-exec-top{grid-template-columns:1fr}.phw-timers-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.phw-sources{grid-template-columns:repeat(2,1fr)} }
-  @media (max-width:700px){ .phw-shell{width:min(100% - 24px,1500px);padding-top:16px}.phw-hero{padding:20px;align-items:flex-start;flex-direction:column}.phw-hero-meta{width:100%}.phw-sync-row{grid-template-columns:1fr}.phw-timers-grid{grid-template-columns:1fr}.phw-vault-body{grid-template-columns:1fr}.phw-vault-info{grid-template-columns:1fr}.phw-sources{grid-template-columns:1fr}.phw-phase-details{grid-template-columns:1fr 1fr}.phw-countdown{font-size:48px} }
+  .phw-collected.on { color:#8edbad; border-color:#386a4d; background:#102319; }
+
+  /* Vault */
+  .phw-vault-body { display:grid; grid-template-columns:minmax(260px,.62fr) minmax(420px,1.38fr); gap:0; padding:0; }
+  .phw-vault-clock { padding:22px 24px; border:0; border-right:1px solid var(--phw-line); border-radius:0; background:#0a1018; }
+  .phw-vault-status { color:#83c9d9; font:600 9px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.08em; }
+  .phw-vault-time { margin-top:8px; color:#f5f7fa; font:600 42px 'Share Tech Mono',monospace; letter-spacing:-.04em; }
+  .phw-vault-copy { margin-top:7px; color:#778395; font-size:10.5px; line-height:1.45; }
+  .phw-vault-info { display:grid; grid-template-columns:repeat(3,1fr); gap:0; align-content:stretch; }
+  .phw-info-card { padding:12px; border:0; border-right:1px solid var(--phw-line); border-bottom:1px solid var(--phw-line); border-radius:0; background:none; }
+  .phw-info-card:nth-child(3n) { border-right:0; }
+  .phw-info-card span { display:block; color:#606c7d; font:8px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .phw-info-card strong { display:block; margin-top:4px; color:#cdd4de; font-size:10.5px; line-height:1.4; }
+
+  /* Sources */
+  .phw-sources { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; padding:0; }
+  .phw-source-card { display:block; min-height:112px; padding:14px; border:0; border-right:1px solid var(--phw-line); border-radius:0; background:none; color:inherit; text-decoration:none; transition:background .12s; }
+  .phw-source-card:last-child { border-right:0; }
+  .phw-source-card:hover { transform:none; background:#111823; }
+  .phw-source-card span { color:#788496; font:8px 'Share Tech Mono',monospace; text-transform:uppercase; letter-spacing:.06em; }
+  .phw-source-card strong { display:block; margin-top:5px; color:#e9edf2; font-size:11.5px; }
+  .phw-source-card p { margin-top:6px; color:#667284; font-size:9.5px; line-height:1.45; }
+  .phw-footer-note { margin-top:10px; color:#576273; font-size:9.5px; line-height:1.5; text-align:left; }
+
+  @media (max-width:1080px) {
+    .phw-grid{grid-template-columns:1fr}
+    .phw-exec-top{grid-template-columns:1fr}
+    .phw-status-box{border-right:0;border-bottom:1px solid var(--phw-line)}
+    .phw-phase-details{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .phw-phase-stat:nth-child(3){padding-left:0;border-left:0}
+    .phw-sources{grid-template-columns:repeat(2,1fr)}
+    .phw-source-card:nth-child(2){border-right:0}
+    .phw-source-card:nth-child(-n+2){border-bottom:1px solid var(--phw-line)}
+  }
+  @media (max-width:720px) {
+    .phw-shell{width:min(100% - 24px,1480px);padding-top:14px}
+    .phw-hero{min-height:360px;padding:22px 20px;align-items:flex-end;flex-direction:column;justify-content:flex-end;background-image:linear-gradient(0deg,rgba(6,9,14,.97) 0%,rgba(6,9,14,.58) 58%,rgba(6,9,14,.22) 100%),url('./assets/hub/game/pyro-hangar-watch-cover.webp');background-position:center}
+    .phw-hero-copy{width:100%}.phw-hero-meta{width:100%;min-width:0}
+    .phw-title{font-size:40px}.phw-subtitle{font-size:12px}
+    .phw-exec-top{display:block}.phw-status-box{padding:22px 18px}.phw-led-console{padding:20px 18px}
+    .phw-leds{gap:5px}.phw-led{height:44px}
+    .phw-phase-details{grid-template-columns:1fr 1fr}.phw-countdown{font-size:51px}
+    .phw-sync-row{grid-template-columns:1fr}
+    .phw-timers-grid{grid-template-columns:1fr}
+    .phw-vault-body{grid-template-columns:1fr}.phw-vault-clock{border-right:0;border-bottom:1px solid var(--phw-line)}
+    .phw-vault-info{grid-template-columns:1fr 1fr}.phw-info-card:nth-child(3n){border-right:1px solid var(--phw-line)}.phw-info-card:nth-child(2n){border-right:0}
+    .phw-sources{grid-template-columns:1fr}.phw-source-card{border-right:0;border-bottom:1px solid var(--phw-line)}.phw-source-card:last-child{border-bottom:0}
+  }
 </style>
 
 <section class="app-view nexus-shell" hidden id="pyro-hangar-watch-view" data-nexus-module-code="NX-15" data-nexus-module-label="Pyro operations">
@@ -12759,7 +12836,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   </div>
   <main class="phw-shell">
     <section class="phw-hero">
-      <div class="phw-hero-copy"><div class="phw-eyebrow">NX-15 · Pyro operational timing intelligence</div><h1 class="phw-title">Pyro Hangar Watch</h1><p class="phw-subtitle">Track the Executive Hangar light cycle, coordinate Contested Zone compboard runs, and keep local cooldown clocks for the keycards, tablets, and vault windows that matter on the way to PYAM-EXHANG-0-1.</p></div>
+      <div class="phw-hero-copy"><div class="phw-eyebrow">PYRO / EXECUTIVE HANGAR OPERATIONS</div><h1 class="phw-title">Pyro Hangar Watch</h1><p class="phw-subtitle">Executive Hangar timing and Contested Zone run control for Pyro. Global phase tracking up top; boards, keycards, tablets, and vault windows below.</p></div>
       <div class="phw-hero-meta"><div class="phw-meta-chip"><span>Hangar cycle model</span><strong>185 min</strong></div><div class="phw-meta-chip"><span>Compboards required</span><strong>7</strong></div><div class="phw-meta-chip"><span>Storage</span><strong>Local browser only</strong></div></div>
     </section>
 
@@ -12767,7 +12844,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
 
     <div class="phw-grid">
       <section class="phw-panel">
-        <div class="phw-panel-head"><div><div class="phw-panel-kicker">EXHANG-TMR / GLOBAL CYCLE</div><div class="phw-panel-title">Executive Hangar phase monitor</div><div class="phw-panel-note">Automatically aligned to the shared ExecTimer global clock through the Celestial sync feed. No member synchronization is required.</div></div><span class="phw-source-pill">AUTO · GLOBAL SYNC</span></div>
+        <div class="phw-panel-head"><div><div class="phw-panel-kicker">EXECUTIVE HANGAR / GLOBAL CLOCK</div><div class="phw-panel-title">Executive Hangar</div><div class="phw-panel-note">Global cycle alignment with live phase, light state, and next opening window.</div></div><span class="phw-source-pill">AUTO · GLOBAL SYNC</span></div>
         <div class="phw-exec-body">
           <div class="phw-exec-top">
             <div class="phw-status-box"><div class="phw-status-label">Current hangar status</div><div class="phw-status unknown" id="phw-hangar-status">SYNCING GLOBAL CLOCK</div><div class="phw-countdown" id="phw-hangar-countdown">--:--:--</div><div class="phw-countdown-caption" id="phw-countdown-caption">Connecting to the Celestial global timing feed…</div><div class="phw-phase-details"><div class="phw-phase-stat"><span>Next opening</span><strong id="phw-next-open">Connecting…</strong></div><div class="phw-phase-stat"><span>Expected close</span><strong id="phw-next-close">Connecting…</strong></div><div class="phw-phase-stat"><span>Cycle position</span><strong id="phw-cycle-position">-- / 185m</strong></div><div class="phw-phase-stat"><span>Global source</span><strong id="phw-last-sync">Connecting…</strong></div></div></div>
@@ -12777,14 +12854,14 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
         </div>
       </section>
 
-      <aside class="phw-panel"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUN / OVERVIEW</div><div class="phw-panel-title">Operation board</div><div class="phw-panel-note">Board collection and your next local cooldowns at a glance.</div></div></div><div class="phw-overview-body"><div class="phw-run-progress"><div class="phw-run-progress-top"><span>Compboards secured</span><strong id="phw-board-count">0 / 7</strong></div><div class="phw-board-dots" id="phw-board-dots"></div><div class="phw-timer-actions"><button class="phw-btn" id="phw-reset-boards" type="button">Reset board checklist</button><button class="phw-btn danger" id="phw-reset-run" type="button">Reset all local timers</button></div></div><div class="phw-next-title">Next local opportunities</div><div class="phw-next-list" id="phw-next-list"><div class="phw-empty">Start a timer below to build your run queue.</div></div></div></aside>
+      <aside class="phw-panel"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUN STATUS</div><div class="phw-panel-title">Compboard run</div><div class="phw-panel-note">Your seven-board progress and the next active cooldowns.</div></div></div><div class="phw-overview-body"><div class="phw-run-progress"><div class="phw-run-progress-top"><span>Compboards secured</span><strong id="phw-board-count">0 / 7</strong></div><div class="phw-board-dots" id="phw-board-dots"></div><div class="phw-timer-actions"><button class="phw-btn" id="phw-reset-boards" type="button">Reset board checklist</button><button class="phw-btn danger" id="phw-reset-run" type="button">Reset all local timers</button></div></div><div class="phw-next-title">Next local opportunities</div><div class="phw-next-list" id="phw-next-list"><div class="phw-empty">Start a timer below to build your run queue.</div></div></div></aside>
     </div>
 
-    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">CZONE-SUP / MANUAL TIMERS</div><div class="phw-panel-title">Contested Zone run timers</div><div class="phw-panel-note">Compboard presets follow current community timer tools. Keycard presets remain editable because Alpha 4.9 has a known printer-timer issue and community references disagree on some cooldowns.</div></div><span class="phw-source-pill">Editable · persistent</span></div><div class="phw-zone-tabs" id="phw-zone-tabs"><button class="phw-zone-tab active" data-zone="checkmate" type="button">Checkmate</button><button class="phw-zone-tab" data-zone="orbituary" type="button">Orbituary</button><button class="phw-zone-tab" data-zone="ruin" type="button">Ruin Station</button><button class="phw-zone-tab" data-zone="supervisor" type="button">PYAM-SUPVISR</button><button class="phw-zone-tab" data-zone="all" type="button">All timers</button></div><div class="phw-timers-grid" id="phw-timers-grid"></div></section>
+    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">CONTESTED ZONES</div><div class="phw-panel-title">Keycards & compboards</div><div class="phw-panel-note">Compboard presets follow current community timer tools. Keycard presets remain editable because Alpha 4.9 has a known printer-timer issue and community references disagree on some cooldowns.</div></div><span class="phw-source-pill">Editable · persistent</span></div><div class="phw-zone-tabs" id="phw-zone-tabs"><button class="phw-zone-tab active" data-zone="checkmate" type="button">Checkmate</button><button class="phw-zone-tab" data-zone="orbituary" type="button">Orbituary</button><button class="phw-zone-tab" data-zone="ruin" type="button">Ruin Station</button><button class="phw-zone-tab" data-zone="supervisor" type="button">PYAM-SUPVISR</button><button class="phw-zone-tab" data-zone="all" type="button">All timers</button></div><div class="phw-timers-grid" id="phw-timers-grid"></div></section>
 
-    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUIN / TIMER DOOR</div><div class="phw-panel-title">Ghost Arena vault cycle</div><div class="phw-panel-note">The Ruin Station timer door repeats independently: approximately 20 minutes closed followed by 1 minute open. Sync when you personally see it open.</div></div><span class="phw-source-pill">Star Citizen Wiki</span></div><div class="phw-vault-body"><div class="phw-vault-clock"><div class="phw-vault-status" id="phw-vault-status">UNSYNCED</div><div class="phw-vault-time" id="phw-vault-time">--:--</div><div class="phw-vault-copy" id="phw-vault-copy">Click when the vault door opens to align the repeating 21-minute cycle.</div><div class="phw-timer-actions"><button class="phw-btn primary" id="phw-vault-open-now" type="button">Door opened now</button><button class="phw-btn danger" id="phw-vault-clear" type="button">Clear vault sync</button></div></div><div class="phw-vault-info"><div class="phw-info-card"><span>Open window</span><strong>1 minute</strong></div><div class="phw-info-card"><span>Closed window</span><strong>20 minutes</strong></div><div class="phw-info-card"><span>Pre-open cue</span><strong>Blue lights ~30s before opening</strong></div><div class="phw-info-card"><span>Board route</span><strong>Boards 5 & 6 are tied to Ruin / Vault access.</strong></div><div class="phw-info-card"><span>Exec requirement</span><strong>All 7 unique compboards</strong></div><div class="phw-info-card"><span>Safety rule</span><strong>Confirm in-game state before committing items.</strong></div></div></div></section>
+    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUIN STATION</div><div class="phw-panel-title">Vault door cycle</div><div class="phw-panel-note">The Ruin Station timer door repeats independently: approximately 20 minutes closed followed by 1 minute open. Sync when you personally see it open.</div></div><span class="phw-source-pill">Star Citizen Wiki</span></div><div class="phw-vault-body"><div class="phw-vault-clock"><div class="phw-vault-status" id="phw-vault-status">UNSYNCED</div><div class="phw-vault-time" id="phw-vault-time">--:--</div><div class="phw-vault-copy" id="phw-vault-copy">Click when the vault door opens to align the repeating 21-minute cycle.</div><div class="phw-timer-actions"><button class="phw-btn primary" id="phw-vault-open-now" type="button">Door opened now</button><button class="phw-btn danger" id="phw-vault-clear" type="button">Clear vault sync</button></div></div><div class="phw-vault-info"><div class="phw-info-card"><span>Open window</span><strong>1 minute</strong></div><div class="phw-info-card"><span>Closed window</span><strong>20 minutes</strong></div><div class="phw-info-card"><span>Pre-open cue</span><strong>Blue lights ~30s before opening</strong></div><div class="phw-info-card"><span>Board route</span><strong>Boards 5 & 6 are tied to Ruin / Vault access.</strong></div><div class="phw-info-card"><span>Exec requirement</span><strong>All 7 unique compboards</strong></div><div class="phw-info-card"><span>Safety rule</span><strong>Confirm in-game state before committing items.</strong></div></div></div></section>
 
-    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">REF-DATA / SOURCES</div><div class="phw-panel-title">Timing references</div><div class="phw-panel-note">Pyro timings are patch-sensitive. These links are deliberately visible so the Alliance can verify the assumptions behind the dashboard.</div></div></div><div class="phw-sources"><a class="phw-source-card" href="https://exectimer.com/en" target="_blank" rel="noopener noreferrer"><span>Primary community reference</span><strong>ExecTimer</strong><p>Executive Hangar 185-minute phase model and community support-timer presets.</p></a><a class="phw-source-card" href="https://starcitizen.tools/Guide%3AExecutive_Hangars" target="_blank" rel="noopener noreferrer"><span>Mechanics cross-check</span><strong>Star Citizen Wiki</strong><p>Executive Hangar access conditions, keycard locations, board route, and Ruin timer-door behavior.</p></a><a class="phw-source-card" href="https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues" target="_blank" rel="noopener noreferrer"><span>Official patch warning</span><strong>RSI Alpha 4.9 Known Issues</strong><p>Current CIG notice that keycard printer timers are not working reliably.</p></a><a class="phw-source-card" href="https://exec.redline-arsenal.net/" target="_blank" rel="noopener noreferrer"><span>Community cross-check</span><strong>REDLINE Hangar Timer</strong><p>Independent 120m charging / 60m active / 5m reset phase reference.</p></a></div></section>
+    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">REFERENCE</div><div class="phw-panel-title">Sources & verification</div><div class="phw-panel-note">Pyro timings are patch-sensitive. These links are deliberately visible so the Alliance can verify the assumptions behind the dashboard.</div></div></div><div class="phw-sources"><a class="phw-source-card" href="https://exectimer.com/en" target="_blank" rel="noopener noreferrer"><span>Primary community reference</span><strong>ExecTimer</strong><p>Executive Hangar 185-minute phase model and community support-timer presets.</p></a><a class="phw-source-card" href="https://starcitizen.tools/Guide%3AExecutive_Hangars" target="_blank" rel="noopener noreferrer"><span>Mechanics cross-check</span><strong>Star Citizen Wiki</strong><p>Executive Hangar access conditions, keycard locations, board route, and Ruin timer-door behavior.</p></a><a class="phw-source-card" href="https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues" target="_blank" rel="noopener noreferrer"><span>Official patch warning</span><strong>RSI Alpha 4.9 Known Issues</strong><p>Current CIG notice that keycard printer timers are not working reliably.</p></a><a class="phw-source-card" href="https://exec.redline-arsenal.net/" target="_blank" rel="noopener noreferrer"><span>Community cross-check</span><strong>REDLINE Hangar Timer</strong><p>Independent 120m charging / 60m active / 5m reset phase reference.</p></a></div></section>
     <div class="phw-footer-note">Unofficial Celestial Alliance planning tool. No game memory, client files, or protected services are accessed. The Executive Hangar clock uses the shared ExecTimer alignment feed; local Contested Zone support timers remain manual.</div>
   </main>
 </section>

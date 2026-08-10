@@ -1,0 +1,22 @@
+PYRO HANGAR WATCH — UI REVAMP
+
+Replace the matching files in the repository with the paths in this package.
+
+Primary changes:
+- Redesigned Pyro Hangar Watch with a flatter modern operations-console UI.
+- Removed most glow, pill, rounded-card, and nested-panel styling.
+- Executive Hangar global clock is now the main visual focus.
+- Compact LED state cells and flatter phase telemetry.
+- Cleaner Contested Zone timer list and board run overview.
+- Simplified Ruin vault and source reference layouts.
+- Uses the supplied PYAM-EXHANG-0-1 Entrance image as the Hub module cover.
+- The supplied image was resized/encoded as WebP only for faster page loading; artwork/crop is unchanged.
+- Existing automatic global-sync logic remains in place.
+
+New asset:
+assets/hub/game/pyro-hangar-watch-cover.webp
+
+Validation performed:
+- 156 executable inline JavaScript blocks parsed successfully.
+- No duplicate static DOM IDs.
+- Hub card and module header use the local optimized cover asset.
