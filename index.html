@@ -10525,6 +10525,24 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   line-height: 1.5;
 }
 
+/* Make the per-phase export action easy to spot without overpowering the
+   destructive/utility controls beside it. */
+#planner-view .mission-step-tools .mission-step-export-btn {
+  border: 1px solid rgba(105,221,251,.26);
+  border-radius: 6px;
+  background: rgba(35,132,163,.12);
+  color: #83ddf5;
+  padding: 4px 7px;
+  font: 700 8px 'Share Tech Mono', monospace;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+#planner-view .mission-step-tools .mission-step-export-btn:hover {
+  border-color: rgba(105,221,251,.54);
+  background: rgba(35,132,163,.22);
+  color: #e5fbff;
+}
+
 /* Keep the free-form field because teams/personnel may not be ships. */
 #planner-view .mission-step-assignment label::after {
   content: " · free-form";
@@ -79142,6 +79160,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
           <div class="mission-step-footer">
             <span class="mission-step-drag">Drag to reorder</span>
             <div class="mission-step-tools">
+              <button class="mission-step-export-btn" type="button" title="Export this mission step as a standalone vertical mission card" onclick="nexusTimelineExportStep('${htmlEsc(step.id)}')">⇩ Export Card</button>
               <button type="button" title="Duplicate step" onclick="nexusTimelineDuplicate('${htmlEsc(step.id)}')">Duplicate</button>
               <button type="button" title="Delete step" onclick="nexusTimelineRemove('${htmlEsc(step.id)}')">Delete</button>
             </div>
@@ -79306,10 +79325,12 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
     const laneGap = 52;
     const footerH = 34;
 
+    const contentWidth = Math.max(1, steps.length) * cardW + Math.max(0, steps.length - 1) * gap;
     const logicalWidth = Math.max(
       1180,
-      margin * 2 + Math.max(1, steps.length) * cardW + Math.max(0, steps.length - 1) * gap
+      margin * 2 + contentWidth
     );
+    const groupStartX = Math.max(margin, (logicalWidth - contentWidth) / 2);
     const logicalHeight = 1160;
     const scale = Math.max(1, Math.min(requestedScale, 14500 / Math.max(logicalWidth, logicalHeight)));
 
@@ -79388,8 +79409,8 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
     }));
 
     if (steps.length) {
-      const firstCenter = margin + cardW / 2;
-      const lastCenter = margin + (steps.length - 1) * (cardW + gap) + cardW / 2;
+      const firstCenter = groupStartX + cardW / 2;
+      const lastCenter = groupStartX + (steps.length - 1) * (cardW + gap) + cardW / 2;
       const rail = ctx.createLinearGradient(firstCenter, 0, lastCenter, 0);
       rail.addColorStop(0, 'rgba(105,221,251,.22)');
       rail.addColorStop(.5, 'rgba(105,221,251,.72)');
@@ -79404,7 +79425,7 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
 
     steps.forEach((step, localIndex) => {
       const sequence = globalStartIndex + localIndex + 1;
-      const x = margin + localIndex * (cardW + gap);
+      const x = groupStartX + localIndex * (cardW + gap);
       const centerX = x + cardW / 2;
       const above = (sequence % 2) === 1;
       const cardY = above ? railY - laneGap - cardH : railY + laneGap;
@@ -79732,6 +79753,484 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
       ));
     }
     return pages;
+  };
+
+  /* Dedicated single-phase dossier renderer. Unlike the horizontal timeline,
+     this creates a vertical mission card whose height expands to preserve the
+     complete phase instructions, fleet list, participant tasks and coordination
+     notes without truncating the step into a timeline spread. */
+  async function renderVerticalMissionStepCard(step, stepIndex, requestedScale = 2.2) {
+    const logicalWidth = 1080;
+    const margin = 64;
+    const contentW = logicalWidth - margin * 2;
+    const sectionGap = 24;
+    const eventName = typeof getEventName === 'function' ? getEventName() : 'Mission';
+    const sequence = stepIndex + 1;
+    const shipsForStep = selectedShipsForStep(step);
+    const participantsForStep = selectedParticipantsForStep(step);
+
+    function wrapAll(ctx, value, maxWidth) {
+      const source = String(value || '').replace(/\r/g, '');
+      if (!source.trim()) return [];
+      const result = [];
+      source.split('\n').forEach((paragraph, paragraphIndex) => {
+        const words = paragraph.trim().split(/\s+/).filter(Boolean);
+        if (!words.length) {
+          if (paragraphIndex < source.split('\n').length - 1) result.push('');
+          return;
+        }
+        let line = '';
+        words.forEach(word => {
+          const candidate = line ? `${line} ${word}` : word;
+          if (!line || ctx.measureText(candidate).width <= maxWidth) {
+            line = candidate;
+            return;
+          }
+          result.push(line);
+          line = word;
+          while (ctx.measureText(line).width > maxWidth && line.length > 1) {
+            let cut = line.length - 1;
+            while (cut > 1 && ctx.measureText(line.slice(0, cut)).width > maxWidth) cut--;
+            result.push(line.slice(0, cut));
+            line = line.slice(cut);
+          }
+        });
+        if (line) result.push(line);
+      });
+      return result;
+    }
+
+    function roundedPathLocal(ctx, x, y, w, h, r = 16) {
+      const radius = Math.min(r, w / 2, h / 2);
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.arcTo(x + w, y, x + w, y + h, radius);
+      ctx.arcTo(x + w, y + h, x, y + h, radius);
+      ctx.arcTo(x, y + h, x, y, radius);
+      ctx.arcTo(x, y, x + w, y, radius);
+      ctx.closePath();
+    }
+
+    function panel(ctx, x, y, w, h, fill = '#0b1823', stroke = 'rgba(92,170,198,.26)', radius = 18) {
+      roundedPathLocal(ctx, x, y, w, h, radius);
+      ctx.fillStyle = fill;
+      ctx.fill();
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    /* Nexus exports use hierarchy, spacing and hairline dividers instead of
+       wrapping every information block in a prominent rounded card. */
+    function sectionSurface(ctx, x, y, w, h, accentWidth = 68) {
+      const surface = ctx.createLinearGradient(x, y, x + w, y + h);
+      surface.addColorStop(0, 'rgba(10,27,37,.30)');
+      surface.addColorStop(.58, 'rgba(7,20,29,.16)');
+      surface.addColorStop(1, 'rgba(4,13,20,.08)');
+      ctx.fillStyle = surface;
+      ctx.fillRect(x, y, w, h);
+
+      ctx.strokeStyle = 'rgba(107,167,187,.105)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(x, y + .5); ctx.lineTo(x + w, y + .5);
+      ctx.moveTo(x, y + h - .5); ctx.lineTo(x + w, y + h - .5);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(88,199,222,.46)';
+      ctx.fillRect(x, y, Math.min(accentWidth, w), 1.5);
+    }
+
+    function label(ctx, text, x, y) {
+      ctx.fillStyle = '#61bed4';
+      ctx.font = '700 12px "Share Tech Mono", monospace';
+      ctx.fillText(String(text || '').toUpperCase(), x, y);
+    }
+
+    function drawTextLines(ctx, lines, x, y, lineHeight, color) {
+      ctx.fillStyle = color;
+      lines.forEach((line, index) => ctx.fillText(line, x, y + index * lineHeight));
+    }
+
+    /* Use a measurement canvas first so the final poster can grow vertically
+       with the real content instead of clipping long instructions or tasks. */
+    const measureCanvas = document.createElement('canvas');
+    const measure = measureCanvas.getContext('2d');
+    const innerW = contentW - 48;
+
+    measure.font = '800 42px Inter, Arial, sans-serif';
+    const titleLines = wrapAll(measure, step.title || `Mission Step ${sequence}`, contentW - 108);
+    measure.font = '800 30px Inter, Arial, sans-serif';
+    const eventTitleLines = wrapAll(measure, eventName, contentW - 220);
+
+    measure.font = '450 21px Inter, Arial, sans-serif';
+    const detailLines = wrapAll(measure, step.details || 'No phase instructions entered.', innerW);
+
+    measure.font = '650 21px Inter, Arial, sans-serif';
+    const timeLines = wrapAll(measure, step.time || 'Not specified', (contentW - 18) / 2 - 44);
+    const locationLines = wrapAll(measure, step.location || 'Not specified', (contentW - 18) / 2 - 44);
+    const metaLineCount = Math.max(1, timeLines.length, locationLines.length);
+    const metaHeight = Math.max(112, 58 + metaLineCount * 25 + 22);
+
+    const shipRows = Math.max(1, Math.ceil(shipsForStep.length / 2));
+    const fleetHeight = 66 + shipRows * 76 + 22;
+
+    measure.font = '450 17px Inter, Arial, sans-serif';
+    const participantLayouts = participantsForStep.map(entry => {
+      const participantId = String(entry.__timelineId || '');
+      const task = String(step.participantTasks?.[participantId] || '').trim();
+      const role = participantRoleSummary(entry) || 'Mission participant';
+      const roleLines = wrapAll(measure, role, innerW - 96);
+      const taskLines = task ? wrapAll(measure, task, innerW - 96) : [];
+      const rowHeight = Math.max(92, 82 + roleLines.length * 20 + (entry.handle ? 18 : 0) + (taskLines.length ? 18 + taskLines.length * 22 : 0));
+      return { entry, participantId, task, roleLines, taskLines, rowHeight };
+    });
+    const participantHeight = 66 + (participantLayouts.length
+      ? participantLayouts.reduce((sum, item) => sum + item.rowHeight, 0) + Math.max(0, participantLayouts.length - 1) * 12 + 20
+      : 92);
+
+    measure.font = '450 20px Inter, Arial, sans-serif';
+    const coordinationLines = wrapAll(measure, step.assignment || 'No coordination notes entered.', innerW);
+
+    const instructionsHeight = 72 + Math.max(1, detailLines.length) * 29 + 28;
+    const coordinationHeight = 72 + Math.max(1, coordinationLines.length) * 28 + 28;
+    /* The reference image now forms the complete top cover. Event and phase
+       identity sit directly on the artwork instead of occupying a separate
+       header above a second image panel. */
+    const heroHeight = Math.max(
+      520,
+      454 + Math.max(0, titleLines.length - 1) * 48 + Math.max(0, eventTitleLines.length - 1) * 34
+    );
+    const footerHeight = 88;
+    const calculatedHeight = heroHeight + sectionGap + metaHeight + sectionGap +
+      instructionsHeight + sectionGap + fleetHeight + sectionGap + participantHeight + sectionGap +
+      coordinationHeight + footerHeight;
+    const logicalHeight = Math.max(1540, calculatedHeight);
+    const scale = Math.max(1, Math.min(requestedScale, 15000 / Math.max(logicalWidth, logicalHeight)));
+
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(logicalWidth * scale);
+    canvas.height = Math.round(logicalHeight * scale);
+    const ctx = canvas.getContext('2d', { alpha: false });
+    ctx.scale(scale, scale);
+    ctx.textBaseline = 'alphabetic';
+
+    /* Nexus shell atmosphere: restrained cyan glow over a nearly continuous
+       dark canvas, with the technical grid kept deliberately faint. */
+    ctx.fillStyle = '#071019';
+    ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+    const glow = ctx.createRadialGradient(logicalWidth * .48, -30, 20, logicalWidth * .48, -30, 820);
+    glow.addColorStop(0, 'rgba(32,145,177,.12)');
+    glow.addColorStop(.5, 'rgba(18,75,96,.045)');
+    glow.addColorStop(1, 'rgba(6,16,25,0)');
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, logicalWidth, Math.min(720, logicalHeight));
+    ctx.strokeStyle = 'rgba(93,170,196,.022)';
+    ctx.lineWidth = 1;
+    for (let gx = 24; gx < logicalWidth; gx += 48) {
+      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, logicalHeight); ctx.stroke();
+    }
+    for (let gy = 24; gy < logicalHeight; gy += 48) {
+      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(logicalWidth, gy); ctx.stroke();
+    }
+
+    /* Full-bleed top cover: the attached reference image is the header itself.
+       A layered Nexus gradient keeps type readable while letting the artwork
+       flow naturally into the dark body of the mission dossier. */
+    const referenceImage = await loadImageSafe(step.image);
+    const heroY = 0;
+    if (referenceImage && typeof drawImageCover === 'function') {
+      drawImageCover(ctx, referenceImage, 0, heroY, logicalWidth, heroHeight, 0);
+    } else {
+      const placeholder = ctx.createLinearGradient(0, heroY, logicalWidth, heroHeight);
+      placeholder.addColorStop(0, '#123044');
+      placeholder.addColorStop(.52, '#0a202d');
+      placeholder.addColorStop(1, '#071019');
+      ctx.fillStyle = placeholder;
+      ctx.fillRect(0, heroY, logicalWidth, heroHeight);
+    }
+
+    /* Image treatment mirrors the Nexus landing-page DNA: restrained cyan
+       atmosphere, dark edge falloff, and a strong lower fade into the body. */
+    const heroVerticalShade = ctx.createLinearGradient(0, heroY, 0, heroY + heroHeight);
+    heroVerticalShade.addColorStop(0, 'rgba(3,11,18,.42)');
+    heroVerticalShade.addColorStop(.36, 'rgba(3,11,18,.22)');
+    heroVerticalShade.addColorStop(.66, 'rgba(4,13,20,.48)');
+    heroVerticalShade.addColorStop(.88, 'rgba(6,16,25,.86)');
+    heroVerticalShade.addColorStop(1, '#071019');
+    ctx.fillStyle = heroVerticalShade;
+    ctx.fillRect(0, heroY, logicalWidth, heroHeight);
+
+    const heroLeftShade = ctx.createLinearGradient(0, 0, logicalWidth * .78, 0);
+    heroLeftShade.addColorStop(0, 'rgba(2,10,16,.66)');
+    heroLeftShade.addColorStop(.56, 'rgba(2,10,16,.22)');
+    heroLeftShade.addColorStop(1, 'rgba(2,10,16,0)');
+    ctx.fillStyle = heroLeftShade;
+    ctx.fillRect(0, heroY, logicalWidth, heroHeight);
+
+    const heroCyan = ctx.createRadialGradient(logicalWidth * .17, heroHeight * .18, 12, logicalWidth * .17, heroHeight * .18, 520);
+    heroCyan.addColorStop(0, 'rgba(49,181,211,.12)');
+    heroCyan.addColorStop(1, 'rgba(49,181,211,0)');
+    ctx.fillStyle = heroCyan;
+    ctx.fillRect(0, heroY, logicalWidth, heroHeight);
+
+    ctx.strokeStyle = 'rgba(92,190,214,.20)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(margin, heroHeight - 26.5);
+    ctx.lineTo(logicalWidth - margin, heroHeight - 26.5);
+    ctx.stroke();
+
+    let y = margin;
+    ctx.save();
+    ctx.shadowColor = 'rgba(0,0,0,.72)';
+    ctx.shadowBlur = 14;
+    ctx.shadowOffsetY = 2;
+
+    label(ctx, 'Celestial Alliance · Mission Phase Dossier', margin, y + 4);
+    ctx.textAlign = 'right';
+    ctx.fillStyle = '#8bc9da';
+    ctx.font = '700 12px "Share Tech Mono", monospace';
+    ctx.fillText(`PHASE ${String(sequence).padStart(2, '0')} / ${String(timelineSteps().length).padStart(2, '0')}`, logicalWidth - margin, y + 4);
+    ctx.textAlign = 'left';
+
+    ctx.font = '800 30px Inter, Arial, sans-serif';
+    const eventLines = wrapAll(ctx, eventName, contentW - 220);
+    drawTextLines(ctx, eventLines.slice(0, 2), margin, y + 50, 36, '#f1f9fc');
+
+    const phaseMarkerY = y + 112 + Math.max(0, eventLines.slice(0, 2).length - 1) * 34;
+    /* Keep the compact phase marker with the upper identity block, while the
+       mission-step name anchors the lower edge of the cover artwork. */
+    ctx.strokeStyle = 'rgba(96,209,232,.46)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(margin, phaseMarkerY - 36); ctx.lineTo(margin + 74, phaseMarkerY - 36);
+    ctx.moveTo(margin, phaseMarkerY + 14); ctx.lineTo(margin + 74, phaseMarkerY + 14);
+    ctx.stroke();
+    ctx.fillStyle = '#78d8ea';
+    ctx.font = '800 18px "Share Tech Mono", monospace';
+    ctx.fillText(String(sequence).padStart(2, '0'), margin + 4, phaseMarkerY - 2);
+
+    ctx.font = '800 42px Inter, Arial, sans-serif';
+    const actualTitleLines = wrapAll(ctx, step.title || `Mission Step ${sequence}`, contentW);
+    const stepTitleY = heroHeight - 76 - Math.max(0, actualTitleLines.length - 1) * 48;
+    drawTextLines(ctx, actualTitleLines, margin, stepTitleY, 48, '#ffffff');
+
+    if (!referenceImage) {
+      ctx.fillStyle = '#7a9aaa';
+      ctx.font = '700 10px "Share Tech Mono", monospace';
+      ctx.fillText('NO REFERENCE IMAGE ATTACHED', margin, heroHeight - 48);
+    }
+    ctx.restore();
+
+    y = heroHeight + sectionGap;
+
+    /* Mission metadata sits directly on the page with a single shared rule. */
+    const metaGap = 18;
+    const metaW = (contentW - metaGap) / 2;
+    sectionSurface(ctx, margin, y, contentW, metaHeight, 54);
+    ctx.strokeStyle = 'rgba(108,165,184,.10)';
+    ctx.beginPath();
+    ctx.moveTo(margin + metaW + metaGap / 2, y + 20);
+    ctx.lineTo(margin + metaW + metaGap / 2, y + metaHeight - 20);
+    ctx.stroke();
+    [['TIME / ETA', step.time || 'Not specified'], ['LOCATION', step.location || 'Not specified']].forEach(([heading, value], index) => {
+      const x = margin + index * (metaW + metaGap);
+      label(ctx, heading, x + 4, y + 29);
+      ctx.font = '620 20px Inter, Arial, sans-serif';
+      const lines = wrapAll(ctx, value, metaW - 24);
+      drawTextLines(ctx, lines.length ? lines : ['Not specified'], x + 4, y + 67, 25, '#d5e6ec');
+    });
+    y += metaHeight + sectionGap;
+
+    /* Full phase instructions. */
+    sectionSurface(ctx, margin, y, contentW, instructionsHeight);
+    label(ctx, 'Phase Instructions / Objective', margin + 4, y + 31);
+    ctx.font = '450 21px Inter, Arial, sans-serif';
+    const fullDetailLines = wrapAll(ctx, step.details || 'No phase instructions entered.', innerW);
+    drawTextLines(ctx, fullDetailLines.length ? fullDetailLines : ['No phase instructions entered.'], margin + 4, y + 70, 29, step.details ? '#aec5cf' : '#607d8c');
+    y += instructionsHeight + sectionGap;
+
+    /* Assigned fleet / units. */
+    sectionSurface(ctx, margin, y, contentW, fleetHeight);
+    label(ctx, `Assigned Fleet / Units · ${shipsForStep.length}`, margin + 4, y + 31);
+    const fleetStartY = y + 58;
+    if (!shipsForStep.length) {
+      ctx.fillStyle = '#688698';
+      ctx.font = '500 18px Inter, Arial, sans-serif';
+      ctx.fillText('No fleet assets assigned to this phase.', margin + 4, fleetStartY + 34);
+    } else {
+      const fleetGap = 14;
+      const cellW = (innerW - fleetGap) / 2;
+      shipsForStep.forEach((ship, index) => {
+        const col = index % 2;
+        const row = Math.floor(index / 2);
+        const x = margin + 4 + col * (cellW + fleetGap);
+        const cy = fleetStartY + row * 76;
+        ctx.strokeStyle = 'rgba(111,164,181,.095)';
+        ctx.beginPath();
+        ctx.moveTo(x, cy + 61.5); ctx.lineTo(x + cellW, cy + 61.5);
+        ctx.stroke();
+        ctx.fillStyle = '#66c7dc';
+        ctx.font = '700 22px Inter, Arial, sans-serif';
+        ctx.fillText(String(ship.emoji || '◆'), x + 4, cy + 39);
+        ctx.fillStyle = '#d6e8ed';
+        ctx.font = '700 17px Inter, Arial, sans-serif';
+        const name = String(ship.name || 'Unnamed Ship');
+        ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, name, cellW - 64) : name, x + 42, cy + 26);
+        ctx.fillStyle = '#607f8e';
+        ctx.font = '600 10px "Share Tech Mono", monospace';
+        const sub = String(ship.badge || ship.subtitle || 'Fleet asset');
+        ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, sub.toUpperCase(), cellW - 64) : sub.toUpperCase(), x + 42, cy + 46);
+      });
+    }
+    y += fleetHeight + sectionGap;
+
+    /* Participant rows retain all task detail without becoming nested cards. */
+    sectionSurface(ctx, margin, y, contentW, participantHeight);
+    label(ctx, `Assigned Participants · ${participantLayouts.length}`, margin + 4, y + 31);
+    let participantY = y + 58;
+    const participantAssets = await Promise.all(participantLayouts.map(async layout => {
+      const entry = layout.entry;
+      const exportRole = {
+        player: String(entry.name || entry.handle || 'Participant'),
+        playerHandle: String(entry.handle || ''),
+        playerAvatar: String(entry.avatar || '')
+      };
+      let image = null;
+      try {
+        image = typeof nexusPlannerLoadExportAvatar === 'function'
+          ? await nexusPlannerLoadExportAvatar(exportRole)
+          : await loadImageSafe(entry.avatar || '');
+      } catch (_) {}
+      return { ...layout, exportRole, image };
+    }));
+
+    if (!participantAssets.length) {
+      ctx.fillStyle = '#688698';
+      ctx.font = '500 18px Inter, Arial, sans-serif';
+      ctx.fillText('No participants assigned to this phase.', margin + 4, participantY + 34);
+    } else {
+      participantAssets.forEach((asset, index) => {
+        const x = margin + 4;
+        const w = contentW - 8;
+        if (index > 0) {
+          ctx.strokeStyle = 'rgba(111,164,181,.095)';
+          ctx.beginPath();
+          ctx.moveTo(x, participantY - 6); ctx.lineTo(x + w, participantY - 6);
+          ctx.stroke();
+        }
+        const avatarSize = 52;
+        const avatarX = x + 4;
+        const avatarY = participantY + 16;
+        if (typeof nexusPlannerDrawExportAvatar === 'function') {
+          nexusPlannerDrawExportAvatar(ctx, asset.image, asset.exportRole, avatarX, avatarY, avatarSize, '#69ddfb');
+        } else {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(avatarX + avatarSize / 2, avatarY + avatarSize / 2, avatarSize / 2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.fillStyle = '#123042';
+          ctx.fillRect(avatarX, avatarY, avatarSize, avatarSize);
+          if (asset.image) ctx.drawImage(asset.image, avatarX, avatarY, avatarSize, avatarSize);
+          ctx.restore();
+        }
+
+        const copyX = x + 76;
+        const copyW = w - 80;
+        const displayName = String(asset.entry.name || asset.entry.handle || 'Participant');
+        const handle = asset.entry.handle ? `@${asset.entry.handle}` : '';
+        ctx.fillStyle = '#e0f1f5';
+        ctx.font = '700 18px Inter, Arial, sans-serif';
+        ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, displayName, copyW) : displayName, copyX, participantY + 31);
+        if (handle) {
+          ctx.fillStyle = '#69cbe7';
+          ctx.font = '600 12px "Share Tech Mono", monospace';
+          ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, handle, copyW) : handle, copyX, participantY + 50);
+        }
+        ctx.fillStyle = '#7695a5';
+        ctx.font = '500 14px Inter, Arial, sans-serif';
+        drawTextLines(ctx, asset.roleLines, copyX, participantY + (handle ? 71 : 52), 20, '#7695a5');
+
+        if (asset.taskLines.length) {
+          const taskTop = participantY + 58 + asset.roleLines.length * 20 + (handle ? 18 : 0);
+          ctx.fillStyle = '#58cbe8';
+          ctx.font = '700 10px "Share Tech Mono", monospace';
+          ctx.fillText('PHASE TASK', copyX, taskTop);
+          ctx.font = '450 17px Inter, Arial, sans-serif';
+          drawTextLines(ctx, asset.taskLines, copyX, taskTop + 24, 22, '#bed5de');
+        }
+        participantY += asset.rowHeight + (index < participantAssets.length - 1 ? 12 : 0);
+      });
+    }
+    y += participantHeight + sectionGap;
+
+    /* Full coordination notes. */
+    sectionSurface(ctx, margin, y, contentW, coordinationHeight);
+    label(ctx, 'Coordination Notes', margin + 4, y + 31);
+    ctx.font = '450 20px Inter, Arial, sans-serif';
+    const fullCoordinationLines = wrapAll(ctx, step.assignment || 'No coordination notes entered.', innerW);
+    drawTextLines(ctx, fullCoordinationLines.length ? fullCoordinationLines : ['No coordination notes entered.'], margin + 4, y + 70, 28, step.assignment ? '#b3cad3' : '#607d8c');
+    y += coordinationHeight;
+
+    /* Footer / document identity. */
+    const footerY = logicalHeight - 56;
+    ctx.strokeStyle = 'rgba(90,177,205,.18)';
+    ctx.beginPath(); ctx.moveTo(margin, footerY - 18); ctx.lineTo(logicalWidth - margin, footerY - 18); ctx.stroke();
+    ctx.fillStyle = '#52778a';
+    ctx.font = '600 10px "Share Tech Mono", monospace';
+    ctx.fillText(`MISSION STEP ${String(sequence).padStart(2, '0')} · ${String(eventName).toUpperCase()}`, margin, footerY + 4);
+    ctx.textAlign = 'right';
+    ctx.fillText('CELESTIAL ALLIANCE NEXUS · OPERATION SEQUENCE', logicalWidth - margin, footerY + 4);
+    ctx.textAlign = 'left';
+
+    const blob = await canvasToPngBlob(canvas);
+    return { blob, scale, logicalWidth, logicalHeight };
+  }
+
+  /* Export one mission phase as a standalone vertical dossier card instead of
+     placing a single phase inside the horizontal timeline composition. */
+  window.nexusTimelineExportStep = async function(id) {
+    try {
+      if (document.fonts && document.fonts.ready) {
+        try {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise(resolve => setTimeout(resolve, 900))
+          ]);
+        } catch (_) {}
+      }
+
+      const steps = timelineSteps();
+      const stepIndex = steps.findIndex(step => String(step.id) === String(id));
+      if (stepIndex < 0) {
+        if (typeof showToast === 'function') showToast('⚠ Mission step could not be found');
+        return false;
+      }
+
+      const step = steps[stepIndex];
+      if (typeof showToast === 'function') {
+        showToast(`Preparing mission step ${String(stepIndex + 1).padStart(2,'0')} export…`);
+      }
+
+      const page = await renderVerticalMissionStepCard(step, stepIndex, 2.2);
+      const cleanFilePart = value => {
+        const raw = String(value || '').trim() || 'Mission';
+        if (typeof safeFilename === 'function') return safeFilename(raw);
+        return raw.replace(/[^a-z0-9._-]+/gi, '_').replace(/^_+|_+$/g, '') || 'Mission';
+      };
+      const eventPart = cleanFilePart(typeof getEventName === 'function' ? getEventName() : 'Mission');
+      const stepPart = cleanFilePart(step.title || `Mission Step ${stepIndex + 1}`);
+      const sequence = String(stepIndex + 1).padStart(2,'0');
+      triggerBlobDownload(page.blob, `Mission_Step_${sequence}_${eventPart}_${stepPart}.png`);
+
+      if (typeof showToast === 'function') showToast(`✓ Mission step ${sequence} exported as PNG`);
+      return true;
+    } catch (error) {
+      console.error('Mission step export failed.', error);
+      if (typeof showToast === 'function') showToast('⚠ This browser could not export that mission step');
+      return false;
+    }
   };
 
   /* Refresh the timeline whenever the Fleet Architecture section re-renders,
