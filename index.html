@@ -79316,22 +79316,21 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
   }
 
   async function renderAlternatingTimelinePage(steps, globalStartIndex, pageIndex, pageCount, requestedScale = 2) {
-    const cardW = 360;
-    const cardH = 420;
-    const gap = 24;
+    /* Horizontal timeline cards intentionally borrow the same visual DNA as the
+       standalone phase dossier: the phase reference image becomes the card
+       surface, while a layered Nexus gradient keeps the expanded mission data
+       readable without turning the card into a stack of heavy panels. */
+    const cardW = 410;
+    const cardH = 540;
+    const gap = 26;
     const margin = 36;
-    const headerH = 174;
-    const railY = 630;
-    const laneGap = 52;
-    const footerH = 34;
+    const railY = 720;
+    const laneGap = 44;
 
     const contentWidth = Math.max(1, steps.length) * cardW + Math.max(0, steps.length - 1) * gap;
-    const logicalWidth = Math.max(
-      1180,
-      margin * 2 + contentWidth
-    );
+    const logicalWidth = Math.max(1260, margin * 2 + contentWidth);
     const groupStartX = Math.max(margin, (logicalWidth - contentWidth) / 2);
-    const logicalHeight = 1160;
+    const logicalHeight = 1360;
     const scale = Math.max(1, Math.min(requestedScale, 14500 / Math.max(logicalWidth, logicalHeight)));
 
     const canvas = document.createElement('canvas');
@@ -79349,7 +79348,18 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
     glow.addColorStop(1, 'rgba(7,16,25,0)');
     ctx.fillStyle = glow;
     ctx.fillRect(0, 0, logicalWidth, 260);
-    /* Clean export header: no activity-cover thumbnail. */
+
+    /* Faint technical grid mirrors the Nexus shell without competing with the
+       mission cards or their photography. */
+    ctx.strokeStyle = 'rgba(93,170,196,.018)';
+    ctx.lineWidth = 1;
+    for (let gx = 24; gx < logicalWidth; gx += 48) {
+      ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, logicalHeight); ctx.stroke();
+    }
+    for (let gy = 24; gy < logicalHeight; gy += 48) {
+      ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(logicalWidth, gy); ctx.stroke();
+    }
+
     const headingX = margin;
     const eventName = typeof getEventName === 'function' ? getEventName() : 'Mission';
 
@@ -79388,8 +79398,6 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
     ctx.textAlign = 'left';
 
     const stepImages = await Promise.all(steps.map(step => loadImageSafe(step.image)));
-    /* Export participant portraits only. Ship artwork is intentionally omitted
-       from the timeline export so fleet/participant rosters stay compact. */
     const stepParticipantAssets = await Promise.all(steps.map(async step => {
       const assignedParticipants = selectedParticipantsForStep(step);
       return Promise.all(assignedParticipants.map(async entry => {
@@ -79423,6 +79431,12 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
       ctx.stroke();
     }
 
+    function compactLines(text, maxWidth, maxLines, fallback = '') {
+      const value = String(text || '').trim() || fallback;
+      const lines = wrapLines(ctx, value, maxWidth, Math.max(1, maxLines));
+      return lines.length ? lines : (fallback ? [fallback] : []);
+    }
+
     steps.forEach((step, localIndex) => {
       const sequence = globalStartIndex + localIndex + 1;
       const x = groupStartX + localIndex * (cardW + gap);
@@ -79454,273 +79468,249 @@ html[data-nexus-performance-mode="economy"] .auto-photo-spinner {
       ctx.textAlign = 'center';
       ctx.fillStyle = '#6ca8bd';
       ctx.font = '600 9px "Share Tech Mono", monospace';
-      ctx.fillText(
-        String(sequence).padStart(2,'0'),
-        centerX,
-        above ? railY - 17 : railY + 27
-      );
+      ctx.fillText(String(sequence).padStart(2,'0'), centerX, above ? railY - 17 : railY + 27);
       ctx.textAlign = 'left';
 
-      if (typeof fillRoundedRect === 'function') {
-        fillRoundedRect(ctx, x, cardY, cardW, cardH, 11, '#0b1823', 'rgba(91,155,184,.29)');
-      } else {
-        ctx.fillStyle = '#0b1823';
-        ctx.fillRect(x, cardY, cardW, cardH);
-        ctx.strokeStyle = 'rgba(91,155,184,.29)';
-        ctx.strokeRect(x, cardY, cardW, cardH);
-      }
-
-      const pad = 14;
-      const imageX = x + pad;
-      const imageY = cardY + pad;
-      const imageW = cardW - pad * 2;
-      const imageH = 92;
-
+      /* Keep the reference artwork concentrated in a top hero band. The
+         mission data below sits on the normal dark Nexus surface, giving the
+         timeline the same dossier feel as the single-step export without
+         sacrificing readability. */
+      const heroH = 190;
       ctx.save();
       if (typeof roundedRectPath === 'function') {
-        roundedRectPath(ctx, imageX, imageY, imageW, imageH, 8);
+        roundedRectPath(ctx, x, cardY, cardW, cardH, 12);
+        ctx.clip();
+      } else {
+        ctx.beginPath();
+        ctx.rect(x, cardY, cardW, cardH);
         ctx.clip();
       }
+
+      ctx.fillStyle = '#08151f';
+      ctx.fillRect(x, cardY, cardW, cardH);
+
       if (image && typeof drawImageCover === 'function') {
-        drawImageCover(ctx, image, imageX, imageY, imageW, imageH, 0);
+        drawImageCover(ctx, image, x, cardY, cardW, heroH, 0);
       } else {
-        const placeholder = ctx.createLinearGradient(imageX, imageY, imageX + imageW, imageY + imageH);
-        placeholder.addColorStop(0, '#102638');
-        placeholder.addColorStop(1, '#08131d');
+        const placeholder = ctx.createLinearGradient(x, cardY, x + cardW, cardY + heroH);
+        placeholder.addColorStop(0, '#123044');
+        placeholder.addColorStop(.55, '#0b2230');
+        placeholder.addColorStop(1, '#071019');
         ctx.fillStyle = placeholder;
-        ctx.fillRect(imageX, imageY, imageW, imageH);
-        ctx.fillStyle = '#486f84';
-        ctx.font = '600 8px "Share Tech Mono", monospace';
-        ctx.textAlign = 'center';
-        ctx.fillText('OPTIONAL REFERENCE IMAGE', imageX + imageW / 2, imageY + imageH / 2 + 3);
-        ctx.textAlign = 'left';
+        ctx.fillRect(x, cardY, cardW, heroH);
       }
+
+      /* Preserve the image at the top while fading its lower edge directly into
+         the card body. The title remains on the artwork; all detailed mission
+         copy begins on a clean dark field below it. */
+      const heroWash = ctx.createLinearGradient(0, cardY, 0, cardY + heroH);
+      heroWash.addColorStop(0, 'rgba(3,10,16,.26)');
+      heroWash.addColorStop(.48, 'rgba(3,10,16,.12)');
+      heroWash.addColorStop(.76, 'rgba(4,12,19,.44)');
+      heroWash.addColorStop(1, 'rgba(8,21,31,.98)');
+      ctx.fillStyle = heroWash;
+      ctx.fillRect(x, cardY, cardW, heroH);
+
+      const edgeShade = ctx.createLinearGradient(x, 0, x + cardW, 0);
+      edgeShade.addColorStop(0, 'rgba(2,9,14,.24)');
+      edgeShade.addColorStop(.42, 'rgba(2,9,14,0)');
+      edgeShade.addColorStop(1, 'rgba(2,9,14,.20)');
+      ctx.fillStyle = edgeShade;
+      ctx.fillRect(x, cardY, cardW, heroH);
+
+      const bodyGlow = ctx.createLinearGradient(0, cardY + heroH, 0, cardY + cardH);
+      bodyGlow.addColorStop(0, 'rgba(10,29,41,.98)');
+      bodyGlow.addColorStop(.18, 'rgba(8,22,32,.99)');
+      bodyGlow.addColorStop(1, 'rgba(7,18,27,1)');
+      ctx.fillStyle = bodyGlow;
+      ctx.fillRect(x, cardY + heroH, cardW, cardH - heroH);
       ctx.restore();
 
-      /* ── Balanced card body layout ─────────────────────────────────
-         Build every visible body section first, measure its height, then
-         vertically center the complete content stack in the space below the
-         reference image. This keeps sparse cards from looking top-heavy while
-         preserving compact spacing on assignment-heavy phases. */
+      /* Thin border only; the hero artwork and dark information field read as
+         one continuous Nexus mission card. */
+      ctx.strokeStyle = 'rgba(91,171,199,.34)';
+      ctx.lineWidth = 1;
+      if (typeof roundedRectPath === 'function') {
+        roundedRectPath(ctx, x + .5, cardY + .5, cardW - 1, cardH - 1, 12);
+        ctx.stroke();
+      } else {
+        ctx.strokeRect(x + .5, cardY + .5, cardW - 1, cardH - 1);
+      }
+
+      const pad = 16;
       const bodyLeft = x + pad;
       const bodyWidth = cardW - pad * 2;
-      const bodyTop = imageY + imageH + 16;
-      const bodyBottom = cardY + cardH - pad;
-      const bodyHeight = Math.max(0, bodyBottom - bodyTop);
-      const sections = [];
-
-      ctx.font = '700 18px Inter, Arial, sans-serif';
-      const titleLines = wrapLines(ctx, step.title || `Mission Step ${sequence}`, bodyWidth, 2);
-      sections.push({
-        height: Math.max(20, titleLines.length * 20),
-        draw(top) {
-          ctx.font = '700 18px Inter, Arial, sans-serif';
-          drawLines(ctx, titleLines, bodyLeft, top + 16, 20, '#eef8fc');
-        }
-      });
-
-      const timing = [step.time, step.location].filter(Boolean).join(' · ') || 'Time / location not specified';
-      ctx.font = '600 8.5px "Share Tech Mono", monospace';
-      const meta = wrapLines(ctx, timing.toUpperCase(), bodyWidth, 2);
-      sections.push({
-        height: Math.max(12, meta.length * 12),
-        draw(top) {
-          ctx.font = '600 8.5px "Share Tech Mono", monospace';
-          drawLines(ctx, meta, bodyLeft, top + 9, 12, '#69cbe7');
-        }
-      });
-
-      ctx.font = '400 10px Inter, Arial, sans-serif';
-      const detailLines = wrapLines(ctx, step.details || 'No phase instructions entered.', bodyWidth, 4);
-      sections.push({
-        height: Math.max(14, detailLines.length * 14),
-        draw(top) {
-          ctx.font = '400 10px Inter, Arial, sans-serif';
-          drawLines(ctx, detailLines, bodyLeft, top + 10, 14, '#9cb3c1');
-        }
-      });
-
+      const bodyTop = cardY + heroH - 56;
+      const bodyBottom = cardY + cardH - 14;
       const assignedShips = selectedShipsForStep(step);
-      if (assignedShips.length) {
-        const fleetWidth = bodyWidth;
-        const denseFleet = assignedShips.length > 15;
-        const fleetFontSize = denseFleet ? 6.7 : 7.25;
-        const chipH = denseFleet ? 11 : 12.5;
-        const chipGapX = denseFleet ? 3 : 4;
-        const chipGapY = 3;
-        const preferredCols = assignedShips.length <= 2 ? assignedShips.length : assignedShips.length <= 6 ? 3 : assignedShips.length <= 12 ? 4 : 5;
-        const fleetCols = Math.max(1, Math.min(preferredCols, assignedShips.length));
-        const chipW = Math.max(48, (fleetWidth - chipGapX * (fleetCols - 1)) / fleetCols);
-        const fleetRows = [];
-        for (let offset = 0; offset < assignedShips.length; offset += fleetCols) {
-          fleetRows.push(assignedShips.slice(offset, offset + fleetCols).map(ship => ({
-            ship,
-            emoji:String(ship.emoji || '🚀').trim() || '🚀',
-            name:String(ship.name || 'Unnamed Ship').trim() || 'Unnamed Ship'
-          })));
-        }
-
-        const fleetChipTop = 12;
-        const fleetRowsH = fleetRows.length * chipH + Math.max(0, fleetRows.length - 1) * chipGapY;
-        const fleetSectionH = fleetChipTop + fleetRowsH;
-
-        sections.push({
-          height: fleetSectionH,
-          draw(top) {
-            ctx.fillStyle = '#55778b';
-            ctx.font = '600 7.2px "Share Tech Mono", monospace';
-            ctx.fillText('ASSIGNED SHIPS / UNITS', bodyLeft, top + 7);
-
-            fleetRows.forEach((row, rowIndex) => {
-              const rowWidth = row.length * chipW + Math.max(0, row.length - 1) * chipGapX;
-              let chipX = bodyLeft + Math.max(0, (fleetWidth - rowWidth) / 2);
-              const chipY = top + fleetChipTop + rowIndex * (chipH + chipGapY);
-
-              row.forEach(item => {
-                if (typeof fillRoundedRect === 'function') {
-                  fillRoundedRect(ctx, chipX, chipY, chipW, chipH, 4, '#0d2431', 'rgba(88,158,188,.26)');
-                } else {
-                  ctx.fillStyle = '#0d2431';
-                  ctx.fillRect(chipX, chipY, chipW, chipH);
-                  ctx.strokeStyle = 'rgba(88,158,188,.26)';
-                  ctx.strokeRect(chipX, chipY, chipW, chipH);
-                }
-
-                const emojiFont = denseFleet ? 7.1 : 7.8;
-                ctx.font = `${emojiFont}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
-                const emojiW = Math.max(7, ctx.measureText(item.emoji).width);
-                const textMax = Math.max(20, chipW - emojiW - 15);
-                ctx.font = `600 ${fleetFontSize}px Inter, Arial, sans-serif`;
-                const fittedName = typeof fitCanvasText === 'function' ? fitCanvasText(ctx, item.name, textMax) : item.name;
-                const nameW = ctx.measureText(fittedName).width;
-                const contentW = emojiW + 3.5 + nameW;
-                const contentX = chipX + Math.max(5, (chipW - contentW) / 2);
-                const contentY = chipY + chipH / 2 + .15;
-
-                ctx.save();
-                ctx.textBaseline = 'middle';
-                ctx.font = `${emojiFont}px "Apple Color Emoji","Segoe UI Emoji",sans-serif`;
-                ctx.fillStyle = '#d9f6ff';
-                ctx.fillText(item.emoji, contentX, contentY);
-
-                ctx.font = `600 ${fleetFontSize}px Inter, Arial, sans-serif`;
-                ctx.fillStyle = '#c9e5ee';
-                ctx.fillText(fittedName, contentX + emojiW + 3.5, contentY);
-                ctx.restore();
-                chipX += chipW + chipGapX;
-              });
-            });
-          }
-        });
-      }
-
       const participantAssets = stepParticipantAssets[localIndex] || [];
-      if (participantAssets.length) {
-        const participantCols = 3;
-        const participantGapX = 5;
-        const participantGapY = participantAssets.length > 18 ? 2 : 3;
-        const participantCellW = (bodyWidth - participantGapX * (participantCols - 1)) / participantCols;
-        const participantCellH = participantAssets.length > 18 ? 15 : 18;
-        const avatarSize = participantAssets.length > 18 ? 11 : 14;
-        const participantRows = Math.ceil(participantAssets.length / participantCols);
-        const participantLabelH = 10;
-        const participantGridTop = 12;
-        const participantGridH = participantRows * participantCellH + Math.max(0, participantRows - 1) * participantGapY;
-        const participantSectionH = participantGridTop + participantGridH;
+      const participantTasks = step.participantTasks || {};
+      const assignmentDensity = assignedShips.length + participantAssets.length;
 
-        sections.push({
-          height: participantSectionH,
-          draw(top) {
-            ctx.fillStyle = '#55778b';
-            ctx.font = '600 7.2px "Share Tech Mono", monospace';
-            ctx.fillText('PARTICIPANTS', bodyLeft, top + 7);
+      /* Small phase marker remains in the clear image area. */
+      ctx.fillStyle = '#79d8ef';
+      ctx.font = '700 8px "Share Tech Mono", monospace';
+      ctx.fillText(`PHASE ${String(sequence).padStart(2,'0')}`, bodyLeft, cardY + 22);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = 'rgba(173,226,239,.72)';
+      ctx.fillText(`${String(sequence).padStart(2,'0')} / ${String(timelineSteps().length).padStart(2,'0')}`, x + cardW - pad, cardY + 22);
+      ctx.textAlign = 'left';
 
-            for (let row = 0; row < participantRows; row++) {
-              const rowStartIndex = row * participantCols;
-              const rowCount = Math.min(participantCols, participantAssets.length - rowStartIndex);
-              const rowWidth = rowCount * participantCellW + Math.max(0, rowCount - 1) * participantGapX;
-              const rowStartX = bodyLeft + Math.max(0, (bodyWidth - rowWidth) / 2);
+      let y = bodyTop;
 
-              for (let col = 0; col < rowCount; col++) {
-                const participantIndex = rowStartIndex + col;
-                const asset = participantAssets[participantIndex];
-                const cellX = rowStartX + col * (participantCellW + participantGapX);
-                const cellY = top + participantGridTop + row * (participantCellH + participantGapY);
+      /* Phase title sits at the bottom of the hero image. Detailed data starts
+         only after the artwork has fully faded into the dark card body. */
+      ctx.font = '750 19px Inter, Arial, sans-serif';
+      const titleLines = compactLines(step.title || `Mission Step ${sequence}`, bodyWidth, 2, `Mission Step ${sequence}`);
+      drawLines(ctx, titleLines, bodyLeft, y + 17, 21, '#f2f8fb');
+      y += Math.max(24, titleLines.length * 21) + 5;
+      y = Math.max(y, cardY + heroH + 2);
 
-                if (typeof nexusPlannerDrawExportAvatar === 'function') {
-                  nexusPlannerDrawExportAvatar(ctx, asset.image, asset.exportRole, cellX, cellY + 1, avatarSize, '#69ddfb');
-                } else {
-                  const avatarX = cellX + avatarSize / 2;
-                  const avatarY = cellY + avatarSize / 2 + 1;
-                  ctx.save();
-                  ctx.beginPath();
-                  ctx.arc(avatarX, avatarY, avatarSize / 2, 0, Math.PI * 2);
-                  ctx.clip();
-                  ctx.fillStyle = '#123042';
-                  ctx.fillRect(cellX, cellY + 1, avatarSize, avatarSize);
-                  if (asset.image) ctx.drawImage(asset.image, cellX, cellY + 1, avatarSize, avatarSize);
-                  ctx.restore();
-                }
+      ctx.strokeStyle = 'rgba(105,221,251,.18)';
+      ctx.beginPath(); ctx.moveTo(bodyLeft, y); ctx.lineTo(bodyLeft + bodyWidth, y); ctx.stroke();
+      y += 11;
 
-                const name = String(asset.entry?.name || asset.entry?.handle || 'Participant');
-                const nameX = cellX + avatarSize + 4;
-                const nameW = participantCellW - avatarSize - 4;
-                ctx.fillStyle = '#c6dce5';
-                ctx.font = participantAssets.length > 18
-                  ? '550 7.1px Inter, Arial, sans-serif'
-                  : '550 7.8px Inter, Arial, sans-serif';
-                ctx.fillText(
-                  typeof fitCanvasText === 'function' ? fitCanvasText(ctx, name, nameW) : name,
-                  nameX,
-                  cellY + (participantAssets.length > 18 ? 10 : 11.5)
-                );
-              }
-            }
-          }
-        });
-      }
-
-      if (step.assignment) {
-        ctx.font = '500 9.5px Inter, Arial, sans-serif';
-        const assignmentLines = wrapLines(ctx, step.assignment, bodyWidth, 2);
-        const coordinationTextTop = 13;
-        const coordinationSectionH = coordinationTextTop + Math.max(13, assignmentLines.length * 13);
-        sections.push({
-          height: coordinationSectionH,
-          draw(top) {
-            ctx.fillStyle = '#55778b';
-            ctx.font = '600 7.5px "Share Tech Mono", monospace';
-            ctx.fillText('COORDINATION NOTES', bodyLeft, top + 7);
-            ctx.font = '500 9.5px Inter, Arial, sans-serif';
-            drawLines(ctx, assignmentLines, bodyLeft, top + coordinationTextTop + 9, 13, '#c1d6e1');
-          }
-        });
-      }
-
-      const sectionHeightTotal = sections.reduce((sum, section) => sum + section.height, 0);
-      const sectionCount = sections.length;
-      const freeSpace = Math.max(0, bodyHeight - sectionHeightTotal);
-
-      /* Use one consistent inter-section gap. On sparse cards the complete
-         stack is centered rather than stretching individual gaps to extremes. */
-      let sectionGap = sectionCount > 1
-        ? Math.max(4, Math.min(16, freeSpace / (sectionCount + 1)))
-        : 0;
-      let contentHeight = sectionHeightTotal + Math.max(0, sectionCount - 1) * sectionGap;
-
-      /* If an unusually dense card exceeds the available body, tighten only
-         the gaps. Content stays complete and ordered. */
-      if (contentHeight > bodyHeight && sectionCount > 1) {
-        sectionGap = Math.max(2, (bodyHeight - sectionHeightTotal) / (sectionCount - 1));
-        contentHeight = sectionHeightTotal + Math.max(0, sectionCount - 1) * sectionGap;
-      }
-
-      let sectionY = bodyTop + Math.max(0, (bodyHeight - contentHeight) / 2);
-      sections.forEach((section, sectionIndex) => {
-        section.draw(sectionY);
-        sectionY += section.height;
-        if (sectionIndex < sections.length - 1) sectionY += sectionGap;
+      /* Time and location are separate values so the card exposes more of the
+         underlying phase data than the previous combined meta line. */
+      const metaGap = 12;
+      const metaW = (bodyWidth - metaGap) / 2;
+      [['TIME / ETA', step.time || 'Not specified'], ['LOCATION', step.location || 'Not specified']].forEach(([heading, value], metaIndex) => {
+        const mx = bodyLeft + metaIndex * (metaW + metaGap);
+        ctx.fillStyle = '#5abbd2';
+        ctx.font = '700 6.8px "Share Tech Mono", monospace';
+        ctx.fillText(heading, mx, y + 7);
+        ctx.fillStyle = '#d1e4eb';
+        ctx.font = '600 8.8px Inter, Arial, sans-serif';
+        ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, String(value), metaW) : String(value), mx, y + 20);
       });
+      y += 30;
+
+      ctx.fillStyle = '#63889a';
+      ctx.font = '600 6.8px "Share Tech Mono", monospace';
+      ctx.fillText(
+        `MISSION ELEMENTS · ${assignedShips.length} FLEET / UNIT${assignedShips.length === 1 ? '' : 'S'} · ${participantAssets.length} PARTICIPANT${participantAssets.length === 1 ? '' : 'S'}`,
+        bodyLeft,
+        y + 7
+      );
+      y += 16;
+
+      /* Phase brief gets the largest text allowance. Empty-assignment phases can
+         spend almost the entire saved image-panel space on the actual brief. */
+      const detailMaxLines = assignmentDensity >= 10 ? 4 : assignmentDensity >= 5 ? 5 : assignmentDensity ? 7 : 10;
+      ctx.fillStyle = '#5d8798';
+      ctx.font = '700 6.7px "Share Tech Mono", monospace';
+      ctx.fillText('PHASE BRIEF / OBJECTIVE', bodyLeft, y + 7);
+      y += 11;
+      ctx.font = '430 9.5px Inter, Arial, sans-serif';
+      const detailLines = compactLines(step.details, bodyWidth, detailMaxLines, 'No phase instructions entered.');
+      drawLines(ctx, detailLines, bodyLeft, y + 9, 12.2, step.details ? '#adc3cd' : '#668392');
+      y += Math.max(13, detailLines.length * 12.2) + 8;
+
+      ctx.strokeStyle = 'rgba(105,221,251,.10)';
+      ctx.beginPath(); ctx.moveTo(bodyLeft, y); ctx.lineTo(bodyLeft + bodyWidth, y); ctx.stroke();
+      y += 10;
+
+      /* Fleet section: show name plus ship subtitle/badge, not just a count. Six
+         assets fit comfortably; additional assets are summarized explicitly. */
+      ctx.fillStyle = '#5d8798';
+      ctx.font = '700 6.7px "Share Tech Mono", monospace';
+      ctx.fillText(`ASSIGNED FLEET / UNITS · ${assignedShips.length}`, bodyLeft, y + 7);
+      y += 11;
+      if (!assignedShips.length) {
+        ctx.fillStyle = '#668392';
+        ctx.font = '450 8.5px Inter, Arial, sans-serif';
+        ctx.fillText('No fleet assets assigned to this phase.', bodyLeft, y + 9);
+        y += 18;
+      } else {
+        const shownShips = assignedShips.slice(0, 6);
+        const fleetCols = 2;
+        const fleetGapX = 10;
+        const fleetCellW = (bodyWidth - fleetGapX) / fleetCols;
+        const fleetRows = Math.ceil(shownShips.length / fleetCols);
+        shownShips.forEach((ship, shipIndex) => {
+          const col = shipIndex % fleetCols;
+          const row = Math.floor(shipIndex / fleetCols);
+          const sx = bodyLeft + col * (fleetCellW + fleetGapX);
+          const sy = y + row * 24;
+          ctx.fillStyle = '#d2e5eb';
+          ctx.font = '650 8.4px Inter, Arial, sans-serif';
+          const emoji = String(ship.emoji || '◆');
+          const shipName = `${emoji} ${String(ship.name || 'Unnamed Ship')}`;
+          ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, shipName, fleetCellW) : shipName, sx, sy + 8);
+          ctx.fillStyle = '#668a9b';
+          ctx.font = '600 6.2px "Share Tech Mono", monospace';
+          const sub = String(ship.badge || ship.subtitle || 'Fleet asset').toUpperCase();
+          ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, sub, fleetCellW) : sub, sx, sy + 18);
+        });
+        y += fleetRows * 24;
+        if (assignedShips.length > shownShips.length) {
+          ctx.fillStyle = '#69cbe7';
+          ctx.font = '600 6.5px "Share Tech Mono", monospace';
+          ctx.fillText(`+ ${assignedShips.length - shownShips.length} MORE FLEET ASSET${assignedShips.length - shownShips.length === 1 ? '' : 'S'}`, bodyLeft, y + 7);
+          y += 13;
+        }
+      }
+
+      /* Participant section: two-column rows expose the actual phase task (or
+         planner role when no task is set) beneath each participant name. */
+      ctx.fillStyle = '#5d8798';
+      ctx.font = '700 6.7px "Share Tech Mono", monospace';
+      ctx.fillText(`PARTICIPANTS / PHASE TASKS · ${participantAssets.length}`, bodyLeft, y + 7);
+      y += 12;
+      if (!participantAssets.length) {
+        ctx.fillStyle = '#668392';
+        ctx.font = '450 8.5px Inter, Arial, sans-serif';
+        ctx.fillText('No participants assigned to this phase.', bodyLeft, y + 9);
+        y += 18;
+      } else {
+        const shownParticipants = participantAssets.slice(0, 6);
+        const participantCols = 2;
+        const participantGapX = 10;
+        const participantCellW = (bodyWidth - participantGapX) / participantCols;
+        const participantRows = Math.ceil(shownParticipants.length / participantCols);
+        shownParticipants.forEach((asset, participantIndex) => {
+          const col = participantIndex % participantCols;
+          const row = Math.floor(participantIndex / participantCols);
+          const px = bodyLeft + col * (participantCellW + participantGapX);
+          const py = y + row * 28;
+          const avatarSize = 18;
+          if (typeof nexusPlannerDrawExportAvatar === 'function') {
+            nexusPlannerDrawExportAvatar(ctx, asset.image, asset.exportRole, px, py, avatarSize, '#69ddfb');
+          }
+          const entry = asset.entry || {};
+          const name = String(entry.name || entry.handle || 'Participant');
+          const participantId = String(entry.__timelineId || '');
+          const task = String(participantTasks[participantId] || '').trim();
+          const detail = task || (typeof participantRoleSummary === 'function' ? participantRoleSummary(entry) : '') || 'Mission participant';
+          const copyX = px + avatarSize + 5;
+          const copyW = participantCellW - avatarSize - 5;
+          ctx.fillStyle = '#d5e7ec';
+          ctx.font = '650 8.2px Inter, Arial, sans-serif';
+          ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, name, copyW) : name, copyX, py + 8);
+          ctx.fillStyle = task ? '#70cce3' : '#668a9b';
+          ctx.font = '500 6.8px Inter, Arial, sans-serif';
+          ctx.fillText(typeof fitCanvasText === 'function' ? fitCanvasText(ctx, detail, copyW) : detail, copyX, py + 19);
+        });
+        y += participantRows * 28;
+        if (participantAssets.length > shownParticipants.length) {
+          ctx.fillStyle = '#69cbe7';
+          ctx.font = '600 6.5px "Share Tech Mono", monospace';
+          ctx.fillText(`+ ${participantAssets.length - shownParticipants.length} MORE PARTICIPANT${participantAssets.length - shownParticipants.length === 1 ? '' : 'S'}`, bodyLeft, y + 7);
+          y += 13;
+        }
+      }
+
+      /* Coordination notes consume the remaining card depth. More lines are
+         shown when the phase has fewer linked assets. */
+      const remaining = Math.max(24, bodyBottom - y);
+      const coordinationMaxLines = Math.max(1, Math.min(assignmentDensity ? 3 : 6, Math.floor((remaining - 18) / 11.6)));
+      ctx.fillStyle = '#5d8798';
+      ctx.font = '700 6.7px "Share Tech Mono", monospace';
+      ctx.fillText('COORDINATION NOTES', bodyLeft, y + 7);
+      y += 11;
+      ctx.font = '450 8.8px Inter, Arial, sans-serif';
+      const coordinationLines = compactLines(step.assignment, bodyWidth, coordinationMaxLines, 'No coordination notes entered.');
+      drawLines(ctx, coordinationLines, bodyLeft, y + 8, 11.6, step.assignment ? '#bed1d9' : '#668392');
     });
 
     ctx.fillStyle = '#557387';
