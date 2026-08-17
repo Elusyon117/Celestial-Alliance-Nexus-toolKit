@@ -13236,7 +13236,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
 <div aria-label="Image downloads" class="image-export-panel">
 <div class="image-export-heading">
 <div class="image-export-title">High-quality image downloads</div>
-<div class="image-export-note">Use the complete-board button for one PDF containing the mission briefing, fleet manifest, every ship, and an activity cover whenever the selected event supports one—including custom events and activities. Individual PNG sheets remain available at 3× resolution.</div>
+<div class="image-export-note">Use the complete-board button for one PDF containing the mission briefing, fleet manifest, every ship, and an activity cover for every selected event or activity—including custom ones. Individual PNG sheets remain available at 3× resolution.</div>
 </div>
 <div class="image-export-buttons" id="image-export-buttons"></div>
 </div>
@@ -13259,7 +13259,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
 </div>
 </div>
 <div class="activity-cover-footer">
-<div class="activity-cover-status" id="activity-cover-status">A matching activity image is selected automatically. You can replace it with your own image.</div>
+<div class="activity-cover-status" id="activity-cover-status">Featured events find a matching image automatically. Other and custom activities use a generated cover that you can replace with your own image.</div>
 <div class="activity-cover-actions">
 <button class="btn btn-ghost btn-xs" id="activity-cover-find" onclick="retryActivityCover()" type="button">↻ Find Another Specific Cover</button>
 <button class="btn btn-ghost btn-xs" onclick="document.getElementById('activity-cover-upload').click()" type="button">▧ Upload Cover</button>
@@ -14172,10 +14172,16 @@ function isCustomActivitySelected() {
   return Boolean(select && select.value === '__custom__');
 }
 
-function activitySupportsCover(name) {
+function activityUsesAutomaticCover(name) {
   const value = String(name || '').trim();
-  return isCustomActivitySelected()
-    || EVENT_CATALOG.some(group => COVER_EVENT_GROUPS.has(group.group) && group.events.includes(value));
+  return EVENT_CATALOG.some(group => COVER_EVENT_GROUPS.has(group.group) && group.events.includes(value));
+}
+
+// Every planner activity can have a cover. Featured and major events still use
+// automatic Star Citizen Wiki artwork; general/custom activities start with a
+// generated cover that can be replaced with a user upload.
+function activitySupportsCover(name) {
+  return Boolean(String(name || '').trim() || isCustomActivitySelected());
 }
 
 const ACTIVITY_PHOTO_ALIASES = {
@@ -17153,9 +17159,10 @@ function setActivityCoverUi(status = '') {
   const eventName = getEventName();
   const isCustom = isCustomActivitySelected();
   const supportsCover = activitySupportsCover(eventName);
+  const usesAutomaticCover = activityUsesAutomaticCover(eventName);
 
   if (shell) shell.hidden = !supportsCover;
-  if (findButton) findButton.hidden = isCustom;
+  if (findButton) findButton.hidden = !usesAutomaticCover;
   if (title) title.textContent = eventName;
   if (category) category.textContent = activityCategory(eventName);
 
@@ -17173,9 +17180,13 @@ function setActivityCoverUi(status = '') {
     image.alt = eventName + ' activity cover';
   }
   if (statusEl) {
-    statusEl.textContent = status || (isCustom
-      ? (activityCoverSource ? 'Cover source: ' + activityCoverSource : 'Custom activity cover ready. Upload your own picture or use the generated cover.')
-      : (activityCoverSource ? 'Cover source: ' + activityCoverSource : 'Generated activity cover ready.'));
+    statusEl.textContent = status || (activityCoverSource
+      ? 'Cover source: ' + activityCoverSource
+      : (isCustom
+        ? 'Custom activity cover ready. Upload your own picture or use the generated cover.'
+        : (usesAutomaticCover
+          ? 'Generated activity cover ready while a matching image is located.'
+          : 'Generated activity cover ready. Upload your own picture to personalize this activity.')));
   }
 }
 
@@ -17381,6 +17392,19 @@ async function loadActivityCover(name, force = false) {
     renderImageExportButtons();
     return;
   }
+  if (!activityUsesAutomaticCover(eventName)) {
+    if (activityCoverMode !== 'uploaded' && activityCoverMode !== 'upload') {
+      activityCoverMode = 'generated';
+      activityCoverRequestId++;
+      activityCoverImage = generateActivityCover(eventName);
+      activityCoverSource = 'Generated from the selected activity';
+    }
+    setActivityCoverUi(activityCoverMode === 'uploaded' || activityCoverMode === 'upload'
+      ? 'Uploaded activity cover selected.'
+      : 'Generated activity cover ready. Upload your own picture to personalize this activity.');
+    renderImageExportButtons();
+    return;
+  }
   if (!force && activityCoverMode !== 'auto') {
     setActivityCoverUi();
     return;
@@ -17431,6 +17455,20 @@ function scheduleActivityCover(name, immediate = false) {
     renderImageExportButtons();
     return;
   }
+  if (!activityUsesAutomaticCover(name)) {
+    const eventName = String(name || getEventName()).trim() || 'Custom Organization Operation';
+    if (activityCoverMode !== 'uploaded' && activityCoverMode !== 'upload') {
+      activityCoverMode = 'generated';
+      activityCoverRequestId++;
+      activityCoverImage = generateActivityCover(eventName);
+      activityCoverSource = 'Generated from the selected activity';
+    }
+    setActivityCoverUi(activityCoverMode === 'uploaded' || activityCoverMode === 'upload'
+      ? 'Uploaded activity cover selected.'
+      : 'Generated activity cover ready. Upload your own picture to personalize this activity.');
+    renderImageExportButtons();
+    return;
+  }
   if (activityCoverMode !== 'auto') {
     setActivityCoverUi();
     return;
@@ -17439,7 +17477,7 @@ function scheduleActivityCover(name, immediate = false) {
 }
 
 function retryActivityCover() {
-  if (!activitySupportsCover(getEventName())) return;
+  if (!activityUsesAutomaticCover(getEventName())) return;
   if (activityCoverTimer) clearTimeout(activityCoverTimer);
   activityCoverMode = 'auto';
   activityCoverVariant++;
@@ -81273,6 +81311,239 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
   }
 })();
 </script>
+
+<!-- CELESTIAL NEXUS EVENT PLANNER — INLINE CUSTOM ACTIVITY COVER UPLOAD -->
+<style id="nexus-event-planner-inline-cover-upload-v1-style">
+  #planner-view .planner-inline-cover-picker[hidden] { display: none !important; }
+  #planner-view .planner-inline-cover-picker {
+    width: 100%;
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 48px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 10px;
+    min-height: 58px;
+    padding: 7px;
+    border: 1px solid rgba(105,220,255,.20);
+    border-radius: 2px;
+    background:
+      linear-gradient(90deg,rgba(34,211,238,.055),transparent 62%),
+      #06111e;
+  }
+  #planner-view .planner-inline-cover-preview {
+    width: 48px;
+    height: 42px;
+    overflow: hidden;
+    border: 1px solid rgba(105,220,255,.22);
+    border-radius: 2px;
+    background: #030a12;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,.018);
+  }
+  #planner-view .planner-inline-cover-preview img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  #planner-view .planner-inline-cover-copy { min-width: 0; }
+  #planner-view .planner-inline-cover-label {
+    color: #67e8f9;
+    font: 800 7.5px/1.15 "Share Tech Mono", monospace;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+  }
+  #planner-view .planner-inline-cover-status {
+    margin-top: 5px;
+    overflow: hidden;
+    color: #7f96a9;
+    font: 700 9px/1.25 Inter, sans-serif;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #planner-view .planner-inline-cover-btn {
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid rgba(67,214,232,.55);
+    border-radius: 2px;
+    background: linear-gradient(180deg,#24c9d9,#19afc1);
+    color: #031018;
+    font: 900 8px/1 "Share Tech Mono", monospace;
+    letter-spacing: .075em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    box-shadow: 0 0 18px rgba(34,211,238,.08);
+  }
+  #planner-view .planner-inline-cover-btn:hover,
+  #planner-view .planner-inline-cover-btn:focus-visible {
+    background: linear-gradient(180deg,#5ee7f5,#2dd4df);
+    border-color: rgba(103,232,249,.9);
+    outline: none;
+  }
+  #planner-view .planner-inline-cover-btn:active { transform: translateY(1px); }
+
+  @media (max-width: 620px) {
+    #planner-view .planner-inline-cover-picker {
+      grid-template-columns: 44px minmax(0,1fr);
+    }
+    #planner-view .planner-inline-cover-preview { width: 44px; height: 40px; }
+    #planner-view .planner-inline-cover-btn {
+      grid-column: 1 / -1;
+      width: 100%;
+    }
+  }
+</style>
+<script id="nexus-event-planner-inline-cover-upload-v1-script">
+(function(){
+  'use strict';
+
+  const PICKER_ID = 'planner-inline-cover-picker';
+
+  function getCoverMode(){
+    try { return String(activityCoverMode || ''); }
+    catch (_) { return ''; }
+  }
+
+  function getCoverSource(){
+    const mainCover = document.getElementById('activity-cover-image');
+    const rendered = mainCover && mainCover.getAttribute('src');
+    if (rendered) return rendered;
+    try { return String(activityCoverImage || ''); }
+    catch (_) { return ''; }
+  }
+
+  function showInlinePicker(){
+    const select = document.getElementById('event-name');
+    if (!select) return false;
+    if (select.value === '__custom__') return true;
+
+    let name = select.value || '';
+    try {
+      if (typeof getEventName === 'function') name = getEventName();
+    } catch (_) {}
+
+    try {
+      if (typeof activityUsesAutomaticCover === 'function') {
+        return !activityUsesAutomaticCover(name);
+      }
+    } catch (_) {}
+    return true;
+  }
+
+  function syncInlinePicker(){
+    const picker = document.getElementById(PICKER_ID);
+    if (!picker) return;
+
+    const visible = showInlinePicker();
+    picker.hidden = !visible;
+    if (!visible) return;
+
+    const preview = picker.querySelector('.planner-inline-cover-preview img');
+    const status = picker.querySelector('.planner-inline-cover-status');
+    const button = picker.querySelector('.planner-inline-cover-btn');
+    const source = getCoverSource();
+    const mode = getCoverMode();
+    const uploaded = mode === 'uploaded' || mode === 'upload';
+    const custom = document.getElementById('event-name')?.value === '__custom__';
+
+    if (preview) {
+      if (source) {
+        if (preview.getAttribute('src') !== source) preview.setAttribute('src', source);
+        preview.alt = 'Selected event cover preview';
+      } else {
+        preview.removeAttribute('src');
+        preview.alt = '';
+      }
+    }
+
+    if (status) {
+      if (uploaded) status.textContent = 'Your uploaded cover is selected.';
+      else if (custom) status.textContent = 'Generated fallback ready — add your own cover image.';
+      else status.textContent = 'Generated cover ready — add your own image if desired.';
+    }
+    if (button) button.textContent = uploaded ? '▧ Replace image' : '▧ Add image';
+  }
+
+  function ensureInlinePicker(){
+    const controls = document.querySelector('#planner-view .planner-activity-selector-control .event-name-controls')
+      || document.querySelector('#planner-view .event-name-controls');
+    if (!controls) return false;
+
+    let picker = document.getElementById(PICKER_ID);
+    if (!picker) {
+      picker = document.createElement('div');
+      picker.id = PICKER_ID;
+      picker.className = 'planner-inline-cover-picker';
+      picker.setAttribute('aria-label', 'Custom event cover image');
+      picker.innerHTML = `
+        <div class="planner-inline-cover-preview" aria-hidden="true"><img alt=""></div>
+        <div class="planner-inline-cover-copy">
+          <div class="planner-inline-cover-label">Cover image</div>
+          <div class="planner-inline-cover-status">Add a custom cover image for this activity.</div>
+        </div>
+        <button class="planner-inline-cover-btn" type="button">▧ Add image</button>`;
+      controls.appendChild(picker);
+
+      picker.querySelector('.planner-inline-cover-btn')?.addEventListener('click', function(){
+        const input = document.getElementById('activity-cover-upload');
+        if (input) input.click();
+      });
+    } else if (picker.parentElement !== controls) {
+      controls.appendChild(picker);
+    }
+
+    syncInlinePicker();
+    return true;
+  }
+
+  function installListeners(){
+    const select = document.getElementById('event-name');
+    const custom = document.getElementById('event-name-custom');
+    const upload = document.getElementById('activity-cover-upload');
+    const cover = document.getElementById('activity-cover-image');
+    const status = document.getElementById('activity-cover-status');
+
+    if (select && select.dataset.nxInlineCoverPicker !== '1') {
+      select.dataset.nxInlineCoverPicker = '1';
+      select.addEventListener('change', function(){ setTimeout(syncInlinePicker, 0); });
+      select.addEventListener('input', function(){ setTimeout(syncInlinePicker, 0); });
+    }
+    if (custom && custom.dataset.nxInlineCoverPicker !== '1') {
+      custom.dataset.nxInlineCoverPicker = '1';
+      custom.addEventListener('input', function(){ setTimeout(syncInlinePicker, 0); });
+    }
+    if (upload && upload.dataset.nxInlineCoverPicker !== '1') {
+      upload.dataset.nxInlineCoverPicker = '1';
+      upload.addEventListener('change', function(){
+        setTimeout(syncInlinePicker, 60);
+        setTimeout(syncInlinePicker, 450);
+      });
+    }
+
+    if (cover && !cover.__nxInlineCoverObserver && typeof MutationObserver !== 'undefined') {
+      cover.__nxInlineCoverObserver = new MutationObserver(syncInlinePicker);
+      cover.__nxInlineCoverObserver.observe(cover, { attributes: true, attributeFilter: ['src'] });
+    }
+    if (status && !status.__nxInlineCoverObserver && typeof MutationObserver !== 'undefined') {
+      status.__nxInlineCoverObserver = new MutationObserver(syncInlinePicker);
+      status.__nxInlineCoverObserver.observe(status, { childList: true, characterData: true, subtree: true });
+    }
+  }
+
+  function initialize(){
+    if (!ensureInlinePicker()) return;
+    installListeners();
+    syncInlinePicker();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  else initialize();
+  setTimeout(initialize, 200);
+  setTimeout(initialize, 700);
+  setTimeout(initialize, 1600);
+})();
+</script>
+
 </body>
 </html>
 
