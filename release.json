@@ -1,7 +1,7 @@
 {
   "schema": "celestial-nexus.release.v1",
-  "appVersion": "2.0.0",
-  "cacheRevision": "2.0.0-r2",
-  "releaseLabel": "v2.0.0 Creator, FPS & Blueprint Reliability Update",
-  "notes": "Adds transparent and selective-focus exports to Org Picture Creator; expands FPS crafted-blueprint material controls and banner presentation; fixes Blueprint Finder selection races, keyboard quality controls, source identity checks, and blueprint-affected stat reporting. The service-worker cache revision is advanced without changing existing GitHub Actions or synchronized data workflows."
+  "appVersion": "2.0.1",
+  "cacheRevision": "2.0.1-r1",
+  "releaseLabel": "v2.0.1 Contract Blueprint Links & Language Pack Login Customization",
+  "notes": "Adds Contract Finder blueprint-reward deep-links into Blueprint Finder and a customizable Persistent Universe login banner plus organization thank-you message in Language Pack Lab. Existing GitHub Actions, synchronized game-data files, MrKraken mirror workflow, and SCMDB recovery workflow are intentionally unchanged. The service-worker cache revision is advanced so deployed clients receive the updated interface."
 }
