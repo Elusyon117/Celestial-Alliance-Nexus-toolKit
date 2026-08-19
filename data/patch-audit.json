@@ -1,8 +1,8 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-08-19T13:12:13.422Z",
+  "generatedAt": "2026-08-19T18:55:55.083Z",
   "status": "passed-with-warnings",
-  "appVersion": "2.0.0",
+  "appVersion": "2.0.1",
   "patch": "4.9.0",
   "channel": "LIVE",
   "missionCount": 1778,
@@ -77,7 +77,7 @@
       "name": "index-version",
       "ok": true,
       "severity": "error",
-      "detail": "expected=2.0.0; actual=2.0.0"
+      "detail": "expected=2.0.1; actual=2.0.1"
     },
     {
       "name": "index-current-patch-reference",
