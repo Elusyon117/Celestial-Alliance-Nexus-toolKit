@@ -1,11 +1,11 @@
 {
   "source_repository": "MrKraken/StarStrings",
-  "release_name": "SC LIVE Build (release-2026-07-22-efdf111)",
+  "release_name": "SC LIVE Build (release-2026-08-26-b83d58b)",
   "tag_name": "latest",
-  "published_at": "2026-07-22T07:31:01Z",
+  "published_at": "2026-08-26T19:03:37Z",
   "html_url": "https://github.com/MrKraken/StarStrings/releases/tag/latest",
   "asset_name": "StarStrings-LIVE.zip",
-  "entry_count": 90121,
-  "byte_count": 10535663,
-  "synced_at": "2026-08-24T08:25:08.111600Z"
+  "entry_count": 90363,
+  "byte_count": 10574417,
+  "synced_at": "2026-08-26T20:07:13.959566Z"
 }
