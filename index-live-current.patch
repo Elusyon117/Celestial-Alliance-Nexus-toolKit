@@ -9,6 +9,15 @@
  #commodity-view{--trade-teal:#2dd4bf;--trade-cyan:#38bdf8;--trade-green:#34d399;--trade-amber:#fbbf24;--trade-red:#fb7185}
  #commodity-view .trade-shell{width:calc(100% - 28px);max-width:none;margin:0 14px;padding:22px 0 64px}
  #commodity-view .trade-hero{padding:28px 30px}
+@@ -10775,7 +10775,7 @@
+       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
+       <span class="hub-rb-brand-copy">
+         <span class="hub-rb-brand-name">Celestial Nexus</span>
+-        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.1</span>
++        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.1 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · resolving LIVE…</span></span>
+       </span>
+     </button>
+     <nav class="hub-rb-nav" aria-label="Main hub sections">
 @@ -10818,7 +10818,7 @@
              <div class="hub-rb-launch-field">
                <label for="hub-rb-data-status">Data status</label>
@@ -60,7 +69,13 @@
        </div>
  </section>
  <section class="trade-panel" hidden="" id="trade-panel-pulse">
-@@ -11330,7 +11330,7 @@
+@@ -11325,12 +11325,12 @@
+ <section class="trade-panel" hidden="" id="trade-panel-intel">
+ <div class="trade-intel-grid">
+ <article class="trade-intel-card"><div class="trade-section-kicker">Primary market feed</div><h3>UEX Corp community reports</h3><p>Live buy/sell prices, supply, demand, average prices, accepted containers, terminal identities, status and timestamps feed the route engine. This is community-maintained data, not a CIG guarantee.</p><div class="trade-source-state"><span>Market API</span><strong id="trade-source-uex-state">Not connected</strong></div><a href="https://uexcorp.space/" rel="noopener noreferrer" target="_blank">Open UEX Corp ↗</a></article>
+-<article class="trade-intel-card"><div class="trade-section-kicker">Game-data + export imagery</div><h3>Star Citizen Wiki / starcitizen.tools</h3><p>Commodity metadata provides a structural check, vehicle records supply the ship selector and reported <code>cargo_capacity</code>, and the public wiki image index supplies ship and location artwork for PNG/PDF route exports when available. Every visual export carries source credit and falls back to generated artwork if an image cannot be loaded.</p><div class="trade-source-state"><span>Commodity metadata</span><strong id="trade-source-wiki-state">Not connected</strong></div><div class="trade-source-state"><span>Ship cargo profiles</span><strong id="trade-source-ships-state">Fallback list active</strong></div><a href="https://api.star-citizen.wiki/vehicles" rel="noopener noreferrer" target="_blank">Browse vehicle data ↗</a> · <a href="https://starcitizen.tools/" rel="noopener noreferrer" target="_blank">Open community wiki ↗</a></article>
++<article class="trade-intel-card"><div class="trade-section-kicker">Game-data + export imagery</div><h3>Star Citizen Wiki / starcitizen.tools</h3><p>Commodity metadata provides a structural check, vehicle records supply the ship selector and reported <code>cargo_capacity</code>, and the public wiki image index supplies ship and location artwork for PNG/PDF route exports when available. Every visual export carries source credit and falls back to generated artwork if an image cannot be loaded.</p><div class="trade-source-state"><span>Commodity metadata</span><strong id="trade-source-wiki-state">Not connected</strong></div><div class="trade-source-state"><span>Ship cargo profiles</span><strong id="trade-source-ships-state">Current LIVE catalog pending</strong></div><a href="https://api.star-citizen.wiki/vehicles" rel="noopener noreferrer" target="_blank">Browse vehicle data ↗</a> · <a href="https://starcitizen.tools/" rel="noopener noreferrer" target="_blank">Open community wiki ↗</a></article>
+ <article class="trade-intel-card"><div class="trade-section-kicker">Workflow references</div><h3>Schaulers / SC Haulers</h3><p>Schaulers demonstrates useful cargo-planning patterns such as route freshness, stock, capital exposure, accepted container sizes, travel assumptions and community field reports. Its public app identifies UEX as its live market source.</p><a href="https://schaulers.space/app" rel="noopener noreferrer" target="_blank">Open Schaulers ↗</a></article>
  <article class="trade-intel-card"><div class="trade-section-kicker">Community-data methodology</div><h3>Regolith archive</h3><p>Regolith combined open tooling with player-submitted operational observations and later sourced market pricing from UEX after game-file market values became unavailable. It is credited as a methodology reference, not an active independent market feed.</p><a href="https://regolith.rocks/" rel="noopener noreferrer" target="_blank">Open Regolith archive ↗</a></article>
  <article class="trade-intel-card"><div class="trade-section-kicker">Confidence model</div><h3>How the forecast is scored</h3><ul><li>Report freshness and timestamp coverage</li><li>Difference between latest and average prices</li><li>Available stock and destination demand versus your load</li><li>Commodity metadata match and container compatibility</li><li>Terminal handling metadata when available</li></ul></article>
  <article class="trade-intel-card"><div class="trade-section-kicker">Important limitations</div><h3>Use this as intelligence, not certainty</h3><p>Markets can change before arrival. Travel, loading, interdiction, reputation, hostile zones and server conditions are not included in the API profit calculation. Estimated aUEC/hour uses the cycle time entered above and should be adjusted to your ship and crew.</p></article>
@@ -69,6 +84,15 @@
  </div>
  <div class="trade-disclaimer">Schaulers and Regolith are not counted as independent confirmations of UEX prices. The terminal reports one primary live market feed, one game-data metadata cross-check, and transparent confidence signals so the forecast does not imply false source consensus.</div>
  </section>
+@@ -12037,7 +12037,7 @@
+ <div>
+ <div class="wikelo-eyebrow">Alien commerce · org logistics</div>
+ <h1>Wikelo Trade Intelligence</h1>
+-<p>Browse the embedded Patch 4.8.1 trade snapshot, record the org material locker, find immediately completable exchanges, aggregate requirements for planned rewards, and calculate reputation tier progress.</p>
++<p>Browse Wikelo contracts against the toolkit’s resolved current LIVE build, record the org material locker, find completable exchanges, aggregate requirements for planned rewards, and calculate reputation tier progress. Historical recipe data is never promoted as current when the LIVE mission source is unavailable.</p>
+ </div>
+ <div class="wikelo-source-box">
+ <strong>Community snapshot</strong>
 @@ -12464,7 +12464,7 @@
  <div class="release-channel-emblem">PTU</div>
  <div class="release-channel-copy">
@@ -101,16 +125,314 @@
      <div class="phw-footer-note">Unofficial Celestial Alliance planning tool. No game memory, client files, or protected services are accessed. The Executive Hangar clock uses the shared ExecTimer alignment feed; local Contested Zone support timers remain manual.</div>
    </main>
  </section>
-@@ -29280,7 +29280,7 @@
+@@ -13195,7 +13195,7 @@
+ <img alt="Celestial Alliance logo" class="nexus-mini-logo" data-nexus-logo="" decoding="async" loading="lazy" fetchpriority="low"/>
+ <div class="nexus-mini-copy"><div class="nexus-mini-kicker">Celestial Nexus</div><div class="nexus-mini-title">Mining Resources Command</div></div>
+ </div>
+-<div class="nexus-topbar-actions"> <span class="created-by">Alpha 4.8.x · patch-sensitive field guide</span> <button class="btn btn-ghost" onclick="showAppView('hub-view')" type="button">⌂ <span class="nexus-hide-small">Hub</span></button> </div>
++<div class="nexus-topbar-actions"> <span class="created-by">Current LIVE · version-gated resource guide</span> <button class="btn btn-ghost" onclick="showAppView('hub-view')" type="button">⌂ <span class="nexus-hide-small">Hub</span></button> </div>
+ </header>
+ <main class="mining-shell">
+ <section class="mining-hero mining-hero-v2">
+@@ -21276,43 +21276,9 @@
+ }
+ const NEXUS_LOADOUT_UEX_MIRRORS = Object.freeze(['https://api.uexcorp.space/2.0', 'https://api.uexcorp.uk/2.0']);
+ function nexusLoadoutVerifiedPriceFallbacks() {
+-  if (nexusLoadoutVerifiedPriceFallbacks.cache) return nexusLoadoutVerifiedPriceFallbacks.cache;
+-  const snapshot = '2026-06-19T00:00:00Z';
+-  nexusLoadoutVerifiedPriceFallbacks.cache = Object.freeze({
+-    'snowpack': Object.freeze([
+-      Object.freeze({price_buy:172800,star_system_name:'Stanton',planet_name:'ArcCorp',city_name:'Area 18',terminal_name:"Dumper's Depot - Area 18",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:172800,star_system_name:'Stanton',planet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    'genoa': Object.freeze([
+-      Object.freeze({price_buy:451440,star_system_name:'Stanton',planet_name:'Hurston',space_station_name:'Everus Harbor',terminal_name:'Platinum Bay - Everus Harbor',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:475200,star_system_name:'Stanton',planet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.0-LIVE.11825000',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    'hemera': Object.freeze([
+-      Object.freeze({price_buy:168000,star_system_name:'Stanton',planet_name:'Crusader',city_name:'Orison',terminal_name:"Ship Weapons - Cousin Crow's - Providence Platform - Orison",game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:168000,star_system_name:'Stanton',space_station_name:'CRU-L1',terminal_name:'Platinum Bay - CRU-L1',game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:168000,star_system_name:'Stanton',space_station_name:'CRU-L5',terminal_name:'Platinum Bay - CRU-L5',game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    '7ma lorica': Object.freeze([
+-      Object.freeze({price_buy:120000,star_system_name:'Stanton',planet_name:'Crusader',city_name:'Orison',terminal_name:"Ship Weapons - Cousin Crow's - Providence Platform - Orison",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:120000,star_system_name:'Stanton',planet_name:'microTech',city_name:'New Babbage',terminal_name:'Omega Pro - New Babbage',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    'attrition 1 repeater': Object.freeze([
+-      Object.freeze({price_buy:10241,star_system_name:'Stanton',planet_name:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:10780,star_system_name:'Nyx',location:'Levski',terminal_name:"Teach's Item Shop - Levski",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    'attrition 3 repeater': Object.freeze([
+-      Object.freeze({price_buy:51851,star_system_name:'Stanton',planet_name:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:54580,star_system_name:'Nyx',location:'Levski',terminal_name:"Teach's Item Shop - Levski",game_version:'4.8.2-LIVE.12030094',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ]),
+-    'attrition 4 repeater': Object.freeze([
+-      Object.freeze({price_buy:116665,star_system_name:'Stanton',planet_name:'Hurston',city_name:'Lorville',terminal_name:'Hurston Dynamics Showcase - Lorville',game_version:'4.8.3',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:122805,star_system_name:'Nyx',location:'Levski',terminal_name:"Teach's Item Shop - Levski",game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:122805,star_system_name:'Pyro',location:'Starlight Service Station',terminal_name:'Ship Parts - Starlight Service',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:122805,star_system_name:'Pyro',location:'Checkmate Station',terminal_name:'Ship Parts - Checkmate',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'}),
+-      Object.freeze({price_buy:122805,star_system_name:'Pyro',moon_name:'Bloom',location:'Orbituary',terminal_name:'Ship Parts - Orbituary',game_version:'4.8.1-LIVE.11952564',date_modified:snapshot,__source:'Verified Wiki/UEX snapshot'})
+-    ])
+-  });
+-  return nexusLoadoutVerifiedPriceFallbacks.cache;
++  // Patch-sensitive shopping prices/locations must come from the current LIVE feeds.
++  // Historical hard-coded seller snapshots are intentionally not used as active data.
++  return Object.freeze({});
+ }
+ function nexusLoadoutShoppingModeStore() { return nexusLoadoutReadStorage(NEXUS_LOADOUT_SHOPPING_STORAGE,{}); }
+ function nexusLoadoutShoppingItemKey(row) { return String(row?.uuid||row?.name||'').toLowerCase(); }
+@@ -21363,18 +21329,16 @@
+ }
+ function nexusLoadoutNormalizePriceRows(rows,rowName='') {
+   let normalized=(Array.isArray(rows)?rows:[]).map(price=>nexusLoadoutCoercePriceRow(price,price?.__source,rowName)).filter(Boolean);
++  const authorityPatch=window.NEXUS_LIVE_BUILD?.patch||'';
+   const versioned=normalized.filter(price=>nexusLoadoutVersionParts(price.game_version).length);
+   let latestVersion='';
+   versioned.forEach(price=>{if(!latestVersion||nexusLoadoutCompareVersions(price.game_version,latestVersion)>0)latestVersion=price.game_version;});
+-  if(latestVersion){
+-    const latest=nexusLoadoutVersionParts(latestVersion);
+-    // Seller reports are refreshed independently. A valid location can still carry the
+-    // preceding point-release label while another terminal already reports the newest one.
+-    // Only discard records from an older major release; filtering by major+minor hid valid
+-    // sellers such as Hurston Dynamics Showcase when a Pyro report had a newer label.
++  const expectedVersion=authorityPatch||latestVersion;
++  if(expectedVersion){
+     normalized=normalized.filter(price=>{
+       const parts=nexusLoadoutVersionParts(price.game_version);
+-      return !parts.length||parts[0]===latest[0];
++      // Unversioned rows have already passed the shared source-level LIVE gate.
++      return !parts.length||nexusLoadoutCompareVersions(price.game_version,expectedVersion)===0;
+     });
+   }
+   const deduped=new Map();normalized.forEach(price=>{const meta=nexusLoadoutShoppingLocationMeta(price);const key=nexusNormalizeItemName(`${nexusLoadoutRouteStoreKey(meta)}|${price.item_name||rowName}`);const current=deduped.get(key);if(!current){deduped.set(key,price);return;}const a=Date.parse(nexusLoadoutPriceTimestamp(price)||0)||0,b=Date.parse(nexusLoadoutPriceTimestamp(current)||0)||0;if(a>b||(a===b&&Number(price.price_buy)<Number(current.price_buy)))deduped.set(key,price);});
+@@ -21426,8 +21390,6 @@
+       catch(fetchError){const message=fetchError?.message||'UEX UUID price request failed.';error=error?`${error}; ${message}`:message;}
+     }
+     if(!allRows.length){const fresh=await nexusLoadoutFreshWikiRecord(row);const wikiRows=nexusLoadoutEmbeddedPriceRows(fresh,row.name);if(wikiRows.length){allRows.push(...wikiRows);checked.push('Star Citizen Wiki refresh');}}
+-    const fallback=nexusLoadoutVerifiedPriceFallbacks()[nexusNormalizeItemName(row.name)]||[];
+-    if(fallback.length){const hadLiveRows=allRows.length>0;allRows.push(...fallback);if(!hadLiveRows)matchMethod='verified snapshot';else if(!matchMethod)matchMethod='live + verified';checked.push(hadLiveRows?'Verified location reconciliation':'Verified patch snapshot');}
+     const prices=nexusLoadoutNormalizePriceRows(allRows,row.name);const versions=[...new Set(prices.map(price=>nexusLoadoutVersionLabel(price.game_version)).filter(Boolean))];const sources=[...new Set(prices.map(price=>price.__source).filter(Boolean))];
+     return {rows:prices,uexItem,error:prices.length?'':error,fetchedAt:new Date().toISOString(),matchMethod,checkedSources:checked,sourceSummary:sources.join(' + '),latestVersion:versions[0]||''};})();
+   nexusLoadoutState.shoppingPriceCache.set(cacheKey,promise);try{const result=await promise;nexusLoadoutState.shoppingPriceCache.set(cacheKey,result);return result;}catch(error){nexusLoadoutState.shoppingPriceCache.delete(cacheKey);return {rows:[],error:error?.message||'Price lookup failed.',fetchedAt:new Date().toISOString(),checkedSources:[]};}
+@@ -22511,13 +22473,7 @@
+   {id:62, section:'Miscellaneous', name:'Drinks'},
+   {id:63, section:'Miscellaneous', name:'Foods'}
+ ];
+-const NEXUS_FALLBACK_ITEMS = [
+-  {id:'demo-p4', id_category:18, name:'P4-AR Rifle', category:'Personal Weapons', section:'Personal Weapons', company_name:'Behring', size:'2', uuid:'02d4cd2e-fa98-4086-aee1-6b2dfce8ea27', demo:true},
+-  {id:'demo-artimex', id_category:1, name:'Artimex Arms', category:'Arms', section:'Armor', company_name:'Quirinus Tech', uuid:'08e03240-d9e7-4242-b76e-2b85296ba2d9', demo:true},
+-  {id:'demo-atlas', id_category:22, name:'Atlas Quantum Drive', category:'Quantum Drives', section:'Systems', company_name:'Roberts Space Industries', size:'1', demo:true},
+-  {id:'demo-fr76', id_category:23, name:'FR-76 Shield Generator', category:'Shield Generators', section:'Systems', company_name:'Sukoran', size:'2', demo:true},
+-  {id:'demo-tractor', id_category:67, name:'MaxLift Tractor Beam', category:'Tractor Beams', section:'Utility', company_name:'Greycat Industrial', demo:true}
+-];
++const NEXUS_FALLBACK_ITEMS = []; // UI taxonomy may remain offline; patch-sensitive item records never do.
+ const nexusItemState = {
+   initialized: false,
+   live: false,
+@@ -22730,8 +22686,8 @@
+     nexusSetLiveState(true, 'Live UEX data connected');
+   } catch (error) {
+     nexusItemState.categories = NEXUS_FALLBACK_CATEGORIES;
+-    nexusSetLiveState(false, 'Offline fallback mode');
+-    nexusSetFinderStatus('Community APIs could not be reached. Showing a small built-in demonstration catalog; refresh when online.');
++    nexusSetLiveState(false, 'Current LIVE data unavailable');
++    nexusSetFinderStatus('Current LIVE item services could not be reached. Category navigation remains available, but stale demonstration items are withheld.');
+   }
+   nexusPopulateCategories(nexusItemState.categories);
+   await nexusLoadItemsForCategory(force);
+@@ -23020,7 +22976,7 @@
+     nexusItemState.items = nexusDeduplicateItems(categoryId === 'all'
+       ? NEXUS_FALLBACK_ITEMS
+       : NEXUS_FALLBACK_ITEMS.filter(item => String(item.id_category) === String(categoryId)));
+-    nexusSetLiveState(false, 'Offline fallback mode');
++    nexusSetLiveState(false, 'Current LIVE data unavailable');
+   }
+   nexusFilterItems(true);
+ }
+@@ -25700,9 +25656,9 @@
+ 
+ 
+ /* CELESTIAL NEXUS — WIKELO TRADE CENTER V28 */
+-const NEXUS_WIKELO_TRADES = [{"id":"favor-mg","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Merc Scrip for Favors?","category":"Currency","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"MG Scrip","qty":50}],"notes":""},{"id":"favor-council","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Council Scrip for Favors?","category":"Currency","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Council Scrip","qty":50}],"notes":""},{"id":"favor-carinite","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Turn Things to Favor","category":"Currency","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":50}],"notes":""},{"id":"favor-worm","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Worm Parts for Favors?","category":"Currency","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":12}],"notes":""},{"id":"polaris-bit","reward":"Polaris Bit","rewards":["Polaris Bit"],"mission":"Want Polaris? Need something special.","category":"Currency","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Quantanium","qty":24}],"notes":""},{"id":"boom-clanguard","reward":"Boomtube \"Clanguard\" Rocket Launcher","rewards":["Boomtube \"Clanguard\" Rocket Launcher"],"mission":"Curious Weapon","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Boomtube Rocket Launcher","qty":1},{"name":"Vanduul Plating","qty":2},{"name":"Vanduul Metal","qty":2}],"notes":""},{"id":"parallax-kopion","reward":"Parallax \"Fun Kopion Skull\" Energy Assault Rifle","rewards":["Parallax \"Fun Kopion Skull\" Energy Assault Rifle"],"mission":"Fun Kopion Skull Gun","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":10},{"name":"Saldynium (Ore)","qty":15},{"name":"Parallax Energy Assault Rifle","qty":1},{"name":"Tundra Kopion Horn","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"parallax-military","reward":"Parallax \"Fun Military Skull\" Energy Assault Rifle","rewards":["Parallax \"Fun Military Skull\" Energy Assault Rifle"],"mission":"Fun Military Skull Gun","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":10},{"name":"Saldynium (Ore)","qty":15},{"name":"Parallax Energy Assault Rifle","qty":1},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"prism-irradiated","reward":"Prism \"Irradiated\" Laser Shotgun","rewards":["Prism \"Irradiated\" Laser Shotgun"],"mission":"Make VOLT shotgun angrier","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Prism Laser Shotgun","qty":1},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":5},{"name":"Irradiated Valakkar Fang (Adult)","qty":10}],"notes":""},{"id":"zenith-snow","reward":"Zenith \"Snow Camo\" Laser Sniper Rifle","rewards":["Zenith \"Snow Camo\" Laser Sniper Rifle"],"mission":"Snow Snipe","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"ASD Secure Drive","qty":7},{"name":"Zenith Laser Sniper Rifle","qty":1}],"notes":""},{"id":"fresnel-yormandi","reward":"Fresnel \"Yormandi\" LMG","rewards":["Fresnel \"Yormandi\" LMG"],"mission":"Yormandi Gun","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Yormandi Eye","qty":6},{"name":"Yormandi Tongue","qty":3},{"name":"Fresnel Energy LMG","qty":1}],"notes":""},{"id":"tripledown-heatwave","reward":"TripleDown \"Heatwave\" Pistol","rewards":["TripleDown \"Heatwave\" Pistol"],"mission":"Hot Shot","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Tripledown Pistol","qty":1},{"name":"Bluemoon Fungus","qty":20},{"name":"Carinite","qty":20}],"notes":""},{"id":"r97-crimson","reward":"R97 \"Crimson Camo\" Shotgun","rewards":["R97 \"Crimson Camo\" Shotgun"],"mission":"Red Fight Shotgun","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Sadaryx","qty":10},{"name":"R97 Shotgun","qty":1}],"notes":""},{"id":"killshot-dominion","reward":"Killshot \"Dominion Camo\" Rifle Blueprint","rewards":["Killshot \"Dominion Camo\" Rifle Blueprint","Killshot \"Dominion Camo\" Rifle"],"mission":"Your Best Shot","category":"Weapons","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Killshot Rifle","qty":1},{"name":"Expired Quantanium Fuel Canister","qty":1}],"notes":""},{"id":"palatino-mark1","reward":"Palatino Mark I Armor Set","rewards":["Palatino Helmet Mark 1","Palatino Arms Mark 1","Palatino Legs Mark 1","Palatino Core Mark 1","Palatino Backpack Mark 1"],"mission":"Test Armor","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Palatino Helmet","qty":1},{"name":"Palatino Arms","qty":1},{"name":"Palatino Legs","qty":1},{"name":"Palatino Core","qty":1},{"name":"Palatino Backpack","qty":1},{"name":"Yormandi Eye","qty":14},{"name":"Yormandi Tongue","qty":7}],"notes":""},{"id":"geist-snow","reward":"Geist \"Snow Camo\" Armor Set","rewards":["Geist Armor Helmet Snow Camo","Geist Backpack Snow Camo","Geist Armor Arms Snow Camo","Geist Armor Core Snow Camo","Geist Armor Legs Snow Camo"],"mission":"Hide Snow Suit","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"ASD Secure Drive","qty":4},{"name":"Geist Armor Arms ASD Edition","qty":1},{"name":"Geist Armor Core ASD Edition","qty":1},{"name":"Geist Armor Helmet ASD Edition","qty":1},{"name":"Geist Armor Legs ASD Edition","qty":1},{"name":"Geist Backpack ASD Edition","qty":1}],"notes":""},{"id":"testudo-clanguard","reward":"Testudo \"Clanguard\" Armor Set","rewards":["Testudo Helmet Clanguard","Testudo Core Clanguard","Testudo Arms Clanguard","Testudo Legs Clanguard","Testudo Backpack Clanguard"],"mission":"Armor with Vanduul","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Testudo Helmet Turfwar","qty":1},{"name":"Testudo Core Turfwar","qty":1},{"name":"Testudo Arms Turfwar","qty":1},{"name":"Testudo Legs Turfwar","qty":1},{"name":"Testudo Backpack Turfwar","qty":1},{"name":"Vanduul Plating","qty":15},{"name":"Vanduul Metal","qty":15}],"notes":""},{"id":"ana-endro","reward":"Ana \"Endro\" Armor Set","rewards":["Ana Armor Helmet Endro","Ana Armor Core Endro","Ana Armor Arms Endro","Ana Armor Legs Endro"],"mission":"Armor with Horn and String","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Carinite (Pure)","qty":1},{"name":"Antium Armor Core","qty":1},{"name":"Antium Armor Helmet","qty":1},{"name":"Antium Armor Legs","qty":1},{"name":"Antium Armor Arms","qty":1}],"notes":""},{"id":"bokto","reward":"Bokto Armor Set","rewards":["Bokto Helmet","Bokto Arms","Bokto Core","Bokto Legs"],"mission":"Make glowy armor","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":1},{"name":"Antium Armor Core","qty":1},{"name":"Antium Armor Helmet","qty":1},{"name":"Antium Armor Legs","qty":1},{"name":"Antium Armor Arms","qty":1}],"notes":""},{"id":"strata-heatwave","reward":"Strata \"Heatwave\" Armor Set","rewards":["Strata Helmet Heatwave","Strata Arms Heatwave","Strata Core Heatwave","Strata Legs Heatwave"],"mission":"Do Lava Suit","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Strata Core","qty":1},{"name":"Strata Helmet","qty":1},{"name":"Strata Legs","qty":1},{"name":"Strata Arms","qty":1},{"name":"Strata Backpack","qty":1},{"name":"Carinite","qty":30},{"name":"RCMBNT-PWL-1","qty":4},{"name":"RCMBNT-PWL-2","qty":4},{"name":"RCMBNT-PWL-3","qty":4}],"notes":""},{"id":"monde-crimson","reward":"Monde \"Crimson Camo\" Armor Set","rewards":["Monde Helmet Crimson Camo","Monde Core Crimson Camo","Monde Arms Crimson Camo","Monde Legs Crimson Camo","Warden Backpack Monde"],"mission":"Red Fight Armor","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Sadaryx","qty":10},{"name":"Monde Helmet","qty":1},{"name":"Monde Core","qty":1},{"name":"Monde Arms","qty":1},{"name":"Monde Legs","qty":1},{"name":"Warden Backpack Monde","qty":1}],"notes":""},{"id":"tailwind-dominion","reward":"Tailwind \"Dominion Camo\" Flight Set + Blueprints","rewards":["Tailwind Flight Helmet Dominion Camo","Tailwind Flight Suit Dominion Camo","Tailwind Flight Helmet Dominion Camo Blueprint","Tailwind Flight Suit Dominion Camo Blueprint"],"mission":"Suit Up Take Off","category":"Armors","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Tailwind Flight Suit","qty":1},{"name":"Tailwind Flight Helmet","qty":1},{"name":"Expired Quantanium Fuel Canister","qty":1}],"notes":""},{"id":"atls-ikti","reward":"ATLS IKTI","rewards":["ATLS IKTI"],"mission":"Make ATLS shoot","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Argo ATLS","qty":1},{"name":"Wikelo Favor","qty":2},{"name":"Irradiated Valakkar Fang (Apex)","qty":5},{"name":"NN-13 Cannon","qty":2}],"notes":""},{"id":"atls-geo-ikti","reward":"ATLS GEO IKTI","rewards":["ATLS GEO IKTI"],"mission":"Make jumpy ATLS shoot","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Argo ATLS Geo","qty":1},{"name":"Argo ATLS IKTI","qty":1},{"name":"NN-13 Cannon","qty":2},{"name":"Wikelo Favor","qty":1}],"notes":""},{"id":"atls-orange","reward":"ATLS GEO \"Orange Line\"","rewards":["ATLS GEO \"Orange Line\""],"mission":"ATLS Orange Line","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"SCU Quantanium","qty":36},{"name":"Argo ATLS","qty":1},{"name":"SCU Copper","qty":8},{"name":"SCU Tungsten","qty":8},{"name":"SCU Corundum","qty":8}],"notes":""},{"id":"atls-cool","reward":"ATLS GEO \"Cool Metal\"","rewards":["ATLS GEO \"Cool Metal\""],"mission":"ATLS Cool Metal Color","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Carinite (Pure)","qty":1},{"name":"Argo ATLS","qty":1}],"notes":""},{"id":"pulse","reward":"Pulse","rewards":["Pulse"],"mission":"Pulse Plus","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4}],"notes":""},{"id":"ursa-medivac","reward":"Ursa Medivac","rewards":["Ursa Medivac"],"mission":"Make a Ursa Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4},{"name":"Saldynium (Ore)","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"wolf-stealth","reward":"L-21 Wolf (Stealth Spec)","rewards":["L-21 Wolf (Stealth Spec)"],"mission":"Where Wolf? Here Wolf","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Vanduul Plating","qty":10},{"name":"Vanduul Metal","qty":10},{"name":"Large Artifact Fragment (Pristine)","qty":1}],"notes":""},{"id":"alpha-wolf","reward":"L-22 Alpha Wolf","rewards":["L-22 Alpha Wolf"],"mission":"Extra Special Wolf","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Metamaterial Test #146","qty":1}],"notes":""},{"id":"wolf-military","reward":"L-21 Wolf (Military Spec) Bundle","rewards":["L-21 Wolf (Military Spec)","Antium Helmet Midnight Sun","Antium Arms Midnight Sun","Antium Core Midnight Sun","Antium Legs Midnight Sun","Fresnel \"Deepwater\" Energy LMG"],"mission":"Most Special Wolf","category":"Ships","patch":"4.8.1","rank":"Very Good Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":5}],"notes":""},{"id":"golem","reward":"Golem","rewards":["Golem"],"mission":"Golem Rocks","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":2},{"name":"ASD Secure Drive","qty":15}],"notes":""},{"id":"intrepid","reward":"Intrepid","rewards":["Intrepid"],"mission":"Upgrade Intrepid","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"fortune","reward":"Fortune","rewards":["Fortune"],"mission":"Fortune ship for you","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Carinite (Pure)","qty":1}],"notes":""},{"id":"c1-spirit","reward":"C1 Spirit","rewards":["C1 Spirit"],"mission":"Spirit Cargo mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":8},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"zeus-es","reward":"Zeus Mk II ES","rewards":["Zeus Mk II ES"],"mission":"Zeus Special","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"UEE 6th Platoon Medal (Pristine)","qty":1}],"notes":""},{"id":"zeus-cl","reward":"Zeus Mk II CL","rewards":["Zeus Mk II CL"],"mission":"Zeus Cargo Special","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":20},{"name":"Carinite","qty":15},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Carinite (Pure)","qty":2}],"notes":""},{"id":"starlancer-max","reward":"Starlancer MAX","rewards":["Starlancer MAX"],"mission":"More than a Max","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3}],"notes":""},{"id":"taurus","reward":"Constellation Taurus","rewards":["Constellation Taurus"],"mission":"Want Taurus ship","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":3}],"notes":""},{"id":"argo-raft","reward":"Argo Raft","rewards":["Argo Raft"],"mission":"Ready for Raft?","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":8},{"name":"Irradiated Valakkar Fang (Adult)","qty":10},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":20},{"name":"Irradiated Kopion Horn","qty":5},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":1}],"notes":""},{"id":"prospector","reward":"MISC Prospector","rewards":["MISC Prospector"],"mission":"Prospects Look Good","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":6},{"name":"Carinite","qty":20},{"name":"Saldynium (Ore)","qty":30},{"name":"Jaclium (Ore)","qty":40},{"name":"Carinite (Pure)","qty":1}],"notes":""},{"id":"sabre-peregrine","reward":"Sabre Peregrine","rewards":["Sabre Peregrine"],"mission":"Peregrine Wikelo Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":1}],"notes":""},{"id":"sabre-firebird","reward":"Sabre Firebird","rewards":["Sabre Firebird"],"mission":"Firebird Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":4},{"name":"Ace Interceptor Helmet","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"scorpius","reward":"Scorpius","rewards":["Scorpius"],"mission":"Build a Mod Scorpius","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":4},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"f7cm","reward":"F7C-M Super Hornet Mk II","rewards":["F7C-M Super Hornet Mk II"],"mission":"Wikelo Navy F7","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":16},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":3},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"guardian","reward":"Guardian","rewards":["Guardian"],"mission":"Guardian Fight Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":20},{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":15},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"guardian-qi","reward":"Guardian QI","rewards":["Guardian QI"],"mission":"Guardian take down ship","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":25},{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":15},{"name":"UEE 6th Platoon Medal (Pristine)","qty":2}],"notes":""},{"id":"guardian-mx","reward":"Guardian MX","rewards":["Guardian MX"],"mission":"Guardian Wik-X","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":25},{"name":"Ace Interceptor Helmet","qty":15},{"name":"Large Artifact Fragment (Pristine)","qty":2},{"name":"Vanduul Plating","qty":30},{"name":"Vanduul Metal","qty":30}],"notes":""},{"id":"f8-military","reward":"F8C Lightning (Military Spec)","rewards":["F8C Lightning (Military Spec)"],"mission":"F8 War Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"Carinite (Pure)","qty":4},{"name":"Iraddiated Valakkar Pearl (Grade AAA)","qty":4},{"name":"Tevarin War Service Marker (Pristine)","qty":4}],"notes":""},{"id":"f8-stealth","reward":"F8C Lightning (Stealth Spec)","rewards":["F8C Lightning (Stealth Spec)"],"mission":"Sneaky Stabber","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":15},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3}],"notes":""},{"id":"terrapin-medic","reward":"Terrapin Medic","rewards":["Terrapin Medic"],"mission":"What is Terrapin?","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"ASD Secure Drive","qty":10},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"starlancer-tac","reward":"Starlancer TAC","rewards":["Starlancer TAC"],"mission":"New Move Big Starlancer Ship","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Ace Interceptor Helmet","qty":15},{"name":"ASD Secure Drive","qty":30},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Tevarin War Service Marker (Pristine)","qty":3},{"name":"Carinite (Pure)","qty":3},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":3}],"notes":""},{"id":"ares-inferno","reward":"Ares Star Fighter Inferno","rewards":["Ares Star Fighter Inferno"],"mission":"Starfighter Inferno Special","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Yormandi Tongue","qty":5},{"name":"Ace Interceptor Helmet","qty":5},{"name":"UEE 6th Platoon Medal (Pristine)","qty":1}],"notes":""},{"id":"ares-ion","reward":"Ares Star Fighter Ion","rewards":["Ares Star Fighter Ion"],"mission":"Sneaky Starfighter Ion","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Yormandi Eye","qty":10},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"prowler","reward":"Prowler Utility","rewards":["Prowler Utility"],"mission":"Prowler More Utility","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"Yormandi Eyes","qty":20},{"name":"Yormandi Tongue","qty":10},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Carinite (Pure)","qty":3}],"notes":""},{"id":"a2","reward":"A2 Hercules Starlifter","rewards":["A2 Hercules Starlifter"],"mission":"Starlifter A2 War Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Polaris Bit","qty":20},{"name":"MG Scrip","qty":20},{"name":"ASD Secure Drive","qty":6},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":6},{"name":"Tevarin War Service Marker (Pristine)","qty":6},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":6},{"name":"Carinite (Pure)","qty":6}],"notes":""},{"id":"asgard","reward":"Asgard","rewards":["Asgard"],"mission":"Asgard Fight Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"ASD Secure Drive","qty":3},{"name":"RCMBNT-PWL-1","qty":5},{"name":"RCMBNT-PWL-2","qty":5},{"name":"RCMBNT-PWL-3","qty":5},{"name":"RCMBNT-RGL-1","qty":5},{"name":"RCMBNT-RGL-2","qty":5},{"name":"RCMBNT-RGL-3","qty":5},{"name":"RCMBNT-XTL-1","qty":5},{"name":"RCMBNT-XTL-2","qty":5},{"name":"RCMBNT-XTL-3","qty":5}],"notes":""},{"id":"meteor","reward":"Meteor","rewards":["Meteor"],"mission":"RSI Meteor Mod","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Large Artifact Fragment (Pristine)","qty":1},{"name":"Vanduul Plating","qty":10},{"name":"Vanduul Metal","qty":10}],"notes":""},{"id":"polaris","reward":"Polaris Wikelo Special","rewards":["Polaris Wikelo Special"],"mission":"Now make Polaris. Short Time Deal.","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Carinite","qty":20},{"name":"Irradiated Valakkar Fang (Apex)","qty":20},{"name":"MG Scrip","qty":20},{"name":"Polaris Bit","qty":15},{"name":"ASD Secure Drive","qty":15},{"name":"Ace Interceptor Helmet","qty":15},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":15},{"name":"UEE 6th Platoon Medal (Pristine)","qty":15},{"name":"Carinite (Pure)","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":10},{"name":"RCMBNT-PWL-1","qty":1},{"name":"RCMBNT-PWL-2","qty":1},{"name":"RCMBNT-PWL-3","qty":1},{"name":"RCMBNT-RGL-1","qty":1},{"name":"RCMBNT-RGL-2","qty":1},{"name":"RCMBNT-RGL-3","qty":1},{"name":"RCMBNT-XTL-1","qty":1},{"name":"RCMBNT-XTL-2","qty":1},{"name":"RCMBNT-XTL-3","qty":1}],"notes":""},{"id":"idris","reward":"Idris-P","rewards":["Idris-P"],"mission":"AEGIS Idris P","category":"Ships","patch":"4.8.1","rank":"Very Best Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Polaris Bit","qty":50},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":50},{"name":"Carinite","qty":50},{"name":"Irradiated Valakkar Fang (Apex)","qty":50},{"name":"MG Scrip","qty":50},{"name":"Ace Interceptor Helmet","qty":50},{"name":"ASD Secure Drive","qty":30},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":30},{"name":"UEE 6th Platoon Medal (Pristine)","qty":30},{"name":"Carinite (Pure)","qty":30},{"name":"RCMBNT-PWL-1","qty":5},{"name":"RCMBNT-PWL-2","qty":5},{"name":"RCMBNT-PWL-3","qty":5},{"name":"RCMBNT-RGL-1","qty":5},{"name":"RCMBNT-RGL-2","qty":5},{"name":"RCMBNT-RGL-3","qty":5},{"name":"RCMBNT-XTL-1","qty":5},{"name":"RCMBNT-XTL-2","qty":5},{"name":"RCMBNT-XTL-3","qty":5}],"notes":""},{"id":"apollo","reward":"Apollo Triage","rewards":["Apollo Triage"],"mission":"Red Fight Apollo","category":"Ships","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Savrilium","qty":48}],"notes":""},{"id":"very-hungry","reward":"Very Hungry — Starter Mission","rewards":["Patch-dependent starter reward"],"mission":"Very Hungry","category":"Starter Mission","patch":"4.8.1","rank":"New Customer","active":true,"materials":[{"name":"Ermer Family Farms Fat Free Ice Cream","qty":1},{"name":"Berry Blend Smoothie","qty":1}],"notes":"Wikelo starter mission. The reward and reputation can vary by patch.","repVariable":true,"imageQuery":"Wikelo Star Citizen"}];
++const NEXUS_WIKELO_TRADES = [{"id":"favor-mg","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Merc Scrip for Favors?","category":"Currency","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"MG Scrip","qty":50}],"notes":""},{"id":"favor-council","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Council Scrip for Favors?","category":"Currency","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Council Scrip","qty":50}],"notes":""},{"id":"favor-carinite","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Turn Things to Favor","category":"Currency","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":50}],"notes":""},{"id":"favor-worm","reward":"Wikelo Favor","rewards":["Wikelo Favor"],"mission":"Trade Worm Parts for Favors?","category":"Currency","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":12}],"notes":""},{"id":"polaris-bit","reward":"Polaris Bit","rewards":["Polaris Bit"],"mission":"Want Polaris? Need something special.","category":"Currency","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Quantanium","qty":24}],"notes":""},{"id":"boom-clanguard","reward":"Boomtube \"Clanguard\" Rocket Launcher","rewards":["Boomtube \"Clanguard\" Rocket Launcher"],"mission":"Curious Weapon","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Boomtube Rocket Launcher","qty":1},{"name":"Vanduul Plating","qty":2},{"name":"Vanduul Metal","qty":2}],"notes":""},{"id":"parallax-kopion","reward":"Parallax \"Fun Kopion Skull\" Energy Assault Rifle","rewards":["Parallax \"Fun Kopion Skull\" Energy Assault Rifle"],"mission":"Fun Kopion Skull Gun","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":10},{"name":"Saldynium (Ore)","qty":15},{"name":"Parallax Energy Assault Rifle","qty":1},{"name":"Tundra Kopion Horn","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"parallax-military","reward":"Parallax \"Fun Military Skull\" Energy Assault Rifle","rewards":["Parallax \"Fun Military Skull\" Energy Assault Rifle"],"mission":"Fun Military Skull Gun","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Carinite","qty":10},{"name":"Saldynium (Ore)","qty":15},{"name":"Parallax Energy Assault Rifle","qty":1},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"prism-irradiated","reward":"Prism \"Irradiated\" Laser Shotgun","rewards":["Prism \"Irradiated\" Laser Shotgun"],"mission":"Make VOLT shotgun angrier","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Prism Laser Shotgun","qty":1},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":5},{"name":"Irradiated Valakkar Fang (Adult)","qty":10}],"notes":""},{"id":"zenith-snow","reward":"Zenith \"Snow Camo\" Laser Sniper Rifle","rewards":["Zenith \"Snow Camo\" Laser Sniper Rifle"],"mission":"Snow Snipe","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"ASD Secure Drive","qty":7},{"name":"Zenith Laser Sniper Rifle","qty":1}],"notes":""},{"id":"fresnel-yormandi","reward":"Fresnel \"Yormandi\" LMG","rewards":["Fresnel \"Yormandi\" LMG"],"mission":"Yormandi Gun","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Yormandi Eye","qty":6},{"name":"Yormandi Tongue","qty":3},{"name":"Fresnel Energy LMG","qty":1}],"notes":""},{"id":"tripledown-heatwave","reward":"TripleDown \"Heatwave\" Pistol","rewards":["TripleDown \"Heatwave\" Pistol"],"mission":"Hot Shot","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Tripledown Pistol","qty":1},{"name":"Bluemoon Fungus","qty":20},{"name":"Carinite","qty":20}],"notes":""},{"id":"r97-crimson","reward":"R97 \"Crimson Camo\" Shotgun","rewards":["R97 \"Crimson Camo\" Shotgun"],"mission":"Red Fight Shotgun","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Sadaryx","qty":10},{"name":"R97 Shotgun","qty":1}],"notes":""},{"id":"killshot-dominion","reward":"Killshot \"Dominion Camo\" Rifle Blueprint","rewards":["Killshot \"Dominion Camo\" Rifle Blueprint","Killshot \"Dominion Camo\" Rifle"],"mission":"Your Best Shot","category":"Weapons","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Killshot Rifle","qty":1},{"name":"Expired Quantanium Fuel Canister","qty":1}],"notes":""},{"id":"palatino-mark1","reward":"Palatino Mark I Armor Set","rewards":["Palatino Helmet Mark 1","Palatino Arms Mark 1","Palatino Legs Mark 1","Palatino Core Mark 1","Palatino Backpack Mark 1"],"mission":"Test Armor","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Palatino Helmet","qty":1},{"name":"Palatino Arms","qty":1},{"name":"Palatino Legs","qty":1},{"name":"Palatino Core","qty":1},{"name":"Palatino Backpack","qty":1},{"name":"Yormandi Eye","qty":14},{"name":"Yormandi Tongue","qty":7}],"notes":""},{"id":"geist-snow","reward":"Geist \"Snow Camo\" Armor Set","rewards":["Geist Armor Helmet Snow Camo","Geist Backpack Snow Camo","Geist Armor Arms Snow Camo","Geist Armor Core Snow Camo","Geist Armor Legs Snow Camo"],"mission":"Hide Snow Suit","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"ASD Secure Drive","qty":4},{"name":"Geist Armor Arms ASD Edition","qty":1},{"name":"Geist Armor Core ASD Edition","qty":1},{"name":"Geist Armor Helmet ASD Edition","qty":1},{"name":"Geist Armor Legs ASD Edition","qty":1},{"name":"Geist Backpack ASD Edition","qty":1}],"notes":""},{"id":"testudo-clanguard","reward":"Testudo \"Clanguard\" Armor Set","rewards":["Testudo Helmet Clanguard","Testudo Core Clanguard","Testudo Arms Clanguard","Testudo Legs Clanguard","Testudo Backpack Clanguard"],"mission":"Armor with Vanduul","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Testudo Helmet Turfwar","qty":1},{"name":"Testudo Core Turfwar","qty":1},{"name":"Testudo Arms Turfwar","qty":1},{"name":"Testudo Legs Turfwar","qty":1},{"name":"Testudo Backpack Turfwar","qty":1},{"name":"Vanduul Plating","qty":15},{"name":"Vanduul Metal","qty":15}],"notes":""},{"id":"ana-endro","reward":"Ana \"Endro\" Armor Set","rewards":["Ana Armor Helmet Endro","Ana Armor Core Endro","Ana Armor Arms Endro","Ana Armor Legs Endro"],"mission":"Armor with Horn and String","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Carinite (Pure)","qty":1},{"name":"Antium Armor Core","qty":1},{"name":"Antium Armor Helmet","qty":1},{"name":"Antium Armor Legs","qty":1},{"name":"Antium Armor Arms","qty":1}],"notes":""},{"id":"bokto","reward":"Bokto Armor Set","rewards":["Bokto Helmet","Bokto Arms","Bokto Core","Bokto Legs"],"mission":"Make glowy armor","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":1},{"name":"Antium Armor Core","qty":1},{"name":"Antium Armor Helmet","qty":1},{"name":"Antium Armor Legs","qty":1},{"name":"Antium Armor Arms","qty":1}],"notes":""},{"id":"strata-heatwave","reward":"Strata \"Heatwave\" Armor Set","rewards":["Strata Helmet Heatwave","Strata Arms Heatwave","Strata Core Heatwave","Strata Legs Heatwave"],"mission":"Do Lava Suit","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Strata Core","qty":1},{"name":"Strata Helmet","qty":1},{"name":"Strata Legs","qty":1},{"name":"Strata Arms","qty":1},{"name":"Strata Backpack","qty":1},{"name":"Carinite","qty":30},{"name":"RCMBNT-PWL-1","qty":4},{"name":"RCMBNT-PWL-2","qty":4},{"name":"RCMBNT-PWL-3","qty":4}],"notes":""},{"id":"monde-crimson","reward":"Monde \"Crimson Camo\" Armor Set","rewards":["Monde Helmet Crimson Camo","Monde Core Crimson Camo","Monde Arms Crimson Camo","Monde Legs Crimson Camo","Warden Backpack Monde"],"mission":"Red Fight Armor","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Sadaryx","qty":10},{"name":"Monde Helmet","qty":1},{"name":"Monde Core","qty":1},{"name":"Monde Arms","qty":1},{"name":"Monde Legs","qty":1},{"name":"Warden Backpack Monde","qty":1}],"notes":""},{"id":"tailwind-dominion","reward":"Tailwind \"Dominion Camo\" Flight Set + Blueprints","rewards":["Tailwind Flight Helmet Dominion Camo","Tailwind Flight Suit Dominion Camo","Tailwind Flight Helmet Dominion Camo Blueprint","Tailwind Flight Suit Dominion Camo Blueprint"],"mission":"Suit Up Take Off","category":"Armors","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Tailwind Flight Suit","qty":1},{"name":"Tailwind Flight Helmet","qty":1},{"name":"Expired Quantanium Fuel Canister","qty":1}],"notes":""},{"id":"atls-ikti","reward":"ATLS IKTI","rewards":["ATLS IKTI"],"mission":"Make ATLS shoot","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Argo ATLS","qty":1},{"name":"Wikelo Favor","qty":2},{"name":"Irradiated Valakkar Fang (Apex)","qty":5},{"name":"NN-13 Cannon","qty":2}],"notes":""},{"id":"atls-geo-ikti","reward":"ATLS GEO IKTI","rewards":["ATLS GEO IKTI"],"mission":"Make jumpy ATLS shoot","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Argo ATLS Geo","qty":1},{"name":"Argo ATLS IKTI","qty":1},{"name":"NN-13 Cannon","qty":2},{"name":"Wikelo Favor","qty":1}],"notes":""},{"id":"atls-orange","reward":"ATLS GEO \"Orange Line\"","rewards":["ATLS GEO \"Orange Line\""],"mission":"ATLS Orange Line","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"SCU Quantanium","qty":36},{"name":"Argo ATLS","qty":1},{"name":"SCU Copper","qty":8},{"name":"SCU Tungsten","qty":8},{"name":"SCU Corundum","qty":8}],"notes":""},{"id":"atls-cool","reward":"ATLS GEO \"Cool Metal\"","rewards":["ATLS GEO \"Cool Metal\""],"mission":"ATLS Cool Metal Color","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":1},{"name":"Carinite (Pure)","qty":1},{"name":"Argo ATLS","qty":1}],"notes":""},{"id":"pulse","reward":"Pulse","rewards":["Pulse"],"mission":"Pulse Plus","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4}],"notes":""},{"id":"ursa-medivac","reward":"Ursa Medivac","rewards":["Ursa Medivac"],"mission":"Make a Ursa Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4},{"name":"Saldynium (Ore)","qty":20},{"name":"Jaclium (Ore)","qty":20}],"notes":""},{"id":"wolf-stealth","reward":"L-21 Wolf (Stealth Spec)","rewards":["L-21 Wolf (Stealth Spec)"],"mission":"Where Wolf? Here Wolf","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Vanduul Plating","qty":10},{"name":"Vanduul Metal","qty":10},{"name":"Large Artifact Fragment (Pristine)","qty":1}],"notes":""},{"id":"alpha-wolf","reward":"L-22 Alpha Wolf","rewards":["L-22 Alpha Wolf"],"mission":"Extra Special Wolf","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Metamaterial Test #146","qty":1}],"notes":""},{"id":"wolf-military","reward":"L-21 Wolf (Military Spec) Bundle","rewards":["L-21 Wolf (Military Spec)","Antium Helmet Midnight Sun","Antium Arms Midnight Sun","Antium Core Midnight Sun","Antium Legs Midnight Sun","Fresnel \"Deepwater\" Energy LMG"],"mission":"Most Special Wolf","category":"Ships","patch":"legacy-reference","rank":"Very Good Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":5}],"notes":""},{"id":"golem","reward":"Golem","rewards":["Golem"],"mission":"Golem Rocks","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":2},{"name":"ASD Secure Drive","qty":15}],"notes":""},{"id":"intrepid","reward":"Intrepid","rewards":["Intrepid"],"mission":"Upgrade Intrepid","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"fortune","reward":"Fortune","rewards":["Fortune"],"mission":"Fortune ship for you","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":3},{"name":"Carinite (Pure)","qty":1}],"notes":""},{"id":"c1-spirit","reward":"C1 Spirit","rewards":["C1 Spirit"],"mission":"Spirit Cargo mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":8},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"zeus-es","reward":"Zeus Mk II ES","rewards":["Zeus Mk II ES"],"mission":"Zeus Special","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"UEE 6th Platoon Medal (Pristine)","qty":1}],"notes":""},{"id":"zeus-cl","reward":"Zeus Mk II CL","rewards":["Zeus Mk II CL"],"mission":"Zeus Cargo Special","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":20},{"name":"Carinite","qty":15},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Carinite (Pure)","qty":2}],"notes":""},{"id":"starlancer-max","reward":"Starlancer MAX","rewards":["Starlancer MAX"],"mission":"More than a Max","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3}],"notes":""},{"id":"taurus","reward":"Constellation Taurus","rewards":["Constellation Taurus"],"mission":"Want Taurus ship","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":3}],"notes":""},{"id":"argo-raft","reward":"Argo Raft","rewards":["Argo Raft"],"mission":"Ready for Raft?","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":8},{"name":"Irradiated Valakkar Fang (Adult)","qty":10},{"name":"Irradiated Valakkar Fang (Juvenile)","qty":20},{"name":"Irradiated Kopion Horn","qty":5},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":1}],"notes":""},{"id":"prospector","reward":"MISC Prospector","rewards":["MISC Prospector"],"mission":"Prospects Look Good","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":6},{"name":"Carinite","qty":20},{"name":"Saldynium (Ore)","qty":30},{"name":"Jaclium (Ore)","qty":40},{"name":"Carinite (Pure)","qty":1}],"notes":""},{"id":"sabre-peregrine","reward":"Sabre Peregrine","rewards":["Sabre Peregrine"],"mission":"Peregrine Wikelo Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":4},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":1}],"notes":""},{"id":"sabre-firebird","reward":"Sabre Firebird","rewards":["Sabre Firebird"],"mission":"Firebird Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":4},{"name":"Ace Interceptor Helmet","qty":3},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"scorpius","reward":"Scorpius","rewards":["Scorpius"],"mission":"Build a Mod Scorpius","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":4},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"f7cm","reward":"F7C-M Super Hornet Mk II","rewards":["F7C-M Super Hornet Mk II"],"mission":"Wikelo Navy F7","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":16},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":3},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Government Cartography Agency Medal (Pristine)","qty":1}],"notes":""},{"id":"guardian","reward":"Guardian","rewards":["Guardian"],"mission":"Guardian Fight Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":20},{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":15},{"name":"Ace Interceptor Helmet","qty":10},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"guardian-qi","reward":"Guardian QI","rewards":["Guardian QI"],"mission":"Guardian take down ship","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":25},{"name":"Irradiated Valakkar Pearl (Grade AA)","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":15},{"name":"UEE 6th Platoon Medal (Pristine)","qty":2}],"notes":""},{"id":"guardian-mx","reward":"Guardian MX","rewards":["Guardian MX"],"mission":"Guardian Wik-X","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":25},{"name":"Ace Interceptor Helmet","qty":15},{"name":"Large Artifact Fragment (Pristine)","qty":2},{"name":"Vanduul Plating","qty":30},{"name":"Vanduul Metal","qty":30}],"notes":""},{"id":"f8-military","reward":"F8C Lightning (Military Spec)","rewards":["F8C Lightning (Military Spec)"],"mission":"F8 War Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"Carinite (Pure)","qty":4},{"name":"Iraddiated Valakkar Pearl (Grade AAA)","qty":4},{"name":"Tevarin War Service Marker (Pristine)","qty":4}],"notes":""},{"id":"f8-stealth","reward":"F8C Lightning (Stealth Spec)","rewards":["F8C Lightning (Stealth Spec)"],"mission":"Sneaky Stabber","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":15},{"name":"Carinite (Pure)","qty":3},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3}],"notes":""},{"id":"terrapin-medic","reward":"Terrapin Medic","rewards":["Terrapin Medic"],"mission":"What is Terrapin?","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":15},{"name":"ASD Secure Drive","qty":10},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"starlancer-tac","reward":"Starlancer TAC","rewards":["Starlancer TAC"],"mission":"New Move Big Starlancer Ship","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Ace Interceptor Helmet","qty":15},{"name":"ASD Secure Drive","qty":30},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Tevarin War Service Marker (Pristine)","qty":3},{"name":"Carinite (Pure)","qty":3},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":3}],"notes":""},{"id":"ares-inferno","reward":"Ares Star Fighter Inferno","rewards":["Ares Star Fighter Inferno"],"mission":"Starfighter Inferno Special","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Yormandi Tongue","qty":5},{"name":"Ace Interceptor Helmet","qty":5},{"name":"UEE 6th Platoon Medal (Pristine)","qty":1}],"notes":""},{"id":"ares-ion","reward":"Ares Star Fighter Ion","rewards":["Ares Star Fighter Ion"],"mission":"Sneaky Starfighter Ion","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Yormandi Eye","qty":10},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Tevarin War Service Marker (Pristine)","qty":1}],"notes":""},{"id":"prowler","reward":"Prowler Utility","rewards":["Prowler Utility"],"mission":"Prowler More Utility","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":40},{"name":"Yormandi Eyes","qty":20},{"name":"Yormandi Tongue","qty":10},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":3},{"name":"Carinite (Pure)","qty":3}],"notes":""},{"id":"a2","reward":"A2 Hercules Starlifter","rewards":["A2 Hercules Starlifter"],"mission":"Starlifter A2 War Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Polaris Bit","qty":20},{"name":"MG Scrip","qty":20},{"name":"ASD Secure Drive","qty":6},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":6},{"name":"Tevarin War Service Marker (Pristine)","qty":6},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":6},{"name":"Carinite (Pure)","qty":6}],"notes":""},{"id":"asgard","reward":"Asgard","rewards":["Asgard"],"mission":"Asgard Fight Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"ASD Secure Drive","qty":3},{"name":"RCMBNT-PWL-1","qty":5},{"name":"RCMBNT-PWL-2","qty":5},{"name":"RCMBNT-PWL-3","qty":5},{"name":"RCMBNT-RGL-1","qty":5},{"name":"RCMBNT-RGL-2","qty":5},{"name":"RCMBNT-RGL-3","qty":5},{"name":"RCMBNT-XTL-1","qty":5},{"name":"RCMBNT-XTL-2","qty":5},{"name":"RCMBNT-XTL-3","qty":5}],"notes":""},{"id":"meteor","reward":"Meteor","rewards":["Meteor"],"mission":"RSI Meteor Mod","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":10},{"name":"Ace Interceptor Helmet","qty":5},{"name":"Large Artifact Fragment (Pristine)","qty":1},{"name":"Vanduul Plating","qty":10},{"name":"Vanduul Metal","qty":10}],"notes":""},{"id":"polaris","reward":"Polaris Wikelo Special","rewards":["Polaris Wikelo Special"],"mission":"Now make Polaris. Short Time Deal.","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Carinite","qty":20},{"name":"Irradiated Valakkar Fang (Apex)","qty":20},{"name":"MG Scrip","qty":20},{"name":"Polaris Bit","qty":15},{"name":"ASD Secure Drive","qty":15},{"name":"Ace Interceptor Helmet","qty":15},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":15},{"name":"UEE 6th Platoon Medal (Pristine)","qty":15},{"name":"Carinite (Pure)","qty":15},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":10},{"name":"RCMBNT-PWL-1","qty":1},{"name":"RCMBNT-PWL-2","qty":1},{"name":"RCMBNT-PWL-3","qty":1},{"name":"RCMBNT-RGL-1","qty":1},{"name":"RCMBNT-RGL-2","qty":1},{"name":"RCMBNT-RGL-3","qty":1},{"name":"RCMBNT-XTL-1","qty":1},{"name":"RCMBNT-XTL-2","qty":1},{"name":"RCMBNT-XTL-3","qty":1}],"notes":""},{"id":"idris","reward":"Idris-P","rewards":["Idris-P"],"mission":"AEGIS Idris P","category":"Ships","patch":"legacy-reference","rank":"Very Best Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":50},{"name":"Polaris Bit","qty":50},{"name":"DCHS-05 Orbital Positioning Comp-Board","qty":50},{"name":"Carinite","qty":50},{"name":"Irradiated Valakkar Fang (Apex)","qty":50},{"name":"MG Scrip","qty":50},{"name":"Ace Interceptor Helmet","qty":50},{"name":"ASD Secure Drive","qty":30},{"name":"Irradiated Valakkar Pearl (Grade AAA)","qty":30},{"name":"UEE 6th Platoon Medal (Pristine)","qty":30},{"name":"Carinite (Pure)","qty":30},{"name":"RCMBNT-PWL-1","qty":5},{"name":"RCMBNT-PWL-2","qty":5},{"name":"RCMBNT-PWL-3","qty":5},{"name":"RCMBNT-RGL-1","qty":5},{"name":"RCMBNT-RGL-2","qty":5},{"name":"RCMBNT-RGL-3","qty":5},{"name":"RCMBNT-XTL-1","qty":5},{"name":"RCMBNT-XTL-2","qty":5},{"name":"RCMBNT-XTL-3","qty":5}],"notes":""},{"id":"apollo","reward":"Apollo Triage","rewards":["Apollo Triage"],"mission":"Red Fight Apollo","category":"Ships","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Wikelo Favor","qty":30},{"name":"Savrilium","qty":48}],"notes":""},{"id":"very-hungry","reward":"Very Hungry — Starter Mission","rewards":["Patch-dependent starter reward"],"mission":"Very Hungry","category":"Starter Mission","patch":"legacy-reference","rank":"New Customer","active":true,"materials":[{"name":"Ermer Family Farms Fat Free Ice Cream","qty":1},{"name":"Berry Blend Smoothie","qty":1}],"notes":"Wikelo starter mission. The reward and reputation can vary by patch.","repVariable":true,"imageQuery":"Wikelo Star Citizen"}];
+ const NEXUS_WIKELO_STORAGE = Object.freeze({inventory:'celestialNexusWikeloInventoryV1',completed:'celestialNexusWikeloCompletedV2',completedLegacy:'celestialNexusWikeloCompletedV1',plan:'celestialNexusWikeloPlanV1',images:'celestialNexusWikeloImagesV3',rep:'celestialNexusWikeloRepV1'});
+-const NEXUS_WIKELO_REP_FALLBACK = Object.freeze({"Curious Weapon":10,"Your Best Shot":10,"Make ATLS shoot":20,"Golem Rocks":30,"Fortune ship for you":30,"Zeus Special":30,"More than a Max":250,"Want Taurus ship":250,"Ready for Raft?":30,"Prospects Look Good":30,"F8 War Mod":250,"Sneaky Stabber":250,"New Move Big Starlancer Ship":250,"Prowler More Utility":250,"RSI Meteor Mod":30,"Asgard Fight Mod":250});
++const NEXUS_WIKELO_REP_FALLBACK = Object.freeze({}); // Current LIVE mission REP only.
+ const NEXUS_WIKELO_LOCAL_ARTWORK = Object.freeze({
+   'polaris-bit':Object.freeze({url:'./assets/wikelo/polaris-bit-reference.webp',badge:'REFERENCE',source:'Star Citizen Wiki',sourceUrl:'https://starcitizen.tools/Polaris_Wikelo_Special',reference:true,title:'Polaris Wikelo visual reference; dedicated Polaris Bit artwork is not currently available.'}),
+   'boom-clanguard':Object.freeze({url:'./assets/wikelo/boomtube-clanguard.webp',badge:'ARTWORK',source:'Star Citizen Wiki · Wikelo',sourceUrl:'https://starcitizen.tools/Wikelo'}),
+@@ -25742,7 +25698,7 @@
+ function nexusWikeloMissionMatch(trade,rows){const wanted=nexusWikeloNormalizeMission(trade.mission);let match=rows.find(row=>nexusWikeloNormalizeMission(row?.title||row?.name)===wanted);if(match)return match;const wantedTokens=new Set(wanted.split(' ').filter(Boolean));let best=null,bestScore=0;for(const row of rows){const norm=nexusWikeloNormalizeMission(row?.title||row?.name);if(!norm)continue;if(norm.includes(wanted)||wanted.includes(norm))return row;const tokens=new Set(norm.split(' ').filter(Boolean));const common=[...wantedTokens].filter(token=>tokens.has(token)).length;const score=common/Math.max(wantedTokens.size,tokens.size,1);if(score>bestScore){bestScore=score;best=row;}}return bestScore>=.72?best:null;}
+ function nexusWikeloParseRep(row){const raw=row?.reputation_amount??row?.reputation?.amount??row?.reputation_gain??row?.xp;if(Array.isArray(raw)){const nums=raw.map(value=>Number(value?.amount??value)).filter(Number.isFinite);return nums.length?nums.reduce((sum,n)=>sum+n,0):null;}const value=Number(raw);return Number.isFinite(value)?value:null;}
+ function nexusWikeloSetSyncStatus(text,state=''){const node=document.getElementById('wikelo-live-data-status');if(node){node.textContent=text;node.dataset.state=state;}}
+-async function nexusWikeloSyncMissionData(){if(nexusWikeloState.repSync==='loading'||nexusWikeloState.repSync==='done')return;nexusWikeloState.repSync='loading';nexusWikeloSetSyncStatus('Mission REP sync in progress…','loading');nexusWikeloRenderTrades();try{const query=new URLSearchParams();query.set('filter[faction]','Wikelo Emporium');query.set('page[size]','200');const rows=await fetchApiCollection(`${SHIP_DATA_API}/missions?${query.toString()}`,8);let matched=0;NEXUS_WIKELO_TRADES.forEach(trade=>{if(trade.repVariable)return;const row=nexusWikeloMissionMatch(trade,rows);if(!row)return;const rep=nexusWikeloParseRep(row);nexusWikeloState.missionData[trade.id]={rep,uuid:row.uuid||'',title:row.title||row.name||trade.mission};if(Number.isFinite(rep))matched++;});nexusWikeloState.repSync='done';nexusWikeloSetSyncStatus(`Live mission REP synced for ${matched} trades`,'live');}catch(error){nexusWikeloState.repSync='failed';nexusWikeloSetSyncStatus('Live REP sync unavailable · snapshot values active','fallback');}nexusWikeloRenderTrades();nexusWikeloRenderPlan();nexusWikeloCalculateRep();}
++async function nexusWikeloSyncMissionData(){if(nexusWikeloState.repSync==='loading'||nexusWikeloState.repSync==='done')return;nexusWikeloState.repSync='loading';nexusWikeloSetSyncStatus('Mission REP sync in progress…','loading');nexusWikeloRenderTrades();try{const query=new URLSearchParams();query.set('filter[faction]','Wikelo Emporium');query.set('page[size]','200');const rows=await fetchApiCollection(`${SHIP_DATA_API}/missions?${query.toString()}`,8);let matched=0;NEXUS_WIKELO_TRADES.forEach(trade=>{if(trade.repVariable)return;const row=nexusWikeloMissionMatch(trade,rows);if(!row)return;const rep=nexusWikeloParseRep(row);nexusWikeloState.missionData[trade.id]={rep,uuid:row.uuid||'',title:row.title||row.name||trade.mission};if(Number.isFinite(rep))matched++;});nexusWikeloState.repSync='done';nexusWikeloSetSyncStatus(`Live mission REP synced for ${matched} trades`,'live');}catch(error){nexusWikeloState.repSync='failed';nexusWikeloSetSyncStatus('Current LIVE Wikelo mission data unavailable · historical values withheld','fallback');}nexusWikeloRenderTrades();nexusWikeloRenderPlan();nexusWikeloCalculateRep();}
+ function nexusWikeloImageQuery(trade){if(trade.imageQuery)return trade.imageQuery;if(NEXUS_WIKELO_IMAGE_QUERIES[trade.id])return NEXUS_WIKELO_IMAGE_QUERIES[trade.id];if(trade.category==='Armors')return trade.rewards?.[0]||trade.reward;if(trade.category==='Weapons')return String(trade.reward).replace(/\s+Blueprint$/i,'');return trade.reward;}
+ function nexusWikeloImageIcon(category){return category==='Ships'?'🚀':category==='Weapons'?'⚔️':category==='Armors'?'🛡️':category==='Currency'?'◇':'👽';}
+ function nexusWikeloImagePlaceholder(trade,label='Loading artwork…'){return `<div class="wikelo-trade-image-placeholder"><span>${nexusWikeloImageIcon(trade.category)}</span><small>${nexusWikeloEsc(label)}</small></div>`;}
+@@ -25787,7 +25743,7 @@
+  const grid=document.getElementById('wikelo-trade-grid');if(!grid)return;
+  const q=(document.getElementById('wikelo-search')?.value||'').trim().toLowerCase();const category=document.getElementById('wikelo-category')?.value||'';const rank=document.getElementById('wikelo-rank')?.value||'';const readyOnly=!!document.getElementById('wikelo-ready-only')?.checked;const hideComplete=!!document.getElementById('wikelo-hide-complete')?.checked;
+  const rows=NEXUS_WIKELO_TRADES.filter(t=>{const rep=nexusWikeloRepMeta(t).label;const hay=[t.reward,t.mission,t.category,t.rank,rep,...t.rewards,...t.materials.map(m=>m.name)].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!category||t.category===category)&&(!rank||t.rank===rank)&&(!readyOnly||nexusWikeloTradeReady(t))&&(!hideComplete||nexusWikeloCompletionCount(t.id)===0);});
+- const line=document.getElementById('wikelo-result-line');if(line){const runs=Object.keys(nexusWikeloState.completed).reduce((sum,id)=>sum+nexusWikeloCompletionCount(id),0);line.textContent=`${rows.length} of ${NEXUS_WIKELO_TRADES.length} current snapshot entries shown · ${runs.toLocaleString()} completed run${runs===1?'':'s'} tracked · bundled artwork loads instantly · uncached artwork loads only near the viewport`;}
++ const line=document.getElementById('wikelo-result-line');if(line){const runs=Object.keys(nexusWikeloState.completed).reduce((sum,id)=>sum+nexusWikeloCompletionCount(id),0);line.textContent=`${rows.length} of ${NEXUS_WIKELO_TRADES.length} current LIVE catalog entries shown · ${runs.toLocaleString()} completed run${runs===1?'':'s'} tracked · bundled artwork loads instantly · uncached artwork loads only near the viewport`;}
+  grid.innerHTML=rows.map(t=>{const ready=nexusWikeloTradeReady(t),completedCount=nexusWikeloCompletionCount(t.id),done=completedCount>0,planned=nexusWikeloState.plan.includes(t.id),progress=Math.round(nexusWikeloProgress(t)*100),rep=nexusWikeloRepMeta(t),missionUrl=`https://api.star-citizen.wiki/missions/${nexusWikeloMissionSlug(t.mission)}`;return `<article class="wikelo-trade-card ${ready?'ready':''} ${done?'completed':''}">${nexusWikeloTradeMedia(t)}<div class="wikelo-card-top"><span class="wikelo-category-badge">${nexusWikeloEsc(t.category)}</span><span class="wikelo-card-badges"><span class="wikelo-rep-badge ${rep.kind}" title="${nexusWikeloEsc(rep.title)}">${nexusWikeloEsc(rep.label)}</span><span class="wikelo-rank-badge">${nexusWikeloEsc(t.rank)}</span></span></div><h3>${nexusWikeloEsc(t.reward)}</h3><a class="wikelo-mission" href="${missionUrl}" target="_blank" rel="noopener noreferrer">MISSION · ${nexusWikeloEsc(t.mission)} ↗</a><div class="wikelo-material-list">${t.materials.map(m=>{const owned=nexusWikeloOwned(m.name),cls=owned>=m.qty?'ok':owned>0?'partial':'';return `<div class="wikelo-material-row ${cls}"><span>${nexusWikeloEsc(m.name)}</span><span>${owned} / ${m.qty}</span></div>`;}).join('')}<div class="wikelo-progress"><i style="width:${progress}%"></i></div></div>${t.notes?`<div class="wikelo-note">${nexusWikeloEsc(t.notes)}</div>`:''}<div class="wikelo-card-actions"><label><input type="checkbox" ${planned?'checked':''} onchange="nexusWikeloTogglePlan('${t.id}',this.checked)"> Plan</label><label><input type="checkbox" ${done?'checked':''} onchange="nexusWikeloToggleCompleted('${t.id}',this.checked)"> Completed</label><div class="wikelo-completion-control" title="Number of times this contract has been completed"><span>Runs</span><button type="button" aria-label="Remove one completion" onclick="nexusWikeloAdjustCompletion('${t.id}',-1)">−</button><input type="number" min="0" step="1" inputmode="numeric" value="${completedCount}" aria-label="Completed runs for ${nexusWikeloEsc(t.reward)}" onchange="nexusWikeloSetCompletionCount('${t.id}',this.value,true)"><button type="button" aria-label="Add one completion" onclick="nexusWikeloAdjustCompletion('${t.id}',1)">+</button></div><span class="wikelo-card-status ${ready?'ready':''}">${ready?'Ready':'Missing items'}</span></div></article>`;}).join('')||'<div class="finder-empty">No trades match the current filters.</div>';
+  nexusWikeloRenderPlan();nexusWikeloUpdateStats();requestAnimationFrame(nexusWikeloQueueTradeImages);
+ }
+@@ -29150,7 +29106,7 @@
+   const MODE_ICON = {hand:'🧑‍🚀',vehicle:'🚙',ship:'🚀'};
+   const SOURCE_URLS = {
+     basics:'https://support.robertsspaceindustries.com/hc/en-us/articles/360007611573-Mining-Basics',
+-    patch:'https://robertsspaceindustries.com/en/comm-link/Patch-Notes/21168-Star-Citizen-Alpha-48',
++    patch:'https://robertsspaceindustries.com/en/comm-link/Patch-Notes',
+     qualityPatch:'https://robertsspaceindustries.com/en/comm-link/Patch-Notes/21070-Star-Citizen-Alpha-47',
+     quality:'https://starminersdepot.com/quality',
+     finder:'https://sg-mining-finder.pages.dev/',
+@@ -29251,7 +29207,7 @@
+   function locationsPanel(r){const cards=r.locationIds.map(id=>{const l=LOCATIONS[id];return `<article class="mining-location-card"><div class="mining-location-art"><img class="mining-location-photo" data-mining-location-photo="${id}" alt="${escMine(l.name)} location" loading="lazy" decoding="async" /></div><div class="mining-location-body"><div class="mining-location-title"><div><span class="mining-location-system">${escMine(l.system)} · ${escMine(l.kind)}</span><h4>${escMine(l.name)}</h4></div><span>~${l.quality}/1000</span></div><div class="mining-location-meta"><span>${escMine(l.prevalence)}</span><span>${escMine(l.risk)} risk</span><span>${escMine(l.qualityRange)}</span></div><div class="mining-route">${l.steps.map((s,i)=>`<div class="mining-route-step"><b>${i+1}</b><span>${escMine(s)}</span></div>`).join('')}</div><div class="mining-location-footer"><small>Planning confidence: community-confirmed region<br>Suggested logistics: ${escMine(l.refinery)}</small><button class="mining-copy-route" type="button" onclick="nexusMiningCopyRoute('${r.id}','${id}')">Copy route</button></div></div></article>`;}).join('');return `<div class="mining-tab-panel ${state.tab==='locations'?'active':''}" data-mining-panel="locations"><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Location intelligence</div><h3>Known regions and practical approach routes</h3><p>Every cover is reserved for location photography only. Route labels, quality guidance, and operational notes remain below the image.</p></div><div class="mining-section-note">Average quality figures are operational estimates. Actual deposits span the resource’s full quality range.</div></div><div class="mining-location-grid">${cards}</div></section></div>`;}
+   function plannerPanel(r){const baseMass=r.tier==='gem'?120:r.tier==='legendary'?12000:r.tier==='very-high'?10000:r.density==='high'?8500:6000;return `<div class="mining-tab-panel ${state.tab==='planner'?'active':''}" data-mining-panel="planner"><section class="mining-planner-grid"><div class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Field estimate calculator</div><h3>Rock break planner</h3><p>Enter the scan values from the actual deposit.</p></div></div><div class="mining-calculator"><div class="mining-field"><label for="mining-mass">Rock mass</label><div class="mining-slider-row"><input id="mining-mass" type="range" min="50" max="40000" step="50" value="${baseMass}" oninput="nexusMiningPlannerInput('mass',this.value)"/><input class="mining-number" id="mining-mass-number" type="number" min="50" max="40000" value="${baseMass}" onchange="nexusMiningPlannerInput('mass',this.value)"/></div></div><div class="mining-field"><label for="mining-resistance">Resistance estimate (%)</label><div class="mining-slider-row"><input id="mining-resistance" type="range" min="0" max="100" value="${({low:15,medium:30,high:52,extreme:76})[r.resistance]}" oninput="nexusMiningPlannerInput('resistance',this.value)"/><input class="mining-number" id="mining-resistance-number" type="number" min="0" max="100" value="${({low:15,medium:30,high:52,extreme:76})[r.resistance]}" onchange="nexusMiningPlannerInput('resistance',this.value)"/></div></div><div class="mining-field"><label for="mining-instability">Instability estimate (%)</label><div class="mining-slider-row"><input id="mining-instability" type="range" min="0" max="100" value="${({low:18,medium:38,high:62,extreme:84})[r.instability]}" oninput="nexusMiningPlannerInput('instability',this.value)"/><input class="mining-number" id="mining-instability-number" type="number" min="0" max="100" value="${({low:18,medium:38,high:62,extreme:84})[r.instability]}" onchange="nexusMiningPlannerInput('instability',this.value)"/></div></div><div class="mining-field"><label>Quick scan presets</label><div class="mining-presets"><button class="mining-preset" type="button" onclick="nexusMiningPreset(2500,20,20)">Small / easy</button><button class="mining-preset" type="button" onclick="nexusMiningPreset(7500,45,45)">Medium / hard</button><button class="mining-preset" type="button" onclick="nexusMiningPreset(16000,72,65)">Large / resistant</button><button class="mining-preset" type="button" onclick="nexusMiningPreset(26000,82,84)">Crew challenge</button></div></div><p class="mining-source-note">This is a comparative field model, not the game’s hidden fracture formula. Use it to choose a starting platform and configuration, then trust the live mining HUD.</p></div></div><div class="mining-section"><div class="mining-break-result" id="mining-break-result"></div></div></section></div>`;}
+   function loadoutPanel(r){const cfg=recommendedConfig(r,r.modes[0]),platform=recommendedPlatform(r),crew=platform.includes('MOLE')?'3–4 crew':platform.includes('ATLS')||platform.includes('ROC')?'1 operator · carrier support recommended':'1 pilot';return `<div class="mining-tab-panel ${state.tab==='loadout'?'active':''}" data-mining-panel="loadout"><section class="mining-recommended-loadout"><div class="mining-recommended-orbit" aria-hidden="true"><span></span><i>⚙</i></div><div class="mining-recommended-copy"><div class="mining-section-kicker">Recommended engineering package</div><h3>${escMine(platform)}</h3><p>This is the clean starting configuration for ${escMine(r.name)}. Send it to Vehicle Loadout Manager to select the vehicle, filter the hardpoints, and apply matching mining heads and modules where compatible records are available.</p><div class="mining-recommended-grid"><div><span>Laser / tool</span><strong>${escMine(cfg.head)}</strong></div><div><span>Installed modules</span><strong>${escMine(cfg.modules)}</strong></div><div><span>Field support</span><strong>${escMine(cfg.gadget)}</strong></div><div><span>Crew baseline</span><strong>${escMine(crew)}</strong></div></div><div class="mining-recommended-actions"><button class="mining-action primary mining-vlm-launch" type="button" onclick="nexusMiningOpenRecommendedInVLM('${r.id}')"><span>Open in Vehicle Loadout Manager</span><b>→</b></button><button class="mining-action" type="button" onclick="nexusMiningCopyLoadout()">Copy loadout</button></div><small class="mining-vlm-note">VLM automatically selects the recommended vehicle and attempts to install matching mining heads and modules. Integrated FPS or ground-vehicle equipment is carried across as an advisory when no editable hardpoint exists.</small></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Platform comparison</div><h3>Choose the smallest platform with safe control margin</h3><p>Use these alternatives when the live rock mass, crew availability, or terrain changes the plan.</p></div></div><div class="mining-loadout-grid">${loadoutCards(r)}</div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Crew architecture</div><h3>Roles and minimum staffing</h3></div></div><div class="mining-crew-strip"><div class="mining-crew-role"><i>🧭</i><strong>Pilot / navigator</strong><small>1 required for ship operations</small></div><div class="mining-crew-role"><i>⛏️</i><strong>Laser operator</strong><small>1 solo · up to 3 MOLE</small></div><div class="mining-crew-role"><i>📡</i><strong>Scout / scanner</strong><small>Optional, valuable in Pyro</small></div><div class="mining-crew-role"><i>🛡️</i><strong>Escort / recovery</strong><small>Recommended for rare sites</small></div></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Launch checklist</div><h3>Bring this before leaving the hangar</h3></div></div><div class="mining-checklist">${['Mining tool / laser head and planned modules installed','Correct environmental armor, helmet, food, water, oxygen, and medpens','Tractor multitool, spare battery, and storage backpack','Fuel and repair reserve for the return route','Refinery or sale destination selected before fracture','Recovery beacon plan and shared route marker','Cargo discipline: reject low-quality filler when chasing rare material','Security and lookout plan for Pyro or contested sites'].map((x,i)=>`<label class="mining-check"><input type="checkbox" data-mining-check="${i}"/><span>${x}</span></label>`).join('')}</div></section></div>`;}
+-  function guidePanel(){return `<div class="mining-tab-panel ${state.tab==='guide'?'active':''}" data-mining-panel="guide"><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Official workflow reference</div><h3>Scan → fracture → extract</h3><p>Use the live HUD as the final authority during every rock interaction.</p></div></div><div class="mining-guide-grid"><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-26-659560e75c4f.jpg')"></div><div class="mining-guide-body"><b>1 · Scan the deposit</b><p>Identify mass, composition, resistance, instability, quality, and the size of the optimal charge window before touching the laser.</p></div></article><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-27-2a21c7439ef6.jpg')"></div><div class="mining-guide-body"><b>2 · Fracture inside the window</b><p>Build energy into the optimal zone. High resistance demands power; high instability demands smooth corrections and control.</p></div></article><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-28-23d561040991.jpg')"></div><div class="mining-guide-body"><b>3 · Extract selectively</b><p>Switch to extraction, verify fragment composition and quality, and protect cargo capacity from inert or low-value material.</p></div></article></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Quality system</div><h3>How to read the 0–1000 scale</h3></div></div><div class="mining-insight-grid"><div class="mining-insight"><span>0–499</span><strong>Below standard</strong><p>Usually skip unless composition, proximity, or learning value makes it worthwhile.</p></div><div class="mining-insight"><span>500–699</span><strong>Standard batch</strong><p>Reliable material for routine industrial operations.</p></div><div class="mining-insight"><span>700–899</span><strong>High quality</strong><p>Prioritize valuable fragments and refinery capacity.</p></div><div class="mining-insight"><span>900–1000</span><strong>Premium / elite</strong><p>Rare, high-priority batches; keep extraction and security disciplined.</p></div></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Data provenance</div><h3>Sources and confidence</h3></div></div><div class="mining-sources"><a class="mining-source-link" href="${SOURCE_URLS.basics}" target="_blank" rel="noopener noreferrer"><span>RSI Knowledge Base · Mining Basics</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.patch}" target="_blank" rel="noopener noreferrer"><span>RSI · Alpha 4.8 patch notes</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.qualityPatch}" target="_blank" rel="noopener noreferrer"><span>RSI · Alpha 4.7 quality-system notes</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.atls}" target="_blank" rel="noopener noreferrer"><span>RSI · ARGO ATLS GEO</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.breaker}" target="_blank" rel="noopener noreferrer"><span>Star Citizen Wiki · QV Breaker Stations</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.wiki}" target="_blank" rel="noopener noreferrer"><span>Star Citizen Wiki · item and deposit records</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.quality}" target="_blank" rel="noopener noreferrer"><span>Star Miners Depot · quality guide</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.finder}" target="_blank" rel="noopener noreferrer"><span>Shadow Guardians · mining resource finder</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.regolith}" target="_blank" rel="noopener noreferrer"><span>Regolith · community mining workflow</span><b>↗</b></a></div><p class="mining-source-note">Official sources define the core workflow and quality system. Spawn lists, relative values, categorical rock behavior, region quality expectations, and loadout recommendations are community-derived and can change between builds. The toolkit intentionally labels average qualities and fracture results as planning estimates.</p></section></div>`;}
++  function guidePanel(){return `<div class="mining-tab-panel ${state.tab==='guide'?'active':''}" data-mining-panel="guide"><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Official workflow reference</div><h3>Scan → fracture → extract</h3><p>Use the live HUD as the final authority during every rock interaction.</p></div></div><div class="mining-guide-grid"><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-26-659560e75c4f.jpg')"></div><div class="mining-guide-body"><b>1 · Scan the deposit</b><p>Identify mass, composition, resistance, instability, quality, and the size of the optimal charge window before touching the laser.</p></div></article><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-27-2a21c7439ef6.jpg')"></div><div class="mining-guide-body"><b>2 · Fracture inside the window</b><p>Build energy into the optimal zone. High resistance demands power; high instability demands smooth corrections and control.</p></div></article><article class="mining-guide-card"><div class="mining-guide-image" style="background-image:url('./assets/ui/embedded-28-23d561040991.jpg')"></div><div class="mining-guide-body"><b>3 · Extract selectively</b><p>Switch to extraction, verify fragment composition and quality, and protect cargo capacity from inert or low-value material.</p></div></article></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Quality system</div><h3>How to read the 0–1000 scale</h3></div></div><div class="mining-insight-grid"><div class="mining-insight"><span>0–499</span><strong>Below standard</strong><p>Usually skip unless composition, proximity, or learning value makes it worthwhile.</p></div><div class="mining-insight"><span>500–699</span><strong>Standard batch</strong><p>Reliable material for routine industrial operations.</p></div><div class="mining-insight"><span>700–899</span><strong>High quality</strong><p>Prioritize valuable fragments and refinery capacity.</p></div><div class="mining-insight"><span>900–1000</span><strong>Premium / elite</strong><p>Rare, high-priority batches; keep extraction and security disciplined.</p></div></div></section><section class="mining-section"><div class="mining-section-head"><div><div class="mining-section-kicker">Data provenance</div><h3>Sources and confidence</h3></div></div><div class="mining-sources"><a class="mining-source-link" href="${SOURCE_URLS.basics}" target="_blank" rel="noopener noreferrer"><span>RSI Knowledge Base · Mining Basics</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.patch}" target="_blank" rel="noopener noreferrer"><span>RSI · Current LIVE patch notes</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.qualityPatch}" target="_blank" rel="noopener noreferrer"><span>RSI · Historical quality-system design notes</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.atls}" target="_blank" rel="noopener noreferrer"><span>RSI · ARGO ATLS GEO</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.breaker}" target="_blank" rel="noopener noreferrer"><span>Star Citizen Wiki · QV Breaker Stations</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.wiki}" target="_blank" rel="noopener noreferrer"><span>Star Citizen Wiki · item and deposit records</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.quality}" target="_blank" rel="noopener noreferrer"><span>Star Miners Depot · quality guide</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.finder}" target="_blank" rel="noopener noreferrer"><span>Shadow Guardians · mining resource finder</span><b>↗</b></a><a class="mining-source-link" href="${SOURCE_URLS.regolith}" target="_blank" rel="noopener noreferrer"><span>Regolith · community mining workflow</span><b>↗</b></a></div><p class="mining-source-note">Official sources define the core workflow and quality system. Spawn lists, relative values, categorical rock behavior, region quality expectations, and loadout recommendations are community-derived and can change between builds. The toolkit intentionally labels average qualities and fracture results as planning estimates.</p></section></div>`;}
+   function detailHtml(r){const systems=allSystems(r),control=RESIST_SCORE[r.instability]>=3?'Control-first':RESIST_SCORE[r.resistance]>=3?'Power-first':'Balanced',risk=RESIST_SCORE[r.resistance]+RESIST_SCORE[r.instability]>=7?'High-complexity':RESIST_SCORE[r.resistance]+RESIST_SCORE[r.instability]>=5?'Moderate':'Approachable';return `<article class="mining-dossier"><div class="mining-dossier-top"><div class="mining-resource-art"><img id="mining-resource-photo" class="mining-resource-photo" alt="Community wiki artwork for ${escMine(r.name)}" />${crystalSvg(r)}<div class="mining-resource-art-label">Resource visual · ${escMine(r.symbol)}</div></div><div class="mining-dossier-copy"><div class="mining-dossier-head"><div><span class="mining-tier tier-${r.tier}"><i></i>${escMine(TIER_LABEL[r.tier])}</span><h2>${escMine(r.name)}</h2><div class="mining-dossier-sub">${escMine(r.symbol)} · ${escMine(modesText(r))} · ${escMine(systems.join(' / '))}</div></div><button class="mining-fav ${state.favorites.has(r.id)?'active':''}" type="button" onclick="nexusMiningToggleFavorite('${r.id}')" title="Save resource">${state.favorites.has(r.id)?'★':'☆'}</button></div><p class="mining-description">${escMine(r.description)}</p><div class="mining-badges"><span class="mining-badge gold">${escMine(formatValue(r.value,r.tier))}</span>${r.modes.map(m=>`<span class="mining-badge lime">${MODE_ICON[m]} ${MODE_LABEL[m]}</span>`).join('')}<span class="mining-badge">Quality ${r.quality[0]}–${r.quality[1]}</span></div><div class="mining-primary-actions"><button class="mining-action primary" type="button" onclick="nexusMiningSetTab('locations')">Where to find it</button><button class="mining-action" type="button" onclick="nexusMiningSetTab('planner')">How to crack it</button><button class="mining-action" type="button" onclick="nexusMiningSetTab('loadout')">Best setup</button></div></div></div><div class="mining-decision-band"><div><span>Priority value</span><strong>${escMine(formatValue(r.value,r.tier))}</strong><small>Relative field priority</small></div><div><span>Best platform</span><strong>${escMine(recommendedPlatform(r))}</strong><small>Starting recommendation</small></div><div><span>Operating style</span><strong>${escMine(control)}</strong><small>Based on resistance and instability</small></div><div><span>Complexity</span><strong>${escMine(risk)}</strong><small>Live scan can change the decision</small></div></div></article><nav class="mining-tabs" aria-label="Mining dossier sections">${[['locations','Where to find','⌖'],['planner','How to crack','◫'],['loadout','Best setup','⚙'],['overview','Resource brief','⌂'],['guide','Field guide','i']].map(([id,label,icon])=>`<button class="mining-tab ${state.tab===id?'active':''}" data-icon="${icon}" data-mining-tab="${id}" type="button" onclick="nexusMiningSetTab('${id}')">${label}</button>`).join('')}</nav>${overviewPanel(r)}${locationsPanel(r)}${plannerPanel(r)}${loadoutPanel(r)}${guidePanel()}`;}
+   function currentResource(){return resources.find(r=>r.id===state.selected)||resources[0];}
+   function filteredResources(){const q=(document.getElementById('mining-search')?.value||'').trim().toLowerCase(),mode=document.getElementById('mining-mode-filter')?.value||'all',system=document.getElementById('mining-system-filter')?.value||'all',tier=document.getElementById('mining-tier-filter')?.value||'all',sort=document.getElementById('mining-sort')?.value||'value';let list=resources.filter(r=>(!q||`${r.name} ${r.symbol} ${r.secondary} ${r.description}`.toLowerCase().includes(q))&&(mode==='all'||r.modes.includes(mode))&&(system==='all'||allSystems(r).includes(system))&&(tier==='all'||r.tier===tier)&&(!state.favoritesOnly||state.favorites.has(r.id)));list.sort((a,b)=>sort==='name'?a.name.localeCompare(b.name):sort==='resistance'?(RESIST_SCORE[b.resistance]-RESIST_SCORE[a.resistance])||b.value-a.value:sort==='quality'?qualityAverage(b)-qualityAverage(a):b.value-a.value);return list;}
+@@ -29280,7 +29236,7 @@
  <script>
  if ('serviceWorker' in navigator) {
    window.addEventListener('load', () => {
 -    navigator.serviceWorker.register('./sw.js?v=2.0.1-r1').catch((error) => {
-+    navigator.serviceWorker.register('./sw.js?v=2.0.1-live-current-r2').catch((error) => {
++    navigator.serviceWorker.register('./sw.js?v=2.0.1-live-current-r3').catch((error) => {
        console.warn('Celestial Nexus service worker registration failed:', error);
      });
    });
-@@ -30769,38 +30769,8 @@
+@@ -29299,86 +29255,7 @@
+ 
+ <script>
+ /* V69 — SHIP-AWARE COMMODITY TRADING COMMAND */
+-const NEXUS_TRADE_FALLBACK_SHIPS = [
+-  {name:"ARGO MPUV Cargo", manufacturer:"ARGO Astronautics", cargo:2},
+-  {name:"ARGO SRV", manufacturer:"ARGO Astronautics", cargo:10},
+-  {name:"ARGO MOLE", manufacturer:"ARGO Astronautics", cargo:16},
+-  {name:"ARGO RAFT", manufacturer:"ARGO Astronautics", cargo:96},
+-  {name:"Aegis Redeemer", manufacturer:"Aegis Dynamics", cargo:2},
+-  {name:"Aegis Avenger Titan", manufacturer:"Aegis Dynamics", cargo:8},
+-  {name:"Aegis Reclaimer", manufacturer:"Aegis Dynamics", cargo:180},
+-  {name:"Anvil C8 Pisces", manufacturer:"Anvil Aerospace", cargo:4},
+-  {name:"Anvil C8X Pisces Expedition", manufacturer:"Anvil Aerospace", cargo:4},
+-  {name:"Anvil Valkyrie", manufacturer:"Anvil Aerospace", cargo:30},
+-  {name:"Anvil Liberator", manufacturer:"Anvil Aerospace", cargo:400},
+-  {name:"Anvil Carrack", manufacturer:"Anvil Aerospace", cargo:456},
+-  {name:"Anvil Carrack Expedition", manufacturer:"Anvil Aerospace", cargo:456},
+-  {name:"Banu Merchantman", manufacturer:"Banu", cargo:2880},
+-  {name:"Consolidated Outland Mustang Alpha", manufacturer:"Consolidated Outland", cargo:4},
+-  {name:"Consolidated Outland Nomad", manufacturer:"Consolidated Outland", cargo:24},
+-  {name:"Consolidated Outland Pioneer", manufacturer:"Consolidated Outland", cargo:600},
+-  {name:"Crusader Intrepid", manufacturer:"Crusader Industries", cargo:8},
+-  {name:"Crusader Genesis Starliner", manufacturer:"Crusader Industries", cargo:40},
+-  {name:"Crusader C1 Spirit", manufacturer:"Crusader Industries", cargo:64},
+-  {name:"Crusader Mercury Star Runner", manufacturer:"Crusader Industries", cargo:114},
+-  {name:"Crusader A2 Hercules Starlifter", manufacturer:"Crusader Industries", cargo:216},
+-  {name:"Crusader M2 Hercules Starlifter", manufacturer:"Crusader Industries", cargo:522},
+-  {name:"Crusader C2 Hercules Starlifter", manufacturer:"Crusader Industries", cargo:696},
+-  {name:"Drake Mule", manufacturer:"Drake Interplanetary", cargo:1},
+-  {name:"Drake Cutter Rambler", manufacturer:"Drake Interplanetary", cargo:2},
+-  {name:"Drake Cutter Scout", manufacturer:"Drake Interplanetary", cargo:2},
+-  {name:"Drake Cutter", manufacturer:"Drake Interplanetary", cargo:4},
+-  {name:"Drake Cutlass Blue", manufacturer:"Drake Interplanetary", cargo:12},
+-  {name:"Drake Cutlass Red", manufacturer:"Drake Interplanetary", cargo:12},
+-  {name:"Drake Vulture", manufacturer:"Drake Interplanetary", cargo:12},
+-  {name:"Drake Cutlass Black", manufacturer:"Drake Interplanetary", cargo:46},
+-  {name:"Drake Corsair", manufacturer:"Drake Interplanetary", cargo:72},
+-  {name:"Drake Caterpillar", manufacturer:"Drake Interplanetary", cargo:576},
+-  {name:"Drake Ironclad Assault", manufacturer:"Drake Interplanetary", cargo:576},
+-  {name:"Drake Ironclad", manufacturer:"Drake Interplanetary", cargo:1536},
+-  {name:"Drake Kraken", manufacturer:"Drake Interplanetary", cargo:3792},
+-  {name:"Gatac Syulen", manufacturer:"Gatac Manufacture", cargo:6},
+-  {name:"Gatac Railen", manufacturer:"Gatac Manufacture", cargo:320},
+-  {name:"MISC Reliant Kore", manufacturer:"MISC", cargo:6},
+-  {name:"MISC Prospector", manufacturer:"MISC", cargo:32},
+-  {name:"MISC Freelancer DUR", manufacturer:"MISC", cargo:36},
+-  {name:"MISC Freelancer MIS", manufacturer:"MISC", cargo:36},
+-  {name:"MISC Hull A", manufacturer:"MISC", cargo:64},
+-  {name:"MISC Freelancer", manufacturer:"MISC", cargo:66},
+-  {name:"MISC Starlancer TAC", manufacturer:"MISC", cargo:96},
+-  {name:"MISC Freelancer MAX", manufacturer:"MISC", cargo:120},
+-  {name:"MISC Starlancer MAX", manufacturer:"MISC", cargo:224},
+-  {name:"MISC Starfarer", manufacturer:"MISC", cargo:291},
+-  {name:"MISC Starfarer Gemini", manufacturer:"MISC", cargo:291},
+-  {name:"MISC Hull B", manufacturer:"MISC", cargo:384},
+-  {name:"MISC Hull C", manufacturer:"MISC", cargo:4608},
+-  {name:"MISC Hull D", manufacturer:"MISC", cargo:20736},
+-  {name:"MISC Hull E", manufacturer:"MISC", cargo:98304},
+-  {name:"Origin 100i", manufacturer:"Origin Jumpworks", cargo:2},
+-  {name:"Origin 125a", manufacturer:"Origin Jumpworks", cargo:2},
+-  {name:"Origin 325a", manufacturer:"Origin Jumpworks", cargo:4},
+-  {name:"Origin 350r", manufacturer:"Origin Jumpworks", cargo:4},
+-  {name:"Origin 135c", manufacturer:"Origin Jumpworks", cargo:6},
+-  {name:"Origin 300i", manufacturer:"Origin Jumpworks", cargo:8},
+-  {name:"Origin 315p", manufacturer:"Origin Jumpworks", cargo:12},
+-  {name:"Origin 600i Explorer", manufacturer:"Origin Jumpworks", cargo:40},
+-  {name:"Origin 600i Touring", manufacturer:"Origin Jumpworks", cargo:40},
+-  {name:"Origin 400i", manufacturer:"Origin Jumpworks", cargo:42},
+-  {name:"Origin 890 Jump", manufacturer:"Origin Jumpworks", cargo:388},
+-  {name:"RSI Aurora ES", manufacturer:"Roberts Space Industries", cargo:3},
+-  {name:"RSI Aurora LN", manufacturer:"Roberts Space Industries", cargo:3},
+-  {name:"RSI Aurora MR", manufacturer:"Roberts Space Industries", cargo:3},
+-  {name:"RSI Aurora CL", manufacturer:"Roberts Space Industries", cargo:6},
+-  {name:"RSI Zeus Mk II MR", manufacturer:"Roberts Space Industries", cargo:16},
+-  {name:"RSI Zeus Mk II ES", manufacturer:"Roberts Space Industries", cargo:32},
+-  {name:"RSI Galaxy", manufacturer:"Roberts Space Industries", cargo:64},
+-  {name:"RSI Constellation Andromeda", manufacturer:"Roberts Space Industries", cargo:96},
+-  {name:"RSI Constellation Aquila", manufacturer:"Roberts Space Industries", cargo:96},
+-  {name:"RSI Constellation Phoenix", manufacturer:"Roberts Space Industries", cargo:96},
+-  {name:"RSI Zeus Mk II CL", manufacturer:"Roberts Space Industries", cargo:128},
+-  {name:"RSI Constellation Taurus", manufacturer:"Roberts Space Industries", cargo:174},
+-  {name:"RSI Polaris", manufacturer:"Roberts Space Industries", cargo:216}
+-].map(ship => ({...ship, source:'Built-in expanded cargo ship fallback'}));
++const NEXUS_TRADE_FALLBACK_SHIPS = []; // Current LIVE vehicle catalog only.
+ 
+ const nexusTradeState = {
+   initialized: false,
+@@ -29389,8 +29266,8 @@
+   statuses: [],
+   versions: [],
+   wiki: [],
+-  ships: NEXUS_TRADE_FALLBACK_SHIPS.map(ship => ({...ship})),
+-  shipSource: 'Built-in fallback',
++  ships: [],
++  shipSource: 'Current LIVE vehicle data unavailable',
+   routes: [],
+   filteredRoutes: [],
+   pulse: [],
+@@ -29578,7 +29455,7 @@
+       career:String(vehicle?.career || ''),
+       role:String(vehicle?.role || vehicle?.vehicle_role || ''),
+       uuid:String(vehicle?.uuid || ''),
+-      source:live ? source : (vehicle?.source || 'Built-in fallback')
++      source:live ? source : (vehicle?.source || 'Current LIVE unavailable')
+     };
+     if (!current || live || normalized.cargo > current.cargo) byName.set(key, normalized);
+   });
+@@ -29636,7 +29513,7 @@
+     versions: Array.isArray(snapshot.versions) ? snapshot.versions : [],
+     wiki: Array.isArray(snapshot.wiki) ? snapshot.wiki : [],
+     ships: nexusTradeNormalizeShips(Array.isArray(snapshot.ships) ? snapshot.ships : []),
+-    shipSource: snapshot.shipSource || (Array.isArray(snapshot.ships) && snapshot.ships.length ? 'Cached vehicle data' : 'Built-in fallback'),
++    shipSource: snapshot.shipSource || (Array.isArray(snapshot.ships) && snapshot.ships.length ? 'Same-patch cached vehicle data' : 'Current LIVE vehicle data unavailable'),
+     syncedAt: snapshot.syncedAt || new Date().toISOString(),
+     source: snapshot.source || 'imported snapshot'
+   };
+@@ -29649,7 +29526,7 @@
+   nexusTradeState.source = clean.source;
+   nexusTradeSetSourceState('uex', clean.prices.length ? 'ok' : 'bad', clean.prices.length ? `${clean.prices.length.toLocaleString()} reports loaded` : 'No reports');
+   nexusTradeSetSourceState('wiki', clean.wiki.length ? 'ok' : 'warn', clean.wiki.length ? `${clean.wiki.length.toLocaleString()} records loaded` : 'Metadata check unavailable');
+-  nexusTradeSetSourceState('ships', clean.shipSource === 'Star Citizen Wiki API' ? 'ok' : 'warn', clean.shipSource === 'Star Citizen Wiki API' ? `${clean.ships.length.toLocaleString()} cargo ships loaded` : `${clean.ships.length.toLocaleString()} fallback/cached profiles`);
++  nexusTradeSetSourceState('ships', clean.shipSource === 'Star Citizen Wiki API' ? 'ok' : 'warn', clean.shipSource === 'Star Citizen Wiki API' ? `${clean.ships.length.toLocaleString()} cargo ships loaded` : `${clean.ships.length.toLocaleString()} current/same-patch profiles`);
+   nexusTradeBuildModels();
+   nexusTradePopulateSystems();
+   nexusTradePopulateShips();
+@@ -30769,38 +30646,8 @@
  };
  </script>
  <script>
@@ -151,7 +473,7 @@
  
  const NEXUS_TRADE_FUEL_NODES = [
    {id:'sta_area18',name:'Area18 / Riker Memorial',system:'Stanton',zone:'ArcCorp',x:17,y:25,risk:'safe',services:['Quantum fuel','Hydrogen','Repair','Cargo']},
-@@ -30856,7 +30826,7 @@
+@@ -30856,7 +30703,7 @@
    if(/explor|expedition/.test(role))range*=1.18;if(/support|refuel/.test(role))range*=1.12;
    range=Math.round(range*10)/10;
    const drive=range>=400?3:range>=175?2:1, tank=drive===3?5.7:drive===2?2:1.1, consumption=Math.round((tank/range)*1000*10)/10;
@@ -160,7 +482,7 @@
  }
  function nexusTradeFuelDistance(a,b){
    if(!a||!b)return Infinity;
-@@ -30907,7 +30877,7 @@
+@@ -30907,7 +30754,7 @@
  function nexusTradeFuelOptions(){return {startFuel:Number(document.getElementById('trade-fuel-start')?.value||100),reserve:Number(document.getElementById('trade-fuel-reserve')?.value||20),overhead:Number(document.getElementById('trade-fuel-overhead')?.value||8),strategy:document.getElementById('trade-fuel-strategy')?.value||'fewest',range:Number(document.getElementById('trade-fuel-range-override')?.value||0)||undefined};}
  function nexusTradeFuelBuildPlan(startId,endId,shipName,options={}){const ship=nexusTradeState.ships.find(item=>item.name===shipName);const profile=nexusTradeFuelProfile(shipName,ship);const plan=nexusTradeFuelFindPath(startId,endId,profile,options);return {profile,plan,options,start:NEXUS_TRADE_FUEL_NODE_MAP.get(startId),end:NEXUS_TRADE_FUEL_NODE_MAP.get(endId)};}
  function nexusTradeFuelQuickSummary(route){
@@ -169,7 +491,7 @@
  }
  function nexusTradeFuelPopulateShips(){
    const select=document.getElementById('trade-fuel-ship');if(!select)return;const current=select.value||document.getElementById('trade-ship')?.value||'Crusader C2 Hercules Starlifter';
-@@ -30919,7 +30889,7 @@
+@@ -30919,7 +30766,7 @@
  }
  function nexusTradeFuelRenderProfile(){
    const node=document.getElementById('trade-fuel-profile');if(!node)return;const name=nexusTradeFuelShipName(),ship=nexusTradeState.ships.find(item=>item.name===name),profile=nexusTradeFuelProfile(name,ship),override=Number(document.getElementById('trade-fuel-range-override')?.value||0),options=nexusTradeFuelOptions(),published=override||profile.range,effective=published*(1-options.overhead/100),usable=effective*(1-options.reserve/100);
@@ -178,7 +500,7 @@
  }
  function nexusTradeFuelStationDirectory(){
    const node=document.getElementById('trade-fuel-directory');if(!node)return;node.innerHTML=NEXUS_TRADE_FUEL_NODES.map(station=>`<article class="trade-fuel-station"><div class="trade-fuel-station-top"><div><div class="system">${nexusTradeEsc(station.system)} · ${nexusTradeEsc(station.zone)}</div><h3>${nexusTradeEsc(station.name)}</h3></div><span class="trade-risk ${station.risk}">${station.risk}</span></div><p>${station.risk==='safe'?'Established service hub suitable for planned freight operations.':station.risk==='caution'?'Service is available, but maintain a security margin and verify access.':'Lawless or contested service point; treat the stop as an exposure event.'}</p><div class="trade-fuel-services">${station.services.map(service=>`<span>${nexusTradeEsc(service)}</span>`).join('')}</div></article>`).join('');
-@@ -30940,7 +30910,7 @@
+@@ -30940,7 +30787,7 @@
  function nexusTradeFuelUseTopRoute(){const route=nexusTradeState.filteredRoutes?.[0]||nexusTradeState.routes?.[0];if(route)nexusTradeFuelPlanForRoute(route);else nexusTradeSetStatus('Load market data before selecting the top commodity route.');}
  function nexusTradeFuelSwap(){const a=document.getElementById('trade-fuel-origin'),b=document.getElementById('trade-fuel-destination');if(!a||!b)return;[a.value,b.value]=[b.value,a.value];if(nexusTradeFuelState.route){[nexusTradeFuelState.route.originLabel,nexusTradeFuelState.route.destinationLabel]=[nexusTradeFuelState.route.destinationLabel,nexusTradeFuelState.route.originLabel];}nexusTradeFuelRender();}
  function nexusTradeFuelBrief(){
@@ -187,7 +509,47 @@
  }
  function nexusTradeFuelCopyBrief(){nexusTradeCopyText(nexusTradeFuelBrief(),'Fuel-aware route brief copied.');}
  
-@@ -41983,6 +41953,75 @@
+@@ -32063,13 +31910,13 @@
+   }
+ 
+   function planText(resource, platform, recommendation) {
+-    return `CELESTIAL NEXUS OWNED MINING PLATFORM PLAN\nRESOURCE: ${resource.name} (${resource.symbol})\nOWNED PLATFORM: ${platform.name}\nFIT: ${recommendation.fit.label}\nHEAD / TOOL: ${recommendation.head}\nINSTALLED MODULES: ${recommendation.modules}\nCARRY / RESERVE: ${recommendation.reserve}\nGADGET: ${recommendation.gadget.name}\nGADGET NOTE: ${recommendation.gadget.note}\nCREW: ${recommendation.crew}\n\nOPERATING PLAN\n${recommendation.steps.map((step,index)=>`${index+1}. ${step}`).join('\n')}\n\nPLANNING BASELINE: Alpha 4.8.2 component and gadget records. The live scan and HUD are final authority. Use only one mining gadget per deposit.`;
++    return `CELESTIAL NEXUS OWNED MINING PLATFORM PLAN\nRESOURCE: ${resource.name} (${resource.symbol})\nOWNED PLATFORM: ${platform.name}\nFIT: ${recommendation.fit.label}\nHEAD / TOOL: ${recommendation.head}\nINSTALLED MODULES: ${recommendation.modules}\nCARRY / RESERVE: ${recommendation.reserve}\nGADGET: ${recommendation.gadget.name}\nGADGET NOTE: ${recommendation.gadget.note}\nCREW: ${recommendation.crew}\n\nOPERATING PLAN\n${recommendation.steps.map((step,index)=>`${index+1}. ${step}`).join('\n')}\n\nPLANNING BASELINE: Current LIVE source data where exposed; recommendation logic is a planning heuristic. The live scan and HUD are final authority. Use only one mining gadget per deposit.`;
+   }
+ 
+   function renderAdvisor(host, resource, platform) {
+     const selected = platform?.id || '';
+     if (!platform) {
+-      host.innerHTML = `<div class="mining-section-head"><div><div class="mining-section-kicker">Owned fleet optimizer</div><h3>Build ${esc(resource.name)} around equipment you already own</h3><p>Select a mining platform and the module will generate a clean head, module, gadget, crew, and VLM-ready configuration.</p></div></div><div class="mining-owned-controls"><div class="mining-owned-select-card"><label for="mining-owned-platform-select">Owned mining platform</label><select id="mining-owned-platform-select" onchange="nexusMiningOwnedPlatformChange(this.value)">${selectOptions(selected)}</select><small>Your selection is stored in this browser and reused across the mining catalog.</small></div><div class="mining-owned-status-card mining-owned-empty"><div><strong>Select your platform</strong><span>The recommendation and Vehicle Loadout Manager handoff will appear here.</span></div></div></div><div class="mining-owned-source">Reference baseline · Star Citizen Alpha 4.8.2 component and gadget records · live HUD remains final authority</div>`;
++      host.innerHTML = `<div class="mining-section-head"><div><div class="mining-section-kicker">Owned fleet optimizer</div><h3>Build ${esc(resource.name)} around equipment you already own</h3><p>Select a mining platform and the module will generate a clean head, module, gadget, crew, and VLM-ready configuration.</p></div></div><div class="mining-owned-controls"><div class="mining-owned-select-card"><label for="mining-owned-platform-select">Owned mining platform</label><select id="mining-owned-platform-select" onchange="nexusMiningOwnedPlatformChange(this.value)">${selectOptions(selected)}</select><small>Your selection is stored in this browser and reused across the mining catalog.</small></div><div class="mining-owned-status-card mining-owned-empty"><div><strong>Select your platform</strong><span>The recommendation and Vehicle Loadout Manager handoff will appear here.</span></div></div></div><div class="mining-owned-source">Reference baseline · current LIVE source data where exposed · recommendation values are planning heuristics · live HUD remains final authority</div>`;
+       window.__nexusMiningOwnedPlan = null;
+       return;
+     }
+@@ -32079,7 +31926,7 @@
+     const vlmAction = platform.id === 'fps'
+       ? `<span class="mining-owned-vlm-unavailable">FPS tools do not expose vehicle hardpoints; copy the plan or choose ATLS GEO / ROC for a VLM handoff.</span>`
+       : `<button class="mining-action primary mining-vlm-launch" type="button" onclick="nexusMiningSendOwnedPlanToVLM()"><span>Configure this platform in VLM</span><b>→</b></button>`;
+-    host.innerHTML = `<div class="mining-owned-header"><div><div class="mining-section-kicker">Owned fleet optimizer</div><h3>${esc(resource.name)} plan for your ${esc(platform.name)}</h3><p>Recommendations account for deposit scale, resistance, instability, density, platform hardpoints, and module capacity.</p></div><div class="mining-action-strip">${vlmAction}<button class="mining-action" type="button" onclick="nexusMiningCopyOwnedLoadout()">Copy owned plan</button></div></div><div class="mining-owned-controls"><div class="mining-owned-select-card"><label for="mining-owned-platform-select">Owned mining platform</label><select id="mining-owned-platform-select" onchange="nexusMiningOwnedPlatformChange(this.value)">${selectOptions(selected)}</select><small>${esc(platform.head)} · ${platform.slots ? `${platform.slots} module slot${platform.slots === 1 ? '' : 's'}${platform.id === 'mole' ? ' per turret' : ''}` : 'fixed personal tool configuration'} · ${esc(platform.crew)}</small></div><div class="mining-owned-status-card"><div class="mining-owned-status-top"><div><span class="mining-owned-fit ${esc(recommendation.fit.klass)}">${esc(recommendation.fit.label)}</span><h4>${esc(resource.name)} × ${esc(platform.name)}</h4></div></div><p>${esc(recommendation.fit.summary)}</p><div class="mining-owned-recommendations"><div class="mining-owned-rec"><span>Laser / tool</span><strong>${esc(recommendation.head)}</strong><small>${esc(recommendation.note)}</small></div><div class="mining-owned-rec"><span>Installed modules</span><strong>${esc(recommendation.modules)}</strong><small>VLM will attempt to match the exact compatible options and slot count.</small></div><div class="mining-owned-rec"><span>Carry / field swap</span><strong>${esc(recommendation.reserve)}</strong><small>Active modules have limited uses; bring spares for rare or oversized deposits.</small></div><div class="mining-owned-rec"><span>Rock gadget</span><strong>${esc(recommendation.gadget.name)}</strong><small>${esc(recommendation.gadget.note)}</small></div></div></div></div><div class="mining-owned-plan-grid"><div class="mining-owned-steps"><h5>Recommended field sequence</h5>${recommendation.steps.map((step,index)=>`<div class="mining-owned-step"><b>${index+1}</b><span>${esc(step)}</span></div>`).join('')}</div><aside class="mining-owned-warning"><h5>Gadget and safety rule</h5><p><strong>Use only one mining gadget per deposit.</strong> Sabir is the resistance tool, but it raises instability. BoreMax reduces instability and preserves clusters while adding resistance. WaveShift enlarges and calms the window but charges more slowly. OptiMax preserves valuable clusters but narrows the optimal window. Always scan first.</p></aside></div><div class="mining-owned-source">Reference baseline · Alpha 4.8.2-LIVE.12030094 records · recommendation is a planning heuristic, not a guaranteed fracture calculation</div>`;
++    host.innerHTML = `<div class="mining-owned-header"><div><div class="mining-section-kicker">Owned fleet optimizer</div><h3>${esc(resource.name)} plan for your ${esc(platform.name)}</h3><p>Recommendations account for deposit scale, resistance, instability, density, platform hardpoints, and module capacity.</p></div><div class="mining-action-strip">${vlmAction}<button class="mining-action" type="button" onclick="nexusMiningCopyOwnedLoadout()">Copy owned plan</button></div></div><div class="mining-owned-controls"><div class="mining-owned-select-card"><label for="mining-owned-platform-select">Owned mining platform</label><select id="mining-owned-platform-select" onchange="nexusMiningOwnedPlatformChange(this.value)">${selectOptions(selected)}</select><small>${esc(platform.head)} · ${platform.slots ? `${platform.slots} module slot${platform.slots === 1 ? '' : 's'}${platform.id === 'mole' ? ' per turret' : ''}` : 'fixed personal tool configuration'} · ${esc(platform.crew)}</small></div><div class="mining-owned-status-card"><div class="mining-owned-status-top"><div><span class="mining-owned-fit ${esc(recommendation.fit.klass)}">${esc(recommendation.fit.label)}</span><h4>${esc(resource.name)} × ${esc(platform.name)}</h4></div></div><p>${esc(recommendation.fit.summary)}</p><div class="mining-owned-recommendations"><div class="mining-owned-rec"><span>Laser / tool</span><strong>${esc(recommendation.head)}</strong><small>${esc(recommendation.note)}</small></div><div class="mining-owned-rec"><span>Installed modules</span><strong>${esc(recommendation.modules)}</strong><small>VLM will attempt to match the exact compatible options and slot count.</small></div><div class="mining-owned-rec"><span>Carry / field swap</span><strong>${esc(recommendation.reserve)}</strong><small>Active modules have limited uses; bring spares for rare or oversized deposits.</small></div><div class="mining-owned-rec"><span>Rock gadget</span><strong>${esc(recommendation.gadget.name)}</strong><small>${esc(recommendation.gadget.note)}</small></div></div></div></div><div class="mining-owned-plan-grid"><div class="mining-owned-steps"><h5>Recommended field sequence</h5>${recommendation.steps.map((step,index)=>`<div class="mining-owned-step"><b>${index+1}</b><span>${esc(step)}</span></div>`).join('')}</div><aside class="mining-owned-warning"><h5>Gadget and safety rule</h5><p><strong>Use only one mining gadget per deposit.</strong> Sabir is the resistance tool, but it raises instability. BoreMax reduces instability and preserves clusters while adding resistance. WaveShift enlarges and calms the window but charges more slowly. OptiMax preserves valuable clusters but narrows the optimal window. Always scan first.</p></aside></div><div class="mining-owned-source">Reference baseline · current LIVE source data where exposed · recommendation is a planning heuristic, not a guaranteed fracture calculation</div>`;
+   }
+ 
+   let queued = false;
+@@ -41731,12 +41578,12 @@
+     if(direct){
+       try{
+         const url = new URL(String(direct),location.href);
+-        if(url.hostname === 'api.star-citizen.wiki' && /\/api\/missions\//.test(url.pathname)){ const version=nexusMissionState.meta?.gameVersion; if(version && /^4\.8\.3[-_.]LIVE/i.test(version)) url.searchParams.set('version',version); return url.href; }
++        if(url.hostname === 'api.star-citizen.wiki' && /\/api\/missions\//.test(url.pathname)){ const version=nexusMissionState.meta?.gameVersion; if(version) url.searchParams.set('version',version); return url.href; }
+       }catch(e){}
+     }
+     const id = nexusMissionGet(record,'uuid','mission_uuid','id');
+     if(!id) return '';
+-    const url=new URL(`${NEXUS_MISSION_WIKI_URL}/${encodeURIComponent(String(id))}`); const version=nexusMissionState.meta?.gameVersion; if(version && /^4\.8\.3[-_.]LIVE/i.test(version)) url.searchParams.set('version',version); return url.href;
++    const url=new URL(`${NEXUS_MISSION_WIKI_URL}/${encodeURIComponent(String(id))}`); const version=nexusMissionState.meta?.gameVersion; if(version) url.searchParams.set('version',version); return url.href;
+   }
+ 
+   function extractDetail(payload){
+@@ -41983,6 +41830,75 @@
  })();
  
  </script>
@@ -263,7 +625,7 @@
  <script id="nexus-v137-mission-483-live-fix-script">/* Contract Finder — latest LIVE source guard, SCMDB aliases, sorting, and cleaner list intelligence. */
  (function(){
    let TARGET_PATCH='';
-@@ -41998,7 +42037,16 @@
+@@ -41998,7 +41914,16 @@
    function patchParts(value){return String(value||'').split('.').map(Number).concat([0,0,0,0]).slice(0,4)}
    function comparePatch(a,b){const aa=patchParts(a),bb=patchParts(b);for(let i=0;i<4;i++){if(aa[i]!==bb[i])return aa[i]-bb[i]}return 0}
    function samePatch(a,b){return comparePatch(a,b)===0}
@@ -281,7 +643,7 @@
    function isTarget(id){return Boolean(id&&id.channel===TARGET_CHANNEL&&(!TARGET_PATCH||samePatch(id.patch,TARGET_PATCH)))}
    function payloadIdentity(payload,url=''){
      const values=[payload?.gameVersion,payload?.game_version,payload?.version,payload?.patch,payload?.meta?.gameVersion,payload?.meta?.game_version,payload?.sourceUrl,url];
-@@ -42086,7 +42134,13 @@
+@@ -42086,7 +42011,13 @@
      const token=++nexusMissionState.requestToken;
      nexusMissionState.loading=true;
      const line=document.getElementById('mission-result-line');
@@ -296,7 +658,7 @@
  
      const applyVerified=(payload,source,url)=>{
        const id=adoptTarget(payloadIdentity(payload,payload?.sourceUrl||url));
-@@ -42202,7 +42256,7 @@
+@@ -42202,7 +42133,7 @@
    };
  
    const baseBadges=nexusMissionBadges;nexusMissionBadges=function(record){let html=baseBadges(record);if(nexusMissionBool(record,'canBeShared')&&!/Shareable/.test(html))html+='<span class="mission-badge green">Shareable</span>';return html};
@@ -305,7 +667,173 @@
    const baseStatus=nexusMissionRenderStatus;nexusMissionRenderStatus=function(){baseStatus();const line=document.getElementById('mission-result-line');const id=identity(nexusMissionState.meta.gameVersion)||identity(nexusMissionState.sourceUrl);if(line)line.innerHTML=`<strong>${nexusMissionState.filtered.length.toLocaleString()}</strong> of ${nexusMissionState.records.length.toLocaleString()} contracts · ${isTarget(id)&&nexusMissionState.meta.patchVerified!==false?`verified ${id.code}`:`unverified snapshot · target latest ${TARGET_CHANNEL}`}`};
  })();
  </script><style id="nexus-v140-loadout-compact-hardpoints">
-@@ -75859,7 +75913,7 @@
+@@ -42522,17 +42453,7 @@
+     {id:'stims', name:'Stims', family:'commodity-medical', mark:'STM', aliases:['stims','stim']},
+     {id:'waste', name:'Waste', family:'commodity-industrial', mark:'WST', aliases:['waste','scrap']}
+   ];
+-  const FALLBACK_SHIPS = [
+-    {name:'Aegis Avenger Titan', manufacturer:'Aegis Dynamics', cargo:8},
+-    {name:'Crusader C1 Spirit', manufacturer:'Crusader Industries', cargo:64},
+-    {name:'RSI Zeus Mk II CL', manufacturer:'Roberts Space Industries', cargo:128},
+-    {name:'MISC Freelancer MAX', manufacturer:'MISC', cargo:120},
+-    {name:'RSI Constellation Taurus', manufacturer:'Roberts Space Industries', cargo:174},
+-    {name:'MISC Starlancer MAX', manufacturer:'MISC', cargo:224},
+-    {name:'Drake Caterpillar', manufacturer:'Drake Interplanetary', cargo:576},
+-    {name:'Crusader C2 Hercules Starlifter', manufacturer:'Crusader Industries', cargo:696},
+-    {name:'MISC Hull C', manufacturer:'MISC', cargo:4608}
+-  ];
++  const FALLBACK_SHIPS = []; // Current LIVE vehicle capacity data is supplied by the shared vehicle catalog.
+   const CARGO_CONTRACT_PRESETS = [
+     {id:'preset-medical', title:'Priority medical freight · Seraphim to ArcCorp', origin:'seraphim', commodity:'medical', payout:76000, dests:[{location:'area18',scu:18},{location:'baijini',scu:12}], source:'Built-in cargo contract preset'},
+     {id:'preset-titanium', title:'Industrial titanium run · Arial to Hurston', origin:'bezdek', commodity:'titanium', payout:112000, dests:[{location:'everus',scu:36},{location:'lorville',scu:14}], source:'Built-in cargo contract preset'},
+@@ -42620,26 +42541,24 @@
+     });
+   } catch (_) {}
+   function shipList(){
+-    let source = FALLBACK_SHIPS;
++    let source=[];
+     try {
+-      if (typeof NEXUS_TRADE_FALLBACK_SHIPS !== 'undefined' && Array.isArray(NEXUS_TRADE_FALLBACK_SHIPS) && NEXUS_TRADE_FALLBACK_SHIPS.length) source = NEXUS_TRADE_FALLBACK_SHIPS;
+-      else if (Array.isArray(window.NEXUS_TRADE_FALLBACK_SHIPS) && window.NEXUS_TRADE_FALLBACK_SHIPS.length) source = window.NEXUS_TRADE_FALLBACK_SHIPS;
++      if(Array.isArray(window.NEXUS_CURRENT_LIVE_SHIPS)&&window.NEXUS_CURRENT_LIVE_SHIPS.length) source=window.NEXUS_CURRENT_LIVE_SHIPS;
++      else if(typeof nexusTradeState!=='undefined'&&nexusTradeState?.versionVerified&&Array.isArray(nexusTradeState.ships)) source=nexusTradeState.ships;
+     } catch (_) {}
+-    const seen = new Map();
+-    source.forEach(ship => {
+-      const name = String(ship?.name || '').trim();
+-      const cargo = Number(ship?.cargo || ship?.cargo_capacity || ship?.scu || 0);
+-      if (!name || !Number.isFinite(cargo) || cargo <= 0) return;
+-      const key = name.toLowerCase();
+-      const current = seen.get(key);
+-      if (!current || cargo > current.cargo) seen.set(key, {name, manufacturer:String(ship.manufacturer || ship.manufacturer_name || 'Unknown manufacturer'), cargo});
++    const seen=new Map();
++    source.forEach(ship=>{
++      const name=String(ship?.name||ship?.vehicle_name||'').trim();
++      const cargo=Number(ship?.cargo||ship?.cargo_capacity||ship?.scu||0);
++      if(!name||!Number.isFinite(cargo)||cargo<=0)return;
++      const key=name.toLowerCase(),current=seen.get(key);
++      if(!current||cargo>current.cargo)seen.set(key,{name,manufacturer:String(ship.manufacturer||ship.manufacturer_name||'Unknown manufacturer'),cargo,uuid:String(ship.uuid||''),source:ship.source||'Current LIVE vehicle feed'});
+     });
+-    return [...seen.values()].sort((a,b) => a.cargo - b.cargo || a.name.localeCompare(b.name));
++    return [...seen.values()].sort((a,b)=>a.cargo-b.cargo||a.name.localeCompare(b.name));
+   }
+   function selectedShip(){
+-    const select = $('cargo-ship-select');
+-    const ships = shipList();
+-    return ships.find(s => s.name === select?.value) || ships.find(s => /C2 Hercules/i.test(s.name)) || ships[0] || FALLBACK_SHIPS[0];
++    const select=$('cargo-ship-select'),ships=shipList();
++    return ships.find(s=>s.name===select?.value)||ships.find(s=>/C2 Hercules/i.test(s.name))||ships[0]||{name:'Current LIVE ship data unavailable',manufacturer:'Version gate',cargo:0,unavailable:true};
+   }
+   function defaultContract(index){
+     const base = CARGO_CONTRACT_PRESETS[index % CARGO_CONTRACT_PRESETS.length];
+@@ -42945,8 +42864,8 @@
+     if (!select) return;
+     const ships = shipList();
+     const previous = select.value || 'Crusader C2 Hercules Starlifter';
+-    select.innerHTML = ships.map(ship => `<option value="${esc(ship.name)}" ${ship.name===previous?'selected':''}>${esc(ship.name)} · ${fmt(ship.cargo)} SCU</option>`).join('');
+-    if (![...select.options].some(o => o.value === previous)) {
++    select.innerHTML = ships.length ? ships.map(ship => `<option value="${esc(ship.name)}" ${ship.name===previous?'selected':''}>${esc(ship.name)} · ${fmt(ship.cargo)} SCU</option>`).join('') : '<option value="" disabled selected>Current LIVE ship data unavailable</option>';
++    if (ships.length && ![...select.options].some(o => o.value === previous)) {
+       const preferred = ships.find(ship => /C2 Hercules/i.test(ship.name)) || ships.find(ship => ship.cargo >= 100) || ships[0];
+       if (preferred) select.value = preferred.name;
+     }
+@@ -42957,6 +42876,7 @@
+   }
+   function contractCapacityState(total, ship){
+     const cap = Number(ship?.cargo)||0;
++    if(ship?.unavailable||cap<=0) return 'unknown';
+     if(!total) return 'ok';
+     if(total > cap) return 'bad';
+     if(total > cap * .82) return 'warn';
+@@ -42991,7 +42911,7 @@
+           <button class="cargo-btn danger" data-action="remove-destination" data-contract="${index}" data-destination="${di}" title="Remove destination" type="button">×</button>
+         </div>`;
+       }).join('');
+-      const statusLabel = capState === 'bad' ? 'Exceeds ship capacity' : capState === 'warn' ? 'Near cargo limit' : 'Capacity OK';
++      const statusLabel = capState === 'unknown' ? 'LIVE ship capacity unavailable' : capState === 'bad' ? 'Exceeds ship capacity' : capState === 'warn' ? 'Near cargo limit' : 'Capacity OK';
+       const sourceLabel = source === 'Contract Finder' ? `Contract Finder${category && category !== source ? ` · ${category}` : ''}` : source;
+       return `<article class="cargo-contract-card ${esc(commodity.family)}" data-contract-index="${index}" data-commodity="${esc(commodity.id)}" data-capacity="${capState}" data-mission-title="${esc(title)}" data-mission-source="${esc(source)}" data-mission-category="${esc(category)}" data-mission-id="${esc(contract.missionId || '')}">
+         <div class="cargo-contract-head"><div class="cargo-contract-title-wrap"><small>Contract ${index + 1} · ${esc(sourceLabel)}</small><strong>${esc(title)}</strong><div class="cargo-contract-tags"><span class="cargo-contract-tag">${fmt(total)} SCU</span><span class="cargo-contract-tag">${esc(commodity.name)}</span><span class="cargo-contract-tag ${capState === 'bad' ? 'bad' : capState === 'warn' ? 'warn' : ''}">${statusLabel}</span></div></div><div class="cargo-contract-actions"><button class="cargo-btn" data-action="duplicate-contract" data-contract="${index}" type="button">Duplicate</button><button class="cargo-btn" data-action="add-destination" data-contract="${index}" type="button">+ hand-in</button><button class="cargo-btn danger" data-action="remove-contract" data-contract="${index}" type="button">Remove</button></div></div>
+@@ -43034,6 +42954,10 @@
+     const totalScu = jobs.reduce((sum,j)=>sum+j.amount,0);
+     const totalPayout = jobs.reduce((sum,j)=>sum+j.payout,0);
+     const warnings = [];
++    if(ship?.unavailable||capacity<=0){
++      warnings.push('Current LIVE ship-capacity data is unavailable. Route capacity calculations are paused rather than using an older static ship table.');
++      return {jobs,stops:[],warnings,totalScu,totalPayout,minutes:0,waves:0,capacity:0,delivered:0,allAtOnce:false,impossible:true,dataUnavailable:true};
++    }
+     const oversized = jobs.filter(job => job.amount > capacity);
+     if (oversized.length) warnings.push(`${oversized.length} destination hand-in is larger than this ship can carry in one load. Split those hand-in quantities or use a larger hauler.`);
+     if (totalScu > capacity) warnings.push(`Total cargo is ${fmt(totalScu)} SCU, above the ship's ${fmt(capacity)} SCU capacity. The planner will sequence this as multiple cargo waves.`);
+@@ -53752,19 +53676,7 @@
+     'Tumbril Land Systems':['Tumbril Land Systems','Tumbril']
+   });
+ 
+-  const CANONICAL_CARGO_SHIPS = [
+-    ['MPUV Cargo','ARGO Astronautics',2],['SRV','ARGO Astronautics',10],['MOLE','ARGO Astronautics',16],['RAFT','ARGO Astronautics',96],
+-    ['Avenger Titan','Aegis Dynamics',8],['Redeemer','Aegis Dynamics',2],['Reclaimer','Aegis Dynamics',180],
+-    ['C8 Pisces','Anvil Aerospace',4],['C8X Pisces Expedition','Anvil Aerospace',4],['Valkyrie','Anvil Aerospace',30],['Liberator','Anvil Aerospace',400],['Carrack','Anvil Aerospace',456],['Carrack Expedition','Anvil Aerospace',456],
+-    ['Merchantman','Banu',2880],
+-    ['Mustang Alpha','Consolidated Outland',4],['Nomad','Consolidated Outland',24],['Pioneer','Consolidated Outland',600],
+-    ['Intrepid','Crusader Industries',8],['Genesis Starliner','Crusader Industries',40],['C1 Spirit','Crusader Industries',64],['Mercury Star Runner','Crusader Industries',114],['A2 Hercules','Crusader Industries',216],['M2 Hercules','Crusader Industries',522],['C2 Hercules','Crusader Industries',696],
+-    ['Mule','Drake Interplanetary',1],['Cutter Rambler','Drake Interplanetary',2],['Cutter Scout','Drake Interplanetary',2],['Cutter','Drake Interplanetary',4],['Cutlass Blue','Drake Interplanetary',12],['Cutlass Red','Drake Interplanetary',12],['Vulture','Drake Interplanetary',12],['Cutlass Black','Drake Interplanetary',46],['Corsair','Drake Interplanetary',72],['Caterpillar','Drake Interplanetary',576],['Ironclad Assault','Drake Interplanetary',1440],['Ironclad','Drake Interplanetary',2204],['Kraken','Drake Interplanetary',3792],
+-    ['Syulen','Gatac Manufacture',6],['Railen','Gatac Manufacture',320],
+-    ['Reliant Kore','MISC',6],['Prospector','MISC',32],['Freelancer DUR','MISC',36],['Freelancer MIS','MISC',36],['Hull A','MISC',64],['Freelancer','MISC',66],['Starlancer TAC','MISC',96],['Freelancer MAX','MISC',120],['Starlancer MAX','MISC',224],['Starfarer','MISC',291],['Starfarer Gemini','MISC',291],['Hull B','MISC',384],['Hull C','MISC',4608],['Hull D','MISC',20736],['Hull E','MISC',98304],
+-    ['100i','Origin Jumpworks',2],['125a','Origin Jumpworks',2],['325a','Origin Jumpworks',4],['350r','Origin Jumpworks',4],['135c','Origin Jumpworks',6],['300i','Origin Jumpworks',8],['315p','Origin Jumpworks',12],['600i Explorer','Origin Jumpworks',40],['600i Touring','Origin Jumpworks',40],['400i','Origin Jumpworks',42],['890 Jump','Origin Jumpworks',388],
+-    ['Aurora ES','Roberts Space Industries',3],['Aurora LN','Roberts Space Industries',3],['Aurora MR','Roberts Space Industries',3],['Aurora CL','Roberts Space Industries',6],['Zeus Mk II MR','Roberts Space Industries',16],['Zeus Mk II ES','Roberts Space Industries',32],['Galaxy','Roberts Space Industries',64],['Constellation Andromeda','Roberts Space Industries',96],['Constellation Aquila','Roberts Space Industries',96],['Constellation Phoenix','Roberts Space Industries',96],['Zeus Mk II CL','Roberts Space Industries',128],['Constellation Taurus','Roberts Space Industries',174],['Polaris','Roberts Space Industries',216]
+-  ].map(([name,manufacturer,cargo]) => ({name, manufacturer, cargo, source:'VLM-aligned local cargo profile'}));
++  const CANONICAL_CARGO_SHIPS = []; // Alias normalization only; no patch-sensitive capacity fallback.
+ 
+   const norm = value => String(value || '').toLowerCase().replace(/[’‘]/g,"'").replace(/&/g,' and ').replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim();
+   const canonicalMap = new Map(CANONICAL_CARGO_SHIPS.map(ship => [norm(ship.name), ship]));
+@@ -53798,7 +53710,7 @@
+       if (!ship) return;
+       const key = norm(ship.name);
+       const current = byKey.get(key);
+-      if (!current || ship.source !== 'VLM-aligned local cargo profile' && current.source === 'VLM-aligned local cargo profile' && ship.cargo > 0 || Number(ship.cargo) > Number(current.cargo || 0)) byKey.set(key, ship);
++      if (!current || ship.source !== 'Historical local cargo profile (disabled)' && current.source === 'Historical local cargo profile (disabled)' && ship.cargo > 0 || Number(ship.cargo) > Number(current.cargo || 0)) byKey.set(key, ship);
+     });
+     // Re-apply fixed local profiles for ships whose concept/API aliases often drift.
+     CANONICAL_CARGO_SHIPS.forEach(ship => {
+@@ -53818,8 +53730,8 @@
+     try {
+       if (typeof nexusTradeState !== 'undefined' && nexusTradeState && Array.isArray(nexusTradeState.ships)) {
+         nexusTradeState.ships = unifiedCargoShips(nexusTradeState.ships);
+-        nexusTradeState.shipSource = 'VLM-aligned local cargo profiles';
+-        if (nexusTradeState.sourceStates) nexusTradeState.sourceStates.ships = 'ok';
++        nexusTradeState.shipSource = nexusTradeState.ships.length ? 'Current LIVE vehicle profiles' : 'Current LIVE vehicle data unavailable';
++        if (nexusTradeState.sourceStates) nexusTradeState.sourceStates.ships = nexusTradeState.ships.length ? 'ok' : 'warn';
+       }
+     } catch (_) {}
+   }
+@@ -53864,7 +53776,7 @@
+     const isTrade = select.id === 'trade-ship' || select.id === 'trade-fuel-ship';
+     if (!isCargo && !isTrade) return;
+     const current = stripMaker(select.value || select.selectedOptions?.[0]?.value || '');
+-    const ships = unifiedCargoShips([]);
++    const ships = unifiedCargoShips((Array.isArray(window.NEXUS_CURRENT_LIVE_SHIPS)&&window.NEXUS_CURRENT_LIVE_SHIPS.length)?window.NEXUS_CURRENT_LIVE_SHIPS:(typeof nexusTradeState!=='undefined'&&Array.isArray(nexusTradeState.ships)?nexusTradeState.ships:[]));
+     if (isTrade) {
+       const groups = new Map();
+       ships.forEach(ship => { const key = ship.manufacturer || 'Other'; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(ship); });
+@@ -74378,7 +74290,7 @@
+ 
+ 
+   async function loadDefaultGameVersion(){
+-    try{const payload=await window.nexusFetchJson(`${FPS_WIKI_API}/game-versions/default`,12000);const row=payload?.data||payload||{};state.gameVersion=String(row.version||row.name||row.code||'').trim();}catch(_){state.gameVersion='';}
++    try{const live=await window.nexusLiveBuildResolve({force:false});if(!live?.verified||!live.code)throw new Error('Current LIVE build is unverified');state.gameVersion=live.code;}catch(_){state.gameVersion='';}
+     return state.gameVersion;
+   }
+   async function loadWikiItemsByType(type){
+@@ -74409,7 +74321,7 @@
+       const version=state.gameVersion||weapons.find(row=>row.version||row.game_version)?.version||weapons.find(row=>row.version||row.game_version)?.game_version||'default API version';if(!state.gameVersion&&version!=='default API version')state.gameVersion=String(version);
+       setDataBadge(`${weapons.length.toLocaleString()} weapons · ${attachments.length.toLocaleString()} selectable attachments`,`${version} · ${sources.join(' + ')||'community catalog'} · magazines excluded from fitting slots`);
+       setStatus(`<strong>${weapons.length.toLocaleString()}</strong> personal weapons and <strong>${attachments.length.toLocaleString()}</strong> selectable attachments loaded for <strong>${h(version)}</strong>.`);
+-    }catch(error){state.weapons=[DEMO_WEAPON];state.attachments=DEMO_ATTACHMENTS;state.catalogMode='demo';state.gameVersion='';setDataBadge('Illustrative offline armory','Live catalogs unavailable · demonstration values are clearly labeled');setStatus('Live community catalogs could not be reached. The module is running an <strong>illustrative demonstration profile</strong>; refresh when online.','error');}
++    }catch(error){state.weapons=[];state.attachments=[];state.catalogMode='unavailable';state.gameVersion=window.NEXUS_LIVE_BUILD?.code||state.gameVersion||'';setDataBadge('Current LIVE armory unavailable',`${state.gameVersion||'LIVE'} · stale/demo gameplay records are withheld`);setStatus(`Current LIVE weapon catalogs could not be verified. Gameplay stats are withheld instead of loading an offline demonstration profile. ${h(error?.message||'')}`,'error');}
+     finally{state.loading=false;}populateFilters();filterWeapons();renderIntegrityAudit();
+   }
+   function populateFilters() {
+@@ -75859,7 +75771,7 @@
  
  
  <style id="nexus-health-cig-official-v18">
@@ -314,7 +842,7 @@
  #health-view .cig-source-seal{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:6px 10px;border:1px solid rgba(52,211,153,.28);border-radius:999px;background:rgba(16,185,129,.08);color:#86efac;font:700 9.5px/1.2 'Share Tech Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
  #health-view .cig-source-seal::before{content:'';width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 12px rgba(52,211,153,.75)}
  #health-view .release-channel-card.inactive{border-color:rgba(148,163,184,.16)!important;background:linear-gradient(145deg,rgba(15,23,42,.74),rgba(7,12,20,.9))!important;box-shadow:inset 3px 0 0 rgba(148,163,184,.3),0 12px 34px rgba(0,0,0,.14)!important}
-@@ -75906,18 +75960,19 @@
+@@ -75906,18 +75818,19 @@
      statusJson:'https://status.robertsspaceindustries.com/index.json',
      statusHistory:'https://status.robertsspaceindustries.com/affected/persistent-universe/index.html',
      patchIndex:'https://robertsspaceindustries.com/en/patch-notes',
@@ -339,7 +867,7 @@
    const CIG_FALLBACK_NEWS=Object.freeze([
      {id:'cig-21273',kind:'Development',title:'This Week in Star Citizen - July 27, 2026',date:'2026-07-27T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21273-This-Week-In-Star-Citizen',excerpt:'The latest official weekly overview of Star Citizen activity and upcoming CIG programming.'},
      {id:'cig-21237',kind:'Event',title:'Twitch Drops: Foundation Festival 2026',date:'2026-07-22T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21237-Twitch-Drops-Foundation-Festival-2026',excerpt:'Official Foundation Festival Twitch Drops information for July 29 through August 12.'},
-@@ -75930,14 +75985,15 @@
+@@ -75930,14 +75843,15 @@
      {id:'cig-21228',kind:'Media',title:'Inside Star Citizen - Alpha 4.9 Patch Report',date:'2026-07-09T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21228-Inside-Star-Citizen',excerpt:'Official video overview of the missions, rewards, fixes, and features included with Alpha 4.9.'}
    ]);
    const CIG_FALLBACK_ISSUES=Object.freeze([
@@ -362,7 +890,7 @@
    ]);
    const cigState={
      loading:false,
-@@ -75947,14 +76003,14 @@
+@@ -75947,14 +75861,14 @@
      news:CIG_FALLBACK_NEWS.map(row=>({...row,type:'official',source:'CIG Comm-Link'})),
      filter:'all',
      release:{
@@ -383,7 +911,7 @@
    };
  
    function text(value){return String(value??'').replace(/\s+/g,' ').trim();}
-@@ -76028,7 +76084,7 @@
+@@ -76028,7 +75942,7 @@
        if(preferred)return absoluteUrl(preferred.getAttribute('href'),CIG_URLS.patchIndex);
      }
      const match=source.match(/https?:\/\/robertsspaceindustries\.com\/(?:en\/)?comm-link\/Patch-Notes\/\d+-[^\s)"'<>]+/i)||source.match(/\/(?:en\/)?comm-link\/Patch-Notes\/\d+-[^\s)"'<>]+/i);
@@ -392,7 +920,7 @@
    }
    function parseUpdatedAt(source){
      const doc=parseDoc(source);
-@@ -76068,7 +76124,7 @@
+@@ -76068,7 +75982,7 @@
    function parsePtuActivity(source,mode){
      const plain=text(parseDoc(source)?.body?.textContent||source);
      const wave=plain.match(/\bWave\s*([1-5])\b/i);
@@ -401,7 +929,7 @@
      return {active,wave:wave?`Wave ${wave[1]}`:'',updatedAt:parseUpdatedAt(source)||'',url:CIG_URLS.devtracker,sourceMode:mode};
    }
    function classify(titleValue){
-@@ -76119,7 +76175,7 @@
+@@ -76119,7 +76033,7 @@
        fetchText(CIG_URLS.patchIndex),fetchText(CIG_URLS.knownIssues),fetchText(CIG_URLS.statusHistory),fetchText(CIG_URLS.ptuStatus),fetchText(CIG_URLS.devtracker),fetchText(CIG_URLS.ptuFocus)
      ]);
      const candidates=[];let base=null;let knownData={...cigState.known};let sourceModes=[];
@@ -410,7 +938,7 @@
      if(patchIndex.status==='fulfilled'){
        sourceModes.push(patchIndex.value.mode);patchUrl=extractPatchLink(patchIndex.value.text);
        try{
-@@ -76156,16 +76212,17 @@
+@@ -76156,16 +76070,17 @@
        if(activity.active||activity.wave)ptuActivity={...ptuActivity,...activity,url:CIG_URLS.ptuFocus};
        candidates.push(...buildCandidates(ptuFocus.value.text,'Official CIG Spectrum PTU focus-testing thread',CIG_URLS.ptuFocus,activity.updatedAt));
      }
@@ -432,7 +960,56 @@
        test={...test,accessWave:ptuActivity.wave||test.accessWave||fallbackWave,waveSource:ptuActivity.wave?'Official CIG Devtracker / Spectrum text':test.waveSource||'Wave 1 reported by the toolkit maintainer; official CIG confirms the active PTU build'};
        ptuStatusData={...ptuStatusData,status:'Online',updatedAt:ptuActivity.updatedAt||test.date||new Date().toISOString(),url:test.url||CIG_URLS.devtracker,sourceMode:test.source||'Official CIG Devtracker / Spectrum activity',supportStatus:ptuStatusData.status};
      }
-@@ -82385,6 +82442,79 @@
+@@ -76734,28 +76649,14 @@
+     if (!rules || !setup?.groups?.length) return setup;
+     let record = null;
+     try { record = await fetchActualVehicleRecord(shipName); } catch (_) {}
+-    // Exact special-edition port data is preferred. Curated replacements are only used
+-    // when the resolver had to inherit the base hull's hardpoints/components.
+     if (record && !record.__nexusDataFallbackName) {
+-      setup.specialLoadoutVerification = {status:'exact-api',source:'Exact special-edition API record'};
++      setup.specialLoadoutVerification = {status:'exact-api',source:'Exact current-LIVE special-edition API record'};
+       return setup;
+     }
+-    let groups = [...setup.groups];
+-    for (const rule of rules) {
+-      const matched = groups.filter(group => (!rule.category || group.category===rule.category) && (!rule.match || rule.match.test(String(group.stockName || ''))));
+-      if (!matched.length) continue;
+-      const firstIndex = groups.indexOf(matched[0]);
+-      const before = new Set(matched);
+-      groups = groups.filter(group => !before.has(group));
+-      const replacements = [];
+-      for (let i=0;i<rule.replacements.length;i++) {
+-        const [name,count] = rule.replacements[i];
+-        replacements.push(await applyGroupReplacement(matched[0],name,count,`${firstIndex}_${i}`));
+-      }
+-      groups.splice(Math.max(0,firstIndex),0,...replacements);
+-    }
+-    setup.groups = groups.map((group,index)=>({...group,id:group.id || `component_group_${index+1}`}));
+-    setup.specialLoadoutVerification = {status:'verified-fallback',source:"Teach's Ship Shop published loadout table"};
++    // Historical curated Teach substitutions are no longer injected into gameplay stats.
++    // Preserve the module and current base-hull context, but identify that the special-edition
++    // hardpoint delta could not be verified on the active LIVE build.
++    setup.specialLoadoutVerification = {status:'current-live-unavailable',source:'Exact current-LIVE special-edition hardpoints unavailable; historical Teach overrides withheld'};
+     return setup;
+   }
+ 
+@@ -76767,12 +76668,8 @@
+   async function ensureCurrentGameVersion() {
+     if (state.currentGameVersion) return state.currentGameVersion;
+     try {
+-      const response = await fetch(`${SHIP_DATA_API}/game-versions/default`,{mode:'cors',credentials:'omit',cache:'no-store'});
+-      if (response.ok) {
+-        const payload = await response.json();
+-        const data = payload?.data || payload;
+-        state.currentGameVersion = String(data?.code || data?.name || data?.version || data?.label || '').trim();
+-      }
++      const live = await window.nexusLiveBuildResolve({force:false});
++      if (live?.verified) state.currentGameVersion = String(live.code || live.patch || '').trim();
+     } catch (_) {}
+     return state.currentGameVersion;
+   }
+@@ -82385,6 +82282,340 @@
  })();
  </script>
  
@@ -506,6 +1083,267 @@
 +  nexusTradeFuelBrief=function(){const result=nexusTradeFuelState.plan;if(!result?.plan)return 'CELESTIAL NEXUS · CURRENT LIVE FUEL ROUTE\nA current LIVE or manual ship range is required before a route can be calculated.';const {plan,profile}=result,route=nexusTradeFuelState.route,ship=nexusTradeFuelShipName(),options=nexusTradeFuelOptions(),build=nexusTradeState.gameVersion||window.NEXUS_LIVE_BUILD?.code||'current LIVE';return [`CELESTIAL NEXUS · ${build} FUEL ROUTE`,`${route?.commodity?`${route.commodity} · `:''}${route?.originLabel||result.start.name} → ${route?.destinationLabel||result.end.name}`,`Ship: ${ship} · ${profile.range.toFixed(1)} GM range · ${profile.confidence}`,`Planning margin: ${options.reserve}% reserve · ${options.overhead}% operational overhead · ${options.startFuel}% departure fuel`,`Route: ${plan.nodes.map(node=>node.name).join(' → ')}`,`Distance: ${plan.distance.toFixed(1)} GM · ${plan.stops} refuel stop${plan.stops===1?'':'s'}`,`Verify fuel services, route access, and market conditions before departure.`].join('\n')};
 +
 +  nexusInitializeCommodityTrading=function(){const result=oldInitialize.apply(this,arguments);window.nexusLiveBuildResolve({force:false}).then(authority=>{const cached=nexusTradeSafeRead(LIVE_SNAPSHOT_KEY,null);if(cached&&!validForAuthority(cached,authority)){try{localStorage.removeItem(LIVE_SNAPSHOT_KEY)}catch(_){};if(nexusTradeState.prices.length&&!validForAuthority(nexusTradeState,authority)){nexusTradeState.prices=[];nexusTradeState.routes=[];nexusTradeRenderAll()}nexusTradeRefresh(true)}}).catch(()=>{});return result;};
++})();
++</script>
++
++<script id="nexus-live-data-standardization-v2">
++/* Celestial Nexus — final LIVE data standardization and shared-fetch layer.
++   This script intentionally runs after legacy compatibility patches so current LIVE data wins. */
++(() => {
++  'use strict';
++  const CACHE_MS = 5 * 60 * 1000;
++  const collectionCache = new Map();
++  let uexAuthorityPromise = null, vehiclePromise = null;
++
++  function esc(value){return String(value??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
++  function patch(value){return String(value||'').match(/\d+(?:\.\d+){1,3}/)?.[0]||'';}
++  function samePatch(a,b){return typeof window.nexusLiveBuildSame==='function'?window.nexusLiveBuildSame(a,b):patch(a)===patch(b);}
++  async function authority(force=false){
++    if(typeof window.nexusLiveBuildResolve!=='function')throw new Error('Shared LIVE build resolver is unavailable.');
++    const value=await window.nexusLiveBuildResolve({force});
++    if(!value?.verified||!value.patch)throw new Error('Current LIVE build is not verified.');
++    return value;
++  }
++  function isVersionableWiki(url){
++    try{const u=new URL(url,location.href);return u.hostname==='api.star-citizen.wiki'&&/^\/api\/(?!game-versions(?:\/|$))(missions|vehicles|items|commodities|blueprints|shops|locations|manufacturers|components|weapons|armor|armors|loot|contracts)(?:\/|$)/i.test(u.pathname);}catch(_){return false;}
++  }
++  async function pinWikiUrl(url){
++    if(!isVersionableWiki(url))return String(url);
++    const live=await authority(false),u=new URL(String(url),location.href);
++    if(!u.searchParams.get('version'))u.searchParams.set('version',live.code);
++    return u.href;
++  }
++  async function rawJson(url,timeout=14000){
++    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeout);
++    try{const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error(`HTTP ${response.status}`);return await response.json();}finally{clearTimeout(timer);}
++  }
++  function rows(payload){if(Array.isArray(payload))return payload;if(Array.isArray(payload?.data))return payload.data;if(Array.isArray(payload?.results))return payload.results;if(payload?.data&&typeof payload.data==='object')return [payload.data];return payload&&typeof payload==='object'?[payload]:[];}
++  function uexVersion(payload){for(const row of rows(payload)){const value=row?.game_version||row?.gameVersion||row?.version;if(value)return String(value);}return '';}
++  async function ensureUexCurrent(force=false){
++    if(uexAuthorityPromise&&!force)return uexAuthorityPromise;
++    uexAuthorityPromise=(async()=>{
++      const live=await authority(force),errors=[];
++      for(const base of ['https://api.uexcorp.uk/2.0','https://api.uexcorp.space/2.0']){
++        try{const payload=await rawJson(`${base}/data_parameters`,12000),version=uexVersion(payload);if(!version)throw new Error('game_version missing');if(!samePatch(version,live.patch))throw new Error(`UEX reports ${version}; expected ${live.code}`);return {live,version,base,checkedAt:Date.now()};}catch(error){errors.push(`${base}: ${error.message||error}`);}
++      }
++      throw new Error(`UEX current-LIVE validation failed. ${errors.join(' · ')}`);
++    })();
++    try{return await uexAuthorityPromise;}catch(error){uexAuthorityPromise=null;throw error;}
++  }
++  window.nexusEnsureUexCurrent=ensureUexCurrent;
++
++  // Pin the common Wiki collection helper to current LIVE and deduplicate identical requests in memory.
++  try{
++    if(typeof fetchApiCollection==='function'&&!fetchApiCollection.__nexusLiveStandardized){
++      const previous=fetchApiCollection;
++      fetchApiCollection=async function(url,maxPages,...rest){
++        const pinned=await pinWikiUrl(url),key=`${pinned}|${maxPages||''}`,now=Date.now(),cached=collectionCache.get(key);
++        if(cached&&now-cached.at<CACHE_MS)return cached.promise;
++        const promise=Promise.resolve(previous.call(this,pinned,maxPages,...rest));
++        collectionCache.set(key,{at:now,promise});
++        try{return await promise;}catch(error){collectionCache.delete(key);throw error;}
++      };
++      fetchApiCollection.__nexusLiveStandardized=true;
++    }
++  }catch(error){console.warn('Unable to standardize Wiki collection helper',error);}
++
++  // Pin single-record Wiki fetches and gate UEX endpoints before any patch-sensitive data is consumed.
++  try{
++    if(typeof nexusFetchJson==='function'&&!nexusFetchJson.__nexusLiveStandardized){
++      const previous=nexusFetchJson;
++      nexusFetchJson=async function(url,...args){
++        let target=String(url);
++        try{const u=new URL(target,location.href);if(u.hostname.includes('uexcorp.')&&!/\/data_parameters(?:\?|$)/.test(u.pathname))await ensureUexCurrent(false);target=await pinWikiUrl(target);}catch(error){if(/uexcorp\./i.test(target))throw error;}
++        return previous.call(this,target,...args);
++      };
++      nexusFetchJson.__nexusLiveStandardized=true;
++    }
++  }catch(error){console.warn('Unable to standardize JSON helper',error);}
++  try{
++    if(typeof nexusTradeFetchJson==='function'&&!nexusTradeFetchJson.__nexusLiveStandardized){
++      const previous=nexusTradeFetchJson;
++      nexusTradeFetchJson=async function(url,...args){
++        let target=String(url);
++        try{
++          const u=new URL(target,location.href);
++          if(u.hostname.includes('uexcorp.')&&!/\/data_parameters(?:\?|$)/.test(u.pathname))await ensureUexCurrent(false);
++          target=await pinWikiUrl(target);
++        }catch(error){if(/uexcorp\./i.test(target))throw error;}
++        return previous.call(this,target,...args);
++      };
++      nexusTradeFetchJson.__nexusLiveStandardized=true;
++    }
++  }catch(error){console.warn('Unable to standardize Trade JSON helper',error);}
++  try{
++    if(typeof fetchWithTimeout==='function'&&!fetchWithTimeout.__nexusLiveStandardized){
++      const previous=fetchWithTimeout;
++      fetchWithTimeout=async function(url,options,...rest){return previous.call(this,await pinWikiUrl(url),{...(options||{}),cache:'no-store'},...rest);};
++      fetchWithTimeout.__nexusLiveStandardized=true;
++    }
++  }catch(error){console.warn('Unable to standardize timed Wiki fetch helper',error);}
++
++  function manufacturer(vehicle){const maker=vehicle?.manufacturer;return typeof maker==='string'?maker:String(maker?.name||maker?.code||vehicle?.manufacturer_name||'Other');}
++  function cargoValue(vehicle){for(const value of [vehicle?.cargo_capacity,vehicle?.cargo?.capacity,vehicle?.scu,vehicle?.cargo]){const number=Number(String(value??'').replace(/[^0-9.]/g,''));if(Number.isFinite(number)&&number>0)return Math.floor(number);}return 0;}
++  async function liveVehicleCatalog(force=false){
++    if(vehiclePromise&&!force)return vehiclePromise;
++    vehiclePromise=(async()=>{
++      const live=await authority(force);
++      const query=new URLSearchParams({'filter[type]':'Ship','page[size]':'200','per_page':'200',version:live.code});
++      let raw=[];
++      if(typeof fetchApiCollection==='function')raw=await fetchApiCollection(`https://api.star-citizen.wiki/api/vehicles?${query}`,10);
++      else raw=rows(await rawJson(`https://api.star-citizen.wiki/api/vehicles?${query}`,22000));
++      const byName=new Map();
++      (Array.isArray(raw)?raw:[]).forEach(vehicle=>{
++        const name=String(vehicle?.name||vehicle?.vehicle_name||vehicle?.display_name||'').trim(),cargo=cargoValue(vehicle);
++        const isShip=vehicle?.is_spaceship!==false&&!/ground vehicle|gravlev/i.test(String(vehicle?.type||vehicle?.vehicle_type||''));
++        if(!name||!cargo||!isShip)return;
++        const row={name,manufacturer:manufacturer(vehicle),cargo,uuid:String(vehicle?.uuid||''),source:`Star Citizen Wiki ${live.code}`,gameVersion:live.code};
++        const key=name.toLowerCase(),current=byName.get(key);if(!current||row.cargo>current.cargo)byName.set(key,row);
++      });
++      const result=[...byName.values()].sort((a,b)=>a.manufacturer.localeCompare(b.manufacturer)||a.name.localeCompare(b.name));
++      if(!result.length)throw new Error(`No cargo-capable vehicles were returned for ${live.code}.`);
++      window.NEXUS_CURRENT_LIVE_SHIPS=result;
++      return result;
++    })();
++    try{return await vehiclePromise;}catch(error){vehiclePromise=null;window.NEXUS_CURRENT_LIVE_SHIPS=[];throw error;}
++  }
++  window.nexusLiveVehicleCatalog=liveVehicleCatalog;
++
++  // Final override wins over older cargo compatibility layers: live rows only.
++  try{
++    if(typeof nexusTradeFetchShips==='function'){nexusTradeFetchShips=async()=>liveVehicleCatalog(false);}
++    if(typeof NEXUS_TRADE_FALLBACK_SHIPS!=='undefined'&&Array.isArray(NEXUS_TRADE_FALLBACK_SHIPS))NEXUS_TRADE_FALLBACK_SHIPS.splice(0);
++    window.NEXUS_UNIFIED_CARGO_SHIPS=[];
++  }catch(_){}
++
++  // Cargo initialization waits for the shared current vehicle catalog, but still opens if the source is down.
++  try{
++    const previousCargo=window.nexusInitializeCargoRouting;
++    if(typeof previousCargo==='function'&&!previousCargo.__nexusLiveStandardized){
++      window.nexusInitializeCargoRouting=async function(...args){
++        try{await liveVehicleCatalog(false);}catch(error){console.warn('Current LIVE cargo-ship catalog unavailable',error);}
++        return previousCargo.apply(this,args);
++      };
++      window.nexusInitializeCargoRouting.__nexusLiveStandardized=true;
++    }
++  }catch(_){}
++
++  // Commodity Trading receives the same vehicle objects instead of maintaining a parallel ship baseline.
++  try{
++    const previousTrade=window.nexusInitializeCommodityTrading||((typeof nexusInitializeCommodityTrading==='function')?nexusInitializeCommodityTrading:null);
++    if(typeof previousTrade==='function'&&!previousTrade.__nexusLiveStandardized){
++      const wrapped=async function(...args){
++        try{const ships=await liveVehicleCatalog(false);if(typeof nexusTradeState!=='undefined'){nexusTradeState.ships=ships.map(row=>({...row}));nexusTradeState.shipSource='Star Citizen Wiki current LIVE';}}catch(error){console.warn('Current LIVE trade vehicle catalog unavailable',error);}
++        return previousTrade.apply(this,args);
++      };
++      window.nexusInitializeCommodityTrading=wrapped;try{nexusInitializeCommodityTrading=wrapped;}catch(_){}
++      wrapped.__nexusLiveStandardized=true;
++    }
++  }catch(_){}
++
++  // Keep ship selectors usable when the current vehicle source is temporarily unavailable without inserting legacy capacities.
++  try{
++    const previousPopulate=typeof nexusTradePopulateShips==='function'?nexusTradePopulateShips:null;
++    if(previousPopulate&&!previousPopulate.__nexusLiveEmptySafe){
++      const wrapped=function(...args){
++        const result=previousPopulate.apply(this,args);
++        const main=document.getElementById('trade-ship');
++        if(main&&!(typeof nexusTradeState!=='undefined'&&Array.isArray(nexusTradeState.ships)&&nexusTradeState.ships.length)){main.innerHTML='<option value="" disabled selected>Current LIVE ship data unavailable</option>';main.value='';}
++        const fuel=document.getElementById('trade-fuel-ship');
++        if(fuel&&!(typeof nexusTradeState!=='undefined'&&Array.isArray(nexusTradeState.ships)&&nexusTradeState.ships.length)){fuel.innerHTML='<option value="" disabled selected>Current LIVE ship data unavailable</option>';fuel.value='';}
++        return result;
++      };
++      wrapped.__nexusLiveEmptySafe=true;nexusTradePopulateShips=wrapped;
++    }
++  }catch(_){}
++
++  // Item Finder keeps offline taxonomy/navigation but never fabricates gameplay item records.
++  try{
++    if(Array.isArray(window.NEXUS_FALLBACK_ITEMS))window.NEXUS_FALLBACK_ITEMS.length=0;
++  }catch(_){}
++
++  // Wikelo: historical recipes are retained only as identifiers/artwork references until a current LIVE mission record verifies them.
++  function wikeloValue(row,...keys){for(const key of keys){const parts=key.split('.');let value=row;for(const part of parts)value=value&&typeof value==='object'?value[part]:undefined;if(value!==undefined&&value!==null&&value!=='')return value;}return null;}
++  function wikeloText(value){if(value==null)return '';if(typeof value==='string'||typeof value==='number')return String(value).trim();if(typeof value==='object')return wikeloText(value.name||value.display_name||value.displayName||value.title||value.label||value.item_name||value.commodity_name);return '';}
++  function wikeloPairs(value){
++    const result=[],seen=new Set();
++    function walk(node,depth=0){
++      if(node==null||depth>7)return;
++      if(Array.isArray(node)){node.forEach(item=>walk(item,depth+1));return;}
++      if(typeof node!=='object')return;
++      const name=wikeloText(node.item||node.commodity||node.resource||node.product||node);
++      const raw=node.quantity??node.amount??node.count??node.units??node.scu??node.qty;const qty=Number(raw);
++      if(name&&Number.isFinite(qty)&&qty>0){const key=name.toLowerCase();if(!seen.has(key)){seen.add(key);result.push({name,qty:Math.max(1,qty)});}}
++      Object.entries(node).forEach(([key,child])=>{if(!/^(name|display_name|displayName|title|label|item_name|commodity_name|quantity|amount|count|units|scu|qty)$/i.test(key))walk(child,depth+1);});
++    }
++    walk(value);return result;
++  }
++  function wikeloRewardNames(row){
++    const source=wikeloValue(row,'reward_items','rewardItems','rewards.items','reward_groups','rewardGroups');
++    const values=[];
++    (function walk(node,depth=0){if(node==null||depth>6)return;if(Array.isArray(node)){node.forEach(x=>walk(x,depth+1));return;}if(typeof node==='object'){const n=wikeloText(node.item||node.reward||node);if(n)values.push(n);Object.entries(node).forEach(([k,v])=>{if(!/^(name|display_name|displayName|title|label)$/i.test(k))walk(v,depth+1);});}})(source);
++    return [...new Set(values.filter(Boolean))];
++  }
++  try{
++    if(typeof NEXUS_WIKELO_TRADES!=='undefined'&&Array.isArray(NEXUS_WIKELO_TRADES)){
++      NEXUS_WIKELO_TRADES.forEach(trade=>{if(!trade.__legacyMaterials)trade.__legacyMaterials=(trade.materials||[]).map(x=>({...x}));if(!trade.__legacyRewards)trade.__legacyRewards=[...(trade.rewards||[])];trade.materials=[];trade.rewards=[];trade.__liveVerified=false;trade.patch='LIVE unresolved';});
++    }
++    if(typeof nexusWikeloTradeReady==='function')nexusWikeloTradeReady=trade=>Boolean(trade?.__liveVerified&&trade.materials?.length&&trade.materials.every(m=>nexusWikeloOwned(m.name)>=m.qty));
++    if(typeof nexusWikeloProgress==='function')nexusWikeloProgress=trade=>{if(!trade?.__liveVerified||!trade.materials?.length)return 0;return trade.materials.reduce((sum,m)=>sum+Math.min(1,nexusWikeloOwned(m.name)/m.qty),0)/trade.materials.length;};
++    if(typeof nexusWikeloRepMeta==='function')nexusWikeloRepMeta=function(trade){const live=nexusWikeloState?.missionData?.[trade.id];if(live&&Number.isFinite(live.rep))return {label:live.rep>0?`+${live.rep.toLocaleString()} REP`:'No REP',value:live.rep,kind:'live',title:'Synced from the current version-pinned Star Citizen Wiki mission record.'};return {label:nexusWikeloState?.repSync==='loading'?'Syncing LIVE…':'REP unavailable',value:null,kind:'pending',title:'No current LIVE reputation value was verified for this mission.'};};
++    if(typeof nexusWikeloPlanTotals==='function')nexusWikeloPlanTotals=function(){const totals={};nexusWikeloState.plan.forEach(id=>{const t=NEXUS_WIKELO_TRADES.find(x=>x.id===id);if(!t?.__liveVerified)return;(t.materials||[]).forEach(m=>totals[m.name]=(totals[m.name]||0)+m.qty);});return totals;};
++    if(typeof nexusWikeloSyncMissionData==='function')nexusWikeloSyncMissionData=async function(){
++      if(nexusWikeloState.repSync==='loading')return;
++      nexusWikeloState.repSync='loading';nexusWikeloSetSyncStatus('Current LIVE Wikelo mission sync in progress…','loading');
++      try{
++        const live=await authority(false),query=new URLSearchParams();query.set('filter[faction]','Wikelo Emporium');query.set('page[size]','200');query.set('version',live.code);
++        const missionRows=await fetchApiCollection(`${SHIP_DATA_API}/missions?${query}`,10);let matched=0,recipeMatched=0;
++        NEXUS_WIKELO_TRADES.forEach(trade=>{
++          const row=nexusWikeloMissionMatch(trade,missionRows);
++          if(!row){trade.__liveVerified=false;trade.materials=[];trade.rewards=[];trade.patch=live.code;trade.notes='Current LIVE mission record was not matched; historical recipe values are withheld.';return;}
++          const rep=nexusWikeloParseRep(row);
++          const materials=wikeloPairs(wikeloValue(row,'hauling_orders','haulingOrders','required_items','requiredItems','requirements.items','objectives'));
++          const rewards=wikeloRewardNames(row);
++          nexusWikeloState.missionData[trade.id]={rep,uuid:row.uuid||row.id||'',title:row.title||row.name||trade.mission,gameVersion:live.code};
++          trade.materials=materials;trade.rewards=rewards;trade.patch=live.code;trade.__liveVerified=materials.length>0||rewards.length>0||Number.isFinite(rep);
++          if(rewards.length){trade.reward=rewards.length===1?rewards[0]:rewards.join(' + ');}
++          trade.notes=trade.__liveVerified?'Verified against current LIVE mission data.':'Current LIVE mission record matched, but recipe/reward fields were not exposed; historical values are withheld.';
++          if(trade.__liveVerified)matched++;if(materials.length)recipeMatched++;
++        });
++        nexusWikeloState.repSync='done';nexusWikeloSetSyncStatus(`${live.code} · ${matched} missions matched · ${recipeMatched} recipes exposed`,'live');
++      }catch(error){
++        nexusWikeloState.repSync='failed';NEXUS_WIKELO_TRADES.forEach(trade=>{trade.__liveVerified=false;trade.materials=[];trade.rewards=[];trade.notes='Current LIVE mission data unavailable; historical recipe values are withheld.';});
++        nexusWikeloSetSyncStatus(`Current LIVE Wikelo data unavailable · ${error.message||error}`,'fallback');
++      }
++      nexusWikeloRenderTrades();nexusWikeloRenderPlan();nexusWikeloCalculateRep();
++    };
++    // Make the card status distinguish unavailable source data from a genuine inventory shortage.
++    if(typeof nexusWikeloRenderTrades==='function'){
++      const previousRender=nexusWikeloRenderTrades;
++      nexusWikeloRenderTrades=function(){previousRender.apply(this,arguments);document.querySelectorAll('#wikelo-trade-grid .wikelo-trade-card').forEach((card,index)=>{const visible=NEXUS_WIKELO_TRADES.filter(t=>{const q=(document.getElementById('wikelo-search')?.value||'').trim().toLowerCase(),category=document.getElementById('wikelo-category')?.value||'',rank=document.getElementById('wikelo-rank')?.value||'',readyOnly=!!document.getElementById('wikelo-ready-only')?.checked,hideComplete=!!document.getElementById('wikelo-hide-complete')?.checked,rep=nexusWikeloRepMeta(t).label,hay=[t.reward,t.mission,t.category,t.rank,rep,...(t.rewards||[]),...(t.materials||[]).map(m=>m.name)].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!category||t.category===category)&&(!rank||t.rank===rank)&&(!readyOnly||nexusWikeloTradeReady(t))&&(!hideComplete||nexusWikeloCompletionCount(t.id)===0);})[index];if(visible&&!visible.__liveVerified){const status=card.querySelector('.wikelo-card-status');if(status){status.textContent='LIVE data unavailable';status.classList.remove('ready');}const list=card.querySelector('.wikelo-material-list');if(list&&!visible.materials.length)list.insertAdjacentHTML('afterbegin','<div class="wikelo-note">Current LIVE recipe requirements were not exposed. Historical quantities are withheld.</div>');}});};
++    }
++  }catch(error){console.warn('Wikelo LIVE standardization failed',error);}
++
++  // Shared build badge in hub and every module header.
++  function installBadges(){
++    document.querySelectorAll('.app-view').forEach(view=>{
++      if(view.id==='hub-view')return;
++      if(view.querySelector(':scope > .nexus-live-build-floating, .nexus-module-live-build-badge'))return;
++      const actions=view.querySelector('.nexus-topbar-actions');
++      if(actions){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · resolving LIVE…';actions.prepend(badge);return;}
++      if(view.id==='planner-view'){const header=view.querySelector('.header-top');if(header){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · resolving LIVE…';header.appendChild(badge);}}
++    });
++  }
++  function updateBadges(live,error=''){
++    const label=live?.verified?`GAME DATA · ${live.code}`:'GAME DATA · LIVE verification unavailable';
++    const title=live?.verified?`All patch-sensitive module data is gated against ${live.code}.`:`Patch-sensitive data is withheld when current LIVE cannot be verified. ${error}`;
++    const hub=document.getElementById('nexus-hub-live-build');if(hub){hub.textContent=label;hub.title=title;}
++    document.querySelectorAll('.nexus-module-live-build-badge').forEach(node=>{node.textContent=label;node.title=title;node.classList.toggle('unverified',!live?.verified);});
++  }
++  const style=document.createElement('style');style.textContent=`.nexus-live-build-inline,.nexus-module-live-build-badge{display:inline-flex;align-items:center;gap:5px;border:1px solid rgba(16,185,129,.32);background:rgba(16,185,129,.08);color:#6ee7b7;border-radius:999px;padding:3px 7px;font:600 9.6px 'Share Tech Mono',monospace;letter-spacing:.055em;white-space:nowrap}.nexus-live-build-inline{padding:2px 6px;vertical-align:1px}.nexus-module-live-build-badge.unverified{color:#fbbf24;border-color:rgba(245,158,11,.34);background:rgba(245,158,11,.08)}@media(max-width:700px){.nexus-module-live-build-badge{font-size:8.8px;max-width:220px;overflow:hidden;text-overflow:ellipsis}}`;document.head.appendChild(style);
++  const start=()=>{installBadges();authority(false).then(live=>updateBadges(live)).catch(error=>updateBadges(null,error.message||String(error)));};
++  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
++  window.addEventListener('nexus:viewchange',()=>{installBadges();updateBadges(window.NEXUS_LIVE_BUILD||null);});
 +})();
 +</script>
 +

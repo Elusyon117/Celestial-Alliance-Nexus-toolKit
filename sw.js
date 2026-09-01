@@ -1,5 +1,5 @@
 /* Celestial Alliance Nexus Toolkit service worker — LIVE data guard revision */
-const VERSION = '2.0.1-live-current-r2';
+const VERSION = '2.0.1-live-current-r3';
 const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
 const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
 const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;

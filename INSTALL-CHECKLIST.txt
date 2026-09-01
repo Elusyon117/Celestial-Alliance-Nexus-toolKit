@@ -1,0 +1,28 @@
+CELESTIAL NEXUS LIVE UPDATE — INSTALL CHECKLIST
+
+REPLACE:
+  index.html
+  sw.js
+  .github/workflows/sync-game-data.yml
+
+ADD:
+  scripts/resolve-live-build.mjs
+  scripts/verify-live-data.mjs
+  scripts/normalize-contract-payouts.mjs
+  data/live-build.json
+
+KEEP UNTOUCHED:
+  scripts/sync-scmdb-missions.mjs
+  scripts/audit-patch-data.mjs
+  .github/workflows/sync-mrkraken-language-pack.yml
+  all existing assets/data/unrelated files
+
+DELETE:
+  .github/workflows/sync-scmdb-4.9-once.yml
+
+AFTER PUSH:
+  GitHub Actions -> Sync game data -> Run workflow
+  Channel: LIVE
+  Patch override: leave BLANK
+
+After the successful workflow run, hard-refresh the deployed toolkit once.
