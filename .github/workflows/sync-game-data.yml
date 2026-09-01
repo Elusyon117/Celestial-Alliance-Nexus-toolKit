@@ -4,136 +4,160 @@ on:
   workflow_dispatch:
     inputs:
       patch:
-        description: Optional patch override, such as 4.9.0. Leave blank for newest LIVE.
+        description: Optional patch override. Leave blank to resolve the authoritative current LIVE patch.
         required: false
-        default: ''
         type: string
       channel:
-        description: Game channel
+        description: Data channel
         required: true
         default: LIVE
         type: choice
         options: [LIVE, PTU, EPTU]
   schedule:
-    - cron: '*/5 * * * *'
-    - cron: '17 */6 * * *'
+    - cron: "17 */6 * * *"
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
-  group: sync-game-data-${{ github.ref }}
+  group: game-data-sync-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
-    env:
-      MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
-      MISSION_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
-      MIN_MISSION_COUNT: '100'
+    timeout-minutes: 20
     steps:
-      - name: Check out complete repository history
-        uses: actions/checkout@v7
+      - name: Check out repository
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: "22"
 
-      - name: Validate synchronization scripts
-        shell: bash
+      - name: Validate update scripts
         run: |
-          set -euo pipefail
+          node --check scripts/resolve-live-build.mjs
+          node --check scripts/verify-live-data.mjs
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
-          node --check scripts/sync-pyro-hangar.mjs
-          node --check scripts/validate-repo.mjs
 
-      - name: Synchronize Pyro Executive Hangar global clock
-        id: pyro_sync
-        continue-on-error: true
-        run: node scripts/sync-pyro-hangar.mjs
+      - name: Resolve authoritative current LIVE build
+        id: live
+        run: node scripts/resolve-live-build.mjs --write data/live-build.json --github-output
 
-      - name: Commit Pyro Executive Hangar clock
-        if: steps.pyro_sync.outcome == 'success'
+      - name: Resolve requested synchronization target
+        id: target
         shell: bash
+        env:
+          INPUT_PATCH: ${{ github.event.inputs.patch || '' }}
+          INPUT_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
+          LIVE_PATCH: ${{ steps.live.outputs.patch }}
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add data/pyro-hangar-sync.json
+          channel="${INPUT_CHANNEL:-LIVE}"
+          patch="${INPUT_PATCH:-}"
+          if [[ "$channel" == "LIVE" && -z "$patch" ]]; then patch="$LIVE_PATCH"; fi
+          echo "channel=$channel" >> "$GITHUB_OUTPUT"
+          echo "patch=$patch" >> "$GITHUB_OUTPUT"
+          echo "Target: ${patch:-newest manifest} $channel"
 
-          if git diff --cached --quiet; then
-            echo 'Pyro Hangar global clock is unchanged.'
-          else
-            git commit -m 'Sync Pyro Hangar global timer'
-            for attempt in 1 2 3; do
-              git pull --rebase origin "$GITHUB_REF_NAME"
-              if git push origin "HEAD:$GITHUB_REF_NAME"; then
-                break
-              fi
-              if [ "$attempt" -eq 3 ]; then
-                echo 'Pyro timer push failed after three attempts.' >&2
-                exit 1
-              fi
-              sleep $((attempt * 3))
-            done
-          fi
-
-      - name: Synchronize mission catalog
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
+      - name: Synchronize SCMDB dataset
+        env:
+          MISSION_PATCH: ${{ steps.target.outputs.patch }}
+          MISSION_CHANNEL: ${{ steps.target.outputs.channel }}
+          SCMDB_BASE_URL: ${{ vars.SCMDB_BASE_URL }}
+          SCMDB_VERSIONS_URL: ${{ vars.SCMDB_VERSIONS_URL }}
+          SCMDB_MISSIONS_URL: ${{ vars.SCMDB_MISSIONS_URL }}
         run: node scripts/sync-scmdb-missions.mjs
 
-      - name: Audit generated data
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
+      - name: Audit other patch-sensitive modules
         run: node scripts/audit-patch-data.mjs
 
-      - name: Commit generated game-data files
-        if: github.event_name == 'workflow_dispatch' || github.event.schedule == '17 */6 * * *'
+      - name: Verify Contract Finder against authoritative LIVE
+        if: steps.target.outputs.channel == 'LIVE'
+        run: node scripts/verify-live-data.mjs
+
+      - name: Read synchronization result
+        id: result
+        shell: bash
+        run: |
+          node <<'NODE' >> "$GITHUB_OUTPUT"
+          const fs=require('fs');
+          const status=JSON.parse(fs.readFileSync('data/game-data-status.json','utf8'));
+          const audit=JSON.parse(fs.readFileSync('data/patch-audit.json','utf8'));
+          const live=JSON.parse(fs.readFileSync('data/live-build.json','utf8'));
+          let verification={modules:{contractFinder:{current:true}}};
+          if(fs.existsSync('data/live-data-verification.json')) verification=JSON.parse(fs.readFileSync('data/live-data-verification.json','utf8'));
+          const module=status.modules.contractFinder;
+          console.log(`version=${module.gameVersion}`);
+          console.log(`patch=${live.patch}`);
+          console.log(`stale=${audit.staleReferenceCount}`);
+          console.log(`contract_current=${verification.modules.contractFinder.current}`);
+          NODE
+
+      - name: Commit changed snapshots and reports
         shell: bash
         run: |
           set -euo pipefail
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add \
+            data/live-build.json \
             data/scmdb-missions-live.json \
             data/scmdb-missions-live.js \
             data/game-data-status.json \
             data/patch-audit.json
-
+          if [[ -f data/live-data-verification.json ]]; then
+            git add data/live-data-verification.json
+          fi
           if git diff --cached --quiet; then
-            echo 'No game-data changes.'
+            echo "All game data is already current."
             exit 0
           fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Sync game data for ${{ steps.live.outputs.code }}"
+          git pull --rebase origin "$GITHUB_REF_NAME"
+          git push origin "HEAD:$GITHUB_REF_NAME"
 
-          git commit -m 'Sync latest game data'
-          for attempt in 1 2 3; do
-            git pull --rebase origin "$GITHUB_REF_NAME"
-            if git push origin "HEAD:$GITHUB_REF_NAME"; then
-              exit 0
-            fi
-            sleep $((attempt * 3))
-          done
+      - name: Create or update patch-review issue
+        if: steps.result.outputs.stale != '0' || steps.result.outputs.contract_current != 'true'
+        uses: actions/github-script@v8
+        env:
+          CURRENT_PATCH: ${{ steps.result.outputs.patch }}
+          STALE_COUNT: ${{ steps.result.outputs.stale }}
+          CONTRACT_CURRENT: ${{ steps.result.outputs.contract_current }}
+        with:
+          script: |
+            const fs=require('fs');
+            const audit=JSON.parse(fs.readFileSync('data/patch-audit.json','utf8'));
+            const title=`Patch data review required: ${process.env.CURRENT_PATCH} LIVE`;
+            const rows=Object.entries(audit.modules).sort((a,b)=>b[1].count-a[1].count).map(([name,value])=>`- **${name}**: ${value.count} references (${value.patches.join(', ')})`).join('\n');
+            const body=[
+              `Authoritative LIVE patch: **${process.env.CURRENT_PATCH}**.`,
+              '',
+              `Contract Finder current: **${process.env.CONTRACT_CURRENT}**.`,
+              `Patch-sensitive audit references: **${process.env.STALE_COUNT}**.`,
+              '', rows||'- No grouped stale references were produced.', '',
+              'The front end will block a mismatched cached/bundled dataset instead of presenting it as current LIVE.',
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`
+            ].join('\n');
+            const {data:issues}=await github.rest.issues.listForRepo({owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(issue=>issue.title===title);
+            if(existing) await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,body});
+            else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title,body});
 
-          echo 'Push failed after three attempts.' >&2
-          exit 1
-
-      - name: Add summary
-        if: always()
-        shell: bash
-        run: |
-          {
-            echo '## Synchronization summary'
-            if [ -f data/pyro-hangar-sync.json ]; then
-              jq -r '"- Pyro Hangar: `\(.status)`\n- ExecTimer source: `\(.sourceVersion // "pending")`\n- Global anchor: `\(.anchorEpochMs // "pending")`"' data/pyro-hangar-sync.json
-            else
-              echo '- Pyro Hangar sync file was not produced.'
-            fi
-            if [ -f data/game-data-status.json ]; then
-              jq -r '.modules.contractFinder | "- Mission status: `\(.status)`\n- Patch: `\(.patch)`\n- Channel: `\(.channel)`\n- Missions: `\(.totalCount)`\n- Last error: `\(.lastError // "")`"' data/game-data-status.json
-            fi
-          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Report synchronization failure
+        if: failure()
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const title='Game data synchronization failed';
+            const body=`The scheduled current-LIVE data sync failed. Existing snapshots were not overwritten. The web client will reject a snapshot whose patch does not match its resolved LIVE authority.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const {data:issues}=await github.rest.issues.listForRepo({owner:context.repo.owner,repo:context.repo.repo,state:'open',per_page:100});
+            const existing=issues.find(issue=>issue.title===title);
+            if(existing) await github.rest.issues.update({owner:context.repo.owner,repo:context.repo.repo,issue_number:existing.number,body});
+            else await github.rest.issues.create({owner:context.repo.owner,repo:context.repo.repo,title,body});

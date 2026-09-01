@@ -1,0 +1,514 @@
+--- a/index.html
++++ b/index.html
+@@ -5072,7 +5072,7 @@
+ }
+ </style>
+ <style>
+-/* ===== V0.82 — FULL-PAGE COMMODITY + 4.9 FUEL ROUTE PLANNER ===== */
++/* ===== V0.82 — FULL-PAGE COMMODITY + LIVE-AWARE FUEL ROUTE PLANNER ===== */
+ #commodity-view{--trade-teal:#2dd4bf;--trade-cyan:#38bdf8;--trade-green:#34d399;--trade-amber:#fbbf24;--trade-red:#fb7185}
+ #commodity-view .trade-shell{width:calc(100% - 28px);max-width:none;margin:0 14px;padding:22px 0 64px}
+ #commodity-view .trade-hero{padding:28px 30px}
+@@ -10818,7 +10818,7 @@
+             <div class="hub-rb-launch-field">
+               <label for="hub-rb-data-status">Data status</label>
+               <select id="hub-rb-data-status" aria-label="Data status">
+-                <option>SCMDB 4.9 live</option>
++                <option>SCMDB current LIVE</option>
+                 <option>Wiki API connected</option>
+                 <option>Browser cache ready</option>
+               </select>
+@@ -11178,7 +11178,7 @@
+ <nav aria-label="Commodity terminal views" class="trade-tabs">
+ <button class="trade-tab active" data-trade-tab="market" type="button">Market exchange</button>
+ <button class="trade-tab" data-trade-tab="routes" type="button">Trade routes</button>
+-<button class="trade-tab" data-trade-tab="fuel" type="button">Fuel planner <span class="trade-tab-new">4.9</span></button>
++<button class="trade-tab" data-trade-tab="fuel" type="button">Fuel planner <span class="trade-tab-new">LIVE</span></button>
+ <button class="trade-tab" data-trade-tab="pulse" type="button">Market pulse</button>
+ <button class="trade-tab" data-trade-tab="convoy" type="button">Convoy board <span id="trade-saved-count">0</span></button>
+ <button class="trade-tab" data-trade-tab="intel" type="button">Data &amp; sources</button>
+@@ -11269,12 +11269,12 @@
+ <section class="trade-panel" hidden="" id="trade-panel-fuel">
+ <div class="trade-fuel-banner">
+ <div>
+-<div class="trade-section-kicker">Alpha 4.9 logistics preview</div>
++<div class="trade-section-kicker">Current LIVE logistics model</div>
+ <h2>Fuel-aware commodity route planner</h2>
+ <p>Plan the full cargo run with ship-specific quantum range, a configurable reserve, operational overhead, jump-gateway routing, and verified service stops across Stanton, Pyro, and Nyx.</p>
+ </div>
+ <div class="trade-fuel-banner-badges">
+-<span><i></i>4.9 EPTU values where available</span>
++<span><i></i>current LIVE values where available</span>
+ <span class="warn"><i></i>Patch-sensitive</span>
+ </div>
+ </div>
+@@ -11292,7 +11292,7 @@
+ <div class="trade-field"><label for="trade-fuel-reserve">Arrival reserve</label><select id="trade-fuel-reserve"><option value="10">10% · aggressive</option><option selected="" value="20">20% · standard</option><option value="30">30% · conservative</option><option value="40">40% · deep-space</option></select></div>
+ <div class="trade-field"><label for="trade-fuel-overhead">Operational overhead</label><select id="trade-fuel-overhead"><option value="0">0% · published range</option><option selected="" value="8">8% · loaded hauler</option><option value="15">15% · heavy maneuvering</option><option value="22">22% · harsh conditions</option></select></div>
+ <div class="trade-field"><label for="trade-fuel-strategy">Routing priority</label><select id="trade-fuel-strategy"><option value="fewest">Fewest refuel stops</option><option value="safest">Safest serviced route</option><option value="fastest">Shortest distance</option></select></div>
+-<div class="trade-field"><label for="trade-fuel-range-override">Custom range override (GM)</label><input id="trade-fuel-range-override" min="10" placeholder="Use 4.9 profile" step="1" type="number"/></div>
++<div class="trade-field"><label for="trade-fuel-range-override">Custom range override (GM)</label><input id="trade-fuel-range-override" min="10" placeholder="Use LIVE profile" step="1" type="number"/></div>
+ </div>
+ <div class="trade-fuel-profile" id="trade-fuel-profile"></div>
+ <div class="trade-fuel-control-actions">
+@@ -11311,7 +11311,7 @@
+ </div>
+ <div class="trade-fuel-directory" id="trade-fuel-directory"></div>
+ <div class="trade-disclaimer trade-fuel-disclaimer">
+-        Alpha 4.9 ship ranges are an EPTU preview and can change before LIVE. Exact spreadsheet values are used for supported ships; other ships receive a clearly labeled role-and-size estimate. Route distances are operational planning approximations, not extracted starmap measurements. Refueling services are based on current station documentation and should be verified in-game.
++        Fuel planning is gated to the resolved current LIVE build. Automatic ship range values are used only when a current-version source exposes them; otherwise enter a manual range instead of falling back to an older patch estimate. Route distances are operational planning approximations, not extracted starmap measurements. Refueling services should still be verified in-game.
+       </div>
+ </section>
+ <section class="trade-panel" hidden="" id="trade-panel-pulse">
+@@ -11330,7 +11330,7 @@
+ <article class="trade-intel-card"><div class="trade-section-kicker">Community-data methodology</div><h3>Regolith archive</h3><p>Regolith combined open tooling with player-submitted operational observations and later sourced market pricing from UEX after game-file market values became unavailable. It is credited as a methodology reference, not an active independent market feed.</p><a href="https://regolith.rocks/" rel="noopener noreferrer" target="_blank">Open Regolith archive ↗</a></article>
+ <article class="trade-intel-card"><div class="trade-section-kicker">Confidence model</div><h3>How the forecast is scored</h3><ul><li>Report freshness and timestamp coverage</li><li>Difference between latest and average prices</li><li>Available stock and destination demand versus your load</li><li>Commodity metadata match and container compatibility</li><li>Terminal handling metadata when available</li></ul></article>
+ <article class="trade-intel-card"><div class="trade-section-kicker">Important limitations</div><h3>Use this as intelligence, not certainty</h3><p>Markets can change before arrival. Travel, loading, interdiction, reputation, hostile zones and server conditions are not included in the API profit calculation. Estimated aUEC/hour uses the cycle time entered above and should be adjusted to your ship and crew.</p></article>
+-<article class="trade-intel-card"><div class="trade-section-kicker">Alpha 4.9 fuel preview</div><h3>Quantum range and refueling network</h3><p>The planner uses community-captured 4.9 EPTU quantum tank and stock-drive consumption values where available, then applies a visible reserve and operational overhead. Station service coverage is cross-checked against current location documentation.</p><div class="trade-source-state"><span>Fuel model</span><strong class="warn">EPTU · subject to change</strong></div><a href="https://docs.google.com/spreadsheets/d/1J1vGHD1Q7xFh6XfLfha7ZDgtyhwp4Prp7t5NIsrL-bQ/edit?gid=0" rel="noopener noreferrer" target="_blank">Open 4.9 community spreadsheet ↗</a> · <a href="https://robertsspaceindustries.com/comm-link/engineering/16517-The-Shipyard-Fuel-Mechanics" rel="noopener noreferrer" target="_blank">RSI fuel mechanics ↗</a> · <a href="https://starcitizen.tools/Refueling" rel="noopener noreferrer" target="_blank">Current refueling guide ↗</a></article>
++<article class="trade-intel-card"><div class="trade-section-kicker">LIVE fuel data guard</div><h3>Quantum range and refueling network</h3><p>The planner accepts automatic fuel/range values only when they identify with the same current LIVE patch as the rest of the market data. If the current vehicle sources do not expose a trustworthy range, the planner asks for a manual range instead of silently using an older patch estimate.</p><div class="trade-source-state"><span>Fuel model</span><strong class="warn">Current LIVE or manual</strong></div><a href="https://api.uexcorp.uk/2.0/data_parameters" rel="noopener noreferrer" target="_blank">UEX LIVE data parameters ↗</a> · <a href="https://api.star-citizen.wiki/vehicles" rel="noopener noreferrer" target="_blank">Star Citizen Wiki vehicle data ↗</a> · <a href="https://starcitizen.tools/Refueling" rel="noopener noreferrer" target="_blank">Current refueling guide ↗</a></article>
+ </div>
+ <div class="trade-disclaimer">Schaulers and Regolith are not counted as independent confirmations of UEX prices. The terminal reports one primary live market feed, one game-data metadata cross-check, and transparent confidence signals so the forecast does not imply false source consensus.</div>
+ </section>
+@@ -12464,7 +12464,7 @@
+ <div class="release-channel-emblem">PTU</div>
+ <div class="release-channel-copy">
+ <div class="release-channel-topline"><div class="release-channel-name">Public Test Universe</div><div class="release-channel-state">Testing active</div></div>
+-<div class="release-channel-version">Alpha 4.9</div>
++<div class="release-channel-version">Resolving LIVE…</div>
+ <div class="release-channel-meta">Active test channel · subject to change</div>
+ <div class="release-channel-source">Official PTU patch-note tracking</div>
+ </div>
+@@ -12922,7 +12922,7 @@
+       <div class="phw-hero-meta"><div class="phw-meta-chip"><span>Hangar cycle model</span><strong>185 min</strong></div><div class="phw-meta-chip"><span>Compboards required</span><strong>7</strong></div><div class="phw-meta-chip"><span>Storage</span><strong>Local browser only</strong></div></div>
+     </section>
+ 
+-    <div class="phw-alert"><strong>Alpha 4.9 patch warning:</strong> CIG currently lists keycard-printer timers as a known issue. Keycard clocks below are therefore planning aids with editable community presets, not a guarantee that an in-game printer will obey the countdown. Always trust the terminal and Executive Hangar lights you see in-game over any external timer.</div>
++    <div class="phw-alert"><strong>Current LIVE patch warning:</strong> CIG currently lists keycard-printer timers as a known issue. Keycard clocks below are therefore planning aids with editable community presets, not a guarantee that an in-game printer will obey the countdown. Always trust the terminal and Executive Hangar lights you see in-game over any external timer.</div>
+ 
+     <div class="phw-grid">
+       <section class="phw-panel">
+@@ -12939,11 +12939,11 @@
+       <aside class="phw-panel"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUN STATUS</div><div class="phw-panel-title">Compboard run</div><div class="phw-panel-note">Your seven-board progress and the next active cooldowns.</div></div></div><div class="phw-overview-body"><div class="phw-run-progress"><div class="phw-run-progress-top"><span>Compboards secured</span><strong id="phw-board-count">0 / 7</strong></div><div class="phw-board-dots" id="phw-board-dots"></div><div class="phw-timer-actions"><button class="phw-btn" id="phw-reset-boards" type="button">Reset board checklist</button><button class="phw-btn danger" id="phw-reset-run" type="button">Reset all local timers</button></div></div><div class="phw-next-title">Next local opportunities</div><div class="phw-next-list" id="phw-next-list"><div class="phw-empty">Start a timer below to build your run queue.</div></div></div></aside>
+     </div>
+ 
+-    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">CONTESTED ZONES</div><div class="phw-panel-title">Keycards & compboards</div><div class="phw-panel-note">Compboard presets follow current community timer tools. Keycard presets remain editable because Alpha 4.9 has a known printer-timer issue and community references disagree on some cooldowns.</div></div><span class="phw-source-pill">Editable · persistent</span></div><div class="phw-zone-tabs" id="phw-zone-tabs"><button class="phw-zone-tab active" data-zone="checkmate" type="button">Checkmate</button><button class="phw-zone-tab" data-zone="orbituary" type="button">Orbituary</button><button class="phw-zone-tab" data-zone="ruin" type="button">Ruin Station</button><button class="phw-zone-tab" data-zone="supervisor" type="button">PYAM-SUPVISR</button><button class="phw-zone-tab" data-zone="all" type="button">All timers</button></div><div class="phw-timers-grid" id="phw-timers-grid"></div></section>
++    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">CONTESTED ZONES</div><div class="phw-panel-title">Keycards & compboards</div><div class="phw-panel-note">Compboard presets follow current community timer tools. Keycard presets remain editable because the current CIG Known Issues article lists a printer-timer issue and community references disagree on some cooldowns.</div></div><span class="phw-source-pill">Editable · persistent</span></div><div class="phw-zone-tabs" id="phw-zone-tabs"><button class="phw-zone-tab active" data-zone="checkmate" type="button">Checkmate</button><button class="phw-zone-tab" data-zone="orbituary" type="button">Orbituary</button><button class="phw-zone-tab" data-zone="ruin" type="button">Ruin Station</button><button class="phw-zone-tab" data-zone="supervisor" type="button">PYAM-SUPVISR</button><button class="phw-zone-tab" data-zone="all" type="button">All timers</button></div><div class="phw-timers-grid" id="phw-timers-grid"></div></section>
+ 
+     <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">RUIN STATION</div><div class="phw-panel-title">Vault door cycle</div><div class="phw-panel-note">The Ruin Station timer door repeats independently: approximately 20 minutes closed followed by 1 minute open. Sync when you personally see it open.</div></div><span class="phw-source-pill">Star Citizen Wiki</span></div><div class="phw-vault-body"><div class="phw-vault-clock"><div class="phw-vault-status" id="phw-vault-status">UNSYNCED</div><div class="phw-vault-time" id="phw-vault-time">--:--</div><div class="phw-vault-copy" id="phw-vault-copy">Click when the vault door opens to align the repeating 21-minute cycle.</div><div class="phw-timer-actions"><button class="phw-btn primary" id="phw-vault-open-now" type="button">Door opened now</button><button class="phw-btn danger" id="phw-vault-clear" type="button">Clear vault sync</button></div></div><div class="phw-vault-info"><div class="phw-info-card"><span>Open window</span><strong>1 minute</strong></div><div class="phw-info-card"><span>Closed window</span><strong>20 minutes</strong></div><div class="phw-info-card"><span>Pre-open cue</span><strong>Blue lights ~30s before opening</strong></div><div class="phw-info-card"><span>Board route</span><strong>Boards 5 & 6 are tied to Ruin / Vault access.</strong></div><div class="phw-info-card"><span>Exec requirement</span><strong>All 7 unique compboards</strong></div><div class="phw-info-card"><span>Safety rule</span><strong>Confirm in-game state before committing items.</strong></div></div></div></section>
+ 
+-    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">REFERENCE</div><div class="phw-panel-title">Sources & verification</div><div class="phw-panel-note">Pyro timings are patch-sensitive. These links are deliberately visible so the Alliance can verify the assumptions behind the dashboard.</div></div></div><div class="phw-sources"><a class="phw-source-card" href="https://exectimer.com/en" target="_blank" rel="noopener noreferrer"><span>Primary community reference</span><strong>ExecTimer</strong><p>Executive Hangar 185-minute phase model and community support-timer presets.</p></a><a class="phw-source-card" href="https://starcitizen.tools/Guide%3AExecutive_Hangars" target="_blank" rel="noopener noreferrer"><span>Mechanics cross-check</span><strong>Star Citizen Wiki</strong><p>Executive Hangar access conditions, keycard locations, board route, and Ruin timer-door behavior.</p></a><a class="phw-source-card" href="https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues" target="_blank" rel="noopener noreferrer"><span>Official patch warning</span><strong>RSI Alpha 4.9 Known Issues</strong><p>Current CIG notice that keycard printer timers are not working reliably.</p></a><a class="phw-source-card" href="https://exec.redline-arsenal.net/" target="_blank" rel="noopener noreferrer"><span>Community cross-check</span><strong>REDLINE Hangar Timer</strong><p>Independent 120m charging / 60m active / 5m reset phase reference.</p></a></div></section>
++    <section class="phw-panel phw-section"><div class="phw-panel-head"><div><div class="phw-panel-kicker">REFERENCE</div><div class="phw-panel-title">Sources & verification</div><div class="phw-panel-note">Pyro timings are patch-sensitive. These links are deliberately visible so the Alliance can verify the assumptions behind the dashboard.</div></div></div><div class="phw-sources"><a class="phw-source-card" href="https://exectimer.com/en" target="_blank" rel="noopener noreferrer"><span>Primary community reference</span><strong>ExecTimer</strong><p>Executive Hangar 185-minute phase model and community support-timer presets.</p></a><a class="phw-source-card" href="https://starcitizen.tools/Guide%3AExecutive_Hangars" target="_blank" rel="noopener noreferrer"><span>Mechanics cross-check</span><strong>Star Citizen Wiki</strong><p>Executive Hangar access conditions, keycard locations, board route, and Ruin timer-door behavior.</p></a><a class="phw-source-card" href="https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754" target="_blank" rel="noopener noreferrer"><span>Official patch warning</span><strong>RSI current Known Issues</strong><p>CIG notice for the current LIVE patch that keycard printer timers are not working reliably.</p></a><a class="phw-source-card" href="https://exec.redline-arsenal.net/" target="_blank" rel="noopener noreferrer"><span>Community cross-check</span><strong>REDLINE Hangar Timer</strong><p>Independent 120m charging / 60m active / 5m reset phase reference.</p></a></div></section>
+     <div class="phw-footer-note">Unofficial Celestial Alliance planning tool. No game memory, client files, or protected services are accessed. The Executive Hangar clock uses the shared ExecTimer alignment feed; local Contested Zone support timers remain manual.</div>
+   </main>
+ </section>
+@@ -29280,7 +29280,7 @@
+ <script>
+ if ('serviceWorker' in navigator) {
+   window.addEventListener('load', () => {
+-    navigator.serviceWorker.register('./sw.js?v=2.0.1-r1').catch((error) => {
++    navigator.serviceWorker.register('./sw.js?v=2.0.1-live-current-r2').catch((error) => {
+       console.warn('Celestial Nexus service worker registration failed:', error);
+     });
+   });
+@@ -30769,38 +30769,8 @@
+ };
+ </script>
+ <script>
+-/* ===== V0.82 — ALPHA 4.9 FUEL-AWARE COMMODITY ROUTING ===== */
+-const NEXUS_TRADE_FUEL_PROFILES = {
+-  'aegis avenger titan':{range:50,tank:.8,consumption:16,drive:1,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'anvil c8x pisces expedition':{range:81.3,tank:1.3,consumption:16,drive:1,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'argo raft':{range:350,tank:2.8,consumption:8,drive:2,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'crusader c1 spirit':{range:222.2,tank:2,consumption:9,drive:2,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'crusader c2 hercules starlifter':{range:475,tank:5.7,consumption:12,drive:3,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'crusader m2 hercules starlifter':{range:407.1,tank:5.7,consumption:14,drive:3,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'crusader a2 hercules starlifter':{range:407.1,tank:5.7,consumption:14,drive:3,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'drake caterpillar':{range:407.1,tank:5.7,consumption:14,drive:3,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'consolidated outland nomad':{range:68.8,tank:1.1,consumption:16,drive:1,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'anvil carrack':{range:550,tank:6.6,consumption:12,drive:3,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'crusader mercury star runner':{range:250,tank:2,consumption:8,drive:2,source:'4.9 EPTU community capture',confidence:'EPTU exact'},
+-  'drake corsair':{range:450,tank:3.6,consumption:8,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'drake cutlass black':{range:181.8,tank:2,consumption:11,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'drake cutter':{range:100,tank:.8,consumption:8,drive:1,source:'4.9 role estimate',confidence:'Estimated'},
+-  'gatac syulen':{range:137.5,tank:1.1,consumption:8,drive:1,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc freelancer':{range:300,tank:2.7,consumption:9,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc freelancer max':{range:222.2,tank:2,consumption:9,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc hull a':{range:250,tank:2,consumption:8,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc hull c':{range:475,tank:5.7,consumption:12,drive:3,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc starfarer':{range:550,tank:6.6,consumption:12,drive:3,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc starfarer gemini':{range:475,tank:5.7,consumption:12,drive:3,source:'4.9 role estimate',confidence:'Estimated'},
+-  'misc starlancer max':{range:250,tank:2.5,consumption:10,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'origin 135c':{range:100,tank:.8,consumption:8,drive:1,source:'4.9 role estimate',confidence:'Estimated'},
+-  'origin 315p':{range:137.5,tank:1.1,consumption:8,drive:1,source:'4.9 role estimate',confidence:'Estimated'},
+-  'origin 400i':{range:300,tank:2.7,consumption:9,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'rsi aurora cl':{range:50,tank:.8,consumption:16,drive:1,source:'4.9 role estimate',confidence:'Estimated'},
+-  'rsi constellation andromeda':{range:300,tank:2.7,consumption:9,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'rsi constellation taurus':{range:300,tank:2.7,consumption:9,drive:2,source:'4.9 role estimate',confidence:'Estimated'},
+-  'rsi zeus mk ii cl':{range:250,tank:2,consumption:8,drive:2,source:'4.9 role estimate',confidence:'Estimated'}
+-};
++/* ===== V0.82 — LEGACY FUEL TABLE RETIRED; CURRENT LIVE GUARD OWNS FUEL PROFILES ===== */
++const NEXUS_TRADE_FUEL_PROFILES = {};
+ 
+ const NEXUS_TRADE_FUEL_NODES = [
+   {id:'sta_area18',name:'Area18 / Riker Memorial',system:'Stanton',zone:'ArcCorp',x:17,y:25,risk:'safe',services:['Quantum fuel','Hydrogen','Repair','Cargo']},
+@@ -30856,7 +30826,7 @@
+   if(/explor|expedition/.test(role))range*=1.18;if(/support|refuel/.test(role))range*=1.12;
+   range=Math.round(range*10)/10;
+   const drive=range>=400?3:range>=175?2:1, tank=drive===3?5.7:drive===2?2:1.1, consumption=Math.round((tank/range)*1000*10)/10;
+-  return {name:shipName||'Custom cargo profile',range,tank,consumption,drive,source:'4.9 role-and-size estimate',confidence:'Estimated'};
++  return {name:shipName||'Custom cargo profile',range,tank,consumption,drive,source:'Legacy role-and-size estimate (disabled by LIVE guard)',confidence:'Estimated'};
+ }
+ function nexusTradeFuelDistance(a,b){
+   if(!a||!b)return Infinity;
+@@ -30907,7 +30877,7 @@
+ function nexusTradeFuelOptions(){return {startFuel:Number(document.getElementById('trade-fuel-start')?.value||100),reserve:Number(document.getElementById('trade-fuel-reserve')?.value||20),overhead:Number(document.getElementById('trade-fuel-overhead')?.value||8),strategy:document.getElementById('trade-fuel-strategy')?.value||'fewest',range:Number(document.getElementById('trade-fuel-range-override')?.value||0)||undefined};}
+ function nexusTradeFuelBuildPlan(startId,endId,shipName,options={}){const ship=nexusTradeState.ships.find(item=>item.name===shipName);const profile=nexusTradeFuelProfile(shipName,ship);const plan=nexusTradeFuelFindPath(startId,endId,profile,options);return {profile,plan,options,start:NEXUS_TRADE_FUEL_NODE_MAP.get(startId),end:NEXUS_TRADE_FUEL_NODE_MAP.get(endId)};}
+ function nexusTradeFuelQuickSummary(route){
+-  try{const shipName=route.shipName||document.getElementById('trade-ship')?.value||'Crusader C2 Hercules Starlifter';const result=nexusTradeFuelBuildPlan(nexusTradeFuelMapLocation(route.origin.location),nexusTradeFuelMapLocation(route.destination.location),shipName,{startFuel:100,reserve:20,overhead:8,strategy:'fewest'});if(!result.plan)return {className:'fail',label:'4.9 range risk',detail:'No serviced path at 20% reserve'};if(result.plan.stops===0)return {className:'',label:'4.9 direct',detail:`${result.plan.distance.toFixed(1)} GM · no fuel stop`};return {className:'stop',label:`4.9 · ${result.plan.stops} fuel stop${result.plan.stops===1?'':'s'}`,detail:`${result.plan.distance.toFixed(1)} GM via serviced stations`};}catch(_){return {className:'fail',label:'Fuel check unavailable',detail:'Open the planner for a manual range check'};}
++  try{const shipName=route.shipName||document.getElementById('trade-ship')?.value||'Crusader C2 Hercules Starlifter';const result=nexusTradeFuelBuildPlan(nexusTradeFuelMapLocation(route.origin.location),nexusTradeFuelMapLocation(route.destination.location),shipName,{startFuel:100,reserve:20,overhead:8,strategy:'fewest'});if(!result.plan)return {className:'fail',label:'legacy range risk',detail:'No serviced path at 20% reserve'};if(result.plan.stops===0)return {className:'',label:'legacy direct',detail:`${result.plan.distance.toFixed(1)} GM · no fuel stop`};return {className:'stop',label:`legacy · ${result.plan.stops} fuel stop${result.plan.stops===1?'':'s'}`,detail:`${result.plan.distance.toFixed(1)} GM via serviced stations`};}catch(_){return {className:'fail',label:'Fuel check unavailable',detail:'Open the planner for a manual range check'};}
+ }
+ function nexusTradeFuelPopulateShips(){
+   const select=document.getElementById('trade-fuel-ship');if(!select)return;const current=select.value||document.getElementById('trade-ship')?.value||'Crusader C2 Hercules Starlifter';
+@@ -30919,7 +30889,7 @@
+ }
+ function nexusTradeFuelRenderProfile(){
+   const node=document.getElementById('trade-fuel-profile');if(!node)return;const name=nexusTradeFuelShipName(),ship=nexusTradeState.ships.find(item=>item.name===name),profile=nexusTradeFuelProfile(name,ship),override=Number(document.getElementById('trade-fuel-range-override')?.value||0),options=nexusTradeFuelOptions(),published=override||profile.range,effective=published*(1-options.overhead/100),usable=effective*(1-options.reserve/100);
+-  node.innerHTML=`<strong>${nexusTradeEsc(name)} · ${profile.confidence}</strong><span>${nexusTradeEsc(profile.source)}. Range is reduced by the selected operational overhead and protected reserve.</span><div class="profile-grid"><span><b>${published.toFixed(1)} GM</b><small>${override?'Custom':'4.9'} range</small></span><span><b>${effective.toFixed(1)} GM</b><small>Effective range</small></span><span><b>${usable.toFixed(1)} GM</b><small>Leg limit</small></span><span><b>${profile.tank.toFixed(1)} SCU</b><small>Quantum tank</small></span><span><b>${profile.consumption.toFixed(1)}</b><small>mSCU / GM</small></span><span><b>S${profile.drive}</b><small>Stock drive class</small></span></div>`;
++  node.innerHTML=`<strong>${nexusTradeEsc(name)} · ${profile.confidence}</strong><span>${nexusTradeEsc(profile.source)}. Range is reduced by the selected operational overhead and protected reserve.</span><div class="profile-grid"><span><b>${published.toFixed(1)} GM</b><small>${override?'Custom':'legacy'} range</small></span><span><b>${effective.toFixed(1)} GM</b><small>Effective range</small></span><span><b>${usable.toFixed(1)} GM</b><small>Leg limit</small></span><span><b>${profile.tank.toFixed(1)} SCU</b><small>Quantum tank</small></span><span><b>${profile.consumption.toFixed(1)}</b><small>mSCU / GM</small></span><span><b>S${profile.drive}</b><small>Stock drive class</small></span></div>`;
+ }
+ function nexusTradeFuelStationDirectory(){
+   const node=document.getElementById('trade-fuel-directory');if(!node)return;node.innerHTML=NEXUS_TRADE_FUEL_NODES.map(station=>`<article class="trade-fuel-station"><div class="trade-fuel-station-top"><div><div class="system">${nexusTradeEsc(station.system)} · ${nexusTradeEsc(station.zone)}</div><h3>${nexusTradeEsc(station.name)}</h3></div><span class="trade-risk ${station.risk}">${station.risk}</span></div><p>${station.risk==='safe'?'Established service hub suitable for planned freight operations.':station.risk==='caution'?'Service is available, but maintain a security margin and verify access.':'Lawless or contested service point; treat the stop as an exposure event.'}</p><div class="trade-fuel-services">${station.services.map(service=>`<span>${nexusTradeEsc(service)}</span>`).join('')}</div></article>`).join('');
+@@ -30940,7 +30910,7 @@
+ function nexusTradeFuelUseTopRoute(){const route=nexusTradeState.filteredRoutes?.[0]||nexusTradeState.routes?.[0];if(route)nexusTradeFuelPlanForRoute(route);else nexusTradeSetStatus('Load market data before selecting the top commodity route.');}
+ function nexusTradeFuelSwap(){const a=document.getElementById('trade-fuel-origin'),b=document.getElementById('trade-fuel-destination');if(!a||!b)return;[a.value,b.value]=[b.value,a.value];if(nexusTradeFuelState.route){[nexusTradeFuelState.route.originLabel,nexusTradeFuelState.route.destinationLabel]=[nexusTradeFuelState.route.destinationLabel,nexusTradeFuelState.route.originLabel];}nexusTradeFuelRender();}
+ function nexusTradeFuelBrief(){
+-  const result=nexusTradeFuelState.plan;if(!result?.plan)return 'CELESTIAL NEXUS · FUEL ROUTE\nNo viable serviced route under the selected constraints.';const {plan,profile}=result,route=nexusTradeFuelState.route,ship=nexusTradeFuelShipName(),options=nexusTradeFuelOptions();return [`CELESTIAL NEXUS · ALPHA 4.9 FUEL ROUTE`,`${route?.commodity?`${route.commodity} · `:''}${route?.originLabel||result.start.name} → ${route?.destinationLabel||result.end.name}`,`Ship: ${ship} · ${profile.range.toFixed(1)} GM 4.9 range · ${profile.confidence}`,`Planning margin: ${options.reserve}% reserve · ${options.overhead}% operational overhead · ${options.startFuel}% departure fuel`,`Route: ${plan.nodes.map(node=>node.name).join(' → ')}`,`Distance: ${plan.distance.toFixed(1)} GM · ${plan.stops} refuel stop${plan.stops===1?'':'s'}`,route?.profit?`Cargo: ${nexusTradeMoney(route.fill)} SCU · forecast profit ${nexusTradeMoney(route.profit)} aUEC`:'',`Verify fuel services, route access, and market conditions before departure.`].filter(Boolean).join('\n');
++  const result=nexusTradeFuelState.plan;if(!result?.plan)return 'CELESTIAL NEXUS · FUEL ROUTE\nNo viable serviced route under the selected constraints.';const {plan,profile}=result,route=nexusTradeFuelState.route,ship=nexusTradeFuelShipName(),options=nexusTradeFuelOptions();return [`CELESTIAL NEXUS · LEGACY FUEL ROUTE`,`${route?.commodity?`${route.commodity} · `:''}${route?.originLabel||result.start.name} → ${route?.destinationLabel||result.end.name}`,`Ship: ${ship} · ${profile.range.toFixed(1)} GM legacy range · ${profile.confidence}`,`Planning margin: ${options.reserve}% reserve · ${options.overhead}% operational overhead · ${options.startFuel}% departure fuel`,`Route: ${plan.nodes.map(node=>node.name).join(' → ')}`,`Distance: ${plan.distance.toFixed(1)} GM · ${plan.stops} refuel stop${plan.stops===1?'':'s'}`,route?.profit?`Cargo: ${nexusTradeMoney(route.fill)} SCU · forecast profit ${nexusTradeMoney(route.profit)} aUEC`:'',`Verify fuel services, route access, and market conditions before departure.`].filter(Boolean).join('\n');
+ }
+ function nexusTradeFuelCopyBrief(){nexusTradeCopyText(nexusTradeFuelBrief(),'Fuel-aware route brief copied.');}
+ 
+@@ -41983,6 +41953,75 @@
+ })();
+ 
+ </script>
++<script id="nexus-live-build-authority-v1">
++/* Celestial Nexus — shared current LIVE build authority.
++   Every patch-sensitive module must resolve this before accepting cached/bundled data. */
++(() => {
++  'use strict';
++  const BOOTSTRAP={patch:'4.10.0',code:'4.10.0-LIVE.12519617',build:'12519617',verifiedAt:'2026-08-26T18:35:00Z',source:'CIG Support bootstrap'};
++  const LOCAL_MAX_AGE=36*60*60*1000, BOOTSTRAP_MAX_AGE=30*24*60*60*1000;
++  let activePromise=null;
++  const parts=v=>String(v||'').match(/\d+(?:\.\d+){1,3}/)?.[0]?.split('.').map(Number).concat([0,0,0,0]).slice(0,4)||[0,0,0,0];
++  const compare=(a,b)=>{const aa=parts(a),bb=parts(b);for(let i=0;i<4;i++){if(aa[i]!==bb[i])return aa[i]-bb[i]}return 0};
++  const same=(a,b)=>compare(a,b)===0;
++  function identity(value,channelHint='LIVE'){
++    const text=String(value||'');
++    const full=text.match(/(\d+(?:\.\d+){1,3})[._-](live|ptu|eptu)(?:[._-](\d+))?/i);
++    if(full){const patch=full[1],channel=full[2].toUpperCase(),build=full[3]||'';return {patch,channel,build,code:`${patch}-${channel}${build?`.${build}`:''}`};}
++    const patch=text.match(/\b(\d+(?:\.\d+){1,3})\b/)?.[1];
++    return patch?{patch,channel:channelHint,build:'',code:`${patch}-${channelHint}`} : null;
++  }
++  function jsonRows(payload){if(Array.isArray(payload))return payload;if(Array.isArray(payload?.data))return payload.data;if(Array.isArray(payload?.results))return payload.results;if(payload?.data&&typeof payload.data==='object')return [payload.data];return payload&&typeof payload==='object'?[payload]:[]}
++  async function fetchJson(url,ms=12000){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return await r.json()}finally{clearTimeout(t)}}
++  async function fetchText(url,ms=12000){const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);try{const r=await fetch(url,{cache:'no-store',signal:c.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);return await r.text()}finally{clearTimeout(t)}}
++  function uexVersion(payload){const rows=jsonRows(payload);for(const row of rows){const id=identity(row?.game_version||row?.gameVersion||row?.version);if(id?.channel==='LIVE')return id}return null}
++  function wikiVersion(payload){const rows=jsonRows(payload),ids=[];for(const row of rows){const channel=String(row?.channel||row?.attributes?.channel||'').toUpperCase();const raw=row?.code||row?.name||row?.version||row?.game_version||row?.attributes?.code||row?.attributes?.name;const id=identity(raw,channel==='LIVE'?'LIVE':'LIVE');if(id&&(id.channel==='LIVE'||channel==='LIVE'))ids.push(id)}return ids.sort((a,b)=>compare(b.patch,a.patch)||Number(b.build||0)-Number(a.build||0))[0]||null}
++  function localVersion(payload){const id=identity(payload?.code||payload?.gameVersion||payload?.game_version||`${payload?.patch||''}-LIVE.${payload?.build||''}`);return id?.channel==='LIVE'?id:null}
++  async function resolve(options=false){
++    const force=typeof options==='object'?Boolean(options.force):Boolean(options);
++    if(activePromise&&!force)return activePromise;
++    activePromise=(async()=>{
++      const candidates=[],errors=[];
++      const add=(id,source,kind,stamp='')=>{if(id?.channel==='LIVE'&&id.patch)candidates.push({...id,source,kind,stamp})};
++      const local=await Promise.allSettled([
++        fetchJson(`./data/live-build.json?_nexus=${Date.now()}`,8000),
++        fetchJson('https://api.uexcorp.uk/2.0/data_parameters',12000),
++        fetchJson('https://api.star-citizen.wiki/api/game-versions?filter%5Bchannel%5D=live&page%5Bsize%5D=50&sort=-released_at',16000),
++        fetchText('https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754',10000)
++      ]);
++      if(local[0].status==='fulfilled'){
++        const p=local[0].value,id=localVersion(p),stamp=p.generatedAt||p.checkedAt||p.fetchedAt||'';
++        const age=Date.now()-new Date(stamp||0).getTime();if(id&&Number.isFinite(age)&&age<=LOCAL_MAX_AGE)add(id,'Repository live-build.json','repo',stamp);else if(id)errors.push('Repository LIVE authority is stale; online authorities were preferred.');
++      }
++      if(local[1].status==='fulfilled')add(uexVersion(local[1].value),'UEX /data_parameters','uex');else errors.push(`UEX authority: ${local[1].reason?.message||'unavailable'}`);
++      if(local[2].status==='fulfilled')add(wikiVersion(local[2].value),'Star Citizen Wiki game versions','wiki');else errors.push(`Wiki authority: ${local[2].reason?.message||'unavailable'}`);
++      if(local[3].status==='fulfilled'){
++        const matches=[...String(local[3].value).matchAll(/Star Citizen Alpha\s+(\d+(?:\.\d+){1,2})\s+Known Issues/gi)].map(m=>identity(`${m[1]}-LIVE`)).filter(Boolean).sort((a,b)=>compare(b.patch,a.patch));
++        if(matches[0])add(matches[0],'CIG Support current Known Issues','cig');
++      }
++      const bootstrapAge=Date.now()-new Date(BOOTSTRAP.verifiedAt).getTime();if(bootstrapAge<=BOOTSTRAP_MAX_AGE)add(identity(BOOTSTRAP.code),'CIG Support dated bootstrap','bootstrap',BOOTSTRAP.verifiedAt);
++      if(!candidates.length)throw new Error(`Current LIVE build could not be resolved. ${errors.join(' ')}`);
++      const ranked=rows=>rows.filter(Boolean).sort((a,b)=>compare(b.patch,a.patch)||Number(b.build||0)-Number(a.build||0));
++      // A fresh repository authority or CIG source is authoritative. Community feeds may corroborate it,
++      // but they may not override it with an early PTU/EPTU/future value mislabeled as LIVE.
++      const official=ranked(candidates.filter(c=>c.kind==='repo'||c.kind==='cig'||c.kind==='bootstrap'))[0]||null;
++      const uex=ranked(candidates.filter(c=>c.kind==='uex'))[0]||null;
++      const wiki=ranked(candidates.filter(c=>c.kind==='wiki'))[0]||null;
++      let authority=official,verified=Boolean(official);
++      if(!authority&&uex&&wiki&&same(uex.patch,wiki.patch)){authority=ranked([uex,wiki])[0];verified=true;}
++      if(!authority)throw new Error(`Current LIVE build could not be verified. Community sources did not agree. ${errors.join(' ')}`);
++      const patch=authority.patch,matching=candidates.filter(c=>same(c.patch,patch));
++      const exact=ranked(matching.filter(c=>c.build))[0]||authority;
++      const result={patch,channel:'LIVE',build:exact.build||'',code:exact.build?`${patch}-LIVE.${exact.build}`:`${patch}-LIVE`,verified,checkedAt:new Date().toISOString(),sources:matching.map(({source,kind,code,stamp})=>({source,kind,code,stamp})),mismatches:candidates.filter(c=>!same(c.patch,patch)).map(({source,kind,code})=>({source,kind,code})),errors};
++      window.NEXUS_LIVE_BUILD=result;document.documentElement.dataset.nexusLivePatch=patch;return result;
++    })();
++    try{return await activePromise}catch(error){activePromise=null;throw error}
++  }
++  window.nexusLiveBuildIdentity=identity;window.nexusLiveBuildCompare=compare;window.nexusLiveBuildSame=same;window.nexusLiveBuildResolve=resolve;
++  // Resolve during parsing so later modules have a shared authority ready by interaction time.
++  resolve(false).catch(error=>console.warn('LIVE build authority discovery failed',error));
++})();
++</script>
+ <script id="nexus-v137-mission-483-live-fix-script">/* Contract Finder — latest LIVE source guard, SCMDB aliases, sorting, and cleaner list intelligence. */
+ (function(){
+   let TARGET_PATCH='';
+@@ -41998,7 +42037,16 @@
+   function patchParts(value){return String(value||'').split('.').map(Number).concat([0,0,0,0]).slice(0,4)}
+   function comparePatch(a,b){const aa=patchParts(a),bb=patchParts(b);for(let i=0;i<4;i++){if(aa[i]!==bb[i])return aa[i]-bb[i]}return 0}
+   function samePatch(a,b){return comparePatch(a,b)===0}
+-  function adoptTarget(id){if(id?.channel===TARGET_CHANNEL){if(!TARGET_PATCH||comparePatch(id.patch,TARGET_PATCH)>0)TARGET_PATCH=id.patch;if(!KNOWN_VERSION||comparePatch(id.patch,identity(KNOWN_VERSION)?.patch||'0')>=0)KNOWN_VERSION=id.code}return id}
++  function adoptTarget(id){if(id?.channel===TARGET_CHANNEL){if(!TARGET_PATCH)TARGET_PATCH=id.patch;if(samePatch(id.patch,TARGET_PATCH)&&(!KNOWN_VERSION||Number(id.build||0)>Number(identity(KNOWN_VERSION)?.build||0)))KNOWN_VERSION=id.code}return id}
++  async function resolveAuthoritativeTarget(){
++    if(typeof window.nexusLiveBuildResolve==='function'){
++      const live=await window.nexusLiveBuildResolve({force:false});
++      const id=identity(live?.code||`${live?.patch||''}-LIVE`);
++      if(!id||id.channel!==TARGET_CHANNEL||!live?.verified)throw new Error('The current LIVE build could not be verified. Older contract snapshots will not be activated.');
++      TARGET_PATCH=id.patch;KNOWN_VERSION=id.code;return id;
++    }
++    const version=await discoverWikiVersion(),id=identity(version);if(!id)throw new Error('The current LIVE build could not be resolved.');TARGET_PATCH=id.patch;KNOWN_VERSION=id.code;return id;
++  }
+   function isTarget(id){return Boolean(id&&id.channel===TARGET_CHANNEL&&(!TARGET_PATCH||samePatch(id.patch,TARGET_PATCH)))}
+   function payloadIdentity(payload,url=''){
+     const values=[payload?.gameVersion,payload?.game_version,payload?.version,payload?.patch,payload?.meta?.gameVersion,payload?.meta?.game_version,payload?.sourceUrl,url];
+@@ -42086,7 +42134,13 @@
+     const token=++nexusMissionState.requestToken;
+     nexusMissionState.loading=true;
+     const line=document.getElementById('mission-result-line');
+-    if(line)line.innerHTML=`<strong>${force?'Refreshing':'Loading'} the verified ${TARGET_PATCH||'latest'} ${TARGET_CHANNEL} repository snapshot…</strong>`;
++    if(line)line.innerHTML=`<strong>${force?'Refreshing':'Loading'} current ${TARGET_CHANNEL} authority…</strong>`;
++    try{await resolveAuthoritativeTarget();}catch(error){
++      if(line)line.innerHTML=`<strong>Current LIVE version verification failed.</strong> ${String(error?.message||error).replace(/[&<>]/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]))}`;
++      nexusMissionState.loading=false;return;
++    }
++    if(token!==nexusMissionState.requestToken)return;
++    if(line)line.innerHTML=`<strong>${force?'Refreshing':'Loading'} the verified ${TARGET_PATCH} ${TARGET_CHANNEL} repository snapshot…</strong>`;
+ 
+     const applyVerified=(payload,source,url)=>{
+       const id=adoptTarget(payloadIdentity(payload,payload?.sourceUrl||url));
+@@ -42202,7 +42256,7 @@
+   };
+ 
+   const baseBadges=nexusMissionBadges;nexusMissionBadges=function(record){let html=baseBadges(record);if(nexusMissionBool(record,'canBeShared')&&!/Shareable/.test(html))html+='<span class="mission-badge green">Shareable</span>';return html};
+-  nexusMissionImport=async function(event){const file=event.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text()),id=payloadIdentity(payload,payload?.sourceUrl||file.name);adoptTarget(id);if(!isTarget(id))throw new Error(`This snapshot identifies as ${id?.code||'unversioned'}. Contract Finder only accepts the latest ${TARGET_CHANNEL} dataset.`);const parsed=nexusMissionNormalize(payload,'Imported verified mission snapshot',file.name);parsed.meta={...parsed.meta,gameVersion:id.code,targetPatch:TARGET_PATCH,targetChannel:TARGET_CHANNEL,patchVerified:true};if(!parsed.rows.length)throw new Error('No mission records found');nexusMissionApplyPayload(parsed)}catch(error){alert(`Mission import blocked: ${error.message}`)}finally{event.target.value=''}};
++  nexusMissionImport=async function(event){const file=event.target.files?.[0];if(!file)return;try{const payload=JSON.parse(await file.text()),id=payloadIdentity(payload,payload?.sourceUrl||file.name);if(!isTarget(id))throw new Error(`This snapshot identifies as ${id?.code||'unversioned'}. Contract Finder only accepts the latest ${TARGET_CHANNEL} dataset.`);const parsed=nexusMissionNormalize(payload,'Imported verified mission snapshot',file.name);parsed.meta={...parsed.meta,gameVersion:id.code,targetPatch:TARGET_PATCH,targetChannel:TARGET_CHANNEL,patchVerified:true};if(!parsed.rows.length)throw new Error('No mission records found');nexusMissionApplyPayload(parsed)}catch(error){alert(`Mission import blocked: ${error.message}`)}finally{event.target.value=''}};
+   const baseStatus=nexusMissionRenderStatus;nexusMissionRenderStatus=function(){baseStatus();const line=document.getElementById('mission-result-line');const id=identity(nexusMissionState.meta.gameVersion)||identity(nexusMissionState.sourceUrl);if(line)line.innerHTML=`<strong>${nexusMissionState.filtered.length.toLocaleString()}</strong> of ${nexusMissionState.records.length.toLocaleString()} contracts · ${isTarget(id)&&nexusMissionState.meta.patchVerified!==false?`verified ${id.code}`:`unverified snapshot · target latest ${TARGET_CHANNEL}`}`};
+ })();
+ </script><style id="nexus-v140-loadout-compact-hardpoints">
+@@ -75859,7 +75913,7 @@
+ 
+ 
+ <style id="nexus-health-cig-official-v18">
+-/* GAME STATUS & CIG INTELLIGENCE — OFFICIAL SOURCE REVIEW V19 · 4.10 PTU PRIORITY */
++/* GAME STATUS & CIG INTELLIGENCE — OFFICIAL SOURCE REVIEW V20 · DYNAMIC LIVE AUTHORITY */
+ #health-view .cig-source-seal{display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:6px 10px;border:1px solid rgba(52,211,153,.28);border-radius:999px;background:rgba(16,185,129,.08);color:#86efac;font:700 9.5px/1.2 'Share Tech Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
+ #health-view .cig-source-seal::before{content:'';width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 12px rgba(52,211,153,.75)}
+ #health-view .release-channel-card.inactive{border-color:rgba(148,163,184,.16)!important;background:linear-gradient(145deg,rgba(15,23,42,.74),rgba(7,12,20,.9))!important;box-shadow:inset 3px 0 0 rgba(148,163,184,.3),0 12px 34px rgba(0,0,0,.14)!important}
+@@ -75906,18 +75960,19 @@
+     statusJson:'https://status.robertsspaceindustries.com/index.json',
+     statusHistory:'https://status.robertsspaceindustries.com/affected/persistent-universe/index.html',
+     patchIndex:'https://robertsspaceindustries.com/en/patch-notes',
+-    patch49:'https://robertsspaceindustries.com/en/comm-link/Patch-Notes/21245-Star-Citizen-Alpha-49',
+-    knownIssues:'https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754-Star-Citizen-Alpha-4-9-Known-Issues',
++    patchCurrent:'https://robertsspaceindustries.com/en/patch-notes',
++    knownIssues:'https://support.robertsspaceindustries.com/hc/en-us/articles/360056254754',
+     commLink:'https://robertsspaceindustries.com/en/comm-link',
+     issueCouncil:'https://issue-council.robertsspaceindustries.com/',
+     ptuStatus:'https://support.robertsspaceindustries.com/hc/en-us/articles/360000668488-Install-the-Star-Citizen-PTU',
+     devtracker:'https://robertsspaceindustries.com/en/community/devtracker',
+-    ptuFocus:'https://robertsspaceindustries.com/spectrum/community/SC/forum/190049/thread/bugfix-and-issue-discussion-4-10-ptu-12311913-1/9049186'
++    ptuFocus:'https://robertsspaceindustries.com/en/community/devtracker'
+   });
+-  const CIG_CACHE_KEY='celestialNexusCigOfficialIntelV2';
++  const CIG_CACHE_KEY='celestialNexusCigOfficialIntelV3';
+   const CIG_CACHE_TTL=15*60*1000;
+   const CIG_PTU_FALLBACK_TTL=72*60*60*1000;
+-  const CIG_FALLBACK_VERIFIED_AT='2026-07-27T20:47:28Z';
++  const CIG_FALLBACK_VERIFIED_AT='2026-08-26T18:35:00Z';
++  const CIG_LIVE_FALLBACK_TTL=30*24*60*60*1000;
+   const CIG_FALLBACK_NEWS=Object.freeze([
+     {id:'cig-21273',kind:'Development',title:'This Week in Star Citizen - July 27, 2026',date:'2026-07-27T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21273-This-Week-In-Star-Citizen',excerpt:'The latest official weekly overview of Star Citizen activity and upcoming CIG programming.'},
+     {id:'cig-21237',kind:'Event',title:'Twitch Drops: Foundation Festival 2026',date:'2026-07-22T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21237-Twitch-Drops-Foundation-Festival-2026',excerpt:'Official Foundation Festival Twitch Drops information for July 29 through August 12.'},
+@@ -75930,14 +75985,15 @@
+     {id:'cig-21228',kind:'Media',title:'Inside Star Citizen - Alpha 4.9 Patch Report',date:'2026-07-09T16:00:00Z',url:'https://robertsspaceindustries.com/en/comm-link/transmission/21228-Inside-Star-Citizen',excerpt:'Official video overview of the missions, rewards, fixes, and features included with Alpha 4.9.'}
+   ]);
+   const CIG_FALLBACK_ISSUES=Object.freeze([
+-    'Player loses mouse and game interactivity',
++    'Error 403 - API Denied Issues',
++    'Player Loses Mouse and Game Interactivity',
+     'Error 41013',
+-    'Error 19003',
+-    'Error 60029 — shard locked',
+-    'Error 64006 / 64010 — spawn resolver',
+-    'Certain ships cannot be repaired',
+-    'Quantum snares and dampeners absent from the vehicle console',
+-    'Rental ships not showing in ASOP terminals'
++    'Error 41070',
++    'Error 19k, 30k, 60k, and infinite loading issues',
++    'Certain Ships Cannot Be Repaired',
++    'Quantum Snares and Dampeners Are Absent From the Vehicle Console',
++    'Rental Ships Are Not Showing in ASOP Terminals',
++    'Keycard Printer Timers Are Not Working'
+   ]);
+   const cigState={
+     loading:false,
+@@ -75947,14 +76003,14 @@
+     news:CIG_FALLBACK_NEWS.map(row=>({...row,type:'official',source:'CIG Comm-Link'})),
+     filter:'all',
+     release:{
+-      live:{version:'4.9.0',channel:'LIVE',build:'12302499',raw:'4.9.0-LIVE.12302499',source:'CIG Known Issues hotfix notice',date:'2026-07-23T00:00:00Z',url:CIG_URLS.knownIssues},
+-      base:{version:'4.9.0',channel:'LIVE',build:'12232306',raw:'4.9.0-LIVE.12232306',source:'Official Alpha 4.9 release notes',date:'2026-07-16T02:30:00Z',url:CIG_URLS.patch49},
+-      test:{version:'4.10',channel:'PTU',build:'12311913',raw:'4.10-PTU.12311913',source:'Official CIG Devtracker / Spectrum PTU focus testing',date:'2026-07-24T00:00:00Z',url:CIG_URLS.ptuFocus,accessWave:'Wave 1',waveSource:'Wave 1 reported by the toolkit maintainer; the active build is independently confirmed by CIG'},
++      live:{version:'4.10.0',channel:'LIVE',build:'12519617',raw:'4.10.0-LIVE.12519617',source:'CIG Support current LIVE bootstrap',date:'2026-08-26T18:35:00Z',url:'https://support.robertsspaceindustries.com/hc/en-us/articles/360003093114-Loaner-Ship-Matrix'},
++      base:{version:'4.10.0',channel:'LIVE',build:'12519617',raw:'4.10.0-LIVE.12519617',source:'Official Alpha 4.10 LIVE bootstrap',date:'2026-08-26T18:35:00Z',url:CIG_URLS.patchCurrent},
++      test:null,
+       checkedAt:CIG_FALLBACK_VERIFIED_AT,
+-      sourceMode:'CIG fallback snapshot reviewed 2026-07-27 · Devtracker PTU confirmation',
+-      ptuStatus:{status:'Online',liveStatus:'4.9',updatedAt:'2026-07-24T00:00:00Z',url:CIG_URLS.devtracker,sourceMode:'Official CIG Devtracker / Spectrum activity',supportStatus:'Offline on older CIG Support article'}
++      sourceMode:'CIG current LIVE bootstrap reviewed 2026-08-26 · dynamic official-source refresh enabled',
++      ptuStatus:{status:'Not reported',liveStatus:'4.10',updatedAt:'',url:CIG_URLS.devtracker,sourceMode:'Dynamic official CIG activity',supportStatus:'Not reported'}
+     },
+-    known:{title:'Star Citizen Alpha 4.9 Known Issues',updatedAt:'2026-07-27T17:32:00Z',issues:[...CIG_FALLBACK_ISSUES],count:CIG_FALLBACK_ISSUES.length,url:CIG_URLS.knownIssues,sourceMode:'CIG fallback snapshot'}
++    known:{title:'Star Citizen Alpha 4.10 Known Issues',updatedAt:'2026-08-27T00:00:00Z',issues:[...CIG_FALLBACK_ISSUES],count:CIG_FALLBACK_ISSUES.length,url:CIG_URLS.knownIssues,sourceMode:'CIG current LIVE bootstrap'}
+   };
+ 
+   function text(value){return String(value??'').replace(/\s+/g,' ').trim();}
+@@ -76028,7 +76084,7 @@
+       if(preferred)return absoluteUrl(preferred.getAttribute('href'),CIG_URLS.patchIndex);
+     }
+     const match=source.match(/https?:\/\/robertsspaceindustries\.com\/(?:en\/)?comm-link\/Patch-Notes\/\d+-[^\s)"'<>]+/i)||source.match(/\/(?:en\/)?comm-link\/Patch-Notes\/\d+-[^\s)"'<>]+/i);
+-    return match?absoluteUrl(match[0],CIG_URLS.patchIndex):CIG_URLS.patch49;
++    return match?absoluteUrl(match[0],CIG_URLS.patchIndex):CIG_URLS.patchCurrent;
+   }
+   function parseUpdatedAt(source){
+     const doc=parseDoc(source);
+@@ -76068,7 +76124,7 @@
+   function parsePtuActivity(source,mode){
+     const plain=text(parseDoc(source)?.body?.textContent||source);
+     const wave=plain.match(/\bWave\s*([1-5])\b/i);
+-    const active=/new PTU build has been published|latest PTU release|\[4\.10 PTU Feedback\]|4\.10 PTU \d{5,}|PTU build has been published/i.test(plain);
++    const active=/new PTU build has been published|latest PTU release|\[\d+(?:\.\d+){1,2}\s+(?:E?PTU)\s+Feedback\]|\d+(?:\.\d+){1,2}\s+(?:E?PTU)\s+\d{5,}|(?:E?PTU) build has been published/i.test(plain);
+     return {active,wave:wave?`Wave ${wave[1]}`:'',updatedAt:parseUpdatedAt(source)||'',url:CIG_URLS.devtracker,sourceMode:mode};
+   }
+   function classify(titleValue){
+@@ -76119,7 +76175,7 @@
+       fetchText(CIG_URLS.patchIndex),fetchText(CIG_URLS.knownIssues),fetchText(CIG_URLS.statusHistory),fetchText(CIG_URLS.ptuStatus),fetchText(CIG_URLS.devtracker),fetchText(CIG_URLS.ptuFocus)
+     ]);
+     const candidates=[];let base=null;let knownData={...cigState.known};let sourceModes=[];
+-    let patchUrl=CIG_URLS.patch49;
++    let patchUrl=CIG_URLS.patchCurrent;
+     if(patchIndex.status==='fulfilled'){
+       sourceModes.push(patchIndex.value.mode);patchUrl=extractPatchLink(patchIndex.value.text);
+       try{
+@@ -76156,16 +76212,17 @@
+       if(activity.active||activity.wave)ptuActivity={...ptuActivity,...activity,url:CIG_URLS.ptuFocus};
+       candidates.push(...buildCandidates(ptuFocus.value.text,'Official CIG Spectrum PTU focus-testing thread',CIG_URLS.ptuFocus,activity.updatedAt));
+     }
+-    candidates.push({...cigState.release.live},{...cigState.release.base});
+     const fallbackChecked=dateValue(cigState.release.checkedAt||CIG_FALLBACK_VERIFIED_AT)?.getTime()||0;
+     const fallbackFresh=fallbackChecked&&Date.now()-fallbackChecked<CIG_PTU_FALLBACK_TTL;
++    const liveFallbackFresh=fallbackChecked&&Date.now()-fallbackChecked<CIG_LIVE_FALLBACK_TTL;
++    if(liveFallbackFresh){candidates.push({...cigState.release.live},{...cigState.release.base});}
+     if(devtracker.status!=='fulfilled'&&ptuFocus.status!=='fulfilled'&&fallbackFresh&&cigState.release.test)candidates.push({...cigState.release.test});
+-    const live=newest(candidates.filter(row=>row.channel==='LIVE'))||cigState.release.live;
+-    base=base||newest(candidates.filter(row=>row.channel==='LIVE'&&row.source.includes('patch notes')))||cigState.release.base;
++    const live=newest(candidates.filter(row=>row.channel==='LIVE'))||(liveFallbackFresh?cigState.release.live:{version:'',channel:'LIVE',build:'',raw:'LIVE version unavailable',source:'Official CIG sources unavailable; stale fallback blocked',date:'',url:CIG_URLS.patchIndex});
++    base=base||newest(candidates.filter(row=>row.channel==='LIVE'&&row.source.includes('patch notes')))||(liveFallbackFresh?cigState.release.base:live);
+     let test=newest(candidates.filter(row=>row.channel==='PTU'||row.channel==='EPTU'));
+     test=test&&compareRelease(test,live)>0?test:null;
+     if(test){
+-      const fallbackWave=test.raw==='4.10-PTU.12311913'&&fallbackFresh?'Wave 1':'';
++      const fallbackWave='';
+       test={...test,accessWave:ptuActivity.wave||test.accessWave||fallbackWave,waveSource:ptuActivity.wave?'Official CIG Devtracker / Spectrum text':test.waveSource||'Wave 1 reported by the toolkit maintainer; official CIG confirms the active PTU build'};
+       ptuStatusData={...ptuStatusData,status:'Online',updatedAt:ptuActivity.updatedAt||test.date||new Date().toISOString(),url:test.url||CIG_URLS.devtracker,sourceMode:test.source||'Official CIG Devtracker / Spectrum activity',supportStatus:ptuStatusData.status};
+     }
+@@ -82385,6 +82442,79 @@
+ })();
+ </script>
+ 
++<script id="nexus-trade-live-build-guard-v1">
++/* Commodity Trading — reject cross-patch market/cache data and retire the automatic 4.9 fuel fallback. */
++(() => {
++  'use strict';
++  if(typeof nexusTradeRefresh!=='function')return;
++  const oldNormalize=nexusTradeNormalizeSnapshot;
++  const oldRenderKpis=nexusTradeRenderKpis;
++  const oldInitialize=nexusInitializeCommodityTrading;
++  const LIVE_SNAPSHOT_KEY='celestialNexusTradeSnapshotV2';
++  try{localStorage.removeItem('celestialNexusTradeSnapshotV1')}catch(_){}
++  NEXUS_TRADE_STORAGE.snapshot=LIVE_SNAPSHOT_KEY;
++
++  function id(value){return typeof window.nexusLiveBuildIdentity==='function'?window.nexusLiveBuildIdentity(value):null}
++  function same(a,b){return typeof window.nexusLiveBuildSame==='function'?window.nexusLiveBuildSame(a,b):String(a||'')===String(b||'')}
++  function versionFromParameters(payload){
++    const rows=nexusTradeRows(payload);for(const row of rows){const parsed=id(row?.game_version||row?.gameVersion||row?.version);if(parsed?.channel==='LIVE')return parsed}
++    const data=payload?.data;if(data&&typeof data==='object'&&!Array.isArray(data)){const parsed=id(data.game_version||data.gameVersion||data.version);if(parsed?.channel==='LIVE')return parsed}
++    return id(payload?.game_version||payload?.gameVersion||payload?.version);
++  }
++  function versionFromRows(rows){for(const row of Array.isArray(rows)?rows:[]){const parsed=id(row?.game_version||row?.gameVersion||row?.version);if(parsed?.channel==='LIVE')return parsed}return null}
++  function validForAuthority(snapshot,authority){const sid=id(snapshot?.gameVersion||snapshot?.game_version||snapshot?.version);return Boolean(sid&&authority?.patch&&same(sid.patch,authority.patch)&&snapshot?.versionVerified!==false)}
++
++  nexusTradeNormalizeSnapshot=function(snapshot){const clean=oldNormalize(snapshot);return {...clean,dataParameters:snapshot?.dataParameters||null,gameVersion:snapshot?.gameVersion||snapshot?.game_version||'',authorityPatch:snapshot?.authorityPatch||'',versionVerified:snapshot?.versionVerified===true,uexVehicles:Array.isArray(snapshot?.uexVehicles)?snapshot.uexVehicles:[]};};
++
++  // Preserve current vehicle fuel metadata when the Wiki/UEX feeds expose it.
++  const oldNormalizeShips=nexusTradeNormalizeShips;
++  nexusTradeNormalizeShips=function(rows,source='Star Citizen Wiki API'){
++    const normalized=oldNormalizeShips(rows,source),rawMap=new Map((Array.isArray(rows)?rows:[]).map(row=>[nexusTradeKey(row?.name||row?.vehicle_name),row]));
++    return normalized.map(ship=>{const raw=rawMap.get(nexusTradeKey(ship.name))||{};const quantumFuel=nexusTradeNum(raw?.fuel?.quantum,raw?.fuel?.quantum_capacity,raw?.quantum_fuel_capacity,raw?.fuel_quantum);const quantumRange=nexusTradeNum(raw?.fuel?.quantum_range,raw?.quantum?.range,raw?.quantum_range,raw?.range?.quantum);const gameVersion=String(raw?.game_version||raw?.version||'');return {...ship,quantumFuel:quantumFuel||Number(ship.quantumFuel)||0,quantumRange:quantumRange||Number(ship.quantumRange)||0,gameVersion:gameVersion||ship.gameVersion||''};});
++  };
++
++  function mergeUexVehicleFuel(ships,rows){const map=new Map((Array.isArray(rows)?rows:[]).map(row=>[nexusTradeKey(row?.name||row?.vehicle_name),row]));return ships.map(ship=>{const row=map.get(nexusTradeKey(ship.name));if(!row)return ship;const quantumFuel=nexusTradeNum(row.fuel_quantum,row.quantum_fuel,row.quantum_fuel_capacity,ship.quantumFuel);return {...ship,quantumFuel,gameVersion:String(row.game_version||ship.gameVersion||'')};});}
++
++  nexusTradeRefresh=async function(force=false){
++    if(nexusTradeState.loading)return;if(!force&&nexusTradeState.prices.length)return;nexusTradeState.loading=true;
++    nexusTradeSetStatus('Resolving the current LIVE build before loading market data…',true);nexusTradeSetSourceState('uex','idle','Verifying LIVE…');nexusTradeSetSourceState('wiki','idle','Connecting…');
++    try{
++      const authority=await window.nexusLiveBuildResolve({force});if(!authority?.verified)throw new Error('Current LIVE build authority is not verified.');
++      const requests=await Promise.allSettled([
++        nexusTradeFetchUEX('/data_parameters'),nexusTradeFetchUEX('/commodities_prices_all'),nexusTradeFetchUEX('/commodities'),nexusTradeFetchUEX('/terminals?type=commodity'),nexusTradeFetchUEX('/commodities_status'),nexusTradeFetchUEX('/game_versions'),nexusTradeFetchWiki(),nexusTradeFetchShips(),nexusTradeFetchUEX('/vehicles')
++      ]);
++      if(requests[0].status!=='fulfilled')throw requests[0].reason||new Error('UEX LIVE version endpoint failed.');
++      if(requests[1].status!=='fulfilled')throw requests[1].reason||new Error('Primary UEX price feed failed.');
++      const uexId=versionFromParameters(requests[0].value.payload);if(!uexId)throw new Error('UEX did not identify its current LIVE game version.');
++      if(!same(uexId.patch,authority.patch))throw new Error(`UEX market feed reports ${uexId.code}, but current LIVE authority is ${authority.code}. Market data was blocked to prevent a cross-patch mix.`);
++      const prices=nexusTradeRows(requests[1].value.payload);if(!prices.length)throw new Error('UEX returned no commodity price reports.');
++      const rows=i=>requests[i].status==='fulfilled'?nexusTradeRows(requests[i].value.payload):[];
++      const uexVehicles=rows(8);if(uexVehicles.length){const vehicleId=versionFromRows(uexVehicles);if(vehicleId&&!same(vehicleId.patch,authority.patch))throw new Error(`UEX vehicle data reports ${vehicleId.code}; expected ${authority.code}.`)}
++      let ships=requests[7].status==='fulfilled'?requests[7].value:nexusTradeState.ships;ships=mergeUexVehicleFuel(ships,uexVehicles);
++      const snapshot={prices,commodities:rows(2),terminals:rows(3),statuses:rows(4),versions:rows(5),wiki:requests[6].status==='fulfilled'?requests[6].value:[],ships,uexVehicles,shipSource:requests[7].status==='fulfilled'?'Star Citizen Wiki API':nexusTradeState.shipSource,dataParameters:requests[0].value.payload,gameVersion:uexId.code,authorityPatch:authority.patch,versionVerified:true,syncedAt:new Date().toISOString(),source:`UEX ${requests[1].value.via} · verified ${uexId.code}`};
++      nexusTradeApplySnapshot(snapshot,true);nexusTradeState.gameVersion=uexId.code;nexusTradeState.versionVerified=true;
++      const failures=requests.slice(2).filter(r=>r.status==='rejected').length;nexusTradeSetStatus(failures?`Current ${uexId.code} market loaded with ${failures} optional source${failures===1?'':'s'} unavailable.`:`Current ${uexId.code} market intelligence synchronized.`);
++    }catch(error){
++      let used=false;try{const authority=await window.nexusLiveBuildResolve({force:false}),cached=nexusTradeSafeRead(LIVE_SNAPSHOT_KEY,null);if(cached&&Array.isArray(cached.prices)&&cached.prices.length&&validForAuthority(cached,authority)){nexusTradeApplySnapshot(cached,false);nexusTradeSetStatus(`Live refresh failed; using same-patch ${cached.gameVersion} cache. ${error.message||error}`);nexusTradeSetSourceState('uex','warn','Same-patch cache');used=true}}catch(_){}
++      if(!used){nexusTradeState.prices=[];nexusTradeState.routes=[];nexusTradeSetStatus(`Current LIVE market unavailable; stale/cross-patch cache was blocked. ${error.message||error}`);nexusTradeSetSourceState('uex','bad','LIVE validation failed');nexusTradeRenderAll();}
++    }finally{nexusTradeState.loading=false}
++  };
++
++  nexusTradeRenderKpis=function(){oldRenderKpis();const node=document.getElementById('trade-kpi-version');if(node)node.textContent=nexusTradeState.versionVerified&&nexusTradeState.gameVersion?nexusTradeState.gameVersion:'Unverified'};
++
++  // No automatic legacy 4.9 estimates on a newer LIVE patch. Use current source values only, or require a manual range.
++  nexusTradeFuelProfile=function(shipName,shipRecord=null){const ship=shipRecord||nexusTradeState.ships.find(item=>nexusTradeKey(item.name)===nexusTradeKey(shipName))||{};const tank=Math.max(0,Number(ship.quantumFuel)||0),range=Math.max(0,Number(ship.quantumRange)||0);return {name:shipName||'Custom cargo profile',range,tank,consumption:range&&tank?(tank/range)*1000:0,drive:0,source:range?'Current LIVE vehicle feed':'Current LIVE range not exposed — enter a manual range',confidence:range?'LIVE source':'Manual range required'};};
++  nexusTradeFuelBuildPlan=function(startId,endId,shipName,options={}){const ship=nexusTradeState.ships.find(item=>item.name===shipName),profile=nexusTradeFuelProfile(shipName,ship),range=Number(options.range)||profile.range;if(!(range>0))return {profile,plan:null,requiresRange:true,options,start:NEXUS_TRADE_FUEL_NODE_MAP.get(startId),end:NEXUS_TRADE_FUEL_NODE_MAP.get(endId)};const effectiveProfile={...profile,range,consumption:profile.consumption||(profile.tank>0?(profile.tank/range)*1000:0)};return {profile:effectiveProfile,plan:nexusTradeFuelFindPath(startId,endId,effectiveProfile,{...options,range}),options,start:NEXUS_TRADE_FUEL_NODE_MAP.get(startId),end:NEXUS_TRADE_FUEL_NODE_MAP.get(endId)};};
++  nexusTradeFuelQuickSummary=function(route){try{const shipName=route.shipName||document.getElementById('trade-ship')?.value||'',result=nexusTradeFuelBuildPlan(nexusTradeFuelMapLocation(route.origin.location),nexusTradeFuelMapLocation(route.destination.location),shipName,{startFuel:100,reserve:20,overhead:8,strategy:'fewest'});if(result.requiresRange)return {className:'fail',label:'LIVE range needed',detail:'Enter a current manual range in Fuel planner'};if(!result.plan)return {className:'fail',label:'LIVE range risk',detail:'No serviced path at 20% reserve'};if(result.plan.stops===0)return {className:'',label:'LIVE direct',detail:`${result.plan.distance.toFixed(1)} GM · no fuel stop`};return {className:'stop',label:`LIVE · ${result.plan.stops} fuel stop${result.plan.stops===1?'':'s'}`,detail:`${result.plan.distance.toFixed(1)} GM via serviced stations`};}catch(_){return {className:'fail',label:'Fuel check unavailable',detail:'Open Fuel planner and enter a current range'}}};
++  nexusTradeFuelRenderProfile=function(){const node=document.getElementById('trade-fuel-profile');if(!node)return;const name=nexusTradeFuelShipName(),ship=nexusTradeState.ships.find(item=>item.name===name),profile=nexusTradeFuelProfile(name,ship),override=Number(document.getElementById('trade-fuel-range-override')?.value||0),options=nexusTradeFuelOptions(),published=override||profile.range,effective=published*(1-options.overhead/100),usable=effective*(1-options.reserve/100);const fmt=n=>Number(n||0).toFixed(1);node.innerHTML=`<strong>${nexusTradeEsc(name)} · ${profile.confidence}</strong><span>${nexusTradeEsc(profile.source)}. Older patch estimates are never substituted automatically.</span><div class="profile-grid"><span><b>${published>0?fmt(published):'—'} GM</b><small>${override?'Manual LIVE':'LIVE'} range</small></span><span><b>${published>0?fmt(effective):'—'} GM</b><small>Effective range</small></span><span><b>${published>0?fmt(usable):'—'} GM</b><small>Leg limit</small></span><span><b>${profile.tank>0?fmt(profile.tank):'—'} SCU</b><small>Quantum tank</small></span><span><b>${profile.consumption>0?fmt(profile.consumption):'—'}</b><small>mSCU / GM</small></span><span><b>LIVE</b><small>Version gated</small></span></div>`;};
++  const oldFuelRender=nexusTradeFuelRender;
++  nexusTradeFuelRender=function(){const options=nexusTradeFuelOptions(),ship=nexusTradeFuelShipName(),profile=nexusTradeFuelProfile(ship,nexusTradeState.ships.find(x=>x.name===ship));if(!(Number(options.range)>0)&&!(profile.range>0)){nexusTradeFuelState.plan={profile,plan:null,requiresRange:true,options};nexusTradeFuelRenderProfile();const output=document.getElementById('trade-fuel-results');if(output)output.innerHTML='<div class="trade-fuel-result-hero fail"><div class="trade-fuel-result-top"><div><div class="trade-section-kicker">Current LIVE range required</div><h3>Automatic legacy fuel estimates are disabled</h3><p>The current vehicle feeds did not expose a trustworthy quantum range for this ship.</p></div><div class="trade-fuel-readiness"><strong>INPUT</strong><span>Enter current range</span></div></div></div><div class="trade-fuel-advice fail">Enter the ship’s current LIVE quantum range in the manual range field. The planner will not substitute a 4.9 EPTU estimate after a game update.</div>';return}return oldFuelRender();};
++  nexusTradeFuelBrief=function(){const result=nexusTradeFuelState.plan;if(!result?.plan)return 'CELESTIAL NEXUS · CURRENT LIVE FUEL ROUTE\nA current LIVE or manual ship range is required before a route can be calculated.';const {plan,profile}=result,route=nexusTradeFuelState.route,ship=nexusTradeFuelShipName(),options=nexusTradeFuelOptions(),build=nexusTradeState.gameVersion||window.NEXUS_LIVE_BUILD?.code||'current LIVE';return [`CELESTIAL NEXUS · ${build} FUEL ROUTE`,`${route?.commodity?`${route.commodity} · `:''}${route?.originLabel||result.start.name} → ${route?.destinationLabel||result.end.name}`,`Ship: ${ship} · ${profile.range.toFixed(1)} GM range · ${profile.confidence}`,`Planning margin: ${options.reserve}% reserve · ${options.overhead}% operational overhead · ${options.startFuel}% departure fuel`,`Route: ${plan.nodes.map(node=>node.name).join(' → ')}`,`Distance: ${plan.distance.toFixed(1)} GM · ${plan.stops} refuel stop${plan.stops===1?'':'s'}`,`Verify fuel services, route access, and market conditions before departure.`].join('\n')};
++
++  nexusInitializeCommodityTrading=function(){const result=oldInitialize.apply(this,arguments);window.nexusLiveBuildResolve({force:false}).then(authority=>{const cached=nexusTradeSafeRead(LIVE_SNAPSHOT_KEY,null);if(cached&&!validForAuthority(cached,authority)){try{localStorage.removeItem(LIVE_SNAPSHOT_KEY)}catch(_){};if(nexusTradeState.prices.length&&!validForAuthority(nexusTradeState,authority)){nexusTradeState.prices=[];nexusTradeState.routes=[];nexusTradeRenderAll()}nexusTradeRefresh(true)}}).catch(()=>{});return result;};
++})();
++</script>
++
+ </body>
+ </html>
+ 
