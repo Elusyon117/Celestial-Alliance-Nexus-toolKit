@@ -1,13 +1,13 @@
 {
   "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-09-01T05:15:46.432Z",
-  "status": "passed-with-warnings",
+  "generatedAt": "2026-09-02T04:40:57.475Z",
+  "status": "passed",
   "appVersion": "2.0.1",
-  "patch": "4.9.0",
+  "patch": "4.10.0",
   "channel": "LIVE",
-  "missionCount": 1778,
+  "missionCount": 1533,
   "errors": 0,
-  "warnings": 1,
+  "warnings": 0,
   "patchReferences": [
     "4.0.0",
     "4.1.0",
@@ -17,11 +17,7 @@
     "4.4.0",
     "4.5.0",
     "4.6.0",
-    "4.7.0",
     "4.8.0",
-    "4.8.1",
-    "4.8.2",
-    "4.8.3",
     "4.9.0"
   ],
   "checks": [
@@ -41,25 +37,25 @@
       "name": "mission-count-minimum",
       "ok": true,
       "severity": "error",
-      "detail": "missions=1778"
+      "detail": "missions=1533"
     },
     {
       "name": "mission-count-consistent",
       "ok": true,
       "severity": "error",
-      "detail": "declared=1778; actual=1778"
+      "detail": "declared=1533; actual=1533"
     },
     {
       "name": "status-count-consistent",
       "ok": true,
       "severity": "error",
-      "detail": "status=1778; actual=1778"
+      "detail": "status=1533; actual=1533"
     },
     {
       "name": "patch-consistent",
       "ok": true,
       "severity": "error",
-      "detail": "payload=4.9.0; status=4.9.0"
+      "detail": "payload=4.10.0; status=4.10.0"
     },
     {
       "name": "channel-consistent",
@@ -69,9 +65,9 @@
     },
     {
       "name": "status-current",
-      "ok": false,
+      "ok": true,
       "severity": "warning",
-      "detail": "stale-upstream-unavailable"
+      "detail": "current"
     },
     {
       "name": "index-version",
@@ -83,7 +79,7 @@
       "name": "index-current-patch-reference",
       "ok": true,
       "severity": "warning",
-      "detail": "current=4.9.0; references=4.0.0, 4.1.0, 4.10.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.7.0, 4.8.0, 4.8.1, 4.8.2, 4.8.3, 4.9.0"
+      "detail": "current=4.10.0; references=4.0.0, 4.1.0, 4.10.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.8.0, 4.9.0"
     }
   ]
 }
