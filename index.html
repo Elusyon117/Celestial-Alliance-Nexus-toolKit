@@ -10775,7 +10775,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
       <span class="hub-rb-brand-copy">
         <span class="hub-rb-brand-name">Celestial Nexus</span>
-        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.1 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · resolving LIVE…</span></span>
+        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.1 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · 4.10.0-LIVE.12519617</span></span>
       </span>
     </button>
     <nav class="hub-rb-nav" aria-label="Main hub sections">
@@ -19802,7 +19802,7 @@ async function nexusLoadoutEnsureBlueprint(group, force = false) {
 
 function nexusLoadoutSnapshot(stock = false) {
   const result = {
-    burst:0,sustained:0,alpha:0,shield:0,shieldRegen:0,distortionResistance:0,power:0,powerDistortionHealth:0,cooling:0,quantumSpeed:0,quantumEfficiency:0,quantumSpool:0,
+    burst:0,sustained:0,alpha:0,shield:0,shieldRegen:0,distortionResistance:0,power:0,powerDistortionHealth:0,cooling:0,quantumSpeed:0,quantumEfficiency:0,quantumSpool:0,quantumCooldown:0,
     componentHealth:0,mass:0,powerDraw:0,coolingDraw:0,em:0,ir:0,extraPips:0,radarRange:0,armorHealth:0
   };
   const setup = nexusLoadoutState.setup;
@@ -19862,6 +19862,8 @@ function nexusLoadoutSnapshot(stock = false) {
       result.quantumEfficiency = Math.max(result.quantumEfficiency,increase(nexusLoadoutNumber(item,['quantum_drive.fuel_efficiency']),secondary));
       const spool = nexusLoadoutNumber(item,['quantum_drive.standard_jump.spool_up_time','quantum_drive.spool_up_time']);
       if (spool) result.quantumSpool = result.quantumSpool ? Math.min(result.quantumSpool,spool/Math.max(.01,1+secondary/100)) : spool/Math.max(.01,1+secondary/100);
+      const cooldown = nexusLoadoutNumber(item,['quantum_drive.standard_jump.cooldown_time','quantum_drive.cooldown_time']);
+      if (cooldown) result.quantumCooldown = result.quantumCooldown ? Math.min(result.quantumCooldown,cooldown) : cooldown;
     } else if (group.category === 'radar') {
       result.radarRange = Math.max(result.radarRange,increase(nexusLoadoutNumber(item,['radar.range','radar.detection_range','detection_range']),primary));
     } else if (group.category === 'armor') {
@@ -19893,7 +19895,8 @@ function nexusLoadoutStatDefinitions(current, stock, mode = 'detailed') {
     {key:'cooling',label:'Cooling output',unit:'units',help:'Selected coolers'},
     {key:'quantumSpeed',label:'Quantum speed',unit:'m/s',help:'Selected quantum drive'},
     {key:'quantumEfficiency',label:'Q efficiency',unit:'',help:'Fuel-efficiency factor'},
-    {key:'quantumSpool',label:'Q spool time',unit:'s',help:'Lower is better',lower:true},
+    {key:'quantumSpool',label:'Q spool time',unit:'s',help:'Time to spool the quantum drive before a standard jump',lower:true},
+    {key:'quantumCooldown',label:'Q cooldown',unit:'s',help:'Cooldown after a standard / long quantum jump before the drive is ready again',lower:true},
     {key:'componentHealth',label:'Component integrity',unit:'HP',help:'All modeled components'},
     {key:'mass',label:'Loadout mass',unit:'kg',help:'Selected modeled components',lower:true},
     {key:'powerDraw',label:'Maximum power draw',unit:'units',help:'Lower is better',lower:true},
@@ -19962,7 +19965,7 @@ function nexusLoadoutComponentMetrics(group) {
   }
   else if (group.category==='cooling') add('Cooling',nexusLoadoutNumber(item,['resource_network.generation.coolant']),'');
   else if (group.category==='quantum') {
-    add('Speed',nexusLoadoutNumber(item,['quantum_drive.standard_jump.drive_speed','quantum_drive.drive_speed']),'m/s'); add('Efficiency',nexusLoadoutNumber(item,['quantum_drive.fuel_efficiency']),''); add('Spool',nexusLoadoutNumber(item,['quantum_drive.standard_jump.spool_up_time']),'s');
+    add('Speed',nexusLoadoutNumber(item,['quantum_drive.standard_jump.drive_speed','quantum_drive.drive_speed']),'m/s'); add('Efficiency',nexusLoadoutNumber(item,['quantum_drive.fuel_efficiency']),''); add('Spool',nexusLoadoutNumber(item,['quantum_drive.standard_jump.spool_up_time']),'s'); add('Cooldown',nexusLoadoutNumber(item,['quantum_drive.standard_jump.cooldown_time','quantum_drive.cooldown_time']),'s');
   } else if (group.category==='radar') add('Range',nexusLoadoutNumber(item,['radar.range','radar.detection_range']),'m');
   else if (group.category==='miningLasers') {
     add('Power',nexusLoadoutNumber(item,['mining_laser.laser_power.max','mining_laser.laser_power.maximum']),'');
@@ -29236,7 +29239,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=2.0.1-live-current-r2').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=2.0.1-data-integrity-r3').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -41374,7 +41377,7 @@ function nexusMissionReleased(o){const v=nexusMissionGet(o,'released','is_releas
 function nexusMissionBool(o,...keys){const v=nexusMissionGet(o,...keys);return v===true||v===1||String(v).toLowerCase()==='true'||String(v).toLowerCase()==='yes'}
 function nexusMissionScoreArray(arr){if(!Array.isArray(arr)||!arr.length)return -1;let score=Math.min(arr.length,1000);const sample=arr.slice(0,12);for(const o of sample){if(!o||typeof o!=='object')continue;for(const k of ['title','name','description','debug_name','mission_giver','reward_min','reward_scope','reputation_gained','blueprints','faction','uuid'])if(k in o)score+=14}return score}
 function nexusMissionFindArray(payload){let best=[],bestScore=-1;const seen=new Set();function walk(v,depth=0){if(depth>7||v==null||typeof v!=='object'||seen.has(v))return;seen.add(v);if(Array.isArray(v)){const s=nexusMissionScoreArray(v);if(s>bestScore){best=v;bestScore=s}for(const x of v.slice(0,30))walk(x,depth+1);return}for(const [k,x] of Object.entries(v)){if(['missions','contracts','records','data','results','items'].includes(k.toLowerCase())&&Array.isArray(x)){const s=nexusMissionScoreArray(x)+40;if(s>bestScore){best=x;bestScore=s}}walk(x,depth+1)}}walk(payload);return bestScore>20?best:[]}
-function nexusMissionNormalize(payload,source,url=''){const rows=nexusMissionFindArray(payload);const meta=(payload&&typeof payload==='object'&&!Array.isArray(payload))?{...(payload.meta||payload.metadata||{}),gameVersion:payload.gameVersion||payload.game_version||payload.version||payload.patch||payload.meta?.gameVersion||payload.meta?.game_version,fetchedAt:payload.fetchedAt||payload.fetched_at||payload.updatedAt||payload.generatedAt||payload.meta?.fetchedAt||payload.meta?.generatedAt,isFallback:Boolean(payload.isFallback||payload.fallback||payload.meta?.isFallback),notice:payload.notice||payload.meta?.notice||'',missionCount:payload.missionCount||payload.count||rows.length,fields:payload.fields||payload.meta?.fields||[]}:{};return {rows:rows.map((raw,i)=>({...raw,__nexusId:nexusMissionId(raw,i),__nexusRaw:raw})),meta,source,url}}
+function nexusMissionNormalize(payload,source,url=''){const rows=nexusMissionFindArray(payload);const meta=(payload&&typeof payload==='object'&&!Array.isArray(payload))?{...(payload.meta||payload.metadata||{}),gameVersion:payload.gameVersion||payload.game_version||payload.version||payload.patch||payload.meta?.gameVersion||payload.meta?.game_version,fetchedAt:payload.fetchedAt||payload.fetched_at||payload.updatedAt||payload.generatedAt||payload.meta?.fetchedAt||payload.meta?.generatedAt,isFallback:Boolean(payload.isFallback||payload.fallback||payload.meta?.isFallback),notice:payload.notice||payload.meta?.notice||'',missionCount:payload.missionCount||payload.count||rows.length,fields:payload.fields||payload.meta?.fields||[]}:{};return {rows:rows.map((raw,i)=>({...raw,__nexusId:nexusMissionId(raw,i),__nexusRaw:raw,__nexusSummary:raw})),meta,source,url}}
 async function nexusMissionFetchJson(url,timeout=12000){const ctrl=new AbortController(),timer=setTimeout(()=>ctrl.abort(),timeout);try{const r=await fetch(url,{cache:'no-store',headers:{Accept:'application/json'},signal:ctrl.signal});if(!r.ok)throw new Error(`HTTP ${r.status}`);const ct=r.headers.get('content-type')||'';if(!ct.includes('json')){const text=await r.text();return JSON.parse(text)}return await r.json()}finally{clearTimeout(timer)}}
 async function nexusMissionTryScmdb(){const attempts=NEXUS_MISSION_SCMDB_CANDIDATES.map(async url=>{const payload=await nexusMissionFetchJson(url,10000);const parsed=nexusMissionNormalize(payload,'SCMDB live data',url);if(parsed.rows.length<5)throw new Error('No mission array');return parsed});return await Promise.any(attempts)}
 async function nexusMissionFetchWikiAll(){const rows=[],seen=new Set();let page=1,lastPage=1,firstMeta={};do{const url=new URL(NEXUS_MISSION_WIKI_URL);url.searchParams.set('page[size]','200');url.searchParams.set('page[number]',String(page));url.searchParams.set('filter[grouped]','false');const payload=await nexusMissionFetchJson(url.href,22000);if(page===1)firstMeta=payload?.meta||payload?.metadata||{};const found=nexusMissionFindArray(payload);found.forEach((row,index)=>{const key=nexusMissionId(row,rows.length+index);if(!seen.has(key)){seen.add(key);rows.push(row)}});const meta=payload?.meta||payload?.metadata||{};const last=Number(meta.last_page||meta.lastPage||meta.total_pages||meta.totalPages||meta?.page?.last||0);if(Number.isFinite(last)&&last>0)lastPage=last;else if(payload?.links?.next)lastPage=Math.max(lastPage,page+1);else lastPage=page;page+=1}while(page<=lastPage&&page<=100);return{missions:rows,meta:{...firstMeta,isFallback:true,fetchedAt:new Date().toISOString(),missionCount:rows.length}}}
@@ -41599,12 +41602,23 @@ function nexusInitializeMissionFinder(){if(nexusMissionState.initialized){nexusM
     return Boolean(record.__nexusDetailLoaded || ['reward_groups','reward_items','reputation_lost','hauling_orders','starmap_locations','prerequisite_groups','unlock_groups','completion_tags'].some(key=>hasValue(record[key])));
   }
 
+  function mergeDetailValue(base,value){
+    const plain=v=>v&&typeof v==='object'&&!Array.isArray(v);
+    if(plain(base)&&plain(value)){const out={...base};for(const [key,next] of Object.entries(value))out[key]=mergeDetailValue(out[key],next);return out;}
+    if(Array.isArray(value))return value.length?value:(Array.isArray(base)&&base.length?base:value);
+    if(value===null||value===undefined)return base!==undefined?base:value;
+    if(typeof value==='string'&&!value.trim())return base!==undefined&&base!==null&&String(base).trim()?base:value;
+    return value;
+  }
+
   function mergeDetail(record,detail){
     const id = record.__nexusId;
-    const raw = record.__nexusRaw && typeof record.__nexusRaw === 'object' ? record.__nexusRaw : {};
-    const merged = {...raw,...detail};
-    Object.assign(record,detail);
+    const summary = record.__nexusSummary && typeof record.__nexusSummary === 'object' ? record.__nexusSummary : (record.__nexusRaw||{});
+    const raw = record.__nexusRaw && typeof record.__nexusRaw === 'object' ? record.__nexusRaw : summary;
+    const merged = mergeDetailValue(raw,detail||{});
+    Object.assign(record,merged);
     record.__nexusId = id;
+    record.__nexusSummary = summary;
     record.__nexusRaw = merged;
     record.__nexusDetailLoaded = true;
     record.__nexusDetailState = 'loaded';
@@ -64266,6 +64280,19 @@ html[data-nexus-bg-motion="static"] .page-view::before {
     return Number.isFinite(n)?n:null;
   }
   function valueNum(record,...keys){return num(get(record,...keys))}
+  function meaningful(value){
+    if(value===null||value===undefined)return false;
+    if(typeof value==='string')return !!value.trim();
+    if(Array.isArray(value))return value.length>0;
+    if(typeof value==='object')return Object.keys(value).length>0;
+    return true;
+  }
+  function missionSources(record){
+    const values=[record,record?.__nexusRaw,record?.__nexusSummary,record?.__raw_api_record?.attributes],seen=new Set();
+    return values.filter(value=>value&&typeof value==='object'&&!seen.has(value)&&(seen.add(value),true));
+  }
+  function getAcross(record,...keys){for(const source of missionSources(record)){for(const key of keys){const value=get(source,key);if(meaningful(value))return value;}}return null}
+  function valueNumAcross(record,...keys){return num(getAcross(record,...keys))}
   function formatNumber(value,digits=0){const n=num(value);return n===null?'Not listed':n.toLocaleString(undefined,{maximumFractionDigits:digits})}
   function formatSeconds(value){const s=num(value);if(s===null)return '';if(s<60)return `${formatNumber(s)} sec`;if(s<3600)return `${formatNumber(s/60,1)} min`;if(s<86400)return `${formatNumber(s/3600,1)} hr`;return `${formatNumber(s/86400,1)} days`}
   function yesNo(value){
@@ -64279,10 +64306,10 @@ html[data-nexus-bg-motion="static"] .page-view::before {
   function normalizeBriefing(value){return text(value).replace(/\\n/g,'\n').replace(/\r\n/g,'\n').trim()}
 
   function rewardInfo(record){
-    const low=valueNum(record,'reward_min','rewardUEC','reward_uec','payoutUEC','reward.minimum','reward.min','reward.amount','rewards.credits.min','payout_min','payout.minimum','payout.amount','payout');
-    const max=valueNum(record,'reward_max','rewardMaximum','reward_maximum','reward.maximum','reward.max','rewards.credits.max','payout_max','payout.maximum');
+    const low=valueNumAcross(record,'reward_min','rewardUEC','reward_uec','payoutUEC','reward.minimum','reward.min','reward.amount','rewards.credits.min','payout_min','payout.minimum','payout.amount','payout');
+    const max=valueNumAcross(record,'reward_max','rewardMaximum','reward_maximum','reward.maximum','reward.max','rewards.credits.max','payout_max','payout.maximum');
     const first=low!==null?low:max, high=max!==null?max:low;
-    const currency=text(get(record,'reward_currency','reward.currency','currency'))||'aUEC';
+    const currency=text(getAcross(record,'reward_currency','reward.currency','currency'))||'aUEC';
     return {low:first,high,currency,text:first===null?'Not exposed':`${formatNumber(first)}${high!==null&&high!==first?`–${formatNumber(high)}`:''} ${currency}`};
   }
   function durationMinutes(record){
@@ -64302,19 +64329,25 @@ html[data-nexus-bg-motion="static"] .page-view::before {
     return num(get(entry,'amount','value','xp','reputation','rep','standing'))||0;
   }
   function reputation(record){
-    const gained=[...arr(get(record,'reputation_gained','reputationGained','reputation_rewards.gained','rewards.reputation.gained')),...arr(get(record,'reputation_rewards','rewards.reputation')).filter(v=>v&&typeof v==='object')].filter(Boolean);
-    const lost=arr(get(record,'reputation_lost','reputationLost','reputation_rewards.lost','rewards.reputation.lost')).filter(Boolean);
-    let gain=gained.reduce((sum,item)=>sum+Math.max(0,repAmount(item)),0);
-    let loss=lost.reduce((sum,item)=>sum+Math.abs(repAmount(item)),0);
-    const direct=valueNum(record,'reputation_amount','reputation.amount','rep_amount','standing_reward','reputation_reward');
-    const directLoss=valueNum(record,'reputation_lost_amount','rep_lost_amount','reputation.penalty');
-    if(!gain&&direct!==null)gain=direct;
+    let gained=[],lost=[],gain=0,loss=0;
+    for(const source of missionSources(record)){
+      const sourceGained=[...arr(get(source,'reputation_gained','reputationGained','reputation_rewards.gained','rewards.reputation.gained')),...arr(get(source,'reputation_rewards','rewards.reputation')).filter(v=>v&&typeof v==='object')].filter(Boolean);
+      const sourceLost=arr(get(source,'reputation_lost','reputationLost','reputation_rewards.lost','rewards.reputation.lost')).filter(Boolean);
+      const sourceGain=sourceGained.reduce((sum,item)=>sum+Math.max(0,repAmount(item)),0);
+      const sourceLoss=sourceLost.reduce((sum,item)=>sum+Math.abs(repAmount(item)),0);
+      if(!gain&&sourceGain){gain=sourceGain;gained=sourceGained;}
+      if(!loss&&sourceLoss){loss=sourceLoss;lost=sourceLost;}
+      if(gain&&loss)break;
+    }
+    const direct=valueNumAcross(record,'reputation_amount','reputation.amount','rep_amount','standing_reward','reputation_reward');
+    const directLoss=valueNumAcross(record,'reputation_lost_amount','rep_lost_amount','reputation.penalty');
+    if(!gain&&direct!==null)gain=Math.max(0,direct);
     if(!loss&&directLoss!==null)loss=Math.abs(directLoss);
-    return {gain,loss,entries:gained};
+    return {gain,loss,entries:gained,lostEntries:lost};
   }
   function requiredAccess(record){
-    const standing=text(get(record,'min_standing.name','min_standing_name','minStanding.name','requirements.min_standing.name','requirements.min_standing'))||'Not listed';
-    const points=valueNum(record,'min_standing.min_reputation','min_standing.reputation','minimum_reputation','reputation_prerequisite.min_reputation','requirements.min_reputation','required_reputation');
+    const standing=text(getAcross(record,'min_standing.name','min_standing_name','minStanding.name','requirements.min_standing.name','requirements.min_standing'))||'Not listed';
+    const points=valueNumAcross(record,'min_standing.min_reputation','min_standing.reputation','minimum_reputation','reputation_prerequisite.min_reputation','requirements.min_reputation','required_reputation');
     return {standing,points,label:points!==null?`${standing} · ${formatNumber(points)} XP`:standing};
   }
   function blueprintScalar(value){
@@ -67857,12 +67890,15 @@ body.nx-stable-select-open{overflow:hidden!important}
   }
   function blueprintModifierRows(bp,itemRows){
     const covered=new Set(itemRows.map(row=>row?.statKey).filter(Boolean));
+    const coveredPaths=new Set(itemRows.map(row=>clean(row?.path)).filter(Boolean));
+    const coveredLabels=new Set(itemRows.map(row=>clean(row?.label).toLowerCase()).filter(Boolean));
     const seen=new Set();
     return effectsFor(bp).map((effect,index)=>{
       const statKey=effectStatKey(effect);
       if(statKey&&covered.has(statKey))return null;
       const path=clean(effect?.exactPath||effect?.key||effect?.property_key||effect?.property_uuid||effect?.label||`blueprint-property-${index+1}`);
       const label=clean(effect?.label)||path.replace(/[._:-]+/g,' ').replace(/\b\w/g,ch=>ch.toUpperCase());
+      if((path&&coveredPaths.has(path))||coveredLabels.has(label.toLowerCase()))return null;
       const dedupe=`${statKey}|${path}|${label}`;
       if(seen.has(dedupe))return null;
       seen.add(dedupe);
@@ -67967,6 +68003,10 @@ body.nx-stable-select-open{overflow:hidden!important}
   function baseChips(record){const chips=[];const maker=clean(record?.manufacturer?.name||record?.manufacturer_description);if(maker)chips.push({kind:'maker',text:maker});if(Number.isFinite(Number(record?.mass)))chips.push({text:fmt(record.mass,'kg',0)});if(clean(record?.grade))chips.push({text:`Grade ${clean(record.grade)}`});if(Number.isFinite(Number(record?.size)))chips.push({text:`Size ${record.size}`});return chips}
   function buildModel(record,bp){const key=typeKey(record,bp);let model;if(key.includes('weapon')||key.includes('gun'))model=weaponStats(record,bp);else if(key.includes('shield'))model=shieldStats(record);else if(key.includes('quantum'))model=quantumStats(record);else if(key.includes('powerplant')||key.includes('power plant'))model=componentStats(record,'power');else if(key.includes('cooler'))model=componentStats(record,'cooler');else if(key.includes('radar'))model=componentStats(record,'radar');else if(key.includes('mining'))model=componentStats(record,'mining');else model=componentStats(record,'generic');
     if(!model.rows.length){const common=[row('Component Integrity',numberAt(record,['durability.health']),'HP','integrity'),row('Mass',numberAt(record,['mass']),'kg','mass',{projectable:false})].filter(Boolean);model.rows=common}
+    // Material curves can affect fields that the output item record does not expose as absolute stats
+    // (for example Damage Mitigation on armor). Preserve those exact blueprint modifiers as
+    // baseline-to-selected multiplier rows for every blueprint/output class.
+    model.rows.push(...blueprintModifierRows(bp,model.rows));
     return model
   }
   function render(host,bp,record){
@@ -80551,7 +80591,7 @@ function ensureDom(){
 function base(s){ try{return s.vehicle?nexusLoadoutBaseMetrics(s.vehicle):{};}catch(_){return {};} }
 function effectiveMods(group,stock){ try{return nexusLoadoutEffectiveMods(group,stock);}catch(_){return {primary:0,secondary:0,durability:0,power:0,cooling:0,em:0,ir:0,mass:0,flatPips:0};} }
 function snapshotFor(s,stock=false){
-  const result={burst:0,sustained:0,alpha:0,shield:0,shieldRegen:0,distortionResistance:0,power:0,powerDistortionHealth:0,cooling:0,quantumSpeed:0,quantumEfficiency:0,quantumSpool:0,componentHealth:0,mass:0,powerDraw:0,coolingDraw:0,em:0,ir:0,extraPips:0,radarRange:0,armorHealth:0};
+  const result={burst:0,sustained:0,alpha:0,shield:0,shieldRegen:0,distortionResistance:0,power:0,powerDistortionHealth:0,cooling:0,quantumSpeed:0,quantumEfficiency:0,quantumSpool:0,quantumCooldown:0,componentHealth:0,mass:0,powerDraw:0,coolingDraw:0,em:0,ir:0,extraPips:0,radarRange:0,armorHealth:0};
   const setup=s.setup;if(!setup)return result;let distortionTotal=0,distortionWeight=0;
   (setup.groups||[]).forEach(group=>{
     const item=stock?group.stockRecord:group.selectedRecord;if(!item||/empty/i.test(item.name||''))return;
@@ -80563,7 +80603,7 @@ function snapshotFor(s,stock=false){
     else if(group.category==='shields'){const hp=increase(num(['shield.max_health']),primary)*count;result.shield+=hp;result.shieldRegen+=increase(num(['shield.regen_rate']),secondary)*count;try{const dr=nexusLoadoutPercent(item,['shield.resistance.distortion.max','shield.resistance.distortion.maximum','shield.distortion_resistance','shield.distortion_resistance_max']);if(Number.isFinite(dr)){const w=Math.max(1,hp||count);distortionTotal+=dr*w;distortionWeight+=w;}}catch(_){} }
     else if(group.category==='power'){result.power+=increase(num(['resource_network.generation.power']),primary)*count;try{result.powerDistortionHealth=Math.max(result.powerDistortionHealth,nexusLoadoutDistortionMaximum(item));}catch(_){}result.extraPips+=Number(mods.flatPips||0)*count;}
     else if(group.category==='cooling')result.cooling+=increase(num(['resource_network.generation.coolant']),primary)*count;
-    else if(group.category==='quantum'){result.quantumSpeed=Math.max(result.quantumSpeed,increase(num(['quantum_drive.standard_jump.drive_speed','quantum_drive.drive_speed']),primary));result.quantumEfficiency=Math.max(result.quantumEfficiency,increase(num(['quantum_drive.fuel_efficiency']),secondary));const spool=num(['quantum_drive.standard_jump.spool_up_time','quantum_drive.spool_up_time']);if(spool)result.quantumSpool=result.quantumSpool?Math.min(result.quantumSpool,spool/Math.max(.01,1+secondary/100)):spool/Math.max(.01,1+secondary/100);}
+    else if(group.category==='quantum'){result.quantumSpeed=Math.max(result.quantumSpeed,increase(num(['quantum_drive.standard_jump.drive_speed','quantum_drive.drive_speed']),primary));result.quantumEfficiency=Math.max(result.quantumEfficiency,increase(num(['quantum_drive.fuel_efficiency']),secondary));const spool=num(['quantum_drive.standard_jump.spool_up_time','quantum_drive.spool_up_time']);if(spool)result.quantumSpool=result.quantumSpool?Math.min(result.quantumSpool,spool/Math.max(.01,1+secondary/100)):spool/Math.max(.01,1+secondary/100);const cooldown=num(['quantum_drive.standard_jump.cooldown_time','quantum_drive.cooldown_time']);if(cooldown)result.quantumCooldown=result.quantumCooldown?Math.min(result.quantumCooldown,cooldown):cooldown;}
     else if(group.category==='radar')result.radarRange=Math.max(result.radarRange,increase(num(['radar.range','radar.detection_range','detection_range']),primary));
   });
   if(distortionWeight>0)result.distortionResistance=distortionTotal/distortionWeight;
@@ -82405,14 +82445,47 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
     try{const response=await fetch(url,{headers:{Accept:'application/json'},cache:'no-store',signal:controller.signal});if(!response.ok)throw new Error(`HTTP ${response.status}`);return await response.json();}finally{clearTimeout(timer);}
   }
   function rows(payload){if(Array.isArray(payload))return payload;if(Array.isArray(payload?.data))return payload.data;if(Array.isArray(payload?.results))return payload.results;if(payload?.data&&typeof payload.data==='object')return [payload.data];return payload&&typeof payload==='object'?[payload]:[];}
-  function uexVersion(payload){for(const row of rows(payload)){const value=row?.game_version||row?.gameVersion||row?.version;if(value)return String(value);}return '';}
+  function uexVersion(payload){
+    const seen=new Set();
+    const candidate=value=>{
+      const raw=String(value??'').trim();if(!raw)return '';
+      const exact=raw.match(/\b\d+(?:\.\d+){1,3}-(?:LIVE|PTU|EPTU)(?:\.\d+)?\b/i);if(exact)return exact[0];
+      const patchOnly=raw.match(/\b4\.\d+(?:\.\d+){0,2}\b/);return patchOnly?patchOnly[0]:'';
+    };
+    function scan(value,depth=0){
+      if(value==null||depth>8)return '';
+      if(typeof value!=='object')return candidate(value);
+      if(seen.has(value))return '';seen.add(value);
+      for(const key of ['game_version','gameVersion','live_version','liveVersion','current_game_version','currentGameVersion']){const found=candidate(value?.[key]);if(found)return found;}
+      const name=String(value?.name||value?.key||value?.parameter||value?.slug||value?.code||'').toLowerCase().replace(/[^a-z0-9]+/g,'');
+      if(name.includes('gameversion')||name==='liveversion'){for(const key of ['value','current_value','currentValue','data','text','label']){const found=candidate(value?.[key]);if(found)return found;}}
+      for(const key of ['data','parameters','settings','globals','results','items']){const nested=value?.[key];if(nested!==undefined){const found=scan(nested,depth+1);if(found)return found;}}
+      for(const nested of Object.values(value)){const found=scan(nested,depth+1);if(found)return found;}
+      return '';
+    }
+    return scan(payload);
+  }
   async function ensureUexCurrent(force=false){
     if(uexAuthorityPromise&&!force)return uexAuthorityPromise;
     uexAuthorityPromise=(async()=>{
-      const live=await authority(force),errors=[];
+      const live=await authority(force),errors=[],healthyWithoutVersion=[];
       for(const base of ['https://api.uexcorp.uk/2.0','https://api.uexcorp.space/2.0']){
-        try{const payload=await rawJson(`${base}/data_parameters`,12000),version=uexVersion(payload);if(!version)throw new Error('game_version missing');if(!samePatch(version,live.patch))throw new Error(`UEX reports ${version}; expected ${live.code}`);return {live,version,base,checkedAt:Date.now()};}catch(error){errors.push(`${base}: ${error.message||error}`);}
+        let healthy=false;
+        for(const endpoint of ['data_parameters','game_versions','game_versions_all']){
+          try{
+            const payload=await rawJson(`${base}/${endpoint}`,12000);healthy=true;
+            const version=uexVersion(payload);
+            if(!version)continue;
+            if(!samePatch(version,live.patch)){errors.push(`${base}/${endpoint}: UEX reports ${version}; expected ${live.code}`);continue;}
+            return {live,version,base,checkedAt:Date.now(),versionSource:endpoint};
+          }catch(error){errors.push(`${base}/${endpoint}: ${error.message||error}`);}
+        }
+        if(healthy)healthyWithoutVersion.push({live,version:'',base,checkedAt:Date.now(),versionUnexposed:true});
       }
+      // UEX occasionally serves healthy price endpoints while omitting game_version from data_parameters.
+      // Do not falsely mark every component as unavailable in that case: detailed price rows are still
+      // filtered by their own game_version / newest compatible patch family downstream.
+      if(healthyWithoutVersion.length)return healthyWithoutVersion[0];
       throw new Error(`UEX current-LIVE validation failed. ${errors.join(' · ')}`);
     })();
     try{return await uexAuthorityPromise;}catch(error){uexAuthorityPromise=null;throw error;}
@@ -82601,8 +82674,8 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
       if(view.id==='hub-view')return;
       if(view.querySelector(':scope > .nexus-live-build-floating, .nexus-module-live-build-badge'))return;
       const actions=view.querySelector('.nexus-topbar-actions');
-      if(actions){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · resolving LIVE…';actions.prepend(badge);return;}
-      if(view.id==='planner-view'){const header=view.querySelector('.header-top');if(header){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · resolving LIVE…';header.appendChild(badge);}}
+      if(actions){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · 4.10.0-LIVE.12519617';actions.prepend(badge);return;}
+      if(view.id==='planner-view'){const header=view.querySelector('.header-top');if(header){const badge=document.createElement('span');badge.className='nexus-module-live-build-badge';badge.textContent='GAME DATA · 4.10.0-LIVE.12519617';header.appendChild(badge);}}
     });
   }
   function updateBadges(live,error=''){
@@ -82618,6 +82691,29 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
 })();
 </script>
 
+<script id="nexus-live-build-badge-integrity-r3">
+(() => {
+  'use strict';
+  const FALLBACK={patch:'4.10.0',code:'4.10.0-LIVE.12519617',verified:true,source:'bundled current-LIVE fallback'};
+  function apply(live){
+    const value=live?.code?live:FALLBACK;
+    const label=`GAME DATA · ${value.code}`;
+    const title=value?.verified===false?'Current LIVE authority could not be verified; showing bundled last-known LIVE build.':`Current Star Citizen LIVE game-data build: ${value.code}`;
+    const hub=document.getElementById('nexus-hub-live-build');if(hub){hub.textContent=label;hub.title=title;}
+    document.querySelectorAll('.nexus-module-live-build-badge').forEach(node=>{node.textContent=label;node.title=title;node.classList.toggle('unverified',value?.verified===false);});
+  }
+  async function refresh(force=false){
+    apply(window.NEXUS_LIVE_BUILD||FALLBACK);
+    if(typeof window.nexusLiveBuildResolve==='function'){
+      try{apply(await window.nexusLiveBuildResolve({force}));}catch(error){console.warn('LIVE build badge refresh failed; retaining bundled build.',error);}
+    }
+  }
+  const start=()=>refresh(false);
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
+  document.addEventListener('nexus:livebuild',event=>apply(event?.detail||window.NEXUS_LIVE_BUILD||FALLBACK));
+  window.addEventListener('online',()=>refresh(true),{passive:true});
+})();
+</script>
 </body>
 </html>
 

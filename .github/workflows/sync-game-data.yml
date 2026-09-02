@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       patch:
-        description: Optional patch override. Leave blank to resolve the current patch for the selected channel.
+        description: Optional patch override, for example 4.10. Leave blank for newest LIVE.
         required: false
         type: string
       channel:
@@ -44,98 +44,41 @@ jobs:
 
       - name: Validate update scripts
         run: |
-          node --check scripts/resolve-live-build.mjs
-          node --check scripts/verify-live-data.mjs
-          node --check scripts/normalize-contract-payouts.mjs
+          node --check scripts/sync-live-build.mjs
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
 
-      - name: Resolve requested channel
-        id: request
-        shell: bash
+      - name: Synchronize current LIVE build authority
         env:
-          INPUT_PATCH: ${{ github.event.inputs.patch || '' }}
-          INPUT_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
-        run: |
-          set -euo pipefail
-          channel="${INPUT_CHANNEL:-LIVE}"
-          patch="${INPUT_PATCH:-}"
-          echo "channel=$channel" >> "$GITHUB_OUTPUT"
-          echo "patch=$patch" >> "$GITHUB_OUTPUT"
+          LIVE_BUILD_URL: ${{ vars.LIVE_BUILD_URL }}
+        run: node scripts/sync-live-build.mjs
 
-      - name: Resolve authoritative current LIVE build
-        id: live
-        if: steps.request.outputs.channel == 'LIVE'
-        run: node scripts/resolve-live-build.mjs --write data/live-build.json --github-output
-
-      - name: Resolve synchronization target
-        id: target
-        shell: bash
+      - name: Synchronize newest SCMDB dataset
         env:
-          REQUEST_PATCH: ${{ steps.request.outputs.patch }}
-          REQUEST_CHANNEL: ${{ steps.request.outputs.channel }}
-          LIVE_PATCH: ${{ steps.live.outputs.patch }}
-        run: |
-          set -euo pipefail
-          channel="${REQUEST_CHANNEL:-LIVE}"
-          patch="${REQUEST_PATCH:-}"
-          if [[ "$channel" == "LIVE" && -z "$patch" ]]; then
-            patch="${LIVE_PATCH:-}"
-            if [[ -z "$patch" ]]; then
-              echo "Unable to resolve the authoritative LIVE patch." >&2
-              exit 1
-            fi
-          fi
-          echo "channel=$channel" >> "$GITHUB_OUTPUT"
-          echo "patch=$patch" >> "$GITHUB_OUTPUT"
-          echo "Target: ${patch:-newest manifest} $channel"
-
-      - name: Synchronize SCMDB dataset
-        env:
-          MISSION_PATCH: ${{ steps.target.outputs.patch }}
-          MISSION_CHANNEL: ${{ steps.target.outputs.channel }}
+          MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
+          MISSION_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
           SCMDB_BASE_URL: ${{ vars.SCMDB_BASE_URL }}
           SCMDB_VERSIONS_URL: ${{ vars.SCMDB_VERSIONS_URL }}
           SCMDB_MISSIONS_URL: ${{ vars.SCMDB_MISSIONS_URL }}
         run: node scripts/sync-scmdb-missions.mjs
 
-      - name: Normalize Contract Finder payout fields
-        run: node scripts/normalize-contract-payouts.mjs
-
       - name: Audit other patch-sensitive modules
         run: node scripts/audit-patch-data.mjs
-
-      - name: Verify Contract Finder against authoritative LIVE
-        if: steps.target.outputs.channel == 'LIVE'
-        run: node scripts/verify-live-data.mjs --strict
 
       - name: Read synchronization result
         id: result
         shell: bash
-        env:
-          TARGET_PATCH: ${{ steps.target.outputs.patch }}
-          TARGET_CHANNEL: ${{ steps.target.outputs.channel }}
         run: |
           node <<'NODE' >> "$GITHUB_OUTPUT"
           const fs = require('fs');
           const status = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
           const audit = JSON.parse(fs.readFileSync('data/patch-audit.json', 'utf8'));
+          const live = JSON.parse(fs.readFileSync('data/live-build.json', 'utf8'));
           const module = status.modules.contractFinder;
-          const channel = module.channel || process.env.TARGET_CHANNEL || 'LIVE';
-          const patch = module.patch || process.env.TARGET_PATCH || '';
-          let contractCurrent = true;
-          if (channel === 'LIVE') {
-            if (!fs.existsSync('data/live-data-verification.json')) contractCurrent = false;
-            else {
-              const verification = JSON.parse(fs.readFileSync('data/live-data-verification.json', 'utf8'));
-              contractCurrent = verification?.modules?.contractFinder?.current === true;
-            }
-          }
-          console.log(`version=${module.gameVersion || patch || channel}`);
-          console.log(`patch=${patch}`);
-          console.log(`channel=${channel}`);
+          console.log(`version=${module.gameVersion}`);
+          console.log(`patch=${module.patch}`);
           console.log(`stale=${audit.staleReferenceCount}`);
-          console.log(`contract_current=${contractCurrent}`);
+          console.log(`live_build=${live.code}`);
           NODE
 
       - name: Commit changed snapshots and reports
@@ -143,16 +86,11 @@ jobs:
         run: |
           set -euo pipefail
           git add \
+            data/live-build.json \
             data/scmdb-missions-live.json \
             data/scmdb-missions-live.js \
             data/game-data-status.json \
             data/patch-audit.json
-          if [[ -f data/live-build.json && "${{ steps.target.outputs.channel }}" == "LIVE" ]]; then
-            git add data/live-build.json
-          fi
-          if [[ -f data/live-data-verification.json && "${{ steps.target.outputs.channel }}" == "LIVE" ]]; then
-            git add data/live-data-verification.json
-          fi
           if git diff --cached --quiet; then
             echo "All game data is already current."
             exit 0
@@ -164,34 +102,31 @@ jobs:
           git push origin "HEAD:$GITHUB_REF_NAME"
 
       - name: Create or update patch-review issue
-        if: steps.result.outputs.stale != '0' || (steps.result.outputs.channel == 'LIVE' && steps.result.outputs.contract_current != 'true')
+        if: steps.result.outputs.stale != '0'
         uses: actions/github-script@v8
         env:
           CURRENT_PATCH: ${{ steps.result.outputs.patch }}
-          CURRENT_CHANNEL: ${{ steps.result.outputs.channel }}
+          CURRENT_LIVE_BUILD: ${{ steps.result.outputs.live_build }}
           STALE_COUNT: ${{ steps.result.outputs.stale }}
-          CONTRACT_CURRENT: ${{ steps.result.outputs.contract_current }}
         with:
           script: |
             const fs = require('fs');
             const audit = JSON.parse(fs.readFileSync('data/patch-audit.json', 'utf8'));
-            const target = `${process.env.CURRENT_PATCH || 'current'} ${process.env.CURRENT_CHANNEL || 'LIVE'}`;
-            const title = `Patch data review required: ${target}`;
+            const title = `Patch data review required: ${process.env.CURRENT_PATCH} LIVE`;
             const rows = Object.entries(audit.modules)
               .sort((a, b) => b[1].count - a[1].count)
               .map(([name, value]) => `- **${name}**: ${value.count} references (${value.patches.join(', ')})`)
               .join('\n');
             const body = [
-              `Synchronization target: **${target}**.`,
+              `The automated game-data sync is using **${process.env.CURRENT_LIVE_BUILD}** as the current LIVE authority.`,
+              `The SCMDB Contract Finder snapshot is current for **${process.env.CURRENT_PATCH} LIVE**.`,
               '',
-              process.env.CURRENT_CHANNEL === 'LIVE'
-                ? `Contract Finder matches authoritative LIVE: **${process.env.CONTRACT_CURRENT}**.`
-                : 'Authoritative LIVE verification is intentionally not applied to PTU/EPTU manual runs.',
-              `Patch-sensitive audit references: **${process.env.STALE_COUNT}**.`,
+              `The audit found **${process.env.STALE_COUNT}** older patch-specific references that may belong to curated modules:`,
               '',
               rows || '- No grouped references were produced.',
               '',
-              'For LIVE, the front end blocks mismatched cached/bundled datasets instead of presenting them as current.',
+              'Review `data/patch-audit.json`. Add a trusted source adapter before automatically rewriting curated data.',
+              '',
               `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');
             const { data: issues } = await github.rest.issues.listForRepo({
@@ -223,7 +158,7 @@ jobs:
         with:
           script: |
             const title = 'Game data synchronization failed';
-            const body = `The scheduled/manual game-data sync failed. Existing snapshots were not intentionally overwritten. For LIVE, the web client will reject a snapshot whose patch does not match its resolved LIVE authority.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `The scheduled game-data sync failed. The existing snapshots were not overwritten.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             const { data: issues } = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
               repo: context.repo.repo,

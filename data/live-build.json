@@ -1,20 +1,11 @@
 {
   "schema": "celestial-nexus.live-build.v1",
-  "generatedAt": "2026-09-01T06:15:00.000Z",
-  "channel": "LIVE",
   "patch": "4.10.0",
+  "channel": "LIVE",
   "build": "12519617",
   "code": "4.10.0-LIVE.12519617",
-  "verified": true,
-  "verificationMethod": "official CIG",
-  "sources": [
-    {
-      "source": "https://support.robertsspaceindustries.com/hc/en-us/articles/360003093114-Loaner-Ship-Matrix",
-      "authority": "CIG",
-      "transport": "direct",
-      "code": "4.10.0-LIVE.12519617"
-    }
-  ],
-  "mismatches": [],
-  "errors": []
+  "source": "Star Citizen Wiki default LIVE game version / CIG LIVE release identity",
+  "sourceUrl": "https://api.star-citizen.wiki/api/game-versions/default",
+  "verifiedAt": "2026-08-26T18:35:00Z",
+  "generatedAt": "2026-09-02T04:12:38Z"
 }

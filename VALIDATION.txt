@@ -1,0 +1,25 @@
+Celestial Nexus v2.0.1 Data Integrity R3 validation
+Generated UTC: 2026-09-02T04:16:55Z
+
+[1] HTML inline JavaScript syntax
+script_tags=164 active_inline_checked=163 syntax_errors=0
+dom_ids=958 duplicate_ids=0
+
+[2] Node syntax
+scripts/sync-live-build.mjs: PASS
+sw.js: PASS
+
+[3] Workflow YAML + run-block shell syntax
+sync-game-data.yml: YAML PASS; bash -n run_blocks=6 PASS
+sync-mrkraken-language-pack.yml: YAML PASS; bash -n run_blocks=2 PASS
+
+[4] LIVE build sync fallback behavior (container has no outbound internet)
+LIVE build refresh failed (fetch failed); preserving 4.10.0-LIVE.12519617.
+
+[5] Key patch markers
+PASS: GAME DATA · 4.10.0-LIVE.12519617
+PASS: label:'Q cooldown'
+PASS: function mergeDetailValue
+PASS: versionUnexposed:true
+PASS: model.rows.push(...blueprintModifierRows(bp,model.rows))
+PASS: nexus-live-build-badge-integrity-r3

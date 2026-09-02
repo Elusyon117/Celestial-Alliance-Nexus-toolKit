@@ -1,44 +1,111 @@
-/* Celestial Alliance Nexus Toolkit service worker — LIVE data guard revision */
-const VERSION = '2.0.1-live-current-r3';
-const SHELL_CACHE = `celestial-nexus-shell-${VERSION}`;
-const DATA_CACHE = `celestial-nexus-data-${VERSION}`;
-const IMAGE_CACHE = `celestial-nexus-images-${VERSION}`;
-const CACHE_PREFIX = 'celestial-nexus-';
-const SHELL = [
-  './', './index.html', './404.html', './manifest.webmanifest',
-  './icon-192.png', './icon-512.png', './icons/icon-192.png', './icons/icon-512.png',
-  './assets/wikelo/ana-endro.webp', './assets/wikelo/bokto.webp',
-  './assets/wikelo/boomtube-clanguard.webp', './assets/wikelo/geist-snow.webp',
-  './assets/wikelo/killshot-dominion-reference.webp', './assets/wikelo/monde-crimson-reference.svg',
-  './assets/wikelo/palatino-mark-1.webp', './assets/wikelo/polaris-bit-reference.webp',
-  './assets/wikelo/r97-crimson-reference.webp', './assets/wikelo/strata-heatwave.webp',
-  './assets/images/locations/onyx-facility.webp', './assets/images/events/tactical-strike-groups.webp'
+/* Celestial Nexus Toolkit service worker — v2.0.1 data-integrity repair R3. */
+const NEXUS_CACHE_VERSION = 'v2.0.1-data-integrity-r3-20260901';
+const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
+const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
+const CORE_ASSETS = [
+  './',
+  './index.html',
+  './manifest.webmanifest',
+  './icon-192.png',
+  './icon-512.png',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './data/live-build.json',
+  './assets/wikelo/ana-endro.webp',
+  './assets/wikelo/bokto.webp',
+  './assets/wikelo/boomtube-clanguard.webp',
+  './assets/wikelo/geist-snow.webp',
+  './assets/wikelo/killshot-dominion-reference.webp',
+  './assets/wikelo/monde-crimson-reference.svg',
+  './assets/wikelo/palatino-mark-1.webp',
+  './assets/wikelo/polaris-bit-reference.webp',
+  './assets/wikelo/r97-crimson-reference.webp',
+  './assets/wikelo/strata-heatwave.webp',
+  './assets/images/locations/onyx-facility.webp',
+  './assets/images/events/tactical-strike-groups.webp'
 ];
-self.addEventListener('install', event => event.waitUntil((async()=>{
-  const cache=await caches.open(SHELL_CACHE);
-  await Promise.allSettled(SHELL.map(url=>cache.add(new Request(url,{cache:'reload'}))));
-  await self.skipWaiting();
-})()));
-self.addEventListener('activate', event => event.waitUntil((async()=>{
-  const keep=new Set([SHELL_CACHE,DATA_CACHE,IMAGE_CACHE]);
-  await Promise.all((await caches.keys()).filter(k=>k.startsWith(CACHE_PREFIX)&&!keep.has(k)).map(k=>caches.delete(k)));
-  await self.clients.claim();
-})()));
-async function networkFirst(request,cacheName,timeoutMs=7000){
-  const cache=await caches.open(cacheName),timeout=new Promise((_,reject)=>setTimeout(()=>reject(new Error('network timeout')),timeoutMs));
-  try{
-    const networkRequest=new Request(request,{cache:'no-store'});
-    const response=await Promise.race([fetch(networkRequest),timeout]);
-    if(response&&(response.ok||response.type==='opaque'))cache.put(request,response.clone()).catch(()=>{});
-    return response;
-  }catch(_){return (await cache.match(request))||(await caches.match('./index.html'))||Response.error()}
+
+self.addEventListener('install', event => {
+  event.waitUntil((async () => {
+    const cache = await caches.open(APP_CACHE);
+    // One optional/missing artwork must not prevent a new service worker from installing.
+    await Promise.allSettled(CORE_ASSETS.map(asset => cache.add(asset)));
+    await self.skipWaiting();
+  })());
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil((async () => {
+    const keep = new Set([APP_CACHE, RUNTIME_CACHE]);
+    const keys = await caches.keys();
+    await Promise.all(keys.map(key => keep.has(key) ? undefined : caches.delete(key)));
+    await self.clients.claim();
+  })());
+});
+
+function isImageLike(request, url) {
+  return request.destination === 'image' || /\.(?:png|jpe?g|webp|gif|svg|avif)(?:[?#]|$)/i.test(url.pathname);
 }
-async function staleWhileRevalidate(request,cacheName){const cache=await caches.open(cacheName),cached=await cache.match(request),fresh=fetch(request).then(response=>{if(response&&(response.ok||response.type==='opaque'))cache.put(request,response.clone()).catch(()=>{});return response}).catch(()=>null);return cached||(await fresh)||Response.error()}
-async function cacheFirst(request,cacheName){const cache=await caches.open(cacheName),cached=await cache.match(request);if(cached)return cached;const response=await fetch(request);if(response&&(response.ok||response.type==='opaque'))cache.put(request,response.clone()).catch(()=>{});return response}
-self.addEventListener('fetch',event=>{
-  const request=event.request;if(request.method!=='GET')return;const url=new URL(request.url);
-  if(request.mode==='navigate'){event.respondWith(networkFirst(request,SHELL_CACHE,5000));return}
-  if(url.origin===self.location.origin&&/\/data\//.test(url.pathname)){event.respondWith(networkFirst(request,DATA_CACHE,9000));return}
-  if(request.destination==='image'){event.respondWith(cacheFirst(request,IMAGE_CACHE));return}
-  if(url.origin===self.location.origin)event.respondWith(staleWhileRevalidate(request,SHELL_CACHE));
+function isStaticLike(request, url) {
+  return ['style', 'script', 'font', 'manifest'].includes(request.destination) || /\.(?:css|js|woff2?|json|webmanifest)(?:[?#]|$)/i.test(url.pathname);
+}
+function isMrKrakenMirror(url) {
+  return /\/data\/mrkraken-(?:global\.ini|release\.json)$/i.test(url.pathname);
+}
+async function cacheFirst(request) {
+  const cached = await caches.match(request, { ignoreSearch: false });
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response && (response.ok || response.type === 'opaque')) {
+    const cache = await caches.open(RUNTIME_CACHE);
+    cache.put(request, response.clone()).catch(() => {});
+  }
+  return response;
+}
+async function staleWhileRevalidate(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  const cached = await cache.match(request, { ignoreSearch: false });
+  const network = fetch(request).then(response => {
+    if (response && (response.ok || response.type === 'opaque')) cache.put(request, response.clone()).catch(() => {});
+    return response;
+  }).catch(() => cached);
+  return cached || network;
+}
+async function networkFirst(request) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  try {
+    const response = await fetch(request, { cache: 'no-store' });
+    if (response && response.ok) cache.put(request, response.clone()).catch(() => {});
+    return response;
+  } catch (error) {
+    const cached = await cache.match(request, { ignoreSearch: true });
+    if (cached) return cached;
+    throw error;
+  }
+}
+
+self.addEventListener('fetch', event => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+  const url = new URL(request.url);
+  if (url.origin === self.location.origin) {
+    if (url.pathname.endsWith('/index.html') || url.pathname === new URL(self.registration.scope).pathname) {
+      event.respondWith(networkFirst(request));
+      return;
+    }
+    // Version authority should always prefer the network; other generated data keeps the repository's existing strategy.
+    if (isMrKrakenMirror(url) || url.pathname.endsWith('/data/live-build.json')) {
+      event.respondWith(networkFirst(request));
+      return;
+    }
+    if (url.pathname.includes('/data/')) {
+      event.respondWith(staleWhileRevalidate(request));
+      return;
+    }
+    if (isImageLike(request, url) || isStaticLike(request, url)) {
+      event.respondWith(cacheFirst(request));
+      return;
+    }
+  }
+  if (isImageLike(request, url)) event.respondWith(staleWhileRevalidate(request));
 });
