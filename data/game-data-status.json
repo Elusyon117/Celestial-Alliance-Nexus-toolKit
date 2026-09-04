@@ -1,22 +1,22 @@
 {
   "schema": "celestial-nexus.game-data-status.v1",
-  "generatedAt": "2026-09-04T11:23:30.829Z",
+  "generatedAt": "2026-09-04T16:25:18.968Z",
   "detectedPatch": "4.10.0",
   "detectedChannel": "LIVE",
   "modules": {
     "contractFinder": {
       "status": "current",
-      "source": "SCMDB 4.10.0-LIVE.12545750 mission snapshot",
-      "sourceUrl": "https://scmdb.net/data/merged-4.10.0-live.12545750.json",
+      "source": "SCMDB 4.10.0-LIVE.12568521 mission snapshot",
+      "sourceUrl": "https://scmdb.net/data/merged-4.10.0-live.12568521.json",
       "versionsUrl": "https://scmdb.net/data/versions.json",
       "patch": "4.10.0",
       "channel": "LIVE",
-      "gameVersion": "4.10.0-LIVE.12545750",
-      "fetchedAt": "2026-09-04T11:23:30.829Z",
+      "gameVersion": "4.10.0-LIVE.12568521",
+      "fetchedAt": "2026-09-04T16:25:18.968Z",
       "activeCount": 1533,
       "legacyCount": 0,
       "totalCount": 1533,
-      "fingerprint": "7db91351a263b414082ed5741ecf5136a0595727ae9e9b157b75ff0a1117b448",
+      "fingerprint": "d96ec90b4e093e60914b5bbc01f8420e1803bfa968c3a4e159869759eba48e1a",
       "lastError": ""
     }
   }
