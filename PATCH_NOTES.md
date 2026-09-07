@@ -1,55 +1,58 @@
-# Celestial Nexus Toolkit v2.0.3 — SCMDB Parity & Workflow Repair
+# Celestial Nexus Toolkit v2.0.4 — Faction Relationship Resolution
 
-This overlay updates the v2.0.2 data-resilience repair with a full Contract Finder / SCMDB parity pass and CI fixes.
+This hotfix addresses the remaining **“Unspecified faction”** entries in Contract Finder while preserving the v2.0.3 Wikelo, SCMDB-parity, and workflow repairs.
 
-## Wikelo Trade Center
+## Root cause
 
-- Removed the yellow per-card recipe provenance box (the "Recipe shown from Community catalog snapshot..." message).
-- The module still keeps the embedded Wikelo recipes available when a live mission API omits recipe fields.
-- Legitimate trade-specific notes from the curated catalog are preserved; only the generic provenance/status notice was removed.
-- Material Locker readiness and Org Project Plan calculations continue to use the retained recipe data.
+v2.0.3 correctly stopped raw faction GUIDs from being shown as names and loaded a faction dictionary. However, a dictionary only answers **“what name belongs to this faction ID?”**. It does not answer **“which faction owns this mission?”** when a mission-summary row omits the expanded faction relationship.
 
-## Contract Finder — SCMDB parity
+That is the case behind the screenshot: generic contracts such as `[DESTINATION] Errand`, `[LOCATION] needs some repairs`, and `[TARGET] needs stomping` can have a real issuer/faction in the full mission data while the compact list record used by the browser may not carry a directly readable `faction.name`.
 
-- SCMDB ingestion now follows SCMDB mission-view semantics: `contracts + legacyContracts` are merged into the searchable mission list.
-- Every original mission object is retained. Enrichment adds readable/display fields without deleting raw SCMDB fields.
-- The synchronized snapshot also preserves SCMDB supporting datasets used by mission records:
-  - `factions`
-  - `locationPools`
-  - `shipPools`
-  - `blueprintPools`
-  - `scopes`
-  - `availabilityPools`
-  - `factionRewardsPools`
-  - `resourcePools`
-  - `partialRewardPayoutPools`
-- Unknown additional SCMDB top-level sections are retained under `sourceExtras` rather than discarded.
-- Faction GUIDs resolve through the SCMDB faction dictionary before display. Unresolved opaque IDs are never shown as faction names.
-- The Contract Finder status line now reports the loaded contract count and named-faction count; SCMDB parity telemetry is included when the active source is SCMDB.
+## Contract Finder changes
 
-## Complete fallback loading
+The new `nexus-v204-faction-parity-patch` resolves a contract issuer/faction in this order:
 
-- The browser Star Citizen Wiki fallback no longer stops after the first API page. It keeps loading pages until the current-version mission catalog is exhausted.
-- The repository sync performs the same full pagination and rejects suspiciously tiny Wiki snapshots instead of treating them as a complete database.
-- Source order is now:
-  1. SCMDB
-  2. configured SCMDB mirrors
-  3. full current-version Star Citizen Wiki mission catalog
-  4. previously checked-in snapshot, only if it is already usable
-- A zero-row/bootstrap snapshot can no longer be preserved as a successful fallback.
+1. Expanded faction fields, including lower-case and extracted-game-data forms such as `faction.name`, `Faction.Name`, `FactionName`, and organization fields.
+2. Reputation records. `FactionReputation` is deliberately preferred over unrelated `Affinity` awards, so a Headhunters mission that also grants Citizens For Prosperity affinity remains a **Headhunters** contract.
+3. Faction GUID/UUID lookup through the complete faction dictionary.
+4. Mission-to-faction membership learned from the current Star Citizen Wiki mission endpoint using its `filter[faction]` relationship.
+5. Mission giver/giver fields as an issuer fallback.
+6. Only after all available relationship sources are exhausted is a record labeled `No faction listed`.
 
-## GitHub Actions / workflow repair
+Additional browser fixes:
 
-- Replaced the version-fragile repository validator with a validator that derives the toolkit version from `index.html`.
-- Added a self-contained v2.0.3 validation workflow using Node.js only; it does not depend on an undeclared Python YAML package.
-- The game-data workflow now validates scripts before sync, validates the synchronized snapshot afterward, runs regression tests, and reports contract/faction totals in the job summary.
-- SCMDB downtime now degrades to a full Wiki fallback instead of causing the toolkit to publish a tiny/empty Contract Finder dataset.
-- `scripts/audit-patch-data.mjs` is included in the overlay, so the sync workflow no longer references a missing/brittle repository helper.
+- JSON:API-style `attributes` are flattened before Contract Finder builds filters and cards.
+- JSON:API faction relationship IDs are retained and resolved.
+- The browser always loads the **complete faction collection**, instead of assuming the handful of already-resolved factions is the full set.
+- Mission-to-faction mappings are cached per game build in browser local storage to avoid repeating the enrichment work on every visit.
+- The faction filter is rebuilt after enrichment, so newly resolved names appear without requiring a page reload.
 
-## Cache update
+## Repository sync changes
 
-- Service-worker cache namespace bumped to `scmdb-parity-v2-20260907`, forcing deployed clients to refresh the repaired HTML/data loader.
+When SCMDB is available, exact SCMDB behavior remains the authority: current `contracts + legacyContracts` are preserved with SCMDB support dictionaries and raw fields.
 
-## SCMDB reference quantity
+When SCMDB is unavailable and the workflow uses the current Star Citizen Wiki fallback, the sync now enriches every mission using:
 
-A current public SCMDB-backed SC Toolbox project advertises a mission browser containing 1,381 missions. The current Star Citizen Wiki mission API reports 1,786 rows (60 default pages) for its own mission schema. These totals are used only as completeness/parity benchmarks because the two sources do not have identical semantics and SCMDB can change between patches; SCMDB's public data endpoint is presently unreliable. v2.0.3 does **not** fabricate rows to hit 1,381; when SCMDB is reachable it mirrors SCMDB's current `contracts + legacyContracts` data and supporting dictionaries directly.
+- direct faction data,
+- `FactionReputation` / reputation records,
+- faction GUID dictionaries,
+- mission membership returned by `filter[faction]`, and
+- mission giver fields.
+
+The generated snapshot now records:
+
+- `factionName` on resolved mission rows,
+- `unresolvedFactionCount`,
+- named-faction count,
+- the relationship-enrichment method, and
+- number of faction filters queried.
+
+The Sync game data Actions summary also reports **Contracts without a resolved faction/issuer** so this regression is visible immediately rather than only in the UI.
+
+## Validation changes
+
+Post-sync validation now fails a Wiki fallback if more than 10% of rows (or more than 25 rows, whichever is larger) still lack a readable faction/issuer. This prevents another apparently-populated Contract Finder snapshot from being accepted when the relationship layer is mostly missing.
+
+## Cache/deployment
+
+The service-worker cache namespace is now `faction-parity-v3-20260907`, forcing deployed clients to replace the older v2.0.3 HTML/data-loader assets.

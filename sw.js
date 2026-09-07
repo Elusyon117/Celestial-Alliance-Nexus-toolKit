@@ -1,5 +1,5 @@
-/* Celestial Nexus Toolkit service worker — v2.0.3 data resilience. */
-const NEXUS_CACHE_VERSION = 'scmdb-parity-v2-20260907';
+/* Celestial Nexus Toolkit service worker — v2.0.4 data resilience. */
+const NEXUS_CACHE_VERSION = 'faction-parity-v3-20260907';
 const APP_CACHE = `celestial-nexus-app-${NEXUS_CACHE_VERSION}`;
 const RUNTIME_CACHE = `celestial-nexus-runtime-${NEXUS_CACHE_VERSION}`;
 

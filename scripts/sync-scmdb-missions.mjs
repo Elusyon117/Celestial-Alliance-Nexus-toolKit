@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Celestial Nexus Contract Finder data mirror — v2.0.3
+ * Celestial Nexus Contract Finder data mirror — v2.0.4
  *
  * Authority order:
  *   1. SCMDB versions manifest + selected dataset (exact contracts + legacyContracts semantics)
@@ -29,6 +29,7 @@ const SCMDB_MIRROR_URLS = String(process.env.SCMDB_MIRROR_URLS || '').split(/[\n
 const WIKI_VERSIONS_URL = String(process.env.STAR_CITIZEN_WIKI_VERSIONS_URL || 'https://api.star-citizen.wiki/api/game-versions');
 const WIKI_MISSIONS_URL = String(process.env.STAR_CITIZEN_WIKI_MISSIONS_URL || 'https://api.star-citizen.wiki/api/missions');
 const WIKI_FACTIONS_URL = String(process.env.STAR_CITIZEN_WIKI_FACTIONS_URL || 'https://api.star-citizen.wiki/api/factions');
+const WIKI_MISSION_FILTERS_URL = String(process.env.STAR_CITIZEN_WIKI_MISSION_FILTERS_URL || 'https://api.star-citizen.wiki/api/missions/filters');
 const PATCH_OVERRIDE = String(process.env.MISSION_PATCH || '').trim();
 const TARGET_CHANNEL = String(process.env.MISSION_CHANNEL || 'LIVE').trim().toUpperCase();
 const MIN_ACTIVE = Math.max(5, Number(process.env.MISSION_MIN_ACTIVE || 100));
@@ -76,7 +77,7 @@ async function readJsonSource(url, timeout = 45_000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
-    const response = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json', 'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0.3' } });
+    const response = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json', 'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0.4' } });
     if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
     return await response.json();
   } finally { clearTimeout(timer); }
@@ -150,7 +151,7 @@ function enrichLocations(value,locationPools){
   if(!Array.isArray(value))return value;
   return value.map(entry=>{if(entry&&typeof entry==='object')return entry;const details=poolByIndexOrKey(locationPools,entry);return details?{guid:entry,...clone(details)}:entry;});
 }
-function readableFactionName(faction){return String(faction?.displayName??faction?.display_name??faction?.name??faction?.title??'').trim();}
+function readableFactionName(faction){if(faction==null)return '';if(typeof faction==='string'||typeof faction==='number'){const text=String(faction).trim();return opaqueFactionValue(text)?'':text;}return String(faction?.displayName??faction?.display_name??faction?.Name??faction?.name??faction?.title??faction?.label??'').trim();}
 function enrichScmdbRecord(row,context,legacyContract){
   const result={...row,gameVersion:context.gameVersion,legacyContract:Boolean(legacyContract),scmdb_url:`https://scmdb.net/?m=${encodeURIComponent(String(row?.id||row?.debugName||row?.debug_name||''))}`};
   const guid=row?.factionGuid??row?.faction_guid??row?.faction?.guid??row?.faction?.id;
@@ -268,15 +269,15 @@ async function discoverWikiIdentity(){
   if(fallback&&fallback.channel===TARGET_CHANNEL&&(!PATCH_OVERRIDE||samePatch(fallback.patch,PATCH_OVERRIDE)))return fallback;
   throw new Error(`Star Citizen Wiki did not return a ${PATCH_OVERRIDE||'current'} ${TARGET_CHANNEL} game version and no matching known fallback is configured.`);
 }
-async function fetchWikiCollection(baseUrl, identity, {versioned=true,maxPages=100}={}){
+async function fetchWikiCollection(baseUrl, identity, {versioned=true,maxPages=100,query={}}={}){
   const base=new URL(baseUrl);
   if(base.protocol==='file:'){const payload=await readJsonSource(base.href);return {rows:collectionRows(payload).map(flattenRecord),meta:payload?.meta||payload?.metadata||{}};}
   const rows=[],seen=new Set();let firstMeta={};
   for(let page=1;page<=maxPages;page+=1){
-    const url=new URL(base.href);if(versioned)url.searchParams.set('version',identity.code);url.searchParams.set('page[size]',String(PAGE_SIZE));url.searchParams.set('page[number]',String(page));if(/\/missions(?:\?|$)/.test(url.pathname))url.searchParams.set('filter[grouped]','false');
+    const url=new URL(base.href);if(versioned)url.searchParams.set('version',identity.code);for(const [key,value] of Object.entries(query||{}))if(value!==undefined&&value!==null&&value!=='')url.searchParams.set(key,String(value));url.searchParams.set('page[size]',String(PAGE_SIZE));url.searchParams.set('page[number]',String(page));if(/\/missions(?:\?|$)/.test(url.pathname)&&!url.searchParams.has('filter[grouped]'))url.searchParams.set('filter[grouped]','false');
     const payload=await readJsonSource(url.href,90_000);if(page===1)firstMeta=payload?.meta||payload?.metadata||{};
     const batch=collectionRows(payload).map(flattenRecord);let added=0;
-    batch.forEach((row,index)=>{const key=String(row?.uuid??row?.id??row?.guid??row?.code??row?.debugName??row?.debug_name??`${page}:${index}`);if(!seen.has(key)){seen.add(key);rows.push(row);added+=1;}});
+    batch.forEach((row,index)=>{const key=String(row?.uuid??row?.UUID??row?.id??row?.ID??row?.guid??row?.Guid??row?.code??row?.debugName??row?.debug_name??`${page}:${index}`);if(!seen.has(key)){seen.add(key);rows.push(row);added+=1;}});
     const meta=payload?.meta||payload?.metadata||{};
     const last=paginationNumber(meta,['last_page','lastPage','total_pages','totalPages','pagination.last_page','pagination.lastPage','pagination.total_pages','pagination.totalPages','page.last']);
     const total=paginationNumber(meta,['total','total_count','totalCount','pagination.total','pagination.total_count','pagination.totalCount','page.total']);
@@ -285,27 +286,120 @@ async function fetchWikiCollection(baseUrl, identity, {versioned=true,maxPages=1
   }
   return {rows,meta:firstMeta};
 }
-function buildFactionDictionary(rows){const factions={};for(const row of rows){const faction=row?.faction;if(faction&&typeof faction==='object'){const id=String(faction.guid??faction.uuid??faction.id??row?.factionGuid??row?.faction_guid??'').trim();if(id)factions[id]=clone(faction);}}return factions;}
+function wikiValue(row,...paths){for(const pathText of paths){let value=row;for(const part of String(pathText).split('.'))value=value&&typeof value==='object'?value[part]:undefined;if(value!==undefined&&value!==null&&value!=='')return value;}return null;}
+function wikiArray(value){return Array.isArray(value)?value:value==null?[]:[value];}
+function opaqueFactionValue(value){const text=String(value??'').trim();return !text||/^(?:[0-9a-f]{8}-[0-9a-f-]{27,}|[0-9a-f]{24,}|[a-z0-9_-]{28,})$/i.test(text);}
+function wikiMissionKeys(row){return [...new Set([row?.uuid,row?.UUID,row?.guid,row?.Guid,row?.id,row?.ID,row?.mission_uuid,row?.missionUuid,row?.mission_id,row?.missionId,row?.debugName,row?.debug_name].map(value=>String(value??'').trim().toLowerCase()).filter(Boolean))];}
+function wikiFactionNameFromReputation(row,factions={}){
+  const rewards=wikiArray(wikiValue(row,'reputation_gained','reputationGained','ReputationGained','reputation_rewards','reputationRewards','ReputationRewards','rewards.reputation')).filter(value=>value&&typeof value==='object');
+  const ordered=[...rewards.filter(item=>/^faction\s*reputation$/i.test(String(wikiValue(item,'Scope','scope','scopeName','scope_name')??'').replace(/[_-]/g,' ').trim())),...rewards.filter(item=>!/^faction\s*reputation$/i.test(String(wikiValue(item,'Scope','scope','scopeName','scope_name')??'').replace(/[_-]/g,' ').trim()))];
+  for(const item of ordered){
+    const candidate=wikiValue(item,'Faction.Name','Faction.name','Faction','faction.name','faction','FactionName','factionName','faction_name');
+    const name=readableFactionName(candidate);if(name)return name;
+    const id=String(wikiValue(item,'FactionUUID','factionUUID','factionUuid','faction_uuid','Faction.UUID','faction.uuid')??'').trim();
+    if(id){const found=lookup(factions,id);const resolved=readableFactionName(found);if(resolved)return resolved;}
+  }
+  return '';
+}
+function wikiFactionNameFromRecord(row,factions={},missionAssignments=null){
+  const direct=[
+    wikiValue(row,'faction.name','faction.displayName','faction.display_name','faction.Name','Faction.Name','Faction.name','Faction.DisplayName'),
+    wikiValue(row,'factionName','faction_name','FactionName'),
+    row?.faction,row?.Faction,
+    wikiValue(row,'organization.name','organization.displayName','Organization.Name'),row?.organization,row?.Organization,
+    wikiValue(row,'employer.name','employer.displayName','Employer.Name'),row?.employer,row?.Employer
+  ];
+  for(const candidate of direct){const name=readableFactionName(candidate);if(name)return name;}
+  const reputation=wikiFactionNameFromReputation(row,factions);if(reputation)return reputation;
+  for(const id of [wikiValue(row,'faction.guid','faction.uuid','faction.id','faction.UUID','Faction.UUID','Faction.Guid'),wikiValue(row,'factionGuid','faction_guid','FactionGuid'),wikiValue(row,'relationships.faction.data.id')].map(value=>String(value??'').trim()).filter(Boolean)){const name=readableFactionName(lookup(factions,id));if(name)return name;}
+  if(missionAssignments)for(const key of wikiMissionKeys(row)){const name=missionAssignments.get(key);if(name)return name;}
+  for(const candidate of [wikiValue(row,'mission_giver.name','missionGiver.name','MissionGiver.Name','giver.name','Giver.Name'),row?.mission_giver,row?.missionGiver,row?.MissionGiver,row?.giver,row?.Giver]){const name=readableFactionName(candidate);if(name)return name;}
+  return '';
+}
+function buildFactionDictionary(rows){
+  const factions={};
+  for(const raw of rows){const row=flattenRecord(raw);const faction=row?.faction??row?.Faction;if(faction&&typeof faction==='object'){const id=String(faction.guid??faction.uuid??faction.Guid??faction.UUID??faction.id??row?.factionGuid??row?.faction_guid??'').trim();if(id)factions[id]=clone(faction);}}
+  return factions;
+}
 async function fetchWikiFactions(identity,missions){
   const fromMissions=buildFactionDictionary(missions);
   try{
     const {rows}=await fetchWikiCollection(WIKI_FACTIONS_URL,identity,{versioned:false,maxPages:30});
-    const fromEndpoint=normalizeDictionary(rows);return {...fromEndpoint,...fromMissions};
+    const fromEndpoint=normalizeDictionary(rows.map(flattenRecord));return {...fromEndpoint,...fromMissions};
   }catch(error){console.warn(`Wiki faction enrichment failed: ${error?.message||error}`);return fromMissions;}
+}
+function factionNamesFromFilterPayload(payload){
+  const names=new Set(),seen=new Set();
+  function visit(value,inFaction=false,depth=0){
+    if(depth>8||value==null)return;
+    if(typeof value==='string'){if(inFaction){const name=readableFactionName(value);if(name)names.add(name);}return;}if(typeof value==='number'||typeof value==='boolean')return;
+    if(typeof value!=='object'||seen.has(value))return;seen.add(value);
+    if(Array.isArray(value)){value.forEach(item=>visit(item,inFaction,depth+1));return;}
+    if(inFaction)for(const candidate of [value?.name,value?.Name,value?.label,value?.displayName,value?.display_name,value?.value]){const name=readableFactionName(candidate);if(name)names.add(name);}
+    Object.entries(value).forEach(([key,child])=>visit(child,inFaction||/faction/i.test(key),depth+1));
+  }
+  visit(payload);return [...names];
+}
+async function wikiFactionFilterNames(identity,factions,missions){
+  const names=new Set();
+  for(const faction of Object.values(factions||{})){const name=readableFactionName(faction);if(name)names.add(name);}
+  for(const mission of missions){const name=wikiFactionNameFromRecord(mission,factions);if(name)names.add(name);}
+  try{
+    const url=new URL(WIKI_MISSION_FILTERS_URL);
+    if(url.protocol!=='file:'){url.searchParams.set('version',identity.code);const payload=await readJsonSource(url.href,45_000);factionNamesFromFilterPayload(payload).forEach(name=>names.add(name));}
+  }catch(error){console.warn(`Wiki mission faction facets failed: ${error?.message||error}`);}
+  return [...names].filter(name=>name&&!opaqueFactionValue(name));
+}
+async function enrichWikiMissionFactions(identity,missions,factions){
+  const assignments=new Map();
+  for(const mission of missions){const name=wikiFactionNameFromRecord(mission,factions);if(name)wikiMissionKeys(mission).forEach(key=>assignments.set(key,name));}
+  let unresolved=missions.filter(mission=>!wikiFactionNameFromRecord(mission,factions,assignments));
+  let queriedFactions=0;
+  const sourceUrl=new URL(WIKI_MISSIONS_URL);
+  // file: fixtures cannot emulate query strings; record/reputation extraction is tested there.
+  if(unresolved.length&&sourceUrl.protocol!=='file:'){
+    const names=await wikiFactionFilterNames(identity,factions,missions),queue=[...names],unresolvedKeys=new Set(unresolved.flatMap(wikiMissionKeys));
+    async function worker(){
+      while(queue.length&&unresolvedKeys.size){
+        const factionName=queue.shift();if(!factionName)continue;queriedFactions+=1;
+        try{
+          const {rows}=await fetchWikiCollection(WIKI_MISSIONS_URL,identity,{versioned:true,maxPages:100,query:{'filter[faction]':factionName,'filter[grouped]':'false'}});
+          for(const mission of rows)for(const key of wikiMissionKeys(mission)){if(!assignments.has(key))assignments.set(key,factionName);unresolvedKeys.delete(key);}
+        }catch(error){console.warn(`Wiki faction filter failed for ${factionName}: ${error?.message||error}`);}
+      }
+    }
+    await Promise.all(Array.from({length:Math.min(5,Math.max(1,queue.length))},()=>worker()));
+  }
+  let resolved=0;
+  for(const mission of missions){
+    const name=wikiFactionNameFromRecord(mission,factions,assignments);
+    if(!name)continue;
+    mission.factionName=name;resolved+=1;
+    if(!mission.faction||typeof mission.faction!=='object'){
+      const factionEntry=Object.entries(factions||{}).find(([,value])=>readableFactionName(value).toLowerCase()===name.toLowerCase());
+      if(factionEntry)mission.faction={guid:factionEntry[0],...clone(factionEntry[1])};
+      else mission.faction={name};
+    }
+  }
+  unresolved=missions.filter(mission=>!wikiFactionNameFromRecord(mission,factions,assignments));
+  return {resolved,unresolved:unresolved.length,queriedFactions,assignments};
 }
 async function synchronizeWikiFallback(upstreamError){
   const identity=await discoverWikiIdentity();console.warn(`SCMDB unavailable; building ${identity.code} fallback from Star Citizen Wiki.`);
   const {rows,meta}=await fetchWikiCollection(WIKI_MISSIONS_URL,identity,{versioned:true,maxPages:100});
   if(rows.length<WIKI_MIN_TOTAL)throw new Error(`Star Citizen Wiki returned only ${rows.length} missions; expected at least ${WIKI_MIN_TOTAL} for a complete fallback.`);
   const missions=rows.map(row=>({...row,gameVersion:identity.code,legacyContract:Boolean(row?.legacyContract)}));
-  const factions=await fetchWikiFactions(identity,missions);const namedFactions=new Set(missions.map(row=>readableFactionName(row?.faction)||row?.factionName).filter(Boolean));
+  const factions=await fetchWikiFactions(identity,missions);
+  const factionResolution=await enrichWikiMissionFactions(identity,missions,factions);
+  const namedFactions=new Set(missions.map(row=>wikiFactionNameFromRecord(row,factions,factionResolution.assignments)).filter(Boolean));
   const fetchedAt=new Date().toISOString(),sourceFingerprint=fingerprint({identity:identity.code,missions});
-  const parity={semantics:'Wiki ungrouped current-version mission rows (SCMDB unavailable)',activeContracts:missions.length,legacyContracts:0,totalContracts:missions.length,factionDictionaryCount:Object.keys(factions).length,namedFactionCount:namedFactions.size,scmdbReferenceTotal:SCMDB_REFERENCE_TOTAL||null,scmdbParityAvailable:false};
+  const parity={semantics:'Wiki ungrouped current-version mission rows (SCMDB unavailable)',activeContracts:missions.length,legacyContracts:0,totalContracts:missions.length,factionDictionaryCount:Object.keys(factions).length,namedFactionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,factionAssignmentMethod:'record faction + FactionReputation + faction GUID dictionary + Wiki faction-filter membership',queriedFactionFilters:factionResolution.queriedFactions,scmdbReferenceTotal:SCMDB_REFERENCE_TOTAL||null,scmdbParityAvailable:false};
   return {
-    snapshot:{schema:'celestial-nexus.scmdb-missions.v7',source:'Star Citizen Wiki mission API fallback',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,sourceFingerprint,isFallback:true,fallbackReason:String(upstreamError?.message||upstreamError||'SCMDB unavailable'),fetchedAt,targetPatch:identity.patch,targetChannel:TARGET_CHANNEL,gameVersion:identity.code,patchVerified:true,verificationMethod:'Current channel/build discovered from Star Citizen Wiki; ungrouped mission pages fetched sequentially until pagination exhaustion after SCMDB was unavailable.',missionCount:missions.length,activeMissionCount:missions.length,legacyMissionCount:0,factionCount:namedFactions.size,scmdbParity:parity,factions,fields:fieldInventory(missions),apiMeta:meta,missions},
-    status:{status:'current-wiki-fallback',source:'Star Citizen Wiki',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,patch:identity.patch,channel:TARGET_CHANNEL,gameVersion:identity.code,fetchedAt,activeCount:missions.length,legacyCount:0,totalCount:missions.length,factionCount:namedFactions.size,parity,fingerprint:sourceFingerprint,upstreamError:String(upstreamError?.message||upstreamError||'')}
+    snapshot:{schema:'celestial-nexus.scmdb-missions.v8',source:'Star Citizen Wiki mission API fallback',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,sourceFingerprint,isFallback:true,fallbackReason:String(upstreamError?.message||upstreamError||'SCMDB unavailable'),fetchedAt,targetPatch:identity.patch,targetChannel:TARGET_CHANNEL,gameVersion:identity.code,patchVerified:true,verificationMethod:'Current channel/build discovered from Star Citizen Wiki; ungrouped mission pages are fetched until exhaustion and faction/issuer relationships are enriched from mission records, faction reputation, dictionaries, and the Wiki faction filter.',missionCount:missions.length,activeMissionCount:missions.length,legacyMissionCount:0,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,scmdbParity:parity,factions,fields:fieldInventory(missions),apiMeta:meta,missions},
+    status:{status:'current-wiki-fallback',source:'Star Citizen Wiki',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,patch:identity.patch,channel:TARGET_CHANNEL,gameVersion:identity.code,fetchedAt,activeCount:missions.length,legacyCount:0,totalCount:missions.length,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,parity,fingerprint:sourceFingerprint,upstreamError:String(upstreamError?.message||upstreamError||'')}
   };
 }
+
 async function preserveUsableSnapshot(existing,scmdbError,wikiError){
   if(!isUsableExisting(existing))return false;
   const identity=parseIdentity(existing?.gameVersion)||parseIdentity(existing?.sourceUrl)||{patch:existing?.targetPatch||PATCH_OVERRIDE||'',channel:existing?.targetChannel||TARGET_CHANNEL,code:existing?.gameVersion||'unknown'};

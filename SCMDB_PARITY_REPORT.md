@@ -1,54 +1,39 @@
-# SCMDB Parity Report — v2.0.3
+# SCMDB / Faction Parity Report — v2.0.4
 
-## Why the previous faction list was too small
+## Authority model
 
-The 13-option faction picker shown after v2.0.2 was no longer displaying raw GUIDs, but it was still being populated from an incomplete mission snapshot. A readable faction formatter cannot create factions that were never loaded.
+Contract Finder continues to prefer SCMDB. When SCMDB is healthy, the sync mirrors SCMDB's current `contracts` and `legacyContracts` mission sets and retains its supporting faction, location, ship, blueprint, availability, resource, reputation, and partial-payout structures.
 
-The previous Wiki fallback could terminate after a single API page depending on pagination metadata shape. A small mission snapshot therefore produced a correspondingly small faction list.
+The Star Citizen Wiki API is a degraded-source fallback only. It is version-pinned to the current LIVE build discovered by the workflow and is not presented as exact SCMDB schema parity.
 
-## What v2.0.3 changes
+## Faction parity problem fixed in v2.0.4
 
-### Mission quantity semantics
+The v2.0.3 fallback could contain hundreds of current contracts but still show many `Unspecified faction` rows. The issue was not simply a missing faction-name dictionary. The missing piece was the **mission → faction relationship** for compact mission-summary records.
 
-When SCMDB is available, the synchronized Contract Finder dataset is the union of:
+v2.0.4 now reconstructs that relationship using multiple source-supported paths. It first consumes direct faction fields and `FactionReputation`, then GUID dictionaries, then the Wiki mission endpoint's faction filter membership. This lets the fallback associate a mission UUID with the faction that the API itself uses when filtering the mission catalog.
 
-- `contracts`
-- `legacyContracts`
+A critical reputation rule is included: `FactionReputation` wins over `Affinity`. This prevents secondary affinity awards from being mistaken for the mission issuer.
 
-Both sets remain individually counted in snapshot metadata, while all rows are available to the finder. A public SCMDB-backed SC Toolbox build currently describes its Mission Database as a browser for 1,381 missions. This is an informational benchmark, not a hard-coded target. As of 2026-09-07, the current Star Citizen Wiki mission API reports 1,786 ungrouped/current API mission rows across 60 default pages; this is a different source/schema, so its total is a completeness cross-check rather than an SCMDB parity target.
+## Completeness telemetry
 
-### Data preservation
+Every synchronized fallback records:
 
-For SCMDB synchronization, v2.0.3 keeps the complete raw mission records and preserves the supporting lookup/pool dictionaries needed to interpret them:
+- total mission count,
+- named faction count,
+- unresolved faction/issuer row count,
+- faction dictionary count,
+- relationship-assignment method,
+- number of faction-filter queries performed.
 
-`factions`, `locationPools`, `shipPools`, `blueprintPools`, `scopes`, `availabilityPools`, `factionRewardsPools`, `resourcePools`, and `partialRewardPayoutPools`.
+The GitHub Actions summary exposes the unresolved count after each sync.
 
-Unknown extra SCMDB top-level keys are retained under `sourceExtras` so a future schema addition is not silently discarded.
+## Acceptance rules
 
-### Faction parity
+- SCMDB snapshots must preserve current + legacy mission parity and support dictionaries.
+- Wiki fallback must contain at least the configured minimum mission total.
+- A Wiki fallback with more than 10% unresolved faction/issuer rows (minimum threshold 25) is rejected by post-sync validation.
+- Raw GUIDs are never promoted to human-readable faction names.
 
-Faction names resolve from `factions[factionGuid]` before display. The generated snapshot reports:
+## Expected result
 
-- total merged contracts
-- active-contract count
-- legacy-contract count
-- faction dictionary count
-- named faction count
-
-The browser also reports loaded contract/faction counts in the Contract Finder status line.
-
-### Upstream outage behavior
-
-SCMDB's public data service is currently unreliable, so an exact fresh SCMDB payload cannot safely be bundled from the live service at packaging time. Instead of inventing missing rows, the workflow now falls back to the **complete current-version Star Citizen Wiki mission catalog** and keeps paging until exhaustion. A small partial fallback is rejected.
-
-When SCMDB is reachable again, the next scheduled/manual sync automatically returns to SCMDB as the primary source and regenerates the snapshot with exact current SCMDB semantics.
-
-## Regression fixtures
-
-The v2.0.3 automated tests verify:
-
-- 120 active SCMDB contracts + 20 legacy contracts produce 140 searchable rows.
-- 30 faction dictionary entries remain 30 named factions after enrichment.
-- supporting SCMDB pools survive snapshot generation.
-- a simulated 450-row Wiki API split across 200 + 200 + 50 rows is loaded completely by the browser fallback.
-- an offline Wikelo recipe stays usable without the removed provenance box.
+After applying v2.0.4 and running **Sync game data**, generic missions that genuinely belong to factions should appear under those factions instead of collecting under `Unspecified faction`. A small number of `No faction listed` rows may remain only when the source itself exposes no faction, issuer, reputation relationship, or faction-filter membership for that mission.

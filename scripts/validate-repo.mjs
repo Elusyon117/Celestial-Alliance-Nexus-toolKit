@@ -58,7 +58,7 @@ for (const name of handlerNames) {
 }
 
 for (const relative of ['scripts/sync-scmdb-missions.mjs','scripts/validate-toolkit.mjs','scripts/test-data-resilience.mjs','scripts/audit-patch-data.mjs','.github/workflows/sync-game-data.yml','.github/workflows/validate-toolkit.yml','sw.js']) {
-  if (!exists(relative)) fail(`${relative} is required by the v2.0.3 update but is missing.`);
+  if (!exists(relative)) fail(`${relative} is required by the v2.0.4 update but is missing.`);
 }
 
 if (/check\(['"]version-meta['"],\s*version\s*===\s*['"]1\.8\.0['"]/.test(exists('scripts/validate-repo.mjs') ? read('scripts/validate-repo.mjs') : '')) {

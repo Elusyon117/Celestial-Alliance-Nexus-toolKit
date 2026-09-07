@@ -59,6 +59,7 @@ jobs:
           STAR_CITIZEN_WIKI_VERSIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_VERSIONS_URL }}
           STAR_CITIZEN_WIKI_MISSIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_MISSIONS_URL }}
           STAR_CITIZEN_WIKI_FACTIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_FACTIONS_URL }}
+          STAR_CITIZEN_WIKI_MISSION_FILTERS_URL: ${{ vars.STAR_CITIZEN_WIKI_MISSION_FILTERS_URL }}
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Audit patch-sensitive references
@@ -84,6 +85,7 @@ jobs:
           console.log(`sync_status=${module.status || 'unknown'}`);
           console.log(`total=${module.totalCount || 0}`);
           console.log(`factions=${module.factionCount || 0}`);
+          console.log(`unresolved_factions=${module.unresolvedFactionCount || module.parity?.unresolvedFactionCount || 0}`);
           NODE
 
       - name: Commit changed snapshots and reports
@@ -113,6 +115,7 @@ jobs:
             echo "- Status: ${{ steps.result.outputs.sync_status || 'failed before status write' }}"
             echo "- Contracts: ${{ steps.result.outputs.total || '0' }}"
             echo "- Named factions: ${{ steps.result.outputs.factions || '0' }}"
+            echo "- Contracts without a resolved faction/issuer: ${{ steps.result.outputs.unresolved_factions || '0' }}"
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Open degraded-upstream issue
@@ -122,13 +125,14 @@ jobs:
           VERSION: ${{ steps.result.outputs.version }}
           DATA_SOURCE: ${{ steps.result.outputs.source }}
           TOTAL: ${{ steps.result.outputs.total }}
+          UNRESOLVED: ${{ steps.result.outputs.unresolved_factions }}
         with:
           script: |
             const title = 'SCMDB upstream unavailable — current Wiki fallback active';
             const body = [
               `SCMDB could not be used for **${process.env.VERSION}**.`,
               '',
-              `The toolkit remained populated from **${process.env.DATA_SOURCE}** with **${process.env.TOTAL}** current mission rows.`,
+              `The toolkit remained populated from **${process.env.DATA_SOURCE}** with **${process.env.TOTAL}** current mission rows and **${process.env.UNRESOLVED || 0}** rows without a resolved faction/issuer relationship.`,
               '',
               'When SCMDB returns, the next scheduled run will automatically restore exact SCMDB contracts + legacyContracts semantics and all supporting dictionaries.',
               '',
@@ -148,7 +152,7 @@ jobs:
             const body = [
               'The scheduled game-data sync failed before a usable snapshot could be validated.',
               '',
-              'The v2.0.3 workflow tries SCMDB, configured SCMDB mirrors, the full current-version Wiki mission catalog, and finally a previously usable checked-in snapshot.',
+              'The v2.0.4 workflow tries SCMDB, configured SCMDB mirrors, the full current-version Wiki mission catalog, and finally a previously usable checked-in snapshot.',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');

@@ -54,6 +54,7 @@ if (duplicates.length) fail(`Duplicate DOM IDs: ${duplicates.slice(0, 20).map(([
 for (const [needle, label] of [
   ['id="nexus-data-resilience-patch-v1"', 'data-resilience browser patch'],
   ['id="nexus-v203-scmdb-parity-browser-patch"', 'SCMDB parity/browser paging patch'],
+  ['id="nexus-v204-faction-parity-patch"', 'faction relationship parity patch'],
   ['./data/scmdb-missions-live.js', 'bundled SCMDB snapshot loader'],
   ['Star Citizen Wiki', 'Star Citizen Wiki fallback support'],
   ['nexusMissionFaction', 'Contract Finder faction formatter'],
@@ -66,7 +67,7 @@ const resilience = html.indexOf('id="nexus-data-resilience-patch-v1"');
 if (destructive >= 0 && resilience <= destructive) fail('The Wikelo resilience patch must execute after the legacy destructive standardizer.');
 if (html.includes('Recipe shown from ${trade.__recipeSource}')) fail('Per-card Wikelo recipe provenance notice is still being injected.');
 if (!html.includes('Keep trade cards concise. Recipe provenance is represented by the module-level source/status line.')) fail('Wikelo concise-card provenance invariant is missing.');
-if (!html.includes("return 'Unspecified faction'")) fail('Opaque faction identifiers are not guarded by the readable-name resolver.');
+if (!html.includes("const NO_FACTION = 'No faction listed'")) fail('Faction resolver does not distinguish genuinely missing relationships from opaque identifiers.');
 
 // Local src/href references should exist in the actual repository checkout.
 if (!preSync) {
@@ -97,12 +98,30 @@ if (!preSync) {
       if (/Star Citizen Wiki/i.test(String(snapshot.source || '')) && snapshot.isFallback && rows.length < 500) {
         fail(`Wiki fallback is suspiciously incomplete (${rows.length} rows; expected at least 500 current ungrouped missions).`);
       }
-      const rawFactionIds = rows.filter(row => {
-        const faction = row?.faction;
-        const name = typeof faction === 'object' ? (faction.name || faction.displayName || faction.display_name) : (row?.factionName || faction);
-        return row?.factionGuid && (!name || /^(?:[0-9a-f]{8}-){1,4}[0-9a-f-]+$/i.test(String(name)));
-      }).length;
-      if (rawFactionIds > Math.max(10, rows.length * 0.10)) warn(`${rawFactionIds} mission rows still lack an enriched faction name; browser-side resolver will hide GUIDs and try the faction dictionary.`);
+      const readableFaction = row => {
+        const direct = row?.factionName || row?.faction_name || row?.FactionName;
+        if (direct && !/^[0-9a-f-]{24,}$/i.test(String(direct))) return String(direct);
+        for (const faction of [row?.faction,row?.Faction]) {
+          const name = faction && typeof faction === 'object' ? (faction.name || faction.Name || faction.displayName || faction.display_name) : faction;
+          if (name && !/^[0-9a-f-]{24,}$/i.test(String(name))) return String(name);
+        }
+        const reps = row?.reputation_gained || row?.reputationGained || row?.ReputationGained || [];
+        const list = Array.isArray(reps) ? reps : [reps];
+        const ordered = [...list.filter(item => /faction.?reputation/i.test(String(item?.scope || item?.Scope || ''))), ...list.filter(item => !/faction.?reputation/i.test(String(item?.scope || item?.Scope || '')))];
+        for (const item of ordered) {
+          const value = item?.faction?.name || item?.faction || item?.Faction?.Name || item?.Faction || item?.factionName || item?.FactionName;
+          if (value && !/^[0-9a-f-]{24,}$/i.test(String(value))) return String(value);
+        }
+        return '';
+      };
+      const unresolvedFactions = rows.filter(row => !readableFaction(row)).length;
+      const reportedUnresolved = Number(snapshot.unresolvedFactionCount ?? snapshot.scmdbParity?.unresolvedFactionCount ?? unresolvedFactions);
+      if (reportedUnresolved !== unresolvedFactions && /Star Citizen Wiki/i.test(String(snapshot.source || ''))) warn(`Wiki snapshot reports ${reportedUnresolved} unresolved faction rows but validator found ${unresolvedFactions}.`);
+      if (/Star Citizen Wiki/i.test(String(snapshot.source || '')) && snapshot.isFallback && unresolvedFactions > Math.max(25, rows.length * 0.10)) {
+        fail(`Wiki fallback still has too many unresolved faction/issuer relationships (${unresolvedFactions}/${rows.length}).`);
+      } else if (unresolvedFactions) {
+        warn(`${unresolvedFactions} mission rows have no readable faction/issuer relationship after synchronization.`);
+      }
     } catch (error) {
       fail(`Could not parse data/scmdb-missions-live.json: ${error.message}`);
     }
@@ -115,7 +134,7 @@ if (!preSync) {
 const swPath = path.join(root, 'sw.js');
 if (fs.existsSync(swPath)) {
   const sw = fs.readFileSync(swPath, 'utf8');
-  if (!/scmdb-parity-v2-20260907/.test(sw)) warn('sw.js does not contain the v2.0.3 SCMDB-parity cache revision; old clients may retain stale assets longer.');
+  if (!/faction-parity-v3-20260907/.test(sw)) warn('sw.js does not contain the v2.0.4 faction-parity cache revision; old clients may retain stale assets longer.');
 } else {
   warn('sw.js not present in this overlay checkout; verify it exists in the target repository.');
 }

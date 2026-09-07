@@ -64,7 +64,7 @@ async function browserRegression() {
 
 async function browserWikiPagingRegression() {
   const match = index.match(/<script\s+id="nexus-v203-scmdb-parity-browser-patch"[^>]*>([\s\S]*?)<\/script>/i);
-  assert(match, 'v2.0.3 SCMDB parity/browser paging patch was not found.');
+  assert(match, 'v2.0.4 SCMDB parity/browser paging patch was not found.');
   const current = '4.10.0-LIVE.12519617';
   const makeRows = (start, count) => Array.from({ length: count }, (_, offset) => ({
     uuid: `wiki-${start + offset}`, title: `Wiki Mission ${start + offset}`, faction: { name: `Faction ${(start + offset) % 24}` }
@@ -103,6 +103,71 @@ async function browserWikiPagingRegression() {
   const payload = await context.nexusMissionFetchWikiAll();
   assert(payload.missions.length === 450, `Wiki browser paging stopped early at ${payload.missions.length} rows.`);
   assert(payload.meta.missionCount === 450, 'Wiki browser paging metadata has the wrong mission count.');
+}
+
+
+async function browserFactionParityRegression() {
+  const match = index.match(/<script\s+id="nexus-v204-faction-parity-patch"[^>]*>([\s\S]*?)<\/script>/i);
+  assert(match, 'v2.0.4 faction relationship parity patch was not found.');
+  const current = '4.10.0-LIVE.12519617';
+  const sourceRows = [
+    { uuid: 'direct-uppercase', Faction: { UUID: 'fac-hh', Name: 'Headhunters' }, title: '[DESTINATION] Errand' },
+    { uuid: 'rep-scope', title: '[LOCATION] needs some repairs', ReputationGained: [
+      { Faction: 'Citizens For Prosperity', Scope: 'Affinity', Amount: 50 },
+      { Faction: 'Headhunters', Scope: 'FactionReputation', Amount: 25 },
+    ] },
+    { id: 'jsonapi-wrapper', attributes: { uuid: 'jsonapi-faction', title: 'Wrapped record', faction: { name: 'Citizens For Prosperity' } } },
+    { uuid: 'filter-only', title: '[TARGET] needs stomping' },
+  ];
+  const state = { records: [], filtered: [], selectedId: '', source: 'Star Citizen Wiki fallback', meta: { gameVersion: current, isFallback: true } };
+  const memory = new Map();
+  const localStorage = { getItem: key => memory.has(key) ? memory.get(key) : null, setItem: (key, value) => memory.set(key, String(value)) };
+  const get = (row, ...keys) => {
+    for (const key of keys) {
+      let value = row;
+      for (const part of key.split('.')) value = value && typeof value === 'object' ? value[part] : undefined;
+      if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return null;
+  };
+  const quietConsole = { log() {}, warn() {}, error() {}, info() {}, debug() {} };
+  const context = {
+    console: quietConsole, URL, URLSearchParams, Date, AbortController,
+    setTimeout: () => 0, clearTimeout: () => {},
+    nexusMissionState: state,
+    NEXUS_MISSION_WIKI_URL: 'https://api.star-citizen.wiki/api/missions',
+    nexusMissionId: (row, index = 0) => String(row?.uuid || row?.id || row?.attributes?.uuid || `mission-${index}`),
+    nexusMissionGet: get,
+    nexusMissionFindArray: payload => Array.isArray(payload?.data) ? payload.data : Array.isArray(payload?.missions) ? payload.missions : [],
+    nexusMissionNormalize: payload => ({ rows: (payload?.data || payload?.missions || []).map((raw, index) => ({ ...raw, __nexusId: String(raw?.uuid || raw?.id || raw?.attributes?.uuid || index), __nexusRaw: raw })), meta: { gameVersion: current }, source: 'fixture' }),
+    nexusMissionApplyPayload: parsed => { state.records = parsed.rows; state.meta = { ...state.meta, ...(parsed.meta || {}) }; return true; },
+    nexusMissionFaction: () => 'Unspecified faction',
+    nexusMissionBuildFilters: () => {}, nexusMissionApplyFilters: () => {}, nexusMissionRenderDetail: () => {}, nexusMissionRenderStatus: () => {},
+    nexusMissionFetchJson: async url => {
+      const parsed = new URL(url);
+      if (parsed.pathname.endsWith('/missions/filters')) return { data: { faction: [{ value: 'Headhunters' }, { value: 'Citizens For Prosperity' }, { value: 'Covalex Shipping' }] } };
+      if (parsed.pathname.endsWith('/factions')) return { data: [{ uuid: 'fac-hh', name: 'Headhunters' }, { uuid: 'fac-cfp', name: 'Citizens For Prosperity' }] };
+      if (parsed.pathname.endsWith('/missions')) {
+        const faction = parsed.searchParams.get('filter[faction]');
+        const rows = faction === 'Headhunters' ? [{ uuid: 'filter-only', title: '[TARGET] needs stomping' }] : [];
+        return { data: rows, meta: { last_page: 1, total: rows.length } };
+      }
+      throw new Error(`Unexpected fixture URL ${url}`);
+    },
+    document: { getElementById: () => null },
+    window: { NEXUS_LIVE_BUILD: { code: current }, NEXUS_SCMDB_MISSIONS_PAYLOAD: null, localStorage, addEventListener: () => {} },
+  };
+  vm.createContext(context);
+  new vm.Script(match[1], { filename: 'nexus-v204-faction-parity-patch.js' }).runInContext(context);
+  const parsed = context.nexusMissionNormalize({ data: sourceRows }, 'Star Citizen Wiki fallback', context.NEXUS_MISSION_WIKI_URL);
+  context.nexusMissionApplyPayload(parsed);
+  await context.window.nexusMissionHydrateFactionsV204(current);
+  const byId = new Map(state.records.map(row => [String(row.uuid || row.id), row]));
+  assert(context.nexusMissionFaction(byId.get('direct-uppercase')) === 'Headhunters', 'Uppercase Faction.Name was not resolved.');
+  assert(context.nexusMissionFaction(byId.get('rep-scope')) === 'Headhunters', 'FactionReputation did not take precedence over unrelated Affinity.');
+  assert(context.nexusMissionFaction(state.records.find(row => row.uuid === 'jsonapi-faction' || row.attributes?.uuid === 'jsonapi-faction')) === 'Citizens For Prosperity', 'JSON:API attributes were not flattened for faction resolution.');
+  assert(context.nexusMissionFaction(byId.get('filter-only')) === 'Headhunters', 'Wiki faction-filter membership did not resolve the issuer.');
+  assert(state.records.every(row => context.nexusMissionFaction(row) !== 'Unspecified faction'), 'Legacy Unspecified faction text remains in the v2.0.4 fixture.');
 }
 
 function missionRows(count, faction) {
@@ -147,11 +212,18 @@ async function runSyncFixture(kind) {
     await fsp.mkdir(upstream, { recursive: true });
     const versions = path.join(upstream, 'versions.json');
     const missions = path.join(upstream, 'missions.json');
+    const factions = path.join(upstream, 'factions.json');
+    const filters = path.join(upstream, 'filters.json');
     await fsp.writeFile(versions, JSON.stringify({ data: [{ code: version, channel: 'LIVE' }] }));
-    await fsp.writeFile(missions, JSON.stringify({ data: missionRows(125, { uuid: 'wiki-faction', name: 'Citizens For Prosperity' }), meta: { last_page: 1 } }));
+    const wikiRows = missionRows(125, undefined).map(row => ({ ...row, faction: undefined, ReputationGained: [{ Faction: 'Citizens For Prosperity', Scope: 'FactionReputation', Amount: 100 }] }));
+    await fsp.writeFile(missions, JSON.stringify({ data: wikiRows, meta: { last_page: 1 } }));
+    await fsp.writeFile(factions, JSON.stringify({ data: [{ uuid: 'wiki-faction', name: 'Citizens For Prosperity' }] }));
+    await fsp.writeFile(filters, JSON.stringify({ data: { faction: [{ value: 'Citizens For Prosperity' }] } }));
     env.SCMDB_VERSIONS_URL = pathToFileURL(path.join(temp, 'missing-scmdb.json')).href;
     env.STAR_CITIZEN_WIKI_VERSIONS_URL = pathToFileURL(versions).href;
     env.STAR_CITIZEN_WIKI_MISSIONS_URL = pathToFileURL(missions).href;
+    env.STAR_CITIZEN_WIKI_FACTIONS_URL = pathToFileURL(factions).href;
+    env.STAR_CITIZEN_WIKI_MISSION_FILTERS_URL = pathToFileURL(filters).href;
   }
 
   const result = spawnSync(process.execPath, ['scripts/sync-scmdb-missions.mjs'], { cwd: repo, env, encoding: 'utf8' });
@@ -170,13 +242,15 @@ async function runSyncFixture(kind) {
     assert(snapshot.sourceExtras?.extraMetadata?.fixture === true, 'Unknown SCMDB top-level metadata was not preserved.');
   } else {
     assert(snapshot.isFallback === true && /Star Citizen Wiki/.test(snapshot.source), 'Wiki fallback did not activate.');
-    assert(snapshot.missions[0]?.faction?.name === 'Citizens For Prosperity', 'Wiki fallback lost faction names.');
+    assert(snapshot.missions[0]?.factionName === 'Citizens For Prosperity', 'Wiki fallback did not derive faction names from ReputationGained.');
+    assert(Number(snapshot.unresolvedFactionCount || 0) === 0, 'Wiki fallback fixture still has unresolved factions.');
   }
   await fsp.rm(temp, { recursive: true, force: true });
 }
 
 await browserRegression();
 await browserWikiPagingRegression();
+await browserFactionParityRegression();
 await runSyncFixture('scmdb');
 await runSyncFixture('wiki');
-console.log('PASS: Wikelo concise cards, faction-name resolution, complete Wiki paging, SCMDB parity/schema preservation, and Wiki fallback regression tests.');
+console.log('PASS: Wikelo concise cards, v2.0.4 faction relationship resolution, complete Wiki paging, SCMDB parity/schema preservation, and Wiki fallback regression tests.');

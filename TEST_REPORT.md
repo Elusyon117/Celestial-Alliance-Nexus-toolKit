@@ -1,62 +1,65 @@
-# Celestial Nexus Toolkit v2.0.3 — Test Report
+# Celestial Nexus Toolkit v2.0.4 — Test Report
 
 ## Static repository validation
 
 PASS
 
-- Toolkit version derived as `2.0.3`.
-- 164 inline JavaScript blocks compiled successfully.
-- 613 DOM IDs inspected; no duplicate IDs detected.
-- 146 unique functions referenced by inline UI handlers resolved.
-- Required data/workflow scripts present.
-- Both GitHub Actions workflow YAML files parse successfully.
+- Toolkit version derived as `2.0.4`.
+- **165** inline JavaScript blocks compiled successfully.
+- **613** DOM IDs inspected; no duplicate IDs detected.
+- **146** unique functions referenced by inline UI handlers resolved.
+- Required sync, audit, validation, regression, and workflow files are present.
 - All shipped `.mjs` scripts pass `node --check`.
+- Both GitHub Actions workflow YAML files parse successfully.
 
-## Browser/data-resilience regression suite
-
-PASS
-
-Validated in a VM-backed browser fixture:
-
-- known faction GUID resolves to its readable faction name.
-- unknown GUID displays `Unspecified faction`, never the raw identifier.
-- Wikelo recipe/materials remain available when network mission sources fail.
-- Material Locker readiness remains functional.
-- Org Project Plan totals remain functional.
-- the removed generic `Recipe shown from...` / `Recipe cross-checked from...` message is not reintroduced.
-- a 450-mission Wiki catalog split into 200 + 200 + 50 API pages loads all 450 rows.
-
-## SCMDB synchronization fixture
+## Browser faction regression fixture
 
 PASS
 
-Fixture contained:
+The v2.0.4 browser patch was executed in a VM-backed fixture and verified:
 
-- 120 active `contracts`
-- 20 `legacyContracts`
-- 30 factions
-- representative location, ship, blueprint, scope, availability, faction-reward, resource, and partial-payout pools
+- `Faction.Name` → `Headhunters`.
+- A mission with Citizens For Prosperity `Affinity` plus Headhunters `FactionReputation` resolves to **Headhunters**.
+- JSON:API `attributes.faction.name` is flattened and resolved.
+- A mission with no direct faction is resolved from Wiki `filter[faction]` membership.
+- Legacy `Unspecified faction` output is not used by the new resolver.
+- Existing v2.0.3 Wikelo recipe retention/readiness/project-plan tests still pass.
 
-Generated result:
-
-- 140 searchable mission rows
-- 120 active + 20 legacy parity accounting
-- 30 named factions
-- all required supporting dictionaries preserved
-- original mission fields retained while readable enrichment was added
-
-Post-sync toolkit validation and repository validation both passed against this generated snapshot.
-
-## Wiki outage-fallback fixture
+## Contract data regression fixtures
 
 PASS
 
-An intentionally unavailable SCMDB source fell through to a version-pinned Wiki fixture successfully. The test lowers the production minimum only for the fixture; production validation rejects suspiciously small Wiki fallbacks.
+### SCMDB fixture
 
-## Packaging checks
+- 120 current contracts + 20 legacy contracts = **140 searchable contracts**.
+- Faction GUIDs resolve through SCMDB's faction dictionary.
+- Supporting pools/dictionaries and unknown top-level SCMDB metadata remain preserved.
 
-The final ZIP is generated only after the tests above pass. `unzip -t` and SHA-256 verification are performed during packaging.
+### Wiki fallback fixture
 
-## Environment limitation
+- **125** current mission rows loaded after a forced SCMDB failure.
+- Faction names were derived from `ReputationGained`/`FactionReputation` rather than requiring a direct `faction` object.
+- `unresolvedFactionCount` = **0** in the fixture.
 
-A full Chromium navigation test cannot be run in this sandbox because local/file navigation is administratively blocked. The update therefore uses JavaScript VM browser fixtures, synchronization fixtures, static DOM/handler validation, workflow YAML parsing, and post-sync repository validation as its automated coverage.
+### Faction-filter relationship fixture
+
+A local HTTP API fixture was used to simulate summary rows with no faction field at all. The sync queried the faction list and `filter[faction]` mission membership and produced:
+
+- 6 missions,
+- 3 named factions,
+- **0 unresolved faction rows**,
+- correct Headhunters / Citizens For Prosperity / Covalex assignments.
+
+## Wiki pagination regression
+
+PASS
+
+A 450-row browser fixture split across 200 + 200 + 50 rows loaded all **450** missions without stopping early.
+
+## Deployment/cache checks
+
+PASS
+
+- Service-worker cache revision: `faction-parity-v3-20260907`.
+- v2.0.4 faction relationship patch is required by CI.
+- Post-sync validation rejects a heavily unresolved Wiki fallback.
