@@ -1,23 +1,43 @@
 {
-  "schema": "celestial-nexus.game-data-status.v1",
-  "generatedAt": "2026-09-06T20:27:24.414Z",
+  "schema": "celestial-nexus.game-data-status.v2",
+  "generatedAt": "2026-09-07T06:23:25.403Z",
   "detectedPatch": "4.10.0",
   "detectedChannel": "LIVE",
   "modules": {
     "contractFinder": {
-      "status": "current",
-      "source": "SCMDB 4.10.0-LIVE.12568521 mission snapshot",
-      "sourceUrl": "https://scmdb.net/data/merged-4.10.0-live.12568521.json",
-      "versionsUrl": "https://scmdb.net/data/versions.json",
+      "status": "current-scunpacked-enriched-wiki-fallback",
+      "source": "Star Citizen Wiki + ScDataDumper",
+      "sourceUrl": "https://api.star-citizen.wiki/api/missions",
+      "versionsUrl": "https://api.star-citizen.wiki/api/game-versions",
       "patch": "4.10.0",
       "channel": "LIVE",
-      "gameVersion": "4.10.0-LIVE.12568521",
-      "fetchedAt": "2026-09-06T20:27:24.414Z",
-      "activeCount": 1533,
+      "gameVersion": "4.10.0-LIVE.12519617",
+      "fetchedAt": "2026-09-07T06:23:24.380Z",
+      "activeCount": 5093,
       "legacyCount": 0,
-      "totalCount": 1533,
-      "fingerprint": "1b614ae70fdf43978fffba20b559728c9312e55ccb9d524d142b5f73f8849f83",
-      "lastError": ""
+      "totalCount": 5093,
+      "factionCount": 65,
+      "unresolvedFactionCount": 433,
+      "parity": {
+        "semantics": "Wiki ungrouped current-version mission rows enriched from ScDataDumper/scunpacked-data when SCMDB is unavailable",
+        "activeContracts": 5093,
+        "legacyContracts": 0,
+        "totalContracts": 5093,
+        "factionDictionaryCount": 75,
+        "namedFactionCount": 65,
+        "unresolvedFactionCount": 433,
+        "factionAssignmentMethod": "ScDataDumper direct Faction/MissionGiver relationship -> record FactionReputation -> faction GUID dictionary -> Wiki faction-filter membership",
+        "queriedFactionFilters": 84,
+        "scunpackedAvailable": true,
+        "scunpackedContractFiles": 5120,
+        "scunpackedFactionFiles": 74,
+        "scunpackedMissionMatches": 5093,
+        "scunpackedFactionMatches": 4165,
+        "scmdbReferenceTotal": 1381,
+        "scmdbParityAvailable": false
+      },
+      "fingerprint": "691bd6f3f75d21265d15acae98eb4e290e5139dfa9ff0dbd2e75a81ff0f04ed4",
+      "upstreamError": "HTTP 403 for https://scmdb.net/data/versions.json"
     }
   }
 }

@@ -1,85 +1,37 @@
 {
-  "schema": "celestial-nexus.patch-audit.v1",
-  "generatedAt": "2026-09-06T20:27:24.636Z",
-  "status": "passed",
-  "appVersion": "2.0.1",
-  "patch": "4.10.0",
-  "channel": "LIVE",
-  "missionCount": 1533,
-  "errors": 0,
-  "warnings": 0,
-  "patchReferences": [
-    "4.0.0",
-    "4.1.0",
-    "4.10.0",
-    "4.2.0",
-    "4.3.0",
-    "4.4.0",
-    "4.5.0",
-    "4.6.0",
-    "4.8.0",
-    "4.9.0"
-  ],
-  "checks": [
-    {
-      "name": "payload-schema",
-      "ok": true,
-      "severity": "error",
-      "detail": "celestial-nexus.scmdb-missions.v2"
-    },
-    {
-      "name": "payload-patch-verified",
-      "ok": true,
-      "severity": "error",
-      "detail": "patchVerified=true"
-    },
-    {
-      "name": "mission-count-minimum",
-      "ok": true,
-      "severity": "error",
-      "detail": "missions=1533"
-    },
-    {
-      "name": "mission-count-consistent",
-      "ok": true,
-      "severity": "error",
-      "detail": "declared=1533; actual=1533"
-    },
-    {
-      "name": "status-count-consistent",
-      "ok": true,
-      "severity": "error",
-      "detail": "status=1533; actual=1533"
-    },
-    {
-      "name": "patch-consistent",
-      "ok": true,
-      "severity": "error",
-      "detail": "payload=4.10.0; status=4.10.0"
-    },
-    {
-      "name": "channel-consistent",
-      "ok": true,
-      "severity": "error",
-      "detail": "payload=LIVE; status=LIVE"
-    },
-    {
-      "name": "status-current",
-      "ok": true,
-      "severity": "warning",
-      "detail": "current"
-    },
-    {
-      "name": "index-version",
-      "ok": true,
-      "severity": "error",
-      "detail": "expected=2.0.1; actual=2.0.1"
-    },
-    {
-      "name": "index-current-patch-reference",
-      "ok": true,
-      "severity": "warning",
-      "detail": "current=4.10.0; references=4.0.0, 4.1.0, 4.10.0, 4.2.0, 4.3.0, 4.4.0, 4.5.0, 4.6.0, 4.8.0, 4.9.0"
+  "schema": "celestial-nexus.patch-audit.v2",
+  "generatedAt": "2026-09-07T06:23:25.507Z",
+  "currentPatch": "4.10.0",
+  "currentMajorMinor": "4.10",
+  "staleReferenceCount": 24,
+  "modules": {
+    "toolkit": {
+      "count": 24,
+      "patches": [
+        "4.9",
+        "4.3",
+        "4.5",
+        "4.8",
+        "4.6",
+        "4.0",
+        "4.1",
+        "4.4",
+        "4.2"
+      ]
     }
-  ]
+  },
+  "observedPatchReferences": {
+    "4.0": 2,
+    "4.1": 1,
+    "4.10": 3,
+    "4.10.0": 13,
+    "4.2": 1,
+    "4.3": 5,
+    "4.4": 1,
+    "4.5": 2,
+    "4.6": 2,
+    "4.8": 2,
+    "4.9": 8
+  },
+  "note": "Informational audit only. Historical references may be intentional; this script never auto-rewrites curated data."
 }
