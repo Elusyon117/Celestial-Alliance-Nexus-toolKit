@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       patch:
-        description: Optional patch override, for example 4.10. Leave blank for newest LIVE.
+        description: Optional patch override, for example 4.10. Leave blank for newest channel build.
         required: false
         type: string
       channel:
@@ -30,7 +30,7 @@ concurrency:
 jobs:
   sync:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - name: Check out repository
         uses: actions/checkout@v5
@@ -42,28 +42,31 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Validate update scripts
+      - name: Preflight toolkit and update scripts
         run: |
-          node --check scripts/sync-live-build.mjs
           node --check scripts/sync-scmdb-missions.mjs
           node --check scripts/audit-patch-data.mjs
+          node --check scripts/validate-toolkit.mjs
+          node --check scripts/test-data-resilience.mjs
+          node scripts/validate-toolkit.mjs --pre-sync
+          node scripts/test-data-resilience.mjs
 
-      - name: Synchronize current LIVE build authority
-        env:
-          LIVE_BUILD_URL: ${{ vars.LIVE_BUILD_URL }}
-        run: node scripts/sync-live-build.mjs
-
-      - name: Synchronize newest SCMDB dataset
+      - name: Synchronize Contract Finder authority
         env:
           MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
           MISSION_CHANNEL: ${{ github.event.inputs.channel || 'LIVE' }}
           SCMDB_BASE_URL: ${{ vars.SCMDB_BASE_URL }}
           SCMDB_VERSIONS_URL: ${{ vars.SCMDB_VERSIONS_URL }}
           SCMDB_MISSIONS_URL: ${{ vars.SCMDB_MISSIONS_URL }}
+          STAR_CITIZEN_WIKI_VERSIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_VERSIONS_URL }}
+          STAR_CITIZEN_WIKI_MISSIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_MISSIONS_URL }}
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Audit other patch-sensitive modules
         run: node scripts/audit-patch-data.mjs
+
+      - name: Validate synchronized toolkit
+        run: node scripts/validate-toolkit.mjs
 
       - name: Read synchronization result
         id: result
@@ -73,12 +76,12 @@ jobs:
           const fs = require('fs');
           const status = JSON.parse(fs.readFileSync('data/game-data-status.json', 'utf8'));
           const audit = JSON.parse(fs.readFileSync('data/patch-audit.json', 'utf8'));
-          const live = JSON.parse(fs.readFileSync('data/live-build.json', 'utf8'));
           const module = status.modules.contractFinder;
           console.log(`version=${module.gameVersion}`);
           console.log(`patch=${module.patch}`);
+          console.log(`source=${module.source || 'Unknown'}`);
+          console.log(`sync_status=${module.status || 'unknown'}`);
           console.log(`stale=${audit.staleReferenceCount}`);
-          console.log(`live_build=${live.code}`);
           NODE
 
       - name: Commit changed snapshots and reports
@@ -86,7 +89,6 @@ jobs:
         run: |
           set -euo pipefail
           git add \
-            data/live-build.json \
             data/scmdb-missions-live.json \
             data/scmdb-missions-live.js \
             data/game-data-status.json \
@@ -106,8 +108,8 @@ jobs:
         uses: actions/github-script@v8
         env:
           CURRENT_PATCH: ${{ steps.result.outputs.patch }}
-          CURRENT_LIVE_BUILD: ${{ steps.result.outputs.live_build }}
           STALE_COUNT: ${{ steps.result.outputs.stale }}
+          DATA_SOURCE: ${{ steps.result.outputs.source }}
         with:
           script: |
             const fs = require('fs');
@@ -118,10 +120,9 @@ jobs:
               .map(([name, value]) => `- **${name}**: ${value.count} references (${value.patches.join(', ')})`)
               .join('\n');
             const body = [
-              `The automated game-data sync is using **${process.env.CURRENT_LIVE_BUILD}** as the current LIVE authority.`,
-              `The SCMDB Contract Finder snapshot is current for **${process.env.CURRENT_PATCH} LIVE**.`,
+              `Contract Finder synchronized for **${process.env.CURRENT_PATCH} LIVE** using **${process.env.DATA_SOURCE}**.`,
               '',
-              `The audit found **${process.env.STALE_COUNT}** older patch-specific references that may belong to curated modules:`,
+              `The audit found **${process.env.STALE_COUNT}** older patch-specific references in curated modules:`,
               '',
               rows || '- No grouped references were produced.',
               '',
@@ -129,27 +130,40 @@ jobs:
               '',
               `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              per_page: 100,
-            });
+            const { data: issues } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100 });
             const existing = issues.find(issue => issue.title === title);
             if (existing) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body,
-              });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
             } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-              });
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
+            }
+
+      - name: Note degraded upstream mode
+        if: contains(steps.result.outputs.sync_status, 'fallback') || contains(steps.result.outputs.sync_status, 'stale')
+        uses: actions/github-script@v8
+        env:
+          VERSION: ${{ steps.result.outputs.version }}
+          DATA_SOURCE: ${{ steps.result.outputs.source }}
+          SYNC_STATUS: ${{ steps.result.outputs.sync_status }}
+        with:
+          script: |
+            const title = 'Game data upstream degraded — fallback active';
+            const body = [
+              `The toolkit remains populated, but the preferred SCMDB path was not used for **${process.env.VERSION}**.`,
+              '',
+              `Status: **${process.env.SYNC_STATUS}**`,
+              `Active source: **${process.env.DATA_SOURCE}**`,
+              '',
+              'The synchronization script now uses the Star Citizen Wiki current-version mission API as a verified fallback and only preserves an older snapshot when it contains a usable mission catalog.',
+              '',
+              `Workflow run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100 });
+            const existing = issues.find(issue => issue.title === title);
+            if (existing) {
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
+            } else {
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
             }
 
       - name: Report synchronization failure
@@ -158,26 +172,17 @@ jobs:
         with:
           script: |
             const title = 'Game data synchronization failed';
-            const body = `The scheduled game-data sync failed. The existing snapshots were not overwritten.\n\nRun: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
-            const { data: issues } = await github.rest.issues.listForRepo({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              state: 'open',
-              per_page: 100,
-            });
+            const body = [
+              'The scheduled game-data sync failed after trying SCMDB, the Star Citizen Wiki fallback, and any usable saved snapshot.',
+              '',
+              'An empty/bootstrap snapshot is no longer accepted as a successful fallback.',
+              '',
+              `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+            ].join('\n');
+            const { data: issues } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', per_page: 100 });
             const existing = issues.find(issue => issue.title === title);
             if (existing) {
-              await github.rest.issues.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: existing.number,
-                body,
-              });
+              await github.rest.issues.update({ owner: context.repo.owner, repo: context.repo.repo, issue_number: existing.number, body });
             } else {
-              await github.rest.issues.create({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                title,
-                body,
-              });
+              await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body });
             }

@@ -1,0 +1,10 @@
+b9316a6fb72ef201d567f3207e9499d905979cbb769276106610166439c8cc3e  ./.github/workflows/sync-game-data.yml
+5613fd0a52f5286f6621a6fee509c1f182b6b300ce2fce2f3bdce5c7c3e7649f  ./FILES_IN_THIS_UPDATE.txt
+c10f993c90bfb641e9c5b370a354d343511f37406bc17531cdf1436de0253a45  ./PATCH_NOTES.md
+4f0a749673c85751be82ecf933c120de8596ae5fa5e615b30e7ccccca360db54  ./TEST_REPORT.md
+49df8f545f55107dace1ecfa7c03509c2ff71abe91ef2283aa92e7090c6e6eeb  ./UPDATE_INSTRUCTIONS.md
+c8ad9effb846d383063aebaac222d84be71c458d173cc6f868cb0ce5b893e2b6  ./index.html
+699484be8c1f5ca4b6735d755adb923f93239c37aba2ccc3400aeb3bf691103e  ./scripts/sync-scmdb-missions.mjs
+893b174782de4cf3e6446d0e309f8574e7602338266e81cc8611e2c8e28038cf  ./scripts/test-data-resilience.mjs
+c7585738bade703aa04a7b475bd0aaa9947b336fc39096db992c453d7d9836a0  ./scripts/validate-toolkit.mjs
+b80d25b5f77b0ec5033141ecec180ef994990356df12095e24ead84041c6745f  ./sw.js

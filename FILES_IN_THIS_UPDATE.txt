@@ -1,0 +1,10 @@
+.github/workflows/sync-game-data.yml
+index.html
+sw.js
+scripts/sync-scmdb-missions.mjs
+scripts/validate-toolkit.mjs
+scripts/test-data-resilience.mjs
+UPDATE_INSTRUCTIONS.md
+PATCH_NOTES.md
+TEST_REPORT.md
+FILES_IN_THIS_UPDATE.txt

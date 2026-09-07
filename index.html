@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 
-<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="2.0.1" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="2.0.2" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v2.0.1 Blueprint Links & Language Pack Update: contract reward deep-links, customizable Persistent Universe login copy, preserved workflow/data automation, and cache revision refresh. -->
+<!-- Celestial Nexus Toolkit v2.0.2 Data Resilience & Contract Identity Fix: contract reward deep-links, customizable Persistent Universe login copy, preserved workflow/data automation, and cache revision refresh. -->
 <!-- Event Planner v10.1 stability patch: fixed selection-overlay mutation loop and briefing whitespace gap. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#07131f" name="theme-color"/>
-<meta content="2.0.1" name="nexus-version"/>
-<meta content="Celestial Nexus Toolkit v2.0.1" name="generator"/>
+<meta content="2.0.2" name="nexus-version"/>
+<meta content="Celestial Nexus Toolkit v2.0.2" name="generator"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -18,10 +18,10 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://media.starcitizen.tools" rel="preconnect" crossorigin="anonymous"/>
 <link href="https://media.robertsspaceindustries.com" rel="preconnect" crossorigin="anonymous"/>
-<title>Celestial Nexus Toolkit — v2.0.1 Blueprint Links & Language Pack Update</title>
-<link href="./icon-192.png?v=2.0.1-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<title>Celestial Nexus Toolkit — v2.0.2 Data Resilience & Contract Identity Fix</title>
+<link href="./icon-192.png?v=2.0.2-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png?v=2.0.1-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=2.0.2-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -10775,7 +10775,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
       <span class="hub-rb-brand-copy">
         <span class="hub-rb-brand-name">Celestial Nexus</span>
-        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.1 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · 4.10.0-LIVE.12519617</span></span>
+        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.2 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · 4.10.0-LIVE.12519617</span></span>
       </span>
     </button>
     <nav class="hub-rb-nav" aria-label="Main hub sections">
@@ -11033,7 +11033,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   </main>
 
   <footer class="hub-rb-footer">
-    <span>Celestial Alliance community toolkit · v2.0.1</span>
+    <span>Celestial Alliance community toolkit · v2.0.2</span>
     <span class="hub-rb-footer-nav"><button type="button" onclick="hubRebrandScroll('hub-rb-featured')">Featured</button><button type="button" onclick="hubRebrandScroll('hub-rb-modules')">Modules</button></span>
     <span>Unofficial Star Citizen fan tool · Community data may change with game patches</span>
   </footer>
@@ -29239,7 +29239,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=2.0.1-data-integrity-r3').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=2.0.2-data-integrity-r3').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -29247,8 +29247,8 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 window.NEXUS_RELEASE = Object.freeze({
-  version: '2.0.1',
-  label: 'Blueprint Links & Language Pack Update',
+  version: '2.0.2',
+  label: 'Data Resilience & Contract Identity Fix',
   catalogMode: 'Contract reward blueprints now cross-link into Blueprint Finder; Language Pack Lab adds customizable Persistent Universe login banner and organization thank-you copy.',
   publishedAt: '2026-08-19'
 });
@@ -52869,9 +52869,9 @@ body {
 <script id="nexus-v180-release-stamp">
 (() => {
   'use strict';
-  const VERSION = '2.0.1';
-  const BUILD = '2.0.1-blueprint-links-language-pack';
-  const LABEL = 'Blueprint Links & Language Pack Update';
+  const VERSION = '2.0.2';
+  const BUILD = '2.0.2-blueprint-links-language-pack';
+  const LABEL = 'Data Resilience & Contract Identity Fix';
   try { document.documentElement.setAttribute('data-nexus-version', BUILD); } catch (_) {}
   try { document.title = `Celestial Nexus Toolkit — v${VERSION} ${LABEL}`; } catch (_) {}
   try {
@@ -54244,7 +54244,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 <script id="nexus-v180-runtime-hardening-script">
 (() => {
   'use strict';
-  const VERSION = '2.0.1';
+  const VERSION = '2.0.2';
   const startedAt = performance.now();
   const diagnostics = window.NEXUS_DIAGNOSTICS = window.NEXUS_DIAGNOSTICS || {
     version: VERSION,
@@ -82606,67 +82606,10 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
     if(Array.isArray(window.NEXUS_FALLBACK_ITEMS))window.NEXUS_FALLBACK_ITEMS.length=0;
   }catch(_){}
 
-  // Wikelo: historical recipes are retained only as identifiers/artwork references until a current LIVE mission record verifies them.
-  function wikeloValue(row,...keys){for(const key of keys){const parts=key.split('.');let value=row;for(const part of parts)value=value&&typeof value==='object'?value[part]:undefined;if(value!==undefined&&value!==null&&value!=='')return value;}return null;}
-  function wikeloText(value){if(value==null)return '';if(typeof value==='string'||typeof value==='number')return String(value).trim();if(typeof value==='object')return wikeloText(value.name||value.display_name||value.displayName||value.title||value.label||value.item_name||value.commodity_name);return '';}
-  function wikeloPairs(value){
-    const result=[],seen=new Set();
-    function walk(node,depth=0){
-      if(node==null||depth>7)return;
-      if(Array.isArray(node)){node.forEach(item=>walk(item,depth+1));return;}
-      if(typeof node!=='object')return;
-      const name=wikeloText(node.item||node.commodity||node.resource||node.product||node);
-      const raw=node.quantity??node.amount??node.count??node.units??node.scu??node.qty;const qty=Number(raw);
-      if(name&&Number.isFinite(qty)&&qty>0){const key=name.toLowerCase();if(!seen.has(key)){seen.add(key);result.push({name,qty:Math.max(1,qty)});}}
-      Object.entries(node).forEach(([key,child])=>{if(!/^(name|display_name|displayName|title|label|item_name|commodity_name|quantity|amount|count|units|scu|qty)$/i.test(key))walk(child,depth+1);});
-    }
-    walk(value);return result;
-  }
-  function wikeloRewardNames(row){
-    const source=wikeloValue(row,'reward_items','rewardItems','rewards.items','reward_groups','rewardGroups');
-    const values=[];
-    (function walk(node,depth=0){if(node==null||depth>6)return;if(Array.isArray(node)){node.forEach(x=>walk(x,depth+1));return;}if(typeof node==='object'){const n=wikeloText(node.item||node.reward||node);if(n)values.push(n);Object.entries(node).forEach(([k,v])=>{if(!/^(name|display_name|displayName|title|label)$/i.test(k))walk(v,depth+1);});}})(source);
-    return [...new Set(values.filter(Boolean))];
-  }
-  try{
-    if(typeof NEXUS_WIKELO_TRADES!=='undefined'&&Array.isArray(NEXUS_WIKELO_TRADES)){
-      NEXUS_WIKELO_TRADES.forEach(trade=>{if(!trade.__legacyMaterials)trade.__legacyMaterials=(trade.materials||[]).map(x=>({...x}));if(!trade.__legacyRewards)trade.__legacyRewards=[...(trade.rewards||[])];trade.materials=[];trade.rewards=[];trade.__liveVerified=false;trade.patch='LIVE unresolved';});
-    }
-    if(typeof nexusWikeloTradeReady==='function')nexusWikeloTradeReady=trade=>Boolean(trade?.__liveVerified&&trade.materials?.length&&trade.materials.every(m=>nexusWikeloOwned(m.name)>=m.qty));
-    if(typeof nexusWikeloProgress==='function')nexusWikeloProgress=trade=>{if(!trade?.__liveVerified||!trade.materials?.length)return 0;return trade.materials.reduce((sum,m)=>sum+Math.min(1,nexusWikeloOwned(m.name)/m.qty),0)/trade.materials.length;};
-    if(typeof nexusWikeloRepMeta==='function')nexusWikeloRepMeta=function(trade){const live=nexusWikeloState?.missionData?.[trade.id];if(live&&Number.isFinite(live.rep))return {label:live.rep>0?`+${live.rep.toLocaleString()} REP`:'No REP',value:live.rep,kind:'live',title:'Synced from the current version-pinned Star Citizen Wiki mission record.'};return {label:nexusWikeloState?.repSync==='loading'?'Syncing LIVE…':'REP unavailable',value:null,kind:'pending',title:'No current LIVE reputation value was verified for this mission.'};};
-    if(typeof nexusWikeloPlanTotals==='function')nexusWikeloPlanTotals=function(){const totals={};nexusWikeloState.plan.forEach(id=>{const t=NEXUS_WIKELO_TRADES.find(x=>x.id===id);if(!t?.__liveVerified)return;(t.materials||[]).forEach(m=>totals[m.name]=(totals[m.name]||0)+m.qty);});return totals;};
-    if(typeof nexusWikeloSyncMissionData==='function')nexusWikeloSyncMissionData=async function(){
-      if(nexusWikeloState.repSync==='loading')return;
-      nexusWikeloState.repSync='loading';nexusWikeloSetSyncStatus('Current LIVE Wikelo mission sync in progress…','loading');
-      try{
-        const live=await authority(false),query=new URLSearchParams();query.set('filter[faction]','Wikelo Emporium');query.set('page[size]','200');query.set('version',live.code);
-        const missionRows=await fetchApiCollection(`${SHIP_DATA_API}/missions?${query}`,10);let matched=0,recipeMatched=0;
-        NEXUS_WIKELO_TRADES.forEach(trade=>{
-          const row=nexusWikeloMissionMatch(trade,missionRows);
-          if(!row){trade.__liveVerified=false;trade.materials=[];trade.rewards=[];trade.patch=live.code;trade.notes='Current LIVE mission record was not matched; historical recipe values are withheld.';return;}
-          const rep=nexusWikeloParseRep(row);
-          const materials=wikeloPairs(wikeloValue(row,'hauling_orders','haulingOrders','required_items','requiredItems','requirements.items','objectives'));
-          const rewards=wikeloRewardNames(row);
-          nexusWikeloState.missionData[trade.id]={rep,uuid:row.uuid||row.id||'',title:row.title||row.name||trade.mission,gameVersion:live.code};
-          trade.materials=materials;trade.rewards=rewards;trade.patch=live.code;trade.__liveVerified=materials.length>0||rewards.length>0||Number.isFinite(rep);
-          if(rewards.length){trade.reward=rewards.length===1?rewards[0]:rewards.join(' + ');}
-          trade.notes=trade.__liveVerified?'Verified against current LIVE mission data.':'Current LIVE mission record matched, but recipe/reward fields were not exposed; historical values are withheld.';
-          if(trade.__liveVerified)matched++;if(materials.length)recipeMatched++;
-        });
-        nexusWikeloState.repSync='done';nexusWikeloSetSyncStatus(`${live.code} · ${matched} missions matched · ${recipeMatched} recipes exposed`,'live');
-      }catch(error){
-        nexusWikeloState.repSync='failed';NEXUS_WIKELO_TRADES.forEach(trade=>{trade.__liveVerified=false;trade.materials=[];trade.rewards=[];trade.notes='Current LIVE mission data unavailable; historical recipe values are withheld.';});
-        nexusWikeloSetSyncStatus(`Current LIVE Wikelo data unavailable · ${error.message||error}`,'fallback');
-      }
-      nexusWikeloRenderTrades();nexusWikeloRenderPlan();nexusWikeloCalculateRep();
-    };
-    // Make the card status distinguish unavailable source data from a genuine inventory shortage.
-    if(typeof nexusWikeloRenderTrades==='function'){
-      const previousRender=nexusWikeloRenderTrades;
-      nexusWikeloRenderTrades=function(){previousRender.apply(this,arguments);document.querySelectorAll('#wikelo-trade-grid .wikelo-trade-card').forEach((card,index)=>{const visible=NEXUS_WIKELO_TRADES.filter(t=>{const q=(document.getElementById('wikelo-search')?.value||'').trim().toLowerCase(),category=document.getElementById('wikelo-category')?.value||'',rank=document.getElementById('wikelo-rank')?.value||'',readyOnly=!!document.getElementById('wikelo-ready-only')?.checked,hideComplete=!!document.getElementById('wikelo-hide-complete')?.checked,rep=nexusWikeloRepMeta(t).label,hay=[t.reward,t.mission,t.category,t.rank,rep,...(t.rewards||[]),...(t.materials||[]).map(m=>m.name)].join(' ').toLowerCase();return(!q||hay.includes(q))&&(!category||t.category===category)&&(!rank||t.rank===rank)&&(!readyOnly||nexusWikeloTradeReady(t))&&(!hideComplete||nexusWikeloCompletionCount(t.id)===0);})[index];if(visible&&!visible.__liveVerified){const status=card.querySelector('.wikelo-card-status');if(status){status.textContent='LIVE data unavailable';status.classList.remove('ready');}const list=card.querySelector('.wikelo-material-list');if(list&&!visible.materials.length)list.insertAdjacentHTML('afterbegin','<div class="wikelo-note">Current LIVE recipe requirements were not exposed. Historical quantities are withheld.</div>');}});};
-    }
-  }catch(error){console.warn('Wikelo LIVE standardization failed',error);}
+  // Wikelo v2.0.2: do not blank the verified community catalog when a live mission API omits recipe fields.
+  // SCMDB/current-LIVE cross-checking and provenance-aware fallback handling are installed by
+  // nexus-data-resilience-patch-v1 immediately after this standardization layer.
+
 
   // Shared build badge in hub and every module header.
   function installBadges(){
@@ -82688,6 +82631,530 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
   const start=()=>{installBadges();authority(false).then(live=>updateBadges(live)).catch(error=>updateBadges(null,error.message||String(error)));};
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
   window.addEventListener('nexus:viewchange',()=>{installBadges();updateBadges(window.NEXUS_LIVE_BUILD||null);});
+})();
+</script>
+
+<script id="nexus-data-resilience-patch-v1">
+(() => {
+  'use strict';
+
+  // Celestial Nexus v2.0.2 data-resilience patch.
+  // Goals:
+  // 1) Never erase a usable Wikelo community recipe merely because a live API omits recipe fields.
+  // 2) Prefer SCMDB/live data when it actually contains a Wikelo recipe, while keeping source provenance explicit.
+  // 3) Resolve Contract Finder faction GUIDs to readable names and never render opaque identifiers as faction labels.
+
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const clone = value => value == null ? value : JSON.parse(JSON.stringify(value));
+  const opaqueFaction = value => {
+    const text = clean(value);
+    if (!text) return false;
+    return /^(?:[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{24,}|[A-Z0-9_]{28,})$/i.test(text)
+      || /^(?:uuid|guid|id)[:=_-]?[0-9a-f-]{12,}$/i.test(text);
+  };
+  const deepGet = (record, path) => {
+    let value = record;
+    for (const part of String(path).split('.')) {
+      if (value == null || typeof value !== 'object') return undefined;
+      value = value[part];
+    }
+    return value;
+  };
+  const firstValue = (record, ...paths) => {
+    for (const path of paths) {
+      const value = deepGet(record, path);
+      if (value !== undefined && value !== null && value !== '') return value;
+    }
+    return undefined;
+  };
+
+  // ---------------------------------------------------------------------------
+  // Contract Finder faction-name resolver
+  // ---------------------------------------------------------------------------
+  const factionNames = new Map();
+  const factionAliases = new Map();
+
+  function factionNameFromObject(value) {
+    if (value == null) return '';
+    if (typeof value === 'string' || typeof value === 'number') {
+      const text = clean(value);
+      return text && !opaqueFaction(text) ? text : '';
+    }
+    if (typeof value !== 'object') return '';
+    return clean(
+      value.displayName ?? value.display_name ?? value.name ?? value.title ??
+      value.label ?? value.shortName ?? value.short_name ?? ''
+    );
+  }
+
+  function rememberFaction(id, value) {
+    const name = factionNameFromObject(value);
+    const key = clean(id ?? value?.guid ?? value?.uuid ?? value?.id ?? value?.code ?? '');
+    if (name && key) factionNames.set(key.toLowerCase(), name);
+    if (name) {
+      factionAliases.set(name.toLowerCase(), name);
+      for (const alias of [value?.slug, value?.code, value?.shortName, value?.short_name].filter(Boolean)) {
+        factionAliases.set(clean(alias).toLowerCase(), name);
+      }
+    }
+  }
+
+  function absorbFactionDictionary(dictionary) {
+    if (!dictionary) return;
+    if (Array.isArray(dictionary)) {
+      dictionary.forEach(row => rememberFaction(row?.guid ?? row?.uuid ?? row?.id ?? row?.code, row));
+      return;
+    }
+    if (typeof dictionary === 'object') {
+      Object.entries(dictionary).forEach(([id, row]) => rememberFaction(id, row));
+    }
+  }
+
+  function absorbFactionRows(rows) {
+    if (!Array.isArray(rows)) return;
+    rows.forEach(record => {
+      const faction = record?.faction;
+      if (faction && typeof faction === 'object') {
+        rememberFaction(
+          faction.guid ?? faction.uuid ?? faction.id ?? record?.factionGuid ?? record?.faction_guid,
+          faction
+        );
+      }
+      const explicitName = clean(record?.factionName ?? record?.faction_name ?? '');
+      const guid = clean(record?.factionGuid ?? record?.faction_guid ?? '');
+      if (guid && explicitName && !opaqueFaction(explicitName)) factionNames.set(guid.toLowerCase(), explicitName);
+    });
+  }
+
+  function resolveFaction(record) {
+    const namedCandidates = [
+      firstValue(record, 'faction.name', 'faction.displayName', 'faction.display_name', 'faction.title', 'faction.label'),
+      firstValue(record, 'factionName', 'faction_name'),
+      firstValue(record, 'organization.name', 'organization.displayName'),
+      firstValue(record, 'employer.name', 'employer.displayName'),
+      firstValue(record, 'mission_giver.name', 'mission_giver.displayName'),
+      firstValue(record, 'missionGiver.name', 'missionGiver.displayName'),
+      firstValue(record, 'giver.name', 'giver.displayName')
+    ];
+    for (const candidate of namedCandidates) {
+      const name = factionNameFromObject(candidate);
+      if (name) return name;
+    }
+
+    // Some SCMDB records carry faction as a readable string; others carry the GUID there.
+    for (const candidate of [record?.faction, record?.organization, record?.employer, record?.mission_giver, record?.missionGiver, record?.giver]) {
+      const name = factionNameFromObject(candidate);
+      if (name) return name;
+    }
+
+    const ids = [
+      firstValue(record, 'faction.guid', 'faction.uuid', 'faction.id'),
+      firstValue(record, 'factionGuid', 'faction_guid', 'organizationGuid', 'organization_guid')
+    ].map(clean).filter(Boolean);
+    for (const id of ids) {
+      const name = factionNames.get(id.toLowerCase()) || factionAliases.get(id.toLowerCase());
+      if (name) return name;
+    }
+    return 'Unspecified faction';
+  }
+
+  async function hydrateFactionNamesFromWiki() {
+    if (hydrateFactionNamesFromWiki.pending) return hydrateFactionNamesFromWiki.pending;
+    hydrateFactionNamesFromWiki.pending = (async () => {
+      try {
+        const rows = [];
+        let page = 1;
+        let lastPage = 1;
+        do {
+          const url = new URL('https://api.star-citizen.wiki/api/factions');
+          url.searchParams.set('page[size]', '200');
+          url.searchParams.set('page[number]', String(page));
+          const response = await fetch(url.href, { headers: { Accept: 'application/json' } });
+          if (!response.ok) throw new Error(`Faction API HTTP ${response.status}`);
+          const payload = await response.json();
+          const batch = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+          rows.push(...batch);
+          const meta = payload?.meta ?? payload?.metadata ?? {};
+          const explicitLast = Number(meta.last_page ?? meta.lastPage ?? meta.total_pages ?? meta.totalPages ?? meta?.page?.last ?? 0);
+          lastPage = Number.isFinite(explicitLast) && explicitLast > 0 ? explicitLast : (payload?.links?.next ? page + 1 : page);
+          page += 1;
+        } while (page <= lastPage && page <= 20);
+        absorbFactionDictionary(rows);
+        return rows.length;
+      } catch (error) {
+        console.warn('Faction-name enrichment fallback unavailable', error);
+        return 0;
+      }
+    })();
+    return hydrateFactionNamesFromWiki.pending;
+  }
+
+  try {
+    absorbFactionDictionary(window.NEXUS_SCMDB_MISSIONS_PAYLOAD?.factions);
+    absorbFactionRows(window.NEXUS_SCMDB_MISSIONS_PAYLOAD?.missions);
+
+    if (typeof nexusMissionNormalize === 'function' && !nexusMissionNormalize.__nexusFactionResilience) {
+      const previousNormalize = nexusMissionNormalize;
+      const wrappedNormalize = function(payload, source, url = '') {
+        absorbFactionDictionary(payload?.factions ?? payload?.data?.factions ?? payload?.meta?.factions);
+        const parsed = previousNormalize.apply(this, arguments);
+        if (parsed) parsed.__nexusFactionDictionary = payload?.factions ?? payload?.data?.factions ?? null;
+        return parsed;
+      };
+      wrappedNormalize.__nexusFactionResilience = true;
+      nexusMissionNormalize = wrappedNormalize;
+    }
+
+    if (typeof nexusMissionFaction === 'function') {
+      nexusMissionFaction = resolveFaction;
+    }
+
+    if (typeof nexusMissionApplyPayload === 'function' && !nexusMissionApplyPayload.__nexusFactionResilience) {
+      const previousApplyPayload = nexusMissionApplyPayload;
+      const wrappedApplyPayload = function(parsed) {
+        absorbFactionDictionary(parsed?.__nexusFactionDictionary);
+        absorbFactionRows(parsed?.rows);
+        const applied = previousApplyPayload.apply(this, arguments);
+        if (applied) {
+          absorbFactionRows(typeof nexusMissionState !== 'undefined' ? nexusMissionState.records : parsed?.rows);
+          const unresolved = (typeof nexusMissionState !== 'undefined' ? nexusMissionState.records : parsed?.rows || [])
+            .some(row => resolveFaction(row) === 'Unspecified faction' && clean(row?.factionGuid ?? row?.faction_guid));
+          if (unresolved) {
+            hydrateFactionNamesFromWiki().then(count => {
+              if (!count || typeof nexusMissionState === 'undefined' || !nexusMissionState.records?.length) return;
+              if (typeof nexusMissionBuildFilters === 'function') nexusMissionBuildFilters();
+              if (typeof nexusMissionApplyFilters === 'function') nexusMissionApplyFilters(true);
+              if (typeof nexusMissionRenderDetail === 'function' && nexusMissionState.selectedId) nexusMissionRenderDetail();
+            });
+          }
+        }
+        return applied;
+      };
+      wrappedApplyPayload.__nexusFactionResilience = true;
+      nexusMissionApplyPayload = wrappedApplyPayload;
+    }
+  } catch (error) {
+    console.warn('Contract Finder faction resolver patch could not be installed', error);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Wikelo resilient recipe + mission synchronization
+  // ---------------------------------------------------------------------------
+  const WIKI_MISSIONS = 'https://api.star-citizen.wiki/api/missions';
+
+  function pairText(value) {
+    if (value == null) return '';
+    if (typeof value === 'string' || typeof value === 'number') return clean(value);
+    if (typeof value !== 'object') return '';
+    return pairText(
+      value.resourceName ?? value.itemName ?? value.commodityName ?? value.displayName ??
+      value.display_name ?? value.name ?? value.title ?? value.label ?? value.item ?? value.commodity ?? value.resource
+    );
+  }
+
+  function extractPairs(value) {
+    const result = [];
+    const seen = new Map();
+    const walk = (node, depth = 0) => {
+      if (node == null || depth > 8) return;
+      if (Array.isArray(node)) { node.forEach(item => walk(item, depth + 1)); return; }
+      if (typeof node !== 'object') return;
+      const name = pairText(node);
+      const quantity = Number(node.quantity ?? node.amount ?? node.count ?? node.units ?? node.scu ?? node.qty);
+      if (name && Number.isFinite(quantity) && quantity > 0) {
+        const key = name.toLowerCase();
+        const row = { name, qty: Math.max(1, quantity) };
+        if (!seen.has(key) || seen.get(key).qty < row.qty) seen.set(key, row);
+      }
+      Object.entries(node).forEach(([key, child]) => {
+        if (!/^(?:name|display_name|displayName|title|label|itemName|commodityName|resourceName|quantity|amount|count|units|scu|qty)$/i.test(key)) {
+          walk(child, depth + 1);
+        }
+      });
+    };
+    walk(value);
+    result.push(...seen.values());
+    return result;
+  }
+
+  function extractRewardNames(record) {
+    const names = [];
+    const source = firstValue(
+      record,
+      'reward_items', 'rewardItems', 'itemRewards', 'item_rewards',
+      'blueprintRewards', 'blueprint_rewards', 'rewards.items', 'reward_groups', 'rewardGroups'
+    );
+    const walk = (node, depth = 0) => {
+      if (node == null || depth > 7) return;
+      if (Array.isArray(node)) { node.forEach(item => walk(item, depth + 1)); return; }
+      if (typeof node === 'string') { if (clean(node) && !opaqueFaction(node)) names.push(clean(node)); return; }
+      if (typeof node !== 'object') return;
+      const name = pairText(node.reward ?? node.item ?? node.blueprint ?? node);
+      if (name) names.push(name);
+      Object.entries(node).forEach(([key, child]) => {
+        if (!/^(?:name|display_name|displayName|title|label)$/i.test(key)) walk(child, depth + 1);
+      });
+    };
+    walk(source);
+    return [...new Set(names.filter(Boolean))];
+  }
+
+  function restoreCommunityTrade(trade) {
+    if (!trade || typeof trade !== 'object') return;
+    if ((!Array.isArray(trade.materials) || !trade.materials.length) && Array.isArray(trade.__legacyMaterials) && trade.__legacyMaterials.length) {
+      trade.materials = clone(trade.__legacyMaterials);
+    }
+    if ((!Array.isArray(trade.rewards) || !trade.rewards.length) && Array.isArray(trade.__legacyRewards) && trade.__legacyRewards.length) {
+      trade.rewards = clone(trade.__legacyRewards);
+    }
+    if (!Array.isArray(trade.materials)) trade.materials = [];
+    if (!Array.isArray(trade.rewards)) trade.rewards = [];
+    trade.__communityRecipe = Boolean(trade.materials.length);
+    trade.__recipeSource = trade.__recipeSource || (trade.__communityRecipe ? 'Community catalog snapshot · verified 2026-06-17' : 'Mission metadata only');
+    // Compatibility flag: the previous late renderer uses this as "usable data". Exact live-recipe provenance lives in __liveRecipeVerified.
+    trade.__liveVerified = Boolean(trade.materials.length || trade.rewards.length || trade.reward);
+    trade.__liveRecipeVerified = Boolean(trade.__liveRecipeVerified);
+    if (!trade.__liveRecipeVerified && (!trade.patch || /LIVE unresolved/i.test(trade.patch))) {
+      trade.patch = 'Community snapshot · 2026-06-17';
+    }
+  }
+
+  function allWikeloTrades() {
+    try { return (typeof NEXUS_WIKELO_TRADES !== 'undefined' && Array.isArray(NEXUS_WIKELO_TRADES)) ? NEXUS_WIKELO_TRADES : []; }
+    catch (_) { return []; }
+  }
+
+  function usableSnapshotRows(payload) {
+    if (!payload || typeof payload !== 'object') return [];
+    for (const key of ['missions', 'contracts', 'data', 'records']) {
+      if (Array.isArray(payload[key])) return payload[key];
+    }
+    return [];
+  }
+
+  async function fetchLocalScmdbRows() {
+    const embedded = window.NEXUS_SCMDB_MISSIONS_PAYLOAD;
+    const embeddedRows = usableSnapshotRows(embedded);
+    if (embeddedRows.length >= 5) return { rows: embeddedRows, meta: embedded, source: 'SCMDB bundled snapshot' };
+    try {
+      const response = await fetch(`./data/scmdb-missions-live.json?_nexus_wikelo=${Date.now()}`, { cache: 'no-store' });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const payload = await response.json();
+      const rows = usableSnapshotRows(payload);
+      if (rows.length >= 5) return { rows, meta: payload, source: payload.source || 'SCMDB repository snapshot' };
+    } catch (error) {
+      console.warn('Wikelo SCMDB repository snapshot unavailable', error);
+    }
+    return { rows: [], meta: null, source: '' };
+  }
+
+  async function currentLiveCode() {
+    if (window.NEXUS_LIVE_BUILD?.code) return window.NEXUS_LIVE_BUILD.code;
+    if (typeof window.nexusLiveBuildResolve === 'function') {
+      try {
+        const result = await window.nexusLiveBuildResolve({ force: false });
+        if (result?.code) return result.code;
+      } catch (_) {}
+    }
+    return '4.10.0-LIVE.12519617';
+  }
+
+  async function fetchWikiWikeloRows(version) {
+    try {
+      const rows = [];
+      let page = 1;
+      let lastPage = 1;
+      do {
+        const url = new URL(WIKI_MISSIONS);
+        url.searchParams.set('version', version);
+        url.searchParams.set('filter[faction]', 'Wikelo Emporium');
+        url.searchParams.set('filter[grouped]', 'false');
+        url.searchParams.set('page[size]', '200');
+        url.searchParams.set('page[number]', String(page));
+        const response = await fetch(url.href, { headers: { Accept: 'application/json' } });
+        if (!response.ok) throw new Error(`Mission API HTTP ${response.status}`);
+        const payload = await response.json();
+        const batch = Array.isArray(payload?.data) ? payload.data : Array.isArray(payload) ? payload : [];
+        rows.push(...batch);
+        const meta = payload?.meta ?? payload?.metadata ?? {};
+        const explicitLast = Number(meta.last_page ?? meta.lastPage ?? meta.total_pages ?? meta.totalPages ?? meta?.page?.last ?? 0);
+        lastPage = Number.isFinite(explicitLast) && explicitLast > 0 ? explicitLast : (payload?.links?.next ? page + 1 : page);
+        page += 1;
+      } while (page <= lastPage && page <= 10);
+      return rows;
+    } catch (error) {
+      console.warn('Wikelo Wiki mission cross-check unavailable', error);
+      return [];
+    }
+  }
+
+  function missionMatch(trade, rows) {
+    if (!trade || !Array.isArray(rows) || !rows.length) return null;
+    if (typeof nexusWikeloMissionMatch === 'function') {
+      try { return nexusWikeloMissionMatch(trade, rows); } catch (_) {}
+    }
+    const normal = value => clean(value).normalize('NFKD').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(?:wikelo|collection)\b/g, ' ').replace(/\s+/g, ' ').trim();
+    const target = normal(trade.mission);
+    if (!target) return null;
+    return rows.find(row => {
+      const title = normal(firstValue(row, 'title', 'name', 'debugName', 'debug_name'));
+      return title === target || title.includes(target) || target.includes(title);
+    }) || null;
+  }
+
+  function recipeFromMission(row) {
+    if (!row) return { materials: [], rewards: [] };
+    const materialSource = firstValue(
+      row,
+      'required_items', 'requiredItems', 'requirements.items', 'requirements',
+      'hauling_orders', 'haulingOrders', 'hauling_summary', 'objectives'
+    );
+    return { materials: extractPairs(materialSource), rewards: extractRewardNames(row) };
+  }
+
+  function repFromMission(row) {
+    if (!row) return null;
+    if (typeof nexusWikeloParseRep === 'function') {
+      try {
+        const value = nexusWikeloParseRep(row);
+        if (Number.isFinite(value)) return value;
+      } catch (_) {}
+    }
+    const raw = firstValue(row, 'reputation_amount', 'reputationAmount', 'reputation.amount', 'reputation_gain', 'reputationGain');
+    if (Array.isArray(raw)) {
+      const values = raw.map(item => Number(item?.amount ?? item)).filter(Number.isFinite);
+      return values.length ? values.reduce((sum, value) => sum + value, 0) : null;
+    }
+    const value = Number(raw);
+    return Number.isFinite(value) ? value : null;
+  }
+
+  function renderWikeloSourceNotes() {
+    const box = document.querySelector('#wikelo-view .wikelo-source-box');
+    if (!box || box.querySelector('[data-nexus-scmdb-wikelo-source]')) return;
+    const status = box.querySelector('#wikelo-live-data-status');
+    const line = document.createElement('span');
+    line.dataset.nexusScmdbWikeloSource = '1';
+    line.textContent = 'Mission/recipe cross-check: repository SCMDB snapshot → Star Citizen Wiki';
+    if (status) box.insertBefore(line, status); else box.appendChild(line);
+  }
+
+  try {
+    allWikeloTrades().forEach(restoreCommunityTrade);
+
+    if (typeof nexusWikeloTradeReady === 'function') {
+      nexusWikeloTradeReady = trade => Boolean(
+        trade?.materials?.length && trade.materials.every(material => nexusWikeloOwned(material.name) >= material.qty)
+      );
+    }
+    if (typeof nexusWikeloProgress === 'function') {
+      nexusWikeloProgress = trade => {
+        if (!trade?.materials?.length) return 0;
+        return trade.materials.reduce((sum, material) => sum + Math.min(1, nexusWikeloOwned(material.name) / material.qty), 0) / trade.materials.length;
+      };
+    }
+    if (typeof nexusWikeloPlanTotals === 'function') {
+      nexusWikeloPlanTotals = function() {
+        const totals = {};
+        nexusWikeloState.plan.forEach(id => {
+          const trade = allWikeloTrades().find(item => item.id === id);
+          if (!trade) return;
+          (trade.materials || []).forEach(material => { totals[material.name] = (totals[material.name] || 0) + material.qty; });
+        });
+        return totals;
+      };
+    }
+
+    if (typeof nexusWikeloSyncMissionData === 'function') {
+      nexusWikeloSyncMissionData = async function() {
+        if (nexusWikeloState.repSync === 'loading') return;
+        const trades = allWikeloTrades();
+        trades.forEach(restoreCommunityTrade);
+        nexusWikeloState.repSync = 'loading';
+        if (typeof nexusWikeloSetSyncStatus === 'function') {
+          nexusWikeloSetSyncStatus('Cross-checking Wikelo missions with SCMDB and current LIVE data…', 'loading');
+        }
+        if (typeof nexusWikeloRenderTrades === 'function') nexusWikeloRenderTrades();
+
+        const version = await currentLiveCode();
+        const scmdb = await fetchLocalScmdbRows();
+        const wikiRows = await fetchWikiWikeloRows(version);
+        let missionMatches = 0;
+        let liveRecipes = 0;
+        let scmdbMatches = 0;
+
+        trades.forEach(trade => {
+          restoreCommunityTrade(trade);
+          const scmdbRow = missionMatch(trade, scmdb.rows);
+          const wikiRow = missionMatch(trade, wikiRows);
+          const row = scmdbRow || wikiRow;
+          if (scmdbRow) scmdbMatches += 1;
+          if (row) missionMatches += 1;
+
+          const repRow = wikiRow || scmdbRow;
+          const rep = repFromMission(repRow);
+          if (repRow && typeof nexusWikeloState !== 'undefined') {
+            nexusWikeloState.missionData[trade.id] = {
+              rep,
+              uuid: clean(repRow.uuid ?? repRow.id ?? ''),
+              title: clean(repRow.title ?? repRow.name ?? trade.mission),
+              gameVersion: version,
+              source: wikiRow ? 'Star Citizen Wiki current LIVE' : scmdb.source
+            };
+          }
+
+          // SCMDB is preferred for recipe/objective detail. Wiki is only used if it exposes a complete-looking recipe.
+          const scmdbRecipe = recipeFromMission(scmdbRow);
+          const wikiRecipe = recipeFromMission(wikiRow);
+          const selectedRecipe = scmdbRecipe.materials.length ? { ...scmdbRecipe, source: scmdb.source || 'SCMDB snapshot' }
+            : wikiRecipe.materials.length ? { ...wikiRecipe, source: 'Star Citizen Wiki current LIVE' }
+            : null;
+
+          if (selectedRecipe) {
+            trade.materials = selectedRecipe.materials;
+            if (selectedRecipe.rewards.length) trade.rewards = selectedRecipe.rewards;
+            trade.__liveRecipeVerified = true;
+            trade.__recipeSource = selectedRecipe.source;
+            trade.patch = version;
+            liveRecipes += 1;
+          } else {
+            // Critical behavior: keep the verified community snapshot rather than blanking the trade card.
+            restoreCommunityTrade(trade);
+            trade.__liveRecipeVerified = false;
+            trade.__recipeSource = trade.__communityRecipe
+              ? 'Community catalog snapshot · verified 2026-06-17'
+              : (row ? 'Current mission metadata; recipe not exposed' : 'Community catalog metadata');
+          }
+          trade.__liveVerified = Boolean(trade.materials?.length || trade.rewards?.length || trade.reward || Number.isFinite(rep));
+          trade.notes = trade.__liveRecipeVerified
+            ? `Recipe cross-checked from ${trade.__recipeSource} for ${version}.`
+            : `Recipe shown from ${trade.__recipeSource}. Current mission APIs are used for mission metadata/REP when available; missing live recipe fields do not erase the catalog.`;
+        });
+
+        nexusWikeloState.repSync = wikiRows.length || scmdb.rows.length ? 'done' : 'fallback';
+        if (typeof nexusWikeloSetSyncStatus === 'function') {
+          const communityCount = trades.filter(trade => trade.__communityRecipe && !trade.__liveRecipeVerified).length;
+          const sourceState = wikiRows.length || scmdb.rows.length ? 'live' : 'fallback';
+          const sourceText = `${version} · ${missionMatches} mission matches (${scmdbMatches} SCMDB) · ${liveRecipes} recipes source-verified · ${communityCount} community recipes retained`;
+          nexusWikeloSetSyncStatus(sourceText, sourceState);
+        }
+        if (typeof nexusWikeloSave === 'function') nexusWikeloSave();
+        if (typeof nexusWikeloRenderTrades === 'function') nexusWikeloRenderTrades();
+        if (typeof nexusWikeloRenderPlan === 'function') nexusWikeloRenderPlan();
+        if (typeof nexusWikeloCalculateRep === 'function') nexusWikeloCalculateRep();
+        if (typeof nexusWikeloUpdateStats === 'function') nexusWikeloUpdateStats();
+      };
+    }
+
+    const start = () => {
+      allWikeloTrades().forEach(restoreCommunityTrade);
+      renderWikeloSourceNotes();
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true }); else start();
+    window.addEventListener('nexus:viewchange', start, { passive: true });
+  } catch (error) {
+    console.warn('Wikelo data-resilience patch could not be installed', error);
+  }
 })();
 </script>
 

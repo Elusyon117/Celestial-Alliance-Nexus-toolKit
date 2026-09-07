@@ -1,312 +1,537 @@
 #!/usr/bin/env node
 /**
- * Celestial Nexus v1.8.0 SCMDB mission synchronizer.
+ * Celestial Nexus Contract Finder data synchronization (resilient v6).
  *
- * Supports:
- *   - SCMDB_MISSIONS_URL=file:///... or https://...
- *   - automatic latest LIVE discovery through SCMDB versions manifests
- *   - MISSION_PATCH / MISSION_CHANNEL identity validation
- *   - preservation of the last valid tracked snapshot during temporary upstream failures
+ * Authority order:
+ *   1. Newest matching SCMDB dataset.
+ *   2. Current Star Citizen Wiki mission API for the same LIVE/PTU/EPTU channel.
+ *   3. Preserve an existing *usable* snapshot when every upstream is temporarily unavailable.
+ *
+ * An empty/bootstrap snapshot is never considered a successful fallback.
  */
-import { readFile, writeFile, mkdir, access } from 'node:fs/promises';
-import { createHash } from 'node:crypto';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import fs from 'node:fs/promises';
 import path from 'node:path';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DATA_DIR = path.join(ROOT, 'data');
-const JSON_PATH = path.join(DATA_DIR, 'scmdb-missions-live.json');
-const JS_PATH = path.join(DATA_DIR, 'scmdb-missions-live.js');
-const STATUS_PATH = path.join(DATA_DIR, 'game-data-status.json');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
+const outJson = path.join(root, 'data', 'scmdb-missions-live.json');
+const outJs = path.join(root, 'data', 'scmdb-missions-live.js');
+const statusJson = path.join(root, 'data', 'game-data-status.json');
 
-const TARGET_PATCH = String(process.env.MISSION_PATCH || '').trim();
+const SCMDB_BASE = String(process.env.SCMDB_BASE_URL || 'https://scmdb.net/');
+const VERSIONS_URL = String(process.env.SCMDB_VERSIONS_URL || new URL('data/versions.json', SCMDB_BASE).href);
+const DIRECT_DATASET_URL = String(process.env.SCMDB_MISSIONS_URL || '').trim();
+const WIKI_VERSIONS_URL = String(process.env.STAR_CITIZEN_WIKI_VERSIONS_URL || 'https://api.star-citizen.wiki/api/game-versions');
+const WIKI_MISSIONS_URL = String(process.env.STAR_CITIZEN_WIKI_MISSIONS_URL || 'https://api.star-citizen.wiki/api/missions');
+const PATCH_OVERRIDE = String(process.env.MISSION_PATCH || '').trim();
 const TARGET_CHANNEL = String(process.env.MISSION_CHANNEL || 'LIVE').trim().toUpperCase();
-const DIRECT_URL = String(process.env.SCMDB_MISSIONS_URL || '').trim();
-const STRICT_SYNC = /^(1|true|yes)$/i.test(String(process.env.STRICT_SYNC || ''));
-const MIN_MISSIONS = Math.max(5, Number(process.env.MIN_MISSION_COUNT || 100));
-const TIMEOUT_MS = Math.max(5000, Number(process.env.SCMDB_TIMEOUT_MS || 30000));
-const VERSION_URLS = String(process.env.SCMDB_VERSIONS_URLS || 'https://scmdb.net/data/versions.json,https://scmdb.net/data/game-versions.json')
-  .split(',').map(v => v.trim()).filter(Boolean);
+const MIN_ACTIVE = Math.max(5, Number(process.env.MISSION_MIN_ACTIVE || 100));
+const ALLOW_LARGE_DROP = /^(1|true|yes)$/i.test(String(process.env.ALLOW_LARGE_DROP || ''));
 
-const now = () => new Date().toISOString();
-const exists = async file => access(file).then(() => true).catch(() => false);
-const sha256 = text => createHash('sha256').update(text).digest('hex');
-const naturalVersion = value => (String(value || '').match(/\b(\d+\.\d+(?:\.\d+)?)\b/) || [,''])[1];
-const normalizePatch = value => {
-  const raw = naturalVersion(value);
-  if (!raw) return '';
-  const parts = raw.split('.');
-  return parts.length === 2 ? `${raw}.0` : raw;
-};
-const compareVersion = (a,b) => {
-  const av = normalizePatch(a).split('.').map(Number), bv = normalizePatch(b).split('.').map(Number);
-  for (let i=0;i<3;i++) if ((av[i]||0)!==(bv[i]||0)) return (av[i]||0)-(bv[i]||0);
+function parseIdentity(value) {
+  const match = String(value || '').match(/(\d+(?:\.\d+){1,3})[._-](live|ptu|eptu)(?:[._-](\d+))?/i);
+  if (!match) return null;
+  const patch = match[1];
+  const channel = match[2].toUpperCase();
+  const build = match[3] || '';
+  return { patch, channel, build, code: `${patch}-${channel}${build ? `.${build}` : ''}` };
+}
+
+function identityFromEntry(entry, keyHint = '') {
+  if (typeof entry === 'string') return parseIdentity(entry) || parseIdentity(keyHint);
+  const values = [
+    entry?.version, entry?.gameVersion, entry?.game_version, entry?.file, entry?.filename,
+    entry?.path, entry?.name, entry?.code, entry?.id, entry?.url, entry?.href,
+    entry?.attributes?.code, entry?.attributes?.name, keyHint,
+  ];
+  for (const value of values) {
+    const identity = parseIdentity(value);
+    if (identity) return identity;
+  }
+  const patch = String(entry?.patch || entry?.attributes?.patch || '').trim();
+  const channel = String(entry?.channel || entry?.environment || entry?.attributes?.channel || '').trim().toUpperCase();
+  const build = String(entry?.build || entry?.buildNumber || entry?.attributes?.build || '').trim();
+  if (/^\d+(?:\.\d+){1,3}$/.test(patch) && /^(LIVE|PTU|EPTU)$/.test(channel)) {
+    return { patch, channel, build, code: `${patch}-${channel}${build ? `.${build}` : ''}` };
+  }
+  return null;
+}
+
+function patchParts(value) {
+  return String(value || '').split('.').map(part => Number(part) || 0).concat([0, 0, 0, 0]).slice(0, 4);
+}
+function comparePatch(a, b) {
+  const aa = patchParts(a), bb = patchParts(b);
+  for (let i = 0; i < aa.length; i += 1) if (aa[i] !== bb[i]) return aa[i] - bb[i];
   return 0;
-};
-
-function jsonStringify(value, pretty=false) {
-  return JSON.stringify(value, null, pretty ? 2 : 0) + '\n';
+}
+function samePatch(a, b) { return comparePatch(a, b) === 0; }
+function compareDataset(a, b) {
+  const byPatch = comparePatch(b.identity.patch, a.identity.patch);
+  if (byPatch) return byPatch;
+  return Number(b.identity.build || 0) - Number(a.identity.build || 0);
 }
 
-async function fetchWithRetry(url, attempts=3) {
-  let last;
-  for (let i=1;i<=attempts;i++) {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
-    try {
-      const response = await fetch(url, {
-        signal: controller.signal,
-        redirect: 'follow',
-        headers: {
-          'accept': 'application/json,text/plain;q=0.9,*/*;q=0.5',
-          'user-agent': 'Celestial-Nexus-Toolkit/1.8.0 (+https://github.com/Elusyon117/Celestial-Alliance-Nexus-toolKit)'
-        }
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
-      return await response.text();
-    } catch (error) {
-      last = error;
-      if (i < attempts) await new Promise(r => setTimeout(r, 1000 * i));
-    } finally { clearTimeout(timer); }
+async function readJsonSource(url, timeout = 45_000) {
+  const parsed = new URL(url);
+  if (parsed.protocol === 'file:') return JSON.parse(await fs.readFile(fileURLToPath(parsed), 'utf8'));
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, {
+      signal: controller.signal,
+      headers: { Accept: 'application/json', 'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0.2' },
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
+    return await response.json();
+  } finally {
+    clearTimeout(timer);
   }
-  throw last || new Error(`Unable to load ${url}`);
 }
 
-async function readSource(source) {
-  if (!source) throw new Error('No SCMDB source was selected.');
-  if (/^file:/i.test(source)) {
-    const file = fileURLToPath(source);
-    return { text: await readFile(file, 'utf8'), sourceUrl: pathToFileURL(file).href };
+function datasetFile(entry, identity) {
+  if (typeof entry === 'string' && /(?:\.json(?:[?#]|$)|^https?:|^file:|^\.?\.?\/|^\/)/i.test(entry)) return entry;
+  const explicit = [entry?.file, entry?.filename, entry?.url, entry?.href, entry?.path, entry?.download, entry?.dataset, entry?.missions, entry?.contracts]
+    .find(value => typeof value === 'string' && value.trim());
+  return explicit || `merged-${identity.patch.toLowerCase()}-${identity.channel.toLowerCase()}${identity.build ? `.${identity.build}` : ''}.json`;
+}
+
+function manifestRows(payload) {
+  const rows = [];
+  const seen = new Set();
+  function visit(value, keyHint = '', depth = 0) {
+    if (depth > 8 || value == null) return;
+    if (typeof value === 'string') {
+      const identity = identityFromEntry(value, keyHint);
+      if (identity) rows.push({ entry: value, keyHint, identity });
+      return;
+    }
+    if (typeof value !== 'object' || seen.has(value)) return;
+    seen.add(value);
+    if (Array.isArray(value)) { value.forEach(item => visit(item, keyHint, depth + 1)); return; }
+    const identity = identityFromEntry(value, keyHint);
+    if (identity) rows.push({ entry: value, keyHint, identity });
+    Object.entries(value).forEach(([key, child]) => visit(child, key, depth + 1));
   }
-  if (/^https?:/i.test(source)) return { text: await fetchWithRetry(source), sourceUrl: source };
-  const file = path.resolve(ROOT, source);
-  return { text: await readFile(file, 'utf8'), sourceUrl: pathToFileURL(file).href };
+  visit(payload);
+  const deduped = new Map();
+  for (const row of rows) {
+    const file = datasetFile(row.entry, row.identity);
+    const key = `${row.identity.code}|${file}`;
+    if (!deduped.has(key)) deduped.set(key, { ...row, file });
+  }
+  return [...deduped.values()];
 }
 
-function parseJson(text, label) {
-  try { return JSON.parse(text); }
-  catch (error) { throw new Error(`Invalid JSON from ${label}: ${error.message}`); }
+async function chooseScmdbDataset() {
+  if (DIRECT_DATASET_URL) {
+    const identity = parseIdentity(DIRECT_DATASET_URL);
+    if (!identity) throw new Error('SCMDB_MISSIONS_URL must contain a patch and channel identity.');
+    if (identity.channel !== TARGET_CHANNEL || (PATCH_OVERRIDE && !samePatch(identity.patch, PATCH_OVERRIDE))) {
+      throw new Error(`SCMDB_MISSIONS_URL identifies as ${identity.code}, outside the requested target.`);
+    }
+    return { url: DIRECT_DATASET_URL, identity, selection: 'explicit override' };
+  }
+  const manifest = await readJsonSource(VERSIONS_URL);
+  const candidates = manifestRows(manifest)
+    .filter(({ identity }) => identity.channel === TARGET_CHANNEL && (!PATCH_OVERRIDE || samePatch(identity.patch, PATCH_OVERRIDE)))
+    .sort(compareDataset);
+  if (!candidates.length) throw new Error(`SCMDB does not list ${PATCH_OVERRIDE || 'any'} ${TARGET_CHANNEL} dataset.`);
+  const selected = candidates[0];
+  const dataBase = new URL('data/', SCMDB_BASE);
+  return { url: new URL(selected.file, dataBase).href, identity: selected.identity, selection: 'newest manifest dataset' };
 }
 
-function objectStrings(value, depth=0, out=[]) {
-  if (depth > 5 || out.length > 4000) return out;
-  if (typeof value === 'string') out.push(value);
-  else if (Array.isArray(value)) value.slice(0,100).forEach(v => objectStrings(v, depth+1, out));
-  else if (value && typeof value === 'object') Object.entries(value).slice(0,150).forEach(([k,v]) => {
-    out.push(k); objectStrings(v, depth+1, out);
-  });
-  return out;
-}
-
-function identityFrom(payload, sourceUrl='') {
-  const direct = [
-    payload?.gameVersion, payload?.game_version, payload?.version, payload?.patch,
-    payload?.meta?.gameVersion, payload?.meta?.game_version, payload?.meta?.version,
-    payload?.metadata?.gameVersion, payload?.metadata?.version, sourceUrl
-  ].filter(Boolean).join(' ');
-  const haystack = `${direct} ${objectStrings(payload).slice(0,800).join(' ')}`;
-  const patch = normalizePatch(haystack) || normalizePatch(TARGET_PATCH);
-  const channelMatch = haystack.match(/\b(LIVE|EPTU|PTU)\b/i);
-  const channel = (channelMatch?.[1] || TARGET_CHANNEL || 'LIVE').toUpperCase();
-  const build = (haystack.match(/(?:LIVE|EPTU|PTU)[._-]?(\d{5,})/i) || haystack.match(/[._-](\d{5,})(?:\D|$)/) || [,''])[1];
-  const code = patch ? `${patch}-${channel}${build ? `.${build}` : ''}` : '';
-  return { patch, channel, build, code };
-}
-
-const missionHints = new Set(['title','name','mission_name','contract_name','display_name','reward','rewards','mission_type','contract_type','faction','mission_giver','objectives','uuid','mission_id']);
-function rowScore(row) {
-  if (!row || typeof row !== 'object' || Array.isArray(row)) return -100;
-  const keys = Object.keys(row).map(k => k.toLowerCase());
-  let score = keys.reduce((n,k) => n + (missionHints.has(k) ? 2 : /mission|contract|reward|objective|faction|giver/.test(k) ? 1 : 0), 0);
-  if (keys.includes('title') || keys.includes('name') || keys.includes('mission_name')) score += 3;
+function scoreMissionArray(rows) {
+  if (!Array.isArray(rows) || !rows.length) return -1;
+  let score = Math.min(rows.length, 5000);
+  for (const row of rows.slice(0, 20)) {
+    if (!row || typeof row !== 'object') continue;
+    for (const key of ['title', 'name', 'description', 'debugName', 'debug_name', 'reward', 'rewardUEC', 'id', 'uuid']) {
+      if (key in row || (row.attributes && key in row.attributes)) score += 20;
+    }
+  }
   return score;
 }
 
-function findMissionArray(payload) {
-  const candidates = [];
-  const visited = new Set();
-  const queue = [{ value: payload, path: '$', depth: 0 }];
-  while (queue.length) {
-    const { value, path: currentPath, depth } = queue.shift();
-    if (!value || typeof value !== 'object' || visited.has(value) || depth > 8) continue;
-    visited.add(value);
+function findMissionArray(payload, excluded = new Set()) {
+  let best = [], bestScore = -1;
+  const walked = new Set();
+  function walk(value, depth = 0) {
+    if (depth > 8 || value == null || typeof value !== 'object' || walked.has(value)) return;
+    walked.add(value);
     if (Array.isArray(value)) {
-      if (value.length && value.some(v => v && typeof v === 'object')) {
-        const sample = value.filter(v => v && typeof v === 'object').slice(0,20);
-        const avg = sample.reduce((n,v) => n + rowScore(v), 0) / Math.max(1,sample.length);
-        const pathBonus = /mission|contract/i.test(currentPath) ? 15 : /data|record|item|entry/i.test(currentPath) ? 3 : 0;
-        candidates.push({ rows: value.filter(v => v && typeof v === 'object'), path: currentPath, score: avg + pathBonus + Math.log10(value.length+1) });
+      if (!excluded.has(value)) {
+        const score = scoreMissionArray(value);
+        if (score > bestScore) { best = value; bestScore = score; }
       }
-      value.slice(0,40).forEach((v,i) => queue.push({value:v,path:`${currentPath}[${i}]`,depth:depth+1}));
-    } else {
-      const entries = Object.entries(value);
-      if (/mission|contract/i.test(currentPath) && entries.length >= MIN_MISSIONS && entries.every(([,v]) => v && typeof v === 'object' && !Array.isArray(v))) {
-        const rows = entries.map(([key,v]) => ({ __sourceKey:key, ...v }));
-        const sample = rows.slice(0,20);
-        candidates.push({ rows, path: currentPath, score: 18 + sample.reduce((n,v)=>n+rowScore(v),0)/sample.length + Math.log10(rows.length+1) });
-      }
-      for (const [key,v] of entries.slice(0,500)) queue.push({ value:v, path:`${currentPath}.${key}`, depth:depth+1 });
-    }
-  }
-  candidates.sort((a,b) => b.score-a.score || b.rows.length-a.rows.length);
-  const selected = candidates[0];
-  if (!selected || selected.rows.length < MIN_MISSIONS) {
-    const summary = candidates.slice(0,5).map(c => `${c.path}:${c.rows.length}`).join(', ');
-    throw new Error(`Could not locate at least ${MIN_MISSIONS} mission records. Candidates: ${summary || 'none'}`);
-  }
-  return selected;
-}
-
-function isInactive(row) {
-  const value = row?.active ?? row?.is_active ?? row?.enabled ?? row?.released ?? row?.isReleased;
-  if (value === false || value === 0 || value === '0') return true;
-  const status = String(row?.status ?? row?.state ?? row?.availability ?? '').toLowerCase();
-  return /inactive|disabled|deprecated|legacy|removed|unreleased|archived/.test(status);
-}
-
-function discoverUrls(payload, baseUrl) {
-  const found = [];
-  const walk = (value, context='', depth=0) => {
-    if (depth > 7) return;
-    if (typeof value === 'string') {
-      if (/\.json(?:\?|$)/i.test(value) && /live/i.test(`${context} ${value}`)) {
-        try { found.push(new URL(value, baseUrl).href); } catch (_) {}
-      }
+      value.slice(0, 40).forEach(item => walk(item, depth + 1));
       return;
     }
-    if (Array.isArray(value)) return value.forEach(v => walk(v, context, depth+1));
-    if (value && typeof value === 'object') Object.entries(value).forEach(([k,v]) => walk(v, `${context} ${k}`, depth+1));
-  };
-  walk(payload);
-  return [...new Set(found)].sort((a,b) => compareVersion(b,a));
-}
-
-async function chooseSource() {
-  if (DIRECT_URL) return DIRECT_URL;
-  let last;
-  for (const versionsUrl of VERSION_URLS) {
-    try {
-      const text = await fetchWithRetry(versionsUrl);
-      const payload = parseJson(text, versionsUrl);
-      let urls = discoverUrls(payload, versionsUrl);
-      if (TARGET_PATCH) urls = urls.filter(url => normalizePatch(url) === normalizePatch(TARGET_PATCH));
-      if (urls[0]) return urls[0];
-      throw new Error(`No ${TARGET_CHANNEL} JSON file was listed by ${versionsUrl}`);
-    } catch (error) { last = error; }
+    Object.values(value).forEach(child => walk(child, depth + 1));
   }
-  throw last || new Error('SCMDB versions discovery failed.');
+  walk(payload);
+  return best;
 }
 
-async function loadExistingStatus() {
-  try { return JSON.parse(await readFile(STATUS_PATH,'utf8')); } catch (_) { return null; }
-}
-
-async function preserveExisting(error) {
-  if (!(await exists(JSON_PATH))) return false;
-  let payload;
-  try { payload = JSON.parse(await readFile(JSON_PATH,'utf8')); } catch (_) { return false; }
-  const missions = Array.isArray(payload?.missions) ? payload.missions : [];
-  if (missions.length < MIN_MISSIONS || payload?.patchVerified === false) return false;
-  const previous = await loadExistingStatus();
-  const module = previous?.modules?.contractFinder || {};
-  const status = {
-    schema: 'celestial-nexus.game-data-status.v1',
-    generatedAt: now(),
-    detectedPatch: payload.targetPatch || normalizePatch(payload.gameVersion),
-    detectedChannel: payload.targetChannel || TARGET_CHANNEL,
-    modules: {
-      contractFinder: {
-        ...module,
-        status: 'stale-upstream-unavailable',
-        patch: payload.targetPatch || module.patch,
-        channel: payload.targetChannel || module.channel,
-        gameVersion: payload.gameVersion || module.gameVersion,
-        activeCount: missions.filter(row => !isInactive(row)).length,
-        legacyCount: missions.filter(isInactive).length,
-        totalCount: missions.length,
-        lastAttemptAt: now(),
-        lastError: String(error?.message || error)
-      }
+function firstArray(payload, aliases) {
+  const queue = [payload], walked = new Set();
+  while (queue.length) {
+    const value = queue.shift();
+    if (!value || typeof value !== 'object' || walked.has(value)) continue;
+    walked.add(value);
+    for (const [key, child] of Object.entries(value)) {
+      if (aliases.has(key.toLowerCase()) && Array.isArray(child)) return child;
+      if (child && typeof child === 'object' && !Array.isArray(child)) queue.push(child);
     }
+  }
+  return [];
+}
+
+function flattenRecord(row) {
+  if (!row || typeof row !== 'object' || !row.attributes || typeof row.attributes !== 'object') return row;
+  return { ...row.attributes, id: row.id ?? row.attributes.id, type: row.type, relationships: row.relationships, links: row.links };
+}
+function clone(value) { return value == null ? value : JSON.parse(JSON.stringify(value)); }
+
+function datasetIdentity(source, url) {
+  for (const candidate of [source?.version, source?.gameVersion, source?.game_version, source?.targetVersion, source?.meta?.version, source?.meta?.gameVersion, source?.metadata?.version, source?.metadata?.gameVersion, url]) {
+    const identity = parseIdentity(candidate);
+    if (identity) return identity;
+  }
+  return null;
+}
+
+function enrichBlueprintRewards(rows, pools) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(entry => {
+    if (!entry || typeof entry !== 'object') return entry;
+    const result = { ...entry };
+    const pool = entry.blueprintPool ? pools?.[entry.blueprintPool] : null;
+    if (pool) {
+      if (!result.poolName && pool.name) result.poolName = pool.name;
+      result.blueprints = clone(pool.blueprints || []);
+      if (pool.source != null) result.source = pool.source;
+    }
+    return result;
+  });
+}
+function enrichHaulingOrders(rows, resources) {
+  if (!Array.isArray(rows)) return rows;
+  return rows.map(entry => {
+    if (!entry || typeof entry !== 'object') return entry;
+    const result = { ...entry };
+    const resource = entry.resource ? resources?.[entry.resource] : null;
+    if (resource) {
+      result.resourceName = resource.name || entry.resource;
+      result.resourceDetails = clone(resource);
+    }
+    return result;
+  });
+}
+
+function normalizeFactionDictionary(source) {
+  if (!source) return {};
+  if (!Array.isArray(source) && typeof source === 'object') return source;
+  const result = {};
+  if (Array.isArray(source)) {
+    for (const row of source) {
+      const id = String(row?.guid ?? row?.uuid ?? row?.id ?? row?.code ?? '').trim();
+      if (id) result[id] = row;
+    }
+  }
+  return result;
+}
+function lookupFaction(dictionary, guid) {
+  if (!guid || !dictionary) return null;
+  if (dictionary[guid]) return dictionary[guid];
+  const wanted = String(guid).toLowerCase();
+  const key = Object.keys(dictionary).find(candidate => candidate.toLowerCase() === wanted);
+  return key ? dictionary[key] : null;
+}
+
+function enrichScmdbRecord(row, context, legacyContract) {
+  const result = {
+    ...row,
+    gameVersion: context.gameVersion,
+    legacyContract: Boolean(legacyContract),
+    scmdb_url: `https://scmdb.net/?m=${encodeURIComponent(String(row?.id || row?.debugName || ''))}`,
   };
-  await writeFile(STATUS_PATH, jsonStringify(status, true));
-  console.warn(`SCMDB unavailable; preserved ${missions.length} tracked mission records.`);
+  const guid = row?.factionGuid ?? row?.faction_guid;
+  const faction = guid ? lookupFaction(context.factions, guid) : null;
+  if (faction) {
+    result.faction = { guid, ...clone(faction) };
+    if (!result.factionName && (faction.name || faction.displayName || faction.display_name)) {
+      result.factionName = faction.name || faction.displayName || faction.display_name;
+    }
+  }
+  const rewardIndex = row?.factionRewardsIndex;
+  if (Number.isInteger(rewardIndex) && rewardIndex >= 0 && rewardIndex < context.factionRewardsPools.length) {
+    result.reputation_gained = clone(context.factionRewardsPools[rewardIndex]);
+  }
+  if (Array.isArray(row?.factionRewards_fail)) result.reputation_lost = clone(row.factionRewards_fail);
+  if (Array.isArray(row?.blueprintRewards)) result.blueprintRewards = enrichBlueprintRewards(row.blueprintRewards, context.blueprintPools);
+  if (Array.isArray(row?.haulingOrders)) result.haulingOrders = enrichHaulingOrders(row.haulingOrders, context.resourcePools);
+  return result;
+}
+
+function fieldInventory(rows) {
+  return [...new Set(rows.flatMap(row => row && typeof row === 'object' ? Object.keys(row) : []))].sort();
+}
+function fingerprint(value) { return createHash('sha256').update(JSON.stringify(value)).digest('hex'); }
+
+async function readExistingSnapshot() {
+  try { return JSON.parse(await fs.readFile(outJson, 'utf8')); } catch { return null; }
+}
+function existingMissionCount(snapshot) {
+  return Math.max(Number(snapshot?.activeMissionCount || 0), Array.isArray(snapshot?.missions) ? snapshot.missions.length : 0);
+}
+function isUsableExisting(snapshot) { return existingMissionCount(snapshot) >= MIN_ACTIVE; }
+
+async function writeStatus(moduleStatus) {
+  let status = {};
+  try { status = JSON.parse(await fs.readFile(statusJson, 'utf8')); } catch { status = {}; }
+  const next = {
+    schema: 'celestial-nexus.game-data-status.v1',
+    generatedAt: new Date().toISOString(),
+    detectedPatch: moduleStatus.patch,
+    detectedChannel: moduleStatus.channel,
+    modules: { ...(status.modules || {}), contractFinder: moduleStatus },
+  };
+  await fs.mkdir(path.dirname(statusJson), { recursive: true });
+  await fs.writeFile(statusJson, `${JSON.stringify(next, null, 2)}\n`);
+}
+
+async function writeSnapshot(snapshot) {
+  const compact = JSON.stringify(snapshot);
+  await fs.mkdir(path.dirname(outJson), { recursive: true });
+  await fs.writeFile(outJson, `${compact}\n`);
+  await fs.writeFile(outJs, `window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ${compact};\n`);
+}
+
+async function synchronizeScmdb(existing) {
+  const selected = await chooseScmdbDataset();
+  console.log(`SCMDB selected ${selected.identity.code}: ${selected.url}`);
+  const source = await readJsonSource(selected.url, 90_000);
+  const identity = datasetIdentity(source, selected.url) || selected.identity;
+  if (identity.channel !== TARGET_CHANNEL || !samePatch(identity.patch, selected.identity.patch)) {
+    throw new Error(`SCMDB manifest selected ${selected.identity.code}, but dataset identifies as ${identity.code}.`);
+  }
+
+  const legacy = firstArray(source, new Set(['legacycontracts', 'legacy_contracts', 'legacy-missions', 'legacymissions']));
+  const preferredCurrent = firstArray(source, new Set(['contracts', 'missions', 'currentcontracts', 'current_contracts']));
+  const current = (preferredCurrent.length ? preferredCurrent : findMissionArray(source, new Set([legacy]))).map(flattenRecord);
+  const flattenedLegacy = legacy.map(flattenRecord);
+  if (current.length < MIN_ACTIVE) throw new Error(`SCMDB returned only ${current.length} active contracts; minimum is ${MIN_ACTIVE}.`);
+
+  const previousActive = Number(existing?.activeMissionCount || 0);
+  if (previousActive >= MIN_ACTIVE && current.length < previousActive * 0.55 && !ALLOW_LARGE_DROP) {
+    throw new Error(`Active contract count dropped from ${previousActive} to ${current.length}; set ALLOW_LARGE_DROP=true only after review.`);
+  }
+
+  const context = {
+    gameVersion: identity.code,
+    factions: normalizeFactionDictionary(source?.factions),
+    resourcePools: source?.resourcePools || {},
+    blueprintPools: source?.blueprintPools || {},
+    factionRewardsPools: Array.isArray(source?.factionRewardsPools) ? source.factionRewardsPools : [],
+  };
+  const missions = [
+    ...current.map(row => enrichScmdbRecord(row, context, false)),
+    ...flattenedLegacy.map(row => enrichScmdbRecord(row, context, true)),
+  ];
+  const fetchedAt = new Date().toISOString();
+  const sourceFingerprint = fingerprint(source);
+  return {
+    snapshot: {
+      schema: 'celestial-nexus.scmdb-missions.v6',
+      source: 'SCMDB public mission data',
+      sourceUrl: selected.url,
+      versionsUrl: VERSIONS_URL,
+      sourceFingerprint,
+      isFallback: false,
+      fetchedAt,
+      targetPatch: identity.patch,
+      targetChannel: TARGET_CHANNEL,
+      gameVersion: identity.code,
+      patchVerified: true,
+      verificationMethod: 'Newest matching channel selected from SCMDB versions.json; dataset version cross-checked before write.',
+      missionCount: missions.length,
+      activeMissionCount: current.length,
+      legacyMissionCount: flattenedLegacy.length,
+      factions: clone(context.factions),
+      fields: fieldInventory(missions),
+      missions,
+    },
+    status: {
+      status: 'current', source: 'SCMDB', sourceUrl: selected.url, versionsUrl: VERSIONS_URL,
+      patch: identity.patch, channel: TARGET_CHANNEL, gameVersion: identity.code, fetchedAt,
+      activeCount: current.length, legacyCount: flattenedLegacy.length, totalCount: missions.length,
+      fingerprint: sourceFingerprint,
+    },
+  };
+}
+
+function collectionRows(payload) {
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload?.data)) return payload.data;
+  for (const key of ['missions', 'contracts', 'records', 'results', 'items']) if (Array.isArray(payload?.[key])) return payload[key];
+  return findMissionArray(payload);
+}
+
+async function discoverWikiIdentity() {
+  const base = new URL(WIKI_VERSIONS_URL);
+  let payload;
+  if (base.protocol === 'file:') {
+    payload = await readJsonSource(base.href);
+  } else {
+    base.searchParams.set('filter[channel]', TARGET_CHANNEL.toLowerCase());
+    base.searchParams.set('page[size]', '200');
+    base.searchParams.set('sort', '-released_at');
+    payload = await readJsonSource(base.href, 45_000);
+  }
+  const rows = collectionRows(payload);
+  const candidates = rows
+    .map((row, index) => ({ row, identity: identityFromEntry(row, String(index)) }))
+    .filter(({ identity }) => identity?.channel === TARGET_CHANNEL && (!PATCH_OVERRIDE || samePatch(identity.patch, PATCH_OVERRIDE)))
+    .sort(compareDataset);
+  if (!candidates.length) throw new Error(`Star Citizen Wiki did not return a ${PATCH_OVERRIDE || 'current'} ${TARGET_CHANNEL} game version.`);
+  return candidates[0].identity;
+}
+
+async function fetchWikiMissionRows(identity) {
+  const base = new URL(WIKI_MISSIONS_URL);
+  if (base.protocol === 'file:') {
+    const payload = await readJsonSource(base.href);
+    return { rows: collectionRows(payload).map(flattenRecord), meta: payload?.meta || payload?.metadata || {} };
+  }
+  const rows = [], seen = new Set();
+  let page = 1, lastPage = 1, firstMeta = {};
+  do {
+    const url = new URL(base.href);
+    url.searchParams.set('version', identity.code);
+    url.searchParams.set('page[size]', '200');
+    url.searchParams.set('page[number]', String(page));
+    url.searchParams.set('filter[grouped]', 'false');
+    const payload = await readJsonSource(url.href, 90_000);
+    if (page === 1) firstMeta = payload?.meta || payload?.metadata || {};
+    const batch = collectionRows(payload).map(flattenRecord);
+    batch.forEach((row, index) => {
+      const key = String(row?.uuid ?? row?.id ?? row?.debugName ?? row?.debug_name ?? `${page}:${index}`);
+      if (!seen.has(key)) { seen.add(key); rows.push(row); }
+    });
+    const meta = payload?.meta || payload?.metadata || {};
+    const explicitLast = Number(meta.last_page ?? meta.lastPage ?? meta.total_pages ?? meta.totalPages ?? meta?.page?.last ?? 0);
+    if (Number.isFinite(explicitLast) && explicitLast > 0) lastPage = explicitLast;
+    else if (payload?.links?.next || batch.length >= 200) lastPage = page + 1;
+    else lastPage = page;
+    page += 1;
+  } while (page <= lastPage && page <= 100);
+  return { rows, meta: firstMeta };
+}
+
+function buildFactionDictionary(rows) {
+  const factions = {};
+  for (const row of rows) {
+    const faction = row?.faction;
+    if (!faction || typeof faction !== 'object') continue;
+    const id = String(faction.guid ?? faction.uuid ?? faction.id ?? row?.factionGuid ?? row?.faction_guid ?? '').trim();
+    if (id) factions[id] = clone(faction);
+  }
+  return factions;
+}
+
+async function synchronizeWikiFallback(scmdbError) {
+  const identity = await discoverWikiIdentity();
+  console.warn(`SCMDB unavailable; building ${identity.code} fallback from Star Citizen Wiki.`);
+  const { rows, meta } = await fetchWikiMissionRows(identity);
+  if (rows.length < MIN_ACTIVE) throw new Error(`Star Citizen Wiki returned only ${rows.length} missions; minimum is ${MIN_ACTIVE}.`);
+  const missions = rows.map(row => ({ ...row, gameVersion: identity.code, legacyContract: Boolean(row?.legacyContract) }));
+  const fetchedAt = new Date().toISOString();
+  const sourceFingerprint = fingerprint({ identity: identity.code, missions });
+  const factions = buildFactionDictionary(missions);
+  return {
+    snapshot: {
+      schema: 'celestial-nexus.scmdb-missions.v6',
+      source: 'Star Citizen Wiki mission API fallback',
+      sourceUrl: WIKI_MISSIONS_URL,
+      versionsUrl: WIKI_VERSIONS_URL,
+      sourceFingerprint,
+      isFallback: true,
+      fallbackReason: String(scmdbError?.message || scmdbError || 'SCMDB unavailable'),
+      fetchedAt,
+      targetPatch: identity.patch,
+      targetChannel: TARGET_CHANNEL,
+      gameVersion: identity.code,
+      patchVerified: true,
+      verificationMethod: 'Current channel/build discovered from Star Citizen Wiki game versions; version-pinned mission pages synchronized after SCMDB was unavailable.',
+      missionCount: missions.length,
+      activeMissionCount: missions.length,
+      legacyMissionCount: 0,
+      factions,
+      fields: fieldInventory(missions),
+      apiMeta: meta,
+      missions,
+    },
+    status: {
+      status: 'current-wiki-fallback', source: 'Star Citizen Wiki', sourceUrl: WIKI_MISSIONS_URL,
+      versionsUrl: WIKI_VERSIONS_URL, patch: identity.patch, channel: TARGET_CHANNEL,
+      gameVersion: identity.code, fetchedAt, activeCount: missions.length, legacyCount: 0,
+      totalCount: missions.length, fingerprint: sourceFingerprint,
+      upstreamError: String(scmdbError?.message || scmdbError || ''),
+    },
+  };
+}
+
+async function preserveUsableSnapshot(existing, scmdbError, wikiError) {
+  if (!isUsableExisting(existing)) return false;
+  const identity = parseIdentity(existing?.gameVersion) || parseIdentity(existing?.sourceUrl) || {
+    patch: existing?.targetPatch || PATCH_OVERRIDE || '',
+    channel: existing?.targetChannel || TARGET_CHANNEL,
+    code: existing?.gameVersion || 'unknown',
+  };
+  console.warn(`All live mission sources unavailable; preserving usable ${identity.code} snapshot with ${existingMissionCount(existing)} records.`);
+  await writeStatus({
+    status: 'stale-all-upstreams-unavailable', source: existing.source || 'Saved mission snapshot',
+    sourceUrl: existing.sourceUrl || '', versionsUrl: existing.versionsUrl || VERSIONS_URL,
+    patch: identity.patch, channel: identity.channel, gameVersion: identity.code,
+    fetchedAt: existing.fetchedAt || null, activeCount: Number(existing.activeMissionCount || existingMissionCount(existing)),
+    legacyCount: Number(existing.legacyMissionCount || 0), totalCount: Number(existing.missionCount || existingMissionCount(existing)),
+    fingerprint: existing.sourceFingerprint || '',
+    lastError: `SCMDB: ${String(scmdbError?.message || scmdbError)} | Wiki: ${String(wikiError?.message || wikiError)}`,
+  });
   return true;
 }
 
 async function main() {
-  await mkdir(DATA_DIR, { recursive:true });
-  let source;
+  const existing = await readExistingSnapshot();
+  let scmdbError;
   try {
-    source = await chooseSource();
-    const { text, sourceUrl } = await readSource(source);
-    const raw = parseJson(text, sourceUrl);
-    const identity = identityFrom(raw, sourceUrl);
-    const expectedPatch = normalizePatch(TARGET_PATCH);
-    if (expectedPatch && identity.patch && identity.patch !== expectedPatch) throw new Error(`SCMDB dataset patch ${identity.patch} does not match requested ${expectedPatch}.`);
-    if (TARGET_CHANNEL && identity.channel && identity.channel !== TARGET_CHANNEL) throw new Error(`SCMDB dataset channel ${identity.channel} does not match requested ${TARGET_CHANNEL}.`);
-    const patch = expectedPatch || identity.patch;
-    if (!patch) throw new Error('Unable to determine SCMDB patch identity. Set MISSION_PATCH explicitly.');
-    const channel = TARGET_CHANNEL || identity.channel || 'LIVE';
-    const selected = findMissionArray(raw);
-    const missions = selected.rows;
-    const activeCount = missions.filter(row => !isInactive(row)).length;
-    const legacyCount = missions.length - activeCount;
-    if (activeCount < MIN_MISSIONS) throw new Error(`Only ${activeCount} active mission records were found; expected at least ${MIN_MISSIONS}.`);
-    const gameVersion = identity.code || `${patch}-${channel}`;
-    const fetchedAt = now();
-    const payload = {
-      schema: 'celestial-nexus.scmdb-missions.v2',
-      source: `SCMDB ${gameVersion} mission snapshot`,
-      sourceUrl,
-      fetchedAt,
-      gameVersion,
-      targetPatch: patch,
-      targetChannel: channel,
-      patchVerified: true,
-      isFallback: false,
-      missionCount: missions.length,
-      meta: {
-        sourcePath: selected.path,
-        sourceRecordCount: missions.length,
-        activeCount,
-        legacyCount,
-        targetPatch: patch,
-        targetChannel: channel,
-        gameVersion,
-        patchVerified: true,
-        fetchedAt
-      },
-      missions
-    };
-    const jsonText = jsonStringify(payload, false);
-    const fingerprint = sha256(jsonText);
-    const status = {
-      schema: 'celestial-nexus.game-data-status.v1',
-      generatedAt: fetchedAt,
-      detectedPatch: patch,
-      detectedChannel: channel,
-      modules: {
-        contractFinder: {
-          status: 'current', source: payload.source, sourceUrl,
-          versionsUrl: DIRECT_URL ? '' : VERSION_URLS[0], patch, channel, gameVersion,
-          fetchedAt, activeCount, legacyCount, totalCount: missions.length,
-          fingerprint, lastError: ''
-        }
-      }
-    };
-    await Promise.all([
-      writeFile(JSON_PATH, jsonText),
-      writeFile(JS_PATH, `window.NEXUS_SCMDB_MISSIONS_PAYLOAD=${JSON.stringify(payload)};\n`),
-      writeFile(STATUS_PATH, jsonStringify(status, true))
-    ]);
-    console.log(`Synchronized ${missions.length} SCMDB missions (${activeCount} active) for ${gameVersion}.`);
+    const result = await synchronizeScmdb(existing);
+    await writeSnapshot(result.snapshot);
+    await writeStatus(result.status);
+    console.log(`Saved ${result.snapshot.missionCount} contracts from SCMDB (${result.snapshot.gameVersion}).`);
+    return;
   } catch (error) {
-    const preserved = !STRICT_SYNC && !DIRECT_URL && await preserveExisting(error);
-    if (preserved) return;
-    console.error(error?.stack || error);
-    process.exitCode = 1;
+    scmdbError = error;
+    console.warn(`SCMDB synchronization failed: ${error?.message || error}`);
   }
+
+  let wikiError;
+  try {
+    const result = await synchronizeWikiFallback(scmdbError);
+    await writeSnapshot(result.snapshot);
+    await writeStatus(result.status);
+    console.log(`Saved ${result.snapshot.missionCount} current missions from Star Citizen Wiki fallback (${result.snapshot.gameVersion}).`);
+    return;
+  } catch (error) {
+    wikiError = error;
+    console.warn(`Star Citizen Wiki fallback failed: ${error?.message || error}`);
+  }
+
+  if (await preserveUsableSnapshot(existing, scmdbError, wikiError)) return;
+  throw new AggregateError([scmdbError, wikiError].filter(Boolean), 'No usable Contract Finder mission dataset could be synchronized or preserved.');
 }
 
 await main();
