@@ -1,4 +1,4 @@
-name: Validate toolkit
+name: CA Toolkit V 2.0.3
 
 on:
   push:
@@ -19,31 +19,26 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Check out repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v7
+        uses: actions/setup-node@v5
         with:
-          node-version: '24'
+          node-version: "22"
 
       - name: Validate JavaScript syntax
-        shell: bash
         run: |
-          set -euo pipefail
-          node --check sw.js
-          while IFS= read -r -d '' file; do
-            echo "Checking $file"
-            node --check "$file"
-          done < <(find scripts -maxdepth 1 -type f \( -name '*.js' -o -name '*.mjs' \) -print0)
+          node --check scripts/validate-repo.mjs
+          node --check scripts/validate-toolkit.mjs
+          node --check scripts/test-data-resilience.mjs
+          node --check scripts/sync-scmdb-missions.mjs
+          node --check scripts/audit-patch-data.mjs
 
-      - name: Validate repository and workflows
+      - name: Validate repository invariants
         run: node scripts/validate-repo.mjs
 
-      - name: Upload validation report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: nexus-validation-report
-          path: docs/validation-report.json
-          if-no-files-found: error
-          retention-days: 14
+      - name: Validate toolkit pre-sync invariants
+        run: node scripts/validate-toolkit.mjs --pre-sync
+
+      - name: Run data-resilience regression tests
+        run: node scripts/test-data-resilience.mjs

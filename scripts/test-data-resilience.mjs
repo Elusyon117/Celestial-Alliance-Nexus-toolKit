@@ -21,7 +21,7 @@ async function browserRegression() {
     id: 'fixture-trade', mission: 'Fixture Wikelo Mission', reward: 'Fixture Reward',
     materials: [], rewards: [],
     __legacyMaterials: [{ name: 'Savrilium', qty: 48 }],
-    __legacyRewards: ['Fixture Reward'], patch: 'LIVE unresolved',
+    __legacyRewards: ['Fixture Reward'], patch: 'LIVE unresolved', notes: '',
   };
   const quietConsole = { log() {}, warn() {}, error() {}, info() {}, debug() {} };
   const context = {
@@ -58,6 +58,51 @@ async function browserRegression() {
   assert(context.nexusWikeloPlanTotals().Savrilium === 48, 'Wikelo plan totals ignored retained recipe data.');
   await context.nexusWikeloSyncMissionData();
   assert(trade.materials?.[0]?.name === 'Savrilium', 'Offline Wikelo sync erased the retained recipe.');
+  assert(!/Recipe (?:shown|cross-checked)/i.test(String(trade.notes || '')), 'Wikelo card provenance notice was re-injected.');
+}
+
+
+async function browserWikiPagingRegression() {
+  const match = index.match(/<script\s+id="nexus-v203-scmdb-parity-browser-patch"[^>]*>([\s\S]*?)<\/script>/i);
+  assert(match, 'v2.0.3 SCMDB parity/browser paging patch was not found.');
+  const current = '4.10.0-LIVE.12519617';
+  const makeRows = (start, count) => Array.from({ length: count }, (_, offset) => ({
+    uuid: `wiki-${start + offset}`, title: `Wiki Mission ${start + offset}`, faction: { name: `Faction ${(start + offset) % 24}` }
+  }));
+  const quietConsole = { log() {}, warn() {}, error() {}, info() {}, debug() {} };
+  const context = {
+    console: quietConsole, URL, Date,
+    NEXUS_MISSION_WIKI_URL: 'https://api.star-citizen.wiki/api/missions',
+    nexusMissionFetchWikiAll: async () => ({ missions: [] }),
+    nexusMissionFetchJson: async url => {
+      const parsed = new URL(url);
+      if (parsed.pathname.includes('game-versions')) return { data: [{ code: current }] };
+      const page = Number(parsed.searchParams.get('page[number]') || 1);
+      const rows = page === 1 ? makeRows(0, 200) : page === 2 ? makeRows(200, 200) : page === 3 ? makeRows(400, 50) : [];
+      return { data: rows, meta: { pagination: { current_page: page, total: 450 } } };
+    },
+    nexusMissionFindArray: payload => Array.isArray(payload?.data) ? payload.data : [],
+    nexusMissionId: row => row.uuid,
+    nexusMissionGet: (row, ...keys) => {
+      for (const key of keys) {
+        let value = row;
+        for (const part of key.split('.')) value = value && typeof value === 'object' ? value[part] : undefined;
+        if (value !== undefined && value !== null && value !== '') return value;
+      }
+      return null;
+    },
+    nexusMissionNormalize: payload => ({ rows: payload?.missions || [], meta: {} }),
+    nexusMissionRenderStatus: () => {},
+    nexusMissionFaction: row => row?.faction?.name || 'Unspecified faction',
+    nexusMissionState: { records: [], filtered: [], source: '', meta: {} },
+    document: { getElementById: () => null },
+    window: { NEXUS_LIVE_BUILD: { code: current } },
+  };
+  vm.createContext(context);
+  new vm.Script(match[1], { filename: 'nexus-v203-scmdb-parity-browser-patch.js' }).runInContext(context);
+  const payload = await context.nexusMissionFetchWikiAll();
+  assert(payload.missions.length === 450, `Wiki browser paging stopped early at ${payload.missions.length} rows.`);
+  assert(payload.meta.missionCount === 450, 'Wiki browser paging metadata has the wrong mission count.');
 }
 
 function missionRows(count, faction) {
@@ -78,14 +123,24 @@ async function runSyncFixture(kind) {
   await fsp.writeFile(path.join(repo, 'data', 'scmdb-missions-live.js'), `window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ${JSON.stringify(bootstrap)};\n`);
 
   const version = '4.10.0-LIVE.12519617';
-  const env = { ...process.env, MISSION_CHANNEL: 'LIVE', MISSION_MIN_ACTIVE: '100' };
+  const env = { ...process.env, MISSION_CHANNEL: 'LIVE', MISSION_MIN_ACTIVE: '100', WIKI_MIN_TOTAL: '100' };
   if (kind === 'scmdb') {
     const upstream = path.join(temp, 'scmdb');
     await fsp.mkdir(path.join(upstream, 'data'), { recursive: true });
     await fsp.writeFile(path.join(upstream, 'data', 'versions.json'), JSON.stringify({ versions: [{ version, file: 'merged-4.10.0-live.12519617.json' }] }));
-    const factions = { 'fac-guid-1': { name: 'Wikelo Emporium' } };
-    const contracts = missionRows(120, undefined).map(row => ({ ...row, faction: undefined, factionGuid: 'fac-guid-1' }));
-    await fsp.writeFile(path.join(upstream, 'data', 'merged-4.10.0-live.12519617.json'), JSON.stringify({ gameVersion: version, factions, contracts }));
+    const factions = { 'fac-guid-1': { name: 'Wikelo Emporium' }, 'fac-guid-2': { name: 'Covalex Shipping' } };
+    const contracts = missionRows(120, undefined).map((row, index) => ({ ...row, faction: undefined, factionGuid: index % 2 ? 'fac-guid-1' : 'fac-guid-2', factionRewardsIndex: 0, partialRewardPayoutIndex: 0, locations: ['loc-1'] }));
+    const legacyContracts = missionRows(20, undefined).map((row, index) => ({ ...row, uuid: `legacy-${index}`, id: `legacy-${index}`, title: `Legacy ${index}`, faction: undefined, factionGuid: 'fac-guid-2' }));
+    const source = {
+      gameVersion: version, factions, contracts, legacyContracts,
+      locationPools: { 'loc-1': { name: 'Area18' } }, shipPools: { 'ship-1': { name: 'C2 Hercules' } },
+      blueprintPools: { 'bp-1': { name: 'Fixture Blueprints', blueprints: [{ name: 'Fixture Blueprint' }] } },
+      scopes: { 'scope-1': { scopeName: 'FactionReputation' } }, availabilityPools: { 'avail-1': { name: 'Always' } },
+      factionRewardsPools: [[{ factionGuid: 'fac-guid-1', amount: 100 }]], resourcePools: { 'res-1': { name: 'Tungsten' } },
+      partialRewardPayoutPools: [[{ minPercentage: 50, maxPercentage: 99, currencyRewardMultiplier: 0.75 }]],
+      extraMetadata: { fixture: true }
+    };
+    await fsp.writeFile(path.join(upstream, 'data', 'merged-4.10.0-live.12519617.json'), JSON.stringify(source));
     env.SCMDB_BASE_URL = pathToFileURL(`${upstream}${path.sep}`).href;
   } else {
     const upstream = path.join(temp, 'wiki');
@@ -105,7 +160,14 @@ async function runSyncFixture(kind) {
   assert(snapshot.activeMissionCount >= 100, `${kind} fixture produced an unusable snapshot.`);
   if (kind === 'scmdb') {
     assert(snapshot.source === 'SCMDB public mission data', 'SCMDB fixture did not remain on preferred source.');
-    assert(snapshot.missions[0]?.faction?.name === 'Wikelo Emporium', 'SCMDB faction enrichment failed.');
+    assert(snapshot.missionCount === 140 && snapshot.activeMissionCount === 120 && snapshot.legacyMissionCount === 20, 'SCMDB contracts + legacyContracts parity merge failed.');
+    assert(snapshot.scmdbParity?.totalContracts === 140, 'SCMDB parity telemetry is wrong.');
+    assert(snapshot.missions[0]?.faction?.name === 'Covalex Shipping', 'SCMDB faction enrichment failed.');
+    assert(snapshot.locationPools?.['loc-1']?.name === 'Area18', 'SCMDB locationPools were not preserved.');
+    assert(snapshot.shipPools?.['ship-1']?.name === 'C2 Hercules', 'SCMDB shipPools were not preserved.');
+    assert(snapshot.blueprintPools?.['bp-1']?.name === 'Fixture Blueprints', 'SCMDB blueprintPools were not preserved.');
+    assert(Array.isArray(snapshot.factionRewardsPools), 'SCMDB factionRewardsPools were not preserved.');
+    assert(snapshot.sourceExtras?.extraMetadata?.fixture === true, 'Unknown SCMDB top-level metadata was not preserved.');
   } else {
     assert(snapshot.isFallback === true && /Star Citizen Wiki/.test(snapshot.source), 'Wiki fallback did not activate.');
     assert(snapshot.missions[0]?.faction?.name === 'Citizens For Prosperity', 'Wiki fallback lost faction names.');
@@ -114,6 +176,7 @@ async function runSyncFixture(kind) {
 }
 
 await browserRegression();
+await browserWikiPagingRegression();
 await runSyncFixture('scmdb');
 await runSyncFixture('wiki');
-console.log('PASS: Wikelo retention, faction-name resolution, SCMDB enrichment, and Wiki fallback regression tests.');
+console.log('PASS: Wikelo concise cards, faction-name resolution, complete Wiki paging, SCMDB parity/schema preservation, and Wiki fallback regression tests.');

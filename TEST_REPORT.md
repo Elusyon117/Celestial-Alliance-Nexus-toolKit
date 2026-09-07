@@ -1,27 +1,62 @@
-# v2.0.2 Verification Report
+# Celestial Nexus Toolkit v2.0.3 — Test Report
 
-## Passed checks
+## Static repository validation
 
-- `index.html`: **163 inline JavaScript blocks compiled successfully** with Node's JavaScript parser.
-- DOM audit: **613 IDs inspected, no duplicates**.
-- Inline UI-handler audit: **278 referenced call names**, all resolved to a function/assignment in the HTML.
-- Wikelo embedded source audit: **62 trades** with **269 material requirement lines**.
-- Wikelo regression fixture: retained recipe survives complete network failure.
-- Wikelo readiness regression: retained material requirements are used by the Material Locker readiness calculation.
-- Wikelo project-plan regression: retained requirements are included in aggregate totals.
-- Contract Finder regression: known GUID resolves to a readable faction name.
-- Contract Finder regression: unknown GUID is not rendered; it becomes `Unspecified faction`.
-- SCMDB synchronization fixture: 130 mock current contracts synchronized; faction dictionary enriched `Wikelo Emporium`; resource enrichment succeeded.
-- SCMDB outage fixture: an empty bootstrap was rejected and a 135-mission current Wiki fallback snapshot was generated.
-- Post-sync validator: passed against a populated current-version fallback fixture.
-- `sw.js`: JavaScript syntax check passed.
-- `.github/workflows/sync-game-data.yml`: YAML parse check passed.
-- `scripts/sync-scmdb-missions.mjs`, `scripts/validate-toolkit.mjs`, and `scripts/test-data-resilience.mjs`: JavaScript syntax checks passed.
+PASS
+
+- Toolkit version derived as `2.0.3`.
+- 164 inline JavaScript blocks compiled successfully.
+- 613 DOM IDs inspected; no duplicate IDs detected.
+- 146 unique functions referenced by inline UI handlers resolved.
+- Required data/workflow scripts present.
+- Both GitHub Actions workflow YAML files parse successfully.
+- All shipped `.mjs` scripts pass `node --check`.
+
+## Browser/data-resilience regression suite
+
+PASS
+
+Validated in a VM-backed browser fixture:
+
+- known faction GUID resolves to its readable faction name.
+- unknown GUID displays `Unspecified faction`, never the raw identifier.
+- Wikelo recipe/materials remain available when network mission sources fail.
+- Material Locker readiness remains functional.
+- Org Project Plan totals remain functional.
+- the removed generic `Recipe shown from...` / `Recipe cross-checked from...` message is not reintroduced.
+- a 450-mission Wiki catalog split into 200 + 200 + 50 API pages loads all 450 rows.
+
+## SCMDB synchronization fixture
+
+PASS
+
+Fixture contained:
+
+- 120 active `contracts`
+- 20 `legacyContracts`
+- 30 factions
+- representative location, ship, blueprint, scope, availability, faction-reward, resource, and partial-payout pools
+
+Generated result:
+
+- 140 searchable mission rows
+- 120 active + 20 legacy parity accounting
+- 30 named factions
+- all required supporting dictionaries preserved
+- original mission fields retained while readable enrichment was added
+
+Post-sync toolkit validation and repository validation both passed against this generated snapshot.
+
+## Wiki outage-fallback fixture
+
+PASS
+
+An intentionally unavailable SCMDB source fell through to a version-pinned Wiki fixture successfully. The test lowers the production minimum only for the fixture; production validation rejects suspiciously small Wiki fallbacks.
+
+## Packaging checks
+
+The final ZIP is generated only after the tests above pass. `unzip -t` and SHA-256 verification are performed during packaging.
 
 ## Environment limitation
 
-A full Chromium visual-navigation smoke test was attempted, but this execution environment blocks browser navigation to both localhost and `file://` URLs with `ERR_BLOCKED_BY_ADMINISTRATOR`. The browser test could therefore not be used here. The browser-side repair itself was exercised through a JavaScript VM fixture, and the ZIP adds regression tests to the GitHub Actions workflow so the code/data invariants run in the repository CI environment.
-
-## External-service limitation
-
-No code can guarantee permanent availability or unchanged schemas of third-party services. The patch is specifically designed so a temporary SCMDB failure does not blank the toolkit: it switches to the current Star Citizen Wiki mission source, and if both are down it preserves only a previously *usable* snapshot rather than accepting an empty bootstrap.
+A full Chromium navigation test cannot be run in this sandbox because local/file navigation is administratively blocked. The update therefore uses JavaScript VM browser fixtures, synchronization fixtures, static DOM/handler validation, workflow YAML parsing, and post-sync repository validation as its automated coverage.

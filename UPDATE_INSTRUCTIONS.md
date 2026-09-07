@@ -1,57 +1,55 @@
-# Celestial Nexus Toolkit v2.0.2 — Update Instructions
+# Update Instructions — Celestial Nexus Toolkit v2.0.3
 
-This ZIP is a **repository overlay**. Copy its files into the root of the existing `Celestial-Alliance-Nexus-toolKit` repository, preserving paths.
+This ZIP is a repository overlay. Copy its contents into the root of `Celestial-Alliance-Nexus-toolKit` and allow matching files to be replaced. Preserve the `.github` directory when copying.
 
-## Files replaced / added
+## Files intentionally replaced or added
 
-- `index.html` — v2.0.2 browser fixes for Wikelo data retention and Contract Finder faction names.
-- `sw.js` — new cache revision so old clients do not remain on the broken HTML/data bundle.
-- `scripts/sync-scmdb-missions.mjs` — resilient SCMDB → Star Citizen Wiki → usable-snapshot synchronization.
-- `scripts/validate-toolkit.mjs` — static/CI integrity checks.
-- `scripts/test-data-resilience.mjs` — regression tests for Wikelo retention, faction names, SCMDB enrichment, and Wiki fallback.
-- `.github/workflows/sync-game-data.yml` — updated data workflow with preflight, regression tests, fallback-aware reporting, and post-sync validation.
+- `index.html`
+- `sw.js`
+- `.github/workflows/sync-game-data.yml`
+- `.github/workflows/validate-toolkit.yml`
+- `scripts/sync-scmdb-missions.mjs`
+- `scripts/audit-patch-data.mjs`
+- `scripts/validate-repo.mjs`
+- `scripts/validate-toolkit.mjs`
+- `scripts/test-data-resilience.mjs`
+- documentation/report files included with this update
 
-No generated `data/scmdb-missions-live.*` file is included in this overlay. The workflow generates the current snapshot after merge. This avoids shipping fabricated or partial mission data in the patch.
+Existing assets and repository data files that are not included in the ZIP should remain in place.
 
-## Recommended update sequence
+## Recommended deployment sequence
 
-1. Create a branch from the repository's current default branch.
-2. Extract this ZIP over the repository root and allow the listed files to replace their existing versions.
-3. Run the offline checks:
+1. Copy the overlay into the repository, commit, and push to `main`.
+2. In GitHub Actions, manually run **CA Toolkit V 2.0.3**. It should validate the repository without the old hard-coded version/YAML dependency failure paths.
+3. Manually run **Sync game data**. If SCMDB is reachable it will synchronize exact SCMDB `contracts + legacyContracts` plus supporting dictionaries. If SCMDB is still unavailable, the run should build a full current-version Wiki fallback instead of publishing an empty/tiny snapshot.
+4. After Pages deploys, hard-refresh the toolkit. The service-worker cache namespace has been bumped, so old v2.0.2 HTML should be replaced.
 
-   ```bash
-   node --check scripts/sync-scmdb-missions.mjs
-   node --check scripts/validate-toolkit.mjs
-   node --check scripts/test-data-resilience.mjs
-   node scripts/validate-toolkit.mjs --pre-sync
-   node scripts/test-data-resilience.mjs
-   ```
+## What to check after Sync game data
 
-4. Commit/push the branch and run **Sync game data** from GitHub Actions. Leave the patch input blank to select the newest build in the chosen channel; use `LIVE` for the production site.
-5. After the action completes, confirm `data/game-data-status.json` reports one of:
-   - `current` with source `SCMDB`, or
-   - `current-wiki-fallback` with source `Star Citizen Wiki`.
+Open Contract Finder and look at its source/status line. It should show the loaded contract count and number of named factions. With SCMDB as the source, the generated JSON also contains a `scmdbParity` object with active, legacy, total, and faction counts.
 
-   Both are populated/current operating modes. A `stale-*` status means both current upstreams were temporarily unavailable and a previously usable catalog was preserved.
-6. Merge/deploy. The new `sw.js` cache namespace is `data-resilience-v1-20260906`, so installed/PWA clients will move off the old cache on activation.
+The faction picker should no longer be limited by the old one-page fallback. Unknown GUIDs are suppressed rather than shown as names.
 
-## What should be visible after deployment
+Open Wikelo Trade Center and verify that the yellow generic "Recipe shown from..." box is gone while material quantities remain visible.
 
-### Wikelo Trade Center
+## Optional SCMDB mirrors
 
-- Trade catalog is populated immediately from the bundled curated catalog rather than showing zero/blank recipes.
-- The current repository SCMDB snapshot is checked first for mission/recipe detail.
-- The current Star Citizen Wiki mission API is used as a second current-data cross-check, especially for mission metadata and reputation.
-- A current API that omits recipe fields **does not erase** a valid curated recipe. The recipe source/provenance remains explicit.
-- Material Locker readiness and Org Project Plan totals operate on the retained recipe requirements.
+If you maintain a mirror for SCMDB data, set repository variable `SCMDB_MIRROR_URLS` to a comma-separated list of dataset/manifest URLs. The sync script tries these after the primary SCMDB service and before the Wiki fallback.
 
-### Contract Finder
+## Local verification
 
-- Human-readable faction names are preferred from enriched SCMDB faction dictionaries or nested faction objects.
-- Raw GUID/UUID values are not displayed as faction names.
-- If a GUID cannot be resolved, the UI shows `Unspecified faction` and may asynchronously enrich names from the Star Citizen Wiki faction endpoint.
-- The source chain remains: bundled/repository snapshot → live SCMDB → current Star Citizen Wiki fallback.
+With Node.js 22+ from the repository root:
 
-## Important source behavior
+```bash
+node scripts/validate-repo.mjs
+node scripts/validate-toolkit.mjs --pre-sync
+node scripts/test-data-resilience.mjs
+```
 
-SCMDB remains the preferred source because it can expose richer extracted game-data relationships. The Star Citizen Wiki is a current-version fallback and cross-check, not a claim that both APIs expose identical fields. Wikelo community recipe rows are retained when the live APIs omit exchange requirements, and they are labeled as community snapshot data instead of being silently promoted to current authoritative values.
+After a data sync, run:
+
+```bash
+node scripts/audit-patch-data.mjs
+node scripts/validate-toolkit.mjs
+node scripts/validate-repo.mjs
+```

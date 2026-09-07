@@ -1,65 +1,55 @@
-# Celestial Nexus Toolkit v2.0.2 — Data Resilience & Contract Identity Fix
+# Celestial Nexus Toolkit v2.0.3 — SCMDB Parity & Workflow Repair
 
-## Root causes found
+This overlay updates the v2.0.2 data-resilience repair with a full Contract Finder / SCMDB parity pass and CI fixes.
 
-### 1. Wikelo catalog was being deliberately blanked
+## Wikelo Trade Center
 
-The uploaded v2.0.1 HTML contained a late "LIVE standardization" override that copied the existing Wikelo recipe rows to legacy fields and then immediately set `trade.materials=[]` and `trade.rewards=[]`. It repeated that clearing behavior when a live mission could not be matched or when the current API did not expose recipe fields.
+- Removed the yellow per-card recipe provenance box (the "Recipe shown from Community catalog snapshot..." message).
+- The module still keeps the embedded Wikelo recipes available when a live mission API omits recipe fields.
+- Legitimate trade-specific notes from the curated catalog are preserved; only the generic provenance/status notice was removed.
+- Material Locker readiness and Org Project Plan calculations continue to use the retained recipe data.
 
-That made a valid 62-trade curated catalog (269 material requirement lines) appear empty even though the source data was still embedded earlier in the file.
+## Contract Finder — SCMDB parity
 
-### 2. Contract Finder could render faction GUIDs directly
+- SCMDB ingestion now follows SCMDB mission-view semantics: `contracts + legacyContracts` are merged into the searchable mission list.
+- Every original mission object is retained. Enrichment adds readable/display fields without deleting raw SCMDB fields.
+- The synchronized snapshot also preserves SCMDB supporting datasets used by mission records:
+  - `factions`
+  - `locationPools`
+  - `shipPools`
+  - `blueprintPools`
+  - `scopes`
+  - `availabilityPools`
+  - `factionRewardsPools`
+  - `resourcePools`
+  - `partialRewardPayoutPools`
+- Unknown additional SCMDB top-level sections are retained under `sourceExtras` rather than discarded.
+- Faction GUIDs resolve through the SCMDB faction dictionary before display. Unresolved opaque IDs are never shown as faction names.
+- The Contract Finder status line now reports the loaded contract count and named-faction count; SCMDB parity telemetry is included when the active source is SCMDB.
 
-The final Contract Finder faction formatter accepted `factionGuid` as a display fallback. If SCMDB had not already enriched that GUID into a faction object/name, the raw identifier became the visible faction label and filter option.
+## Complete fallback loading
 
-### 3. The repository mission snapshot is a zero-row bootstrap
+- The browser Star Citizen Wiki fallback no longer stops after the first API page. It keeps loading pages until the current-version mission catalog is exhausted.
+- The repository sync performs the same full pagination and rejects suspiciously tiny Wiki snapshots instead of treating them as a complete database.
+- Source order is now:
+  1. SCMDB
+  2. configured SCMDB mirrors
+  3. full current-version Star Citizen Wiki mission catalog
+  4. previously checked-in snapshot, only if it is already usable
+- A zero-row/bootstrap snapshot can no longer be preserved as a successful fallback.
 
-The repository's checked-in mission snapshot currently contains zero missions. The prior synchronization logic could treat an existing snapshot as preservable during a temporary SCMDB failure without requiring it to contain a usable number of missions. That is unsafe for a bootstrap/empty file.
+## GitHub Actions / workflow repair
 
-### 4. SCMDB can be temporarily unavailable
+- Replaced the version-fragile repository validator with a validator that derives the toolkit version from `index.html`.
+- Added a self-contained v2.0.3 validation workflow using Node.js only; it does not depend on an undeclared Python YAML package.
+- The game-data workflow now validates scripts before sync, validates the synchronized snapshot afterward, runs regression tests, and reports contract/faction totals in the job summary.
+- SCMDB downtime now degrades to a full Wiki fallback instead of causing the toolkit to publish a tiny/empty Contract Finder dataset.
+- `scripts/audit-patch-data.mjs` is included in the overlay, so the sync workflow no longer references a missing/brittle repository helper.
 
-The repository already records sync failures. Depending on only SCMDB means a transient 403/outage can prevent the local snapshot from becoming populated even when another current mission source is available.
+## Cache update
 
-## Changes in this patch
+- Service-worker cache namespace bumped to `scmdb-parity-v2-20260907`, forcing deployed clients to refresh the repaired HTML/data loader.
 
-### Wikelo
+## SCMDB reference quantity
 
-- Removed the destructive late override that blanked recipe/reward arrays.
-- Added a provenance-aware data-resilience layer.
-- Keeps curated community recipes available when a current source omits recipe fields.
-- Checks the repository SCMDB snapshot for richer Wikelo mission/objective information.
-- Cross-checks current mission metadata/REP with the version-pinned Star Citizen Wiki mission API.
-- Replaces a recipe only when a source actually exposes usable material requirements.
-- Restored Material Locker readiness and Org Project Plan calculations for retained recipes.
-- Adds an in-module source line showing the SCMDB → Wiki cross-check order.
-
-### Contract Finder
-
-- Added faction dictionary capture from SCMDB payloads.
-- Resolves faction GUID/UUID values through the dictionary before rendering.
-- Prefers readable nested/name fields over identifiers.
-- Hides unresolved opaque identifiers as `Unspecified faction`.
-- Adds an asynchronous Star Citizen Wiki faction-name enrichment fallback for unresolved GUIDs.
-- The sync script now preserves the SCMDB faction dictionary in generated snapshots.
-
-### Data synchronization
-
-New authority order:
-
-1. Newest matching SCMDB dataset.
-2. Current Star Citizen Wiki mission dataset for the selected channel/build.
-3. A previously saved snapshot only if it contains at least the minimum usable mission count.
-
-A zero-row bootstrap is no longer accepted as a successful fallback.
-
-### Workflow / deployment reliability
-
-- Added pre-sync HTML/JS integrity validation.
-- Added deterministic offline regression tests.
-- Added post-sync snapshot validation.
-- Workflow reports when the Wiki fallback is active instead of treating a populated fallback as total failure.
-- Service worker cache version bumped so deployed clients receive the repaired HTML/data behavior.
-
-## No fabricated current mission snapshot is included
-
-The patch does not ship a hand-made `data/scmdb-missions-live.json`. The workflow must generate the actual current snapshot from a real upstream source. Browser-side Contract Finder already retains a live Wiki fallback while the repository snapshot is being populated.
+A current public SCMDB-backed SC Toolbox project advertises a mission browser containing 1,381 missions. The current Star Citizen Wiki mission API reports 1,786 rows (60 default pages) for its own mission schema. These totals are used only as completeness/parity benchmarks because the two sources do not have identical semantics and SCMDB can change between patches; SCMDB's public data endpoint is presently unreliable. v2.0.3 does **not** fabricate rows to hit 1,381; when SCMDB is reachable it mirrors SCMDB's current `contracts + legacyContracts` data and supporting dictionaries directly.

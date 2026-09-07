@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 
-<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="2.0.2" lang="en" data-nexus-bg-motion="static">
+<html data-nexus-loading-fix="v4" data-nexus-performance-mode="balanced" data-nexus-motion-profile="restored" data-nexus-version="2.0.3" lang="en" data-nexus-bg-motion="static">
 <head>
-<!-- Celestial Nexus Toolkit v2.0.2 Data Resilience & Contract Identity Fix: contract reward deep-links, customizable Persistent Universe login copy, preserved workflow/data automation, and cache revision refresh. -->
+<!-- Celestial Nexus Toolkit v2.0.3 SCMDB Parity & Workflow Repair: contract reward deep-links, customizable Persistent Universe login copy, preserved workflow/data automation, and cache revision refresh. -->
 <!-- Event Planner v10.1 stability patch: fixed selection-overlay mutation loop and briefing whitespace gap. -->
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#07131f" name="theme-color"/>
-<meta content="2.0.2" name="nexus-version"/>
-<meta content="Celestial Nexus Toolkit v2.0.2" name="generator"/>
+<meta content="2.0.3" name="nexus-version"/>
+<meta content="Celestial Nexus Toolkit v2.0.3" name="generator"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <meta content="yes" name="apple-mobile-web-app-capable"/>
 <meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"/>
@@ -18,10 +18,10 @@
 <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
 <link href="https://media.starcitizen.tools" rel="preconnect" crossorigin="anonymous"/>
 <link href="https://media.robertsspaceindustries.com" rel="preconnect" crossorigin="anonymous"/>
-<title>Celestial Nexus Toolkit — v2.0.2 Data Resilience & Contract Identity Fix</title>
-<link href="./icon-192.png?v=2.0.2-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
+<title>Celestial Nexus Toolkit — v2.0.3 SCMDB Parity & Workflow Repair</title>
+<link href="./icon-192.png?v=2.0.3-org-logo-hotfix" id="nexus-favicon" rel="icon" sizes="64x64" type="image/png"/>
 
-<link href="./icon-192.png?v=2.0.2-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
+<link href="./icon-192.png?v=2.0.3-org-logo-hotfix" rel="apple-touch-icon" sizes="180x180"/>
 <meta content="#0b0d12" name="theme-color"/>
 <meta content="Celestial Nexus" name="application-name"/>
 <style>
@@ -10775,7 +10775,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
       <img class="hub-rb-brand-logo" data-nexus-logo src="./assets/ui/celestial-alliance-logo-953272130c49.png" alt="Celestial Alliance logo" decoding="async"/>
       <span class="hub-rb-brand-copy">
         <span class="hub-rb-brand-name">Celestial Nexus</span>
-        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.2 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · 4.10.0-LIVE.12519617</span></span>
+        <span class="hub-rb-brand-meta">Alliance toolkit · v2.0.3 · <span class="nexus-live-build-inline" id="nexus-hub-live-build">GAME DATA · 4.10.0-LIVE.12519617</span></span>
       </span>
     </button>
     <nav class="hub-rb-nav" aria-label="Main hub sections">
@@ -11033,7 +11033,7 @@ body.cg-manual-open #nx-stable-select-picker .nx-ss-dialog {
   </main>
 
   <footer class="hub-rb-footer">
-    <span>Celestial Alliance community toolkit · v2.0.2</span>
+    <span>Celestial Alliance community toolkit · v2.0.3</span>
     <span class="hub-rb-footer-nav"><button type="button" onclick="hubRebrandScroll('hub-rb-featured')">Featured</button><button type="button" onclick="hubRebrandScroll('hub-rb-modules')">Modules</button></span>
     <span>Unofficial Star Citizen fan tool · Community data may change with game patches</span>
   </footer>
@@ -29239,7 +29239,7 @@ requestAnimationFrame(()=>{
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js?v=2.0.2-data-integrity-r3').catch((error) => {
+    navigator.serviceWorker.register('./sw.js?v=2.0.3-data-integrity-r3').catch((error) => {
       console.warn('Celestial Nexus service worker registration failed:', error);
     });
   });
@@ -29247,7 +29247,7 @@ if ('serviceWorker' in navigator) {
 </script>
 <script>
 window.NEXUS_RELEASE = Object.freeze({
-  version: '2.0.2',
+  version: '2.0.3',
   label: 'Data Resilience & Contract Identity Fix',
   catalogMode: 'Contract reward blueprints now cross-link into Blueprint Finder; Language Pack Lab adds customizable Persistent Universe login banner and organization thank-you copy.',
   publishedAt: '2026-08-19'
@@ -52869,8 +52869,8 @@ body {
 <script id="nexus-v180-release-stamp">
 (() => {
   'use strict';
-  const VERSION = '2.0.2';
-  const BUILD = '2.0.2-blueprint-links-language-pack';
+  const VERSION = '2.0.3';
+  const BUILD = '2.0.3-blueprint-links-language-pack';
   const LABEL = 'Data Resilience & Contract Identity Fix';
   try { document.documentElement.setAttribute('data-nexus-version', BUILD); } catch (_) {}
   try { document.title = `Celestial Nexus Toolkit — v${VERSION} ${LABEL}`; } catch (_) {}
@@ -54244,7 +54244,7 @@ html[data-nexus-bg-motion="static"] .page-view::before {
 <script id="nexus-v180-runtime-hardening-script">
 (() => {
   'use strict';
-  const VERSION = '2.0.2';
+  const VERSION = '2.0.3';
   const startedAt = performance.now();
   const diagnostics = window.NEXUS_DIAGNOSTICS = window.NEXUS_DIAGNOSTICS || {
     version: VERSION,
@@ -82606,7 +82606,7 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
     if(Array.isArray(window.NEXUS_FALLBACK_ITEMS))window.NEXUS_FALLBACK_ITEMS.length=0;
   }catch(_){}
 
-  // Wikelo v2.0.2: do not blank the verified community catalog when a live mission API omits recipe fields.
+  // Wikelo v2.0.3: do not blank the verified community catalog when a live mission API omits recipe fields.
   // SCMDB/current-LIVE cross-checking and provenance-aware fallback handling are installed by
   // nexus-data-resilience-patch-v1 immediately after this standardization layer.
 
@@ -82638,7 +82638,7 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
 (() => {
   'use strict';
 
-  // Celestial Nexus v2.0.2 data-resilience patch.
+  // Celestial Nexus v2.0.3 data-resilience patch.
   // Goals:
   // 1) Never erase a usable Wikelo community recipe merely because a live API omits recipe fields.
   // 2) Prefer SCMDB/live data when it actually contains a Wikelo recipe, while keeping source provenance explicit.
@@ -82901,6 +82901,10 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
 
   function restoreCommunityTrade(trade) {
     if (!trade || typeof trade !== 'object') return;
+    if (!Object.prototype.hasOwnProperty.call(trade, '__communityNotes')) {
+      const initialNote = clean(trade.notes);
+      trade.__communityNotes = /^(?:Recipe (?:shown|cross-checked)|Current LIVE|Verified against current LIVE)/i.test(initialNote) ? '' : initialNote;
+    }
     if ((!Array.isArray(trade.materials) || !trade.materials.length) && Array.isArray(trade.__legacyMaterials) && trade.__legacyMaterials.length) {
       trade.materials = clone(trade.__legacyMaterials);
     }
@@ -82911,6 +82915,8 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
     if (!Array.isArray(trade.rewards)) trade.rewards = [];
     trade.__communityRecipe = Boolean(trade.materials.length);
     trade.__recipeSource = trade.__recipeSource || (trade.__communityRecipe ? 'Community catalog snapshot · verified 2026-06-17' : 'Mission metadata only');
+    // Provenance belongs in module/source status, not in a large box on every trade card.
+    trade.notes = trade.__communityNotes || '';
     // Compatibility flag: the previous late renderer uses this as "usable data". Exact live-recipe provenance lives in __liveRecipeVerified.
     trade.__liveVerified = Boolean(trade.materials.length || trade.rewards.length || trade.reward);
     trade.__liveRecipeVerified = Boolean(trade.__liveRecipeVerified);
@@ -83126,9 +83132,8 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
               : (row ? 'Current mission metadata; recipe not exposed' : 'Community catalog metadata');
           }
           trade.__liveVerified = Boolean(trade.materials?.length || trade.rewards?.length || trade.reward || Number.isFinite(rep));
-          trade.notes = trade.__liveRecipeVerified
-            ? `Recipe cross-checked from ${trade.__recipeSource} for ${version}.`
-            : `Recipe shown from ${trade.__recipeSource}. Current mission APIs are used for mission metadata/REP when available; missing live recipe fields do not erase the catalog.`;
+          // Keep trade cards concise. Recipe provenance is represented by the module-level source/status line.
+          trade.notes = trade.__communityNotes || '';
         });
 
         nexusWikeloState.repSync = wikiRows.length || scmdb.rows.length ? 'done' : 'fallback';
@@ -83154,6 +83159,121 @@ body.nx-showdown-picker-open #loadout-component-picker-overlay .nx-full-grade-ba
     window.addEventListener('nexus:viewchange', start, { passive: true });
   } catch (error) {
     console.warn('Wikelo data-resilience patch could not be installed', error);
+  }
+})();
+</script>
+
+<script id="nexus-v203-scmdb-parity-browser-patch">
+(() => {
+  'use strict';
+  // Complete Contract Finder ingestion: keep SCMDB's contracts + legacyContracts semantics,
+  // and make the Wiki fallback page until exhaustion even when pagination metadata changes shape.
+  const PAGE_SIZE = 200;
+  const FALLBACK_LIVE = '4.10.0-LIVE.12519617';
+  const clean = value => String(value ?? '').replace(/\s+/g, ' ').trim();
+  const numberAt = (object, paths) => {
+    for (const path of paths) {
+      let value = object;
+      for (const part of path.split('.')) value = value && typeof value === 'object' ? value[part] : undefined;
+      const number = Number(value);
+      if (Number.isFinite(number) && number >= 0) return number;
+    }
+    return 0;
+  };
+  const parseVersion = value => {
+    const match = clean(value).match(/(\d+(?:\.\d+){1,3})[._-](live|ptu|eptu)(?:[._-](\d+))?/i);
+    return match ? { patch: match[1], channel: match[2].toUpperCase(), build: Number(match[3] || 0), code: `${match[1]}-${match[2].toUpperCase()}${match[3] ? `.${match[3]}` : ''}` } : null;
+  };
+  const compareVersion = (a, b) => {
+    const aa = String(a?.patch || '').split('.').map(Number), bb = String(b?.patch || '').split('.').map(Number);
+    for (let i = 0; i < Math.max(aa.length, bb.length); i += 1) {
+      const diff = (bb[i] || 0) - (aa[i] || 0);
+      if (diff) return diff;
+    }
+    return (b?.build || 0) - (a?.build || 0);
+  };
+
+  async function discoverCurrentLiveVersion() {
+    try {
+      const url = new URL('https://api.star-citizen.wiki/api/game-versions');
+      url.searchParams.set('filter[channel]', 'live');
+      url.searchParams.set('page[size]', '200');
+      url.searchParams.set('sort', '-released_at');
+      const payload = await nexusMissionFetchJson(url.href, 26000);
+      const rows = Array.isArray(payload?.data) ? payload.data : nexusMissionFindArray(payload);
+      const versions = rows.map(row => parseVersion(nexusMissionGet(row, 'code', 'name', 'version', 'game_version', 'attributes.code', 'attributes.name')))
+        .filter(version => version?.channel === 'LIVE').sort(compareVersion);
+      if (versions.length) return versions[0].code;
+    } catch (error) {
+      console.warn('Current Wiki mission version discovery failed; using resolved toolkit LIVE build.', error);
+    }
+    return parseVersion(window.NEXUS_LIVE_BUILD?.code)?.code || FALLBACK_LIVE;
+  }
+
+  if (typeof nexusMissionFetchWikiAll === 'function' && typeof nexusMissionFetchJson === 'function') {
+    nexusMissionFetchWikiAll = async function() {
+      const version = await discoverCurrentLiveVersion();
+      const rows = [], seen = new Set();
+      let firstMeta = {}, page = 1;
+      while (page <= 100) {
+        const url = new URL(NEXUS_MISSION_WIKI_URL);
+        url.searchParams.set('version', version);
+        url.searchParams.set('page[size]', String(PAGE_SIZE));
+        url.searchParams.set('page[number]', String(page));
+        url.searchParams.set('filter[grouped]', 'false');
+        const payload = await nexusMissionFetchJson(url.href, 30000);
+        if (page === 1) firstMeta = payload?.meta || payload?.metadata || {};
+        const batch = nexusMissionFindArray(payload);
+        let added = 0;
+        batch.forEach((row, index) => {
+          const key = nexusMissionId(row, rows.length + index);
+          if (!seen.has(key)) { seen.add(key); rows.push(row); added += 1; }
+        });
+        const meta = payload?.meta || payload?.metadata || {};
+        const lastPage = numberAt(meta, ['last_page','lastPage','total_pages','totalPages','pagination.last_page','pagination.lastPage','pagination.total_pages','pagination.totalPages','page.last']);
+        const total = numberAt(meta, ['total','total_count','totalCount','pagination.total','pagination.total_count','pagination.totalCount','page.total']);
+        if (!batch.length || !added) break;
+        if (lastPage && page >= lastPage) break;
+        if (total && rows.length >= total) break;
+        // If no pagination metadata is exposed, intentionally request the next page until an empty/repeated page.
+        page += 1;
+      }
+      if (!rows.length) throw new Error(`No mission records returned for ${version}.`);
+      return {
+        missions: rows, gameVersion: version, targetPatch: parseVersion(version)?.patch || '', targetChannel: 'LIVE', patchVerified: true,
+        meta: { ...firstMeta, gameVersion: version, targetPatch: parseVersion(version)?.patch || '', targetChannel: 'LIVE', patchVerified: true, isFallback: true, fetchedAt: new Date().toISOString(), missionCount: rows.length }
+      };
+    };
+  }
+
+  if (typeof nexusMissionNormalize === 'function' && !nexusMissionNormalize.__nexusScmdbParityV203) {
+    const previousNormalize = nexusMissionNormalize;
+    const wrapped = function(payload, source, url = '') {
+      const parsed = previousNormalize.apply(this, arguments);
+      if (parsed?.meta && payload && typeof payload === 'object') {
+        parsed.meta.scmdbParity = payload.scmdbParity || payload.parity || payload.meta?.scmdbParity || null;
+        parsed.meta.factionCount = payload.factionCount || payload.meta?.factionCount || parsed.meta.scmdbParity?.namedFactionCount || null;
+      }
+      return parsed;
+    };
+    wrapped.__nexusScmdbParityV203 = true;
+    nexusMissionNormalize = wrapped;
+  }
+
+  if (typeof nexusMissionRenderStatus === 'function' && !nexusMissionRenderStatus.__nexusScmdbParityV203) {
+    const previousStatus = nexusMissionRenderStatus;
+    const wrappedStatus = function() {
+      previousStatus.apply(this, arguments);
+      const line = document.getElementById('mission-result-line');
+      if (!line || typeof nexusMissionState === 'undefined') return;
+      const namedFactions = new Set((nexusMissionState.records || []).map(record => nexusMissionFaction(record)).filter(name => name && name !== 'Unspecified faction'));
+      const parity = nexusMissionState.meta?.scmdbParity;
+      const parityText = parity?.totalContracts ? ` · SCMDB parity ${Number(parity.totalContracts).toLocaleString()} rows` : '';
+      const fallbackText = nexusMissionState.meta?.isFallback ? ' · fallback mirror' : '';
+      line.innerHTML = `<strong>${Number(nexusMissionState.filtered?.length || 0).toLocaleString()}</strong> of ${Number(nexusMissionState.records?.length || 0).toLocaleString()} contracts · ${namedFactions.size.toLocaleString()} named factions · ${String(nexusMissionState.source || 'No source').replace(/[&<>]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[ch]))}${parityText}${fallbackText}`;
+    };
+    wrappedStatus.__nexusScmdbParityV203 = true;
+    nexusMissionRenderStatus = wrappedStatus;
   }
 })();
 </script>

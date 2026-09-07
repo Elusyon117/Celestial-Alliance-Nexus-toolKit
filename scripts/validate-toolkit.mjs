@@ -53,6 +53,7 @@ if (duplicates.length) fail(`Duplicate DOM IDs: ${duplicates.slice(0, 20).map(([
 // Required resilience and data-loader invariants.
 for (const [needle, label] of [
   ['id="nexus-data-resilience-patch-v1"', 'data-resilience browser patch'],
+  ['id="nexus-v203-scmdb-parity-browser-patch"', 'SCMDB parity/browser paging patch'],
   ['./data/scmdb-missions-live.js', 'bundled SCMDB snapshot loader'],
   ['Star Citizen Wiki', 'Star Citizen Wiki fallback support'],
   ['nexusMissionFaction', 'Contract Finder faction formatter'],
@@ -63,7 +64,8 @@ for (const [needle, label] of [
 const destructive = html.indexOf("trade.materials=[];trade.rewards=[];trade.__liveVerified=false");
 const resilience = html.indexOf('id="nexus-data-resilience-patch-v1"');
 if (destructive >= 0 && resilience <= destructive) fail('The Wikelo resilience patch must execute after the legacy destructive standardizer.');
-if (!html.includes('missing live recipe fields do not erase the catalog')) fail('Wikelo non-destructive fallback invariant is missing.');
+if (html.includes('Recipe shown from ${trade.__recipeSource}')) fail('Per-card Wikelo recipe provenance notice is still being injected.');
+if (!html.includes('Keep trade cards concise. Recipe provenance is represented by the module-level source/status line.')) fail('Wikelo concise-card provenance invariant is missing.');
 if (!html.includes("return 'Unspecified faction'")) fail('Opaque faction identifiers are not guarded by the readable-name resolver.');
 
 // Local src/href references should exist in the actual repository checkout.
@@ -80,14 +82,27 @@ if (!preSync) {
     try {
       const snapshot = JSON.parse(fs.readFileSync(snapshotPath, 'utf8'));
       const rows = Array.isArray(snapshot.missions) ? snapshot.missions : [];
-      const active = Math.max(Number(snapshot.activeMissionCount || 0), rows.length);
-      if (active < 100) fail(`Contract Finder snapshot is not usable (${active} missions; expected at least 100 after sync).`);
+      const active = Number(snapshot.activeMissionCount || 0);
+      const legacy = Number(snapshot.legacyMissionCount || 0);
+      const total = Number(snapshot.missionCount || rows.length);
+      if (Math.max(active, rows.length) < 100) fail(`Contract Finder snapshot is not usable (${Math.max(active, rows.length)} missions; expected at least 100 after sync).`);
+      if (rows.length !== total) fail(`Contract Finder missionCount (${total}) does not match missions array (${rows.length}).`);
+      if (/SCMDB/i.test(String(snapshot.source || '')) && !snapshot.isFallback) {
+        if (active + legacy !== rows.length) fail(`SCMDB parity mismatch: ${active} active + ${legacy} legacy != ${rows.length} merged rows.`);
+        for (const key of ['factions','locationPools','shipPools','blueprintPools','scopes','availabilityPools','factionRewardsPools','resourcePools','partialRewardPayoutPools']) {
+          if (!(key in snapshot)) fail(`SCMDB snapshot is missing supporting dataset ${key}.`);
+        }
+        if (snapshot.scmdbParity?.totalContracts !== rows.length) fail('SCMDB parity telemetry does not match the synchronized mission array.');
+      }
+      if (/Star Citizen Wiki/i.test(String(snapshot.source || '')) && snapshot.isFallback && rows.length < 500) {
+        fail(`Wiki fallback is suspiciously incomplete (${rows.length} rows; expected at least 500 current ungrouped missions).`);
+      }
       const rawFactionIds = rows.filter(row => {
         const faction = row?.faction;
         const name = typeof faction === 'object' ? (faction.name || faction.displayName || faction.display_name) : (row?.factionName || faction);
         return row?.factionGuid && (!name || /^(?:[0-9a-f]{8}-){1,4}[0-9a-f-]+$/i.test(String(name)));
       }).length;
-      if (rawFactionIds > Math.max(10, rows.length * 0.15)) warn(`${rawFactionIds} mission rows still lack an enriched faction name; browser-side resolver will hide GUIDs.`);
+      if (rawFactionIds > Math.max(10, rows.length * 0.10)) warn(`${rawFactionIds} mission rows still lack an enriched faction name; browser-side resolver will hide GUIDs and try the faction dictionary.`);
     } catch (error) {
       fail(`Could not parse data/scmdb-missions-live.json: ${error.message}`);
     }
@@ -100,7 +115,7 @@ if (!preSync) {
 const swPath = path.join(root, 'sw.js');
 if (fs.existsSync(swPath)) {
   const sw = fs.readFileSync(swPath, 'utf8');
-  if (!/data-resilience-v1-20260906/.test(sw)) warn('sw.js does not contain the v2.0.2 data-resilience cache revision; old clients may retain stale assets longer.');
+  if (!/scmdb-parity-v2-20260907/.test(sw)) warn('sw.js does not contain the v2.0.3 SCMDB-parity cache revision; old clients may retain stale assets longer.');
 } else {
   warn('sw.js not present in this overlay checkout; verify it exists in the target repository.');
 }
