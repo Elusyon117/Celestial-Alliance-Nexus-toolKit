@@ -48,6 +48,24 @@ jobs:
           node scripts/validate-repo.mjs
           node scripts/validate-toolkit.mjs --pre-sync
 
+      - name: Fetch ScDataDumper relationship mirror
+        id: scunpacked
+        shell: bash
+        run: |
+          set -u
+          target="${RUNNER_TEMP}/scunpacked-data"
+          rm -rf "$target"
+          if git clone --depth 1 --filter=blob:none --sparse https://github.com/StarCitizenWiki/scunpacked-data.git "$target"; then
+            git -C "$target" sparse-checkout set contracts factions
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "dir=$target" >> "$GITHUB_OUTPUT"
+            echo "ScDataDumper mirror ready: $(find "$target/contracts" -maxdepth 1 -type f -name '*.json' | wc -l) contract records, $(find "$target/factions" -maxdepth 1 -type f -name '*.json' | wc -l) faction records."
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "dir=" >> "$GITHUB_OUTPUT"
+            echo "::warning::Could not clone StarCitizenWiki/scunpacked-data. SCMDB remains primary and the Wiki-only fallback will be attempted if needed."
+          fi
+
       - name: Synchronize Contract Finder data
         env:
           MISSION_PATCH: ${{ github.event.inputs.patch || '' }}
@@ -60,6 +78,8 @@ jobs:
           STAR_CITIZEN_WIKI_MISSIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_MISSIONS_URL }}
           STAR_CITIZEN_WIKI_FACTIONS_URL: ${{ vars.STAR_CITIZEN_WIKI_FACTIONS_URL }}
           STAR_CITIZEN_WIKI_MISSION_FILTERS_URL: ${{ vars.STAR_CITIZEN_WIKI_MISSION_FILTERS_URL }}
+          SCUNPACKED_DATA_DIR: ${{ steps.scunpacked.outputs.dir }}
+          SCUNPACKED_REPO_URL: https://github.com/StarCitizenWiki/scunpacked-data
         run: node scripts/sync-scmdb-missions.mjs
 
       - name: Audit patch-sensitive references
@@ -152,7 +172,7 @@ jobs:
             const body = [
               'The scheduled game-data sync failed before a usable snapshot could be validated.',
               '',
-              'The v2.0.4 workflow tries SCMDB, configured SCMDB mirrors, the full current-version Wiki mission catalog, and finally a previously usable checked-in snapshot.',
+              'The v2.0.5 workflow tries SCMDB first. If SCMDB is unavailable it joins the complete current-version Wiki mission catalog to StarCitizenWiki/scunpacked-data (ScDataDumper) by mission UUID for authoritative faction/issuer relationships, then validates the result before publishing.',
               '',
               `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
             ].join('\n');

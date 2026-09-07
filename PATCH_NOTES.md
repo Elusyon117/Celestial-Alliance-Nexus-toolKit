@@ -1,58 +1,86 @@
-# Celestial Nexus Toolkit v2.0.4 — Faction Relationship Resolution
+# Celestial Nexus Toolkit v2.0.5 — SCMDB Source-Parity Faction Hotfix
 
-This hotfix addresses the remaining **“Unspecified faction”** entries in Contract Finder while preserving the v2.0.3 Wikelo, SCMDB-parity, and workflow repairs.
+This update fixes the remaining Contract Finder faction failures seen after v2.0.4, especially missions that should belong to **Foxwell Enforcement, Headhunters, Vaughn, and other reputation factions** but were still being grouped under `No faction listed`.
 
-## Root cause
+## Actual root cause
 
-v2.0.3 correctly stopped raw faction GUIDs from being shown as names and loaded a faction dictionary. However, a dictionary only answers **“what name belongs to this faction ID?”**. It does not answer **“which faction owns this mission?”** when a mission-summary row omits the expanded faction relationship.
+The missing names were not only a browser-formatting problem. Some extracted Star Citizen faction records use a placeholder at the obvious top-level name field:
 
-That is the case behind the screenshot: generic contracts such as `[DESTINATION] Errand`, `[LOCATION] needs some repairs`, and `[TARGET] needs stomping` can have a real issuer/faction in the full mission data while the compact list record used by the browser may not carry a directly readable `faction.name`.
+```text
+Name: <= UNINITIALIZED =>
+```
 
-## Contract Finder changes
+while the usable player-facing faction name is stored deeper in the same faction record at:
 
-The new `nexus-v204-faction-parity-patch` resolves a contract issuer/faction in this order:
+```text
+Reputation.DisplayName
+```
 
-1. Expanded faction fields, including lower-case and extracted-game-data forms such as `faction.name`, `Faction.Name`, `FactionName`, and organization fields.
-2. Reputation records. `FactionReputation` is deliberately preferred over unrelated `Affinity` awards, so a Headhunters mission that also grants Citizens For Prosperity affinity remains a **Headhunters** contract.
-3. Faction GUID/UUID lookup through the complete faction dictionary.
-4. Mission-to-faction membership learned from the current Star Citizen Wiki mission endpoint using its `filter[faction]` relationship.
-5. Mission giver/giver fields as an issuer fallback.
-6. Only after all available relationship sources are exhausted is a record labeled `No faction listed`.
+A contract can therefore contain a valid faction UUID while both `Faction.Name` and `ReputationGained[].Faction` look uninitialized. v2.0.4 treated those placeholder values as unusable, but it did not complete the UUID → raw faction record → `Reputation.DisplayName` join. That is why factions such as Foxwell could still disappear.
 
-Additional browser fixes:
+## SCMDB parity behavior
 
-- JSON:API-style `attributes` are flattened before Contract Finder builds filters and cards.
-- JSON:API faction relationship IDs are retained and resolved.
-- The browser always loads the **complete faction collection**, instead of assuming the handful of already-resolved factions is the full set.
-- Mission-to-faction mappings are cached per game build in browser local storage to avoid repeating the enrichment work on every visit.
-- The faction filter is rebuilt after enrichment, so newly resolved names appear without requiring a page reload.
+When SCMDB is reachable, it remains the first-choice authority. The synchronizer preserves its merged mission data and support structures, including:
 
-## Repository sync changes
+- `contracts`
+- `legacyContracts`
+- `factions`
+- location, ship, blueprint, availability, reputation, resource, and partial-payout pools
+- unknown top-level fields for forward compatibility
 
-When SCMDB is available, exact SCMDB behavior remains the authority: current `contracts + legacyContracts` are preserved with SCMDB support dictionaries and raw fields.
+The faction relationship is resolved with SCMDB semantics: **contract `factionGuid` → SCMDB faction dictionary entry → readable faction display name**.
 
-When SCMDB is unavailable and the workflow uses the current Star Citizen Wiki fallback, the sync now enriches every mission using:
+## New raw-game relationship fallback
 
-- direct faction data,
-- `FactionReputation` / reputation records,
-- faction GUID dictionaries,
-- mission membership returned by `filter[faction]`, and
-- mission giver fields.
+SCMDB is currently returning no usable game-data versions, so v2.0.5 adds a second relationship source based on the same extracted game data family used by Star Citizen Wiki:
 
-The generated snapshot now records:
+- `StarCitizenWiki/scunpacked-data/contracts/*.json`
+- `StarCitizenWiki/scunpacked-data/factions/*.json`
 
-- `factionName` on resolved mission rows,
-- `unresolvedFactionCount`,
-- named-faction count,
-- the relationship-enrichment method, and
-- number of faction filters queried.
+The GitHub Actions sync sparse-checks out only the `contracts` and `factions` folders. Current Wiki mission rows are then joined to raw contract records by mission UUID/debug identity. Faction UUIDs are joined to raw faction records.
 
-The Sync game data Actions summary also reports **Contracts without a resolved faction/issuer** so this regression is visible immediately rather than only in the UI.
+Faction names are resolved in this order:
 
-## Validation changes
+1. Explicit SCMDB/browser `factionName`.
+2. SCMDB `factionGuid` → complete SCMDB faction dictionary.
+3. Raw contract `Faction` relationship.
+4. `FactionReputation` / `ReputationGained` relationship.
+5. Raw faction UUID → raw faction dictionary → **`Reputation.DisplayName`**.
+6. Existing source-supported faction relationship.
+7. Mission giver as a last issuer fallback.
+8. `Issuer unavailable` only when no source exposes a readable issuer.
 
-Post-sync validation now fails a Wiki fallback if more than 10% of rows (or more than 25 rows, whichever is larger) still lack a readable faction/issuer. This prevents another apparently-populated Contract Finder snapshot from being accepted when the relationship layer is mostly missing.
+Placeholder values such as `<= UNINITIALIZED =>`, `<= PLACEHOLDER =>`, `Undefined Name`, localization placeholders, and opaque GUIDs are never displayed as faction names.
+
+## Contract Finder UI changes
+
+The v2.0.5 browser patch:
+
+- understands raw ScDataDumper faction records;
+- reads `Reputation.DisplayName` before accepting a top-level placeholder name;
+- resolves SCMDB faction GUIDs through the synchronized faction dictionary;
+- removes `No faction listed`, `Unspecified faction`, and other sentinel labels from the Faction/Giver picker;
+- rebuilds faction filters after a new synchronized payload is applied;
+- never exposes a raw GUID as a user-facing faction.
+
+## Workflow changes
+
+`Sync game data` now attempts sources in this order:
+
+1. exact SCMDB selected LIVE dataset;
+2. configured SCMDB mirror(s), if supplied;
+3. complete current Star Citizen Wiki mission catalog enriched by the ScDataDumper `contracts` + `factions` relationship mirror;
+4. Wiki-only relationship fallback;
+5. a previously saved snapshot only if that snapshot is already large enough and faction-complete enough to be trusted.
+
+The workflow summary reports contract count, named-faction count, unresolved issuer count, source, game version, and ScDataDumper relationship-match telemetry.
+
+## Validation
+
+The regression suite now includes the real failure shape: a contract and faction whose top-level names are `<= UNINITIALIZED =>` while the real name exists only at `Reputation.DisplayName`. It verifies recovery of **Headhunters, Foxwell Enforcement, and Vaughn** through UUID joins.
+
+The post-sync validator also treats placeholder names as unresolved, so a broken snapshot can no longer pass merely because it contains the literal text `<= UNINITIALIZED =>`.
 
 ## Cache/deployment
 
-The service-worker cache namespace is now `faction-parity-v3-20260907`, forcing deployed clients to replace the older v2.0.3 HTML/data-loader assets.
+Service-worker cache revision: `scmdb-source-parity-v4-20260907`.

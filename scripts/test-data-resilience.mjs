@@ -170,6 +170,48 @@ async function browserFactionParityRegression() {
   assert(state.records.every(row => context.nexusMissionFaction(row) !== 'Unspecified faction'), 'Legacy Unspecified faction text remains in the v2.0.4 fixture.');
 }
 
+
+async function browserScmdbFactionSourceParityRegression() {
+  const match = index.match(/<script\s+id="nexus-v205-scmdb-faction-source-parity"[^>]*>([\s\S]*?)<\/script>/i);
+  assert(match, 'v2.0.5 SCMDB faction source parity patch was not found.');
+  const factionSelect = {
+    value: '',
+    options: [
+      { value: '', textContent: 'All factions', remove() { this.removed = true; } },
+      { value: 'No faction listed', textContent: 'No faction listed', remove() { this.removed = true; } },
+      { value: 'Foxwell Enforcement', textContent: 'Foxwell Enforcement', remove() { this.removed = true; } },
+    ],
+  };
+  const state = { records: [], meta: {} };
+  const quietConsole = { log() {}, warn() {}, error() {}, info() {}, debug() {} };
+  const context = {
+    console: quietConsole,
+    nexusMissionState: state,
+    nexusMissionFaction: () => 'No faction listed',
+    nexusMissionNormalize: payload => ({ rows: payload?.missions || [], meta: {}, __nexusFactionDictionary: payload?.factions || {} }),
+    nexusMissionApplyPayload: parsed => { state.records = parsed.rows || []; return true; },
+    nexusMissionBuildFilters: () => true,
+    document: { getElementById: id => id === 'mission-faction-filter' ? factionSelect : null },
+    window: {
+      NEXUS_SCMDB_MISSIONS_PAYLOAD: {
+        factions: {
+          'fac-foxwell': { Name: '<= UNINITIALIZED =>', Reputation: { DisplayName: 'Foxwell Enforcement' } },
+          'fac-headhunters': { Name: '<= UNINITIALIZED =>', Reputation: { DisplayName: 'Headhunters' } },
+          'fac-vaughn': { Name: '<= UNINITIALIZED =>', Reputation: { DisplayName: 'Vaughn' } },
+        },
+      },
+    },
+  };
+  vm.createContext(context);
+  new vm.Script(match[1], { filename: 'nexus-v205-scmdb-faction-source-parity.js' }).runInContext(context);
+  assert(context.nexusMissionFaction({ factionGuid: 'fac-foxwell' }) === 'Foxwell Enforcement', 'SCMDB factionGuid did not resolve through the payload faction dictionary.');
+  assert(context.nexusMissionFaction({ Faction: { UUID: 'fac-headhunters', Name: '<= UNINITIALIZED =>', Reputation: { DisplayName: 'Headhunters' } } }) === 'Headhunters', 'ScDataDumper Reputation.DisplayName did not resolve through an uninitialized top-level faction name.');
+  assert(context.nexusMissionFaction({ ReputationGained: [{ Faction: 'Vaughn', Scope: 'FactionReputation' }] }) === 'Vaughn', 'FactionReputation relationship did not resolve Vaughn.');
+  assert(context.nexusMissionFaction({ MissionGiver: 'Miles Eckhart' }) === 'Miles Eckhart', 'Mission giver fallback did not resolve.');
+  assert(context.nexusMissionFaction({ factionGuid: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' }) === 'Issuer unavailable', 'Unknown GUID should not leak or become No faction listed.');
+  assert(factionSelect.options.find(option => option.value === 'No faction listed')?.removed === true, 'No faction listed remained selectable after v2.0.5 patch.');
+}
+
 function missionRows(count, faction) {
   return Array.from({ length: count }, (_, index) => ({
     uuid: `mission-${index}`, id: `mission-${index}`, title: `Mission ${index}`,
@@ -248,9 +290,81 @@ async function runSyncFixture(kind) {
   await fsp.rm(temp, { recursive: true, force: true });
 }
 
+
+async function runScunpackedSyncFixture() {
+  const temp = await fsp.mkdtemp(path.join(os.tmpdir(), 'nexus-scunpacked-'));
+  const repo = path.join(temp, 'repo');
+  await fsp.mkdir(path.join(repo, 'scripts'), { recursive: true });
+  await fsp.mkdir(path.join(repo, 'data'), { recursive: true });
+  await fsp.writeFile(path.join(repo, 'scripts', 'sync-scmdb-missions.mjs'), syncSource);
+  const bootstrap = { gameVersion: '4.9.0-LIVE', activeMissionCount: 0, missionCount: 0, missions: [] };
+  await fsp.writeFile(path.join(repo, 'data', 'scmdb-missions-live.json'), JSON.stringify(bootstrap));
+  await fsp.writeFile(path.join(repo, 'data', 'scmdb-missions-live.js'), `window.NEXUS_SCMDB_MISSIONS_PAYLOAD = ${JSON.stringify(bootstrap)};\n`);
+
+  const version = '4.10.0-LIVE.12519617';
+  const wiki = path.join(temp, 'wiki');
+  const unpacked = path.join(temp, 'scunpacked');
+  await fsp.mkdir(wiki, { recursive: true });
+  await fsp.mkdir(path.join(unpacked, 'contracts'), { recursive: true });
+  await fsp.mkdir(path.join(unpacked, 'factions'), { recursive: true });
+  await fsp.writeFile(path.join(wiki, 'versions.json'), JSON.stringify({ data: [{ code: version, channel: 'LIVE' }] }));
+
+  const rows = missionRows(125, undefined).map((row, index) => index < 3 ? { ...row, faction: undefined, ReputationGained: undefined } : {
+    ...row, faction: undefined, ReputationGained: [{ Faction: 'Citizens For Prosperity', Scope: 'FactionReputation', Amount: 25 }]
+  });
+  rows[0].title = 'Wanna be a Headhunter?';
+  rows[1].title = 'Foxwell Enforcement Contract';
+  rows[2].title = 'Vaughn Contract';
+  await fsp.writeFile(path.join(wiki, 'missions.json'), JSON.stringify({ data: rows, meta: { last_page: 1, total: rows.length } }));
+  await fsp.writeFile(path.join(wiki, 'factions.json'), JSON.stringify({ data: [{ uuid: 'fac-cfp', name: 'Citizens For Prosperity' }] }));
+  await fsp.writeFile(path.join(wiki, 'filters.json'), JSON.stringify({ data: { faction: [{ value: 'Citizens For Prosperity' }] } }));
+
+  const rawRelations = [
+    ['mission-0', 'fac-headhunters', 'Headhunters', 'Headhunters'],
+    ['mission-1', 'fac-foxwell', 'Foxwell Enforcement', 'Foxwell Enforcement'],
+    ['mission-2', 'fac-vaughn', 'Vaughn', 'Vaughn'],
+  ];
+  for (const [uuid, factionUuid, factionName, giver] of rawRelations) {
+    await fsp.writeFile(path.join(unpacked, 'contracts', `${uuid}.json`), JSON.stringify({
+      UUID: uuid, DebugName: `Fixture_${uuid}`, DisplayTitle: rows[Number(uuid.split('-')[1])].title,
+      MissionGiver: giver,
+      ReputationGained: [{ Faction: '<= UNINITIALIZED =>', FactionUUID: factionUuid, Scope: 'FactionReputation', Amount: 100 }],
+      Faction: { UUID: factionUuid, Name: '<= UNINITIALIZED =>' }, entry_type: 'contracts',
+    }));
+    await fsp.writeFile(path.join(unpacked, 'factions', `${factionUuid}.json`), JSON.stringify({
+      UUID: factionUuid, Name: '<= UNINITIALIZED =>', Reputation: { DisplayName: factionName }
+    }));
+  }
+
+  const env = {
+    ...process.env, MISSION_CHANNEL: 'LIVE', MISSION_MIN_ACTIVE: '100', WIKI_MIN_TOTAL: '100',
+    SCMDB_VERSIONS_URL: pathToFileURL(path.join(temp, 'missing-scmdb.json')).href,
+    STAR_CITIZEN_WIKI_VERSIONS_URL: pathToFileURL(path.join(wiki, 'versions.json')).href,
+    STAR_CITIZEN_WIKI_MISSIONS_URL: pathToFileURL(path.join(wiki, 'missions.json')).href,
+    STAR_CITIZEN_WIKI_FACTIONS_URL: pathToFileURL(path.join(wiki, 'factions.json')).href,
+    STAR_CITIZEN_WIKI_MISSION_FILTERS_URL: pathToFileURL(path.join(wiki, 'filters.json')).href,
+    SCUNPACKED_DATA_DIR: unpacked,
+    SCUNPACKED_REPO_URL: 'https://github.com/StarCitizenWiki/scunpacked-data',
+  };
+  const result = spawnSync(process.execPath, ['scripts/sync-scmdb-missions.mjs'], { cwd: repo, env, encoding: 'utf8' });
+  assert(result.status === 0, `scunpacked sync fixture failed: ${result.stderr || result.stdout}`);
+  const snapshot = JSON.parse(await fsp.readFile(path.join(repo, 'data', 'scmdb-missions-live.json'), 'utf8'));
+  assert(/ScDataDumper/.test(snapshot.source), 'ScDataDumper relationship fallback was not identified as the active source.');
+  const byId = new Map(snapshot.missions.map(row => [String(row.uuid || row.UUID || row.id), row]));
+  assert(byId.get('mission-0')?.factionName === 'Headhunters', 'ScDataDumper UUID join did not recover Headhunters.');
+  assert(byId.get('mission-1')?.factionName === 'Foxwell Enforcement', 'ScDataDumper UUID join did not recover Foxwell Enforcement.');
+  assert(byId.get('mission-2')?.factionName === 'Vaughn', 'ScDataDumper UUID join did not recover Vaughn.');
+  assert(Number(snapshot.scmdbParity?.scunpackedMissionMatches || 0) >= 3, 'ScDataDumper mission-match telemetry was not recorded.');
+  assert(Number(snapshot.scmdbParity?.scunpackedFactionMatches || 0) >= 3, 'ScDataDumper faction-match telemetry was not recorded.');
+  assert(Number(snapshot.unresolvedFactionCount || 0) === 0, 'ScDataDumper-enriched fallback still has unresolved faction rows.');
+  await fsp.rm(temp, { recursive: true, force: true });
+}
+
 await browserRegression();
 await browserWikiPagingRegression();
 await browserFactionParityRegression();
+await browserScmdbFactionSourceParityRegression();
 await runSyncFixture('scmdb');
 await runSyncFixture('wiki');
-console.log('PASS: Wikelo concise cards, v2.0.4 faction relationship resolution, complete Wiki paging, SCMDB parity/schema preservation, and Wiki fallback regression tests.');
+await runScunpackedSyncFixture();
+console.log('PASS: Wikelo concise cards, v2.0.5 SCMDB faction semantics, ScDataDumper UUID relationship enrichment, complete Wiki paging, SCMDB parity/schema preservation, and Wiki fallback regression tests.');

@@ -55,6 +55,7 @@ for (const [needle, label] of [
   ['id="nexus-data-resilience-patch-v1"', 'data-resilience browser patch'],
   ['id="nexus-v203-scmdb-parity-browser-patch"', 'SCMDB parity/browser paging patch'],
   ['id="nexus-v204-faction-parity-patch"', 'faction relationship parity patch'],
+  ['id="nexus-v205-scmdb-faction-source-parity"', 'SCMDB/ScDataDumper faction source parity patch'],
   ['./data/scmdb-missions-live.js', 'bundled SCMDB snapshot loader'],
   ['Star Citizen Wiki', 'Star Citizen Wiki fallback support'],
   ['nexusMissionFaction', 'Contract Finder faction formatter'],
@@ -67,7 +68,9 @@ const resilience = html.indexOf('id="nexus-data-resilience-patch-v1"');
 if (destructive >= 0 && resilience <= destructive) fail('The Wikelo resilience patch must execute after the legacy destructive standardizer.');
 if (html.includes('Recipe shown from ${trade.__recipeSource}')) fail('Per-card Wikelo recipe provenance notice is still being injected.');
 if (!html.includes('Keep trade cards concise. Recipe provenance is represented by the module-level source/status line.')) fail('Wikelo concise-card provenance invariant is missing.');
-if (!html.includes("const NO_FACTION = 'No faction listed'")) fail('Faction resolver does not distinguish genuinely missing relationships from opaque identifiers.');
+if (!html.includes("const UNKNOWN_LABEL = 'Issuer unavailable'")) fail('v2.0.5 faction resolver does not suppress opaque or genuinely missing issuer relationships.');
+if (!html.includes('contract.factionGuid -> payload.factions[guid].name')) fail('Exact SCMDB factionGuid-to-factions dictionary semantics are missing from the browser patch.');
+if (!html.includes('Reputation?.DisplayName') && !html.includes('Reputation.DisplayName')) fail('v2.0.5 faction resolver does not recover user-facing names from ScDataDumper Reputation.DisplayName.');
 
 // Local src/href references should exist in the actual repository checkout.
 if (!preSync) {
@@ -98,20 +101,25 @@ if (!preSync) {
       if (/Star Citizen Wiki/i.test(String(snapshot.source || '')) && snapshot.isFallback && rows.length < 500) {
         fail(`Wiki fallback is suspiciously incomplete (${rows.length} rows; expected at least 500 current ungrouped missions).`);
       }
+      const factionText = value => {
+        if (value == null) return '';
+        const candidate = value && typeof value === 'object'
+          ? (value.displayName || value.display_name || value.DisplayName || value.Reputation?.DisplayName || value.Reputation?.displayName || value.reputation?.DisplayName || value.reputation?.displayName || value.name || value.Name || value.title || value.label)
+          : value;
+        const text = String(candidate ?? '').trim();
+        if (!text || /^(?:<=\s*(?:uninitialized|placeholder)\s*=>|undefined name|@?loc_uninitialized|unknown|none|null|n\/?a)$/i.test(text) || /^(?:[0-9a-f]{8}-[0-9a-f-]{27,}|[0-9a-f]{24,}|[a-z0-9_-]{28,})$/i.test(text)) return '';
+        return text;
+      };
       const readableFaction = row => {
-        const direct = row?.factionName || row?.faction_name || row?.FactionName;
-        if (direct && !/^[0-9a-f-]{24,}$/i.test(String(direct))) return String(direct);
-        for (const faction of [row?.faction,row?.Faction]) {
-          const name = faction && typeof faction === 'object' ? (faction.name || faction.Name || faction.displayName || faction.display_name) : faction;
-          if (name && !/^[0-9a-f-]{24,}$/i.test(String(name))) return String(name);
-        }
+        const direct = factionText(row?.factionName || row?.faction_name || row?.FactionName);
+        if (direct) return direct;
+        for (const faction of [row?.faction,row?.Faction]) { const name = factionText(faction); if (name) return name; }
         const reps = row?.reputation_gained || row?.reputationGained || row?.ReputationGained || [];
         const list = Array.isArray(reps) ? reps : [reps];
         const ordered = [...list.filter(item => /faction.?reputation/i.test(String(item?.scope || item?.Scope || ''))), ...list.filter(item => !/faction.?reputation/i.test(String(item?.scope || item?.Scope || '')))];
-        for (const item of ordered) {
-          const value = item?.faction?.name || item?.faction || item?.Faction?.Name || item?.Faction || item?.factionName || item?.FactionName;
-          if (value && !/^[0-9a-f-]{24,}$/i.test(String(value))) return String(value);
-        }
+        for (const item of ordered) { const value = factionText(item?.faction || item?.Faction || item?.factionName || item?.FactionName); if (value) return value; }
+        const giver = factionText(row?.missionGiver?.name || row?.mission_giver?.name || row?.MissionGiver?.Name || row?.MissionGiver || row?.missionGiver || row?.mission_giver || row?.giver?.name || row?.giver);
+        if (giver) return giver;
         return '';
       };
       const unresolvedFactions = rows.filter(row => !readableFaction(row)).length;
@@ -121,6 +129,10 @@ if (!preSync) {
         fail(`Wiki fallback still has too many unresolved faction/issuer relationships (${unresolvedFactions}/${rows.length}).`);
       } else if (unresolvedFactions) {
         warn(`${unresolvedFactions} mission rows have no readable faction/issuer relationship after synchronization.`);
+      }
+      if (/ScDataDumper/i.test(String(snapshot.source || ''))) {
+        const matches = Number(snapshot.scmdbParity?.scunpackedMissionMatches || 0);
+        if (matches <= 0) fail('Snapshot claims ScDataDumper enrichment but reports zero mission UUID matches.');
       }
     } catch (error) {
       fail(`Could not parse data/scmdb-missions-live.json: ${error.message}`);
@@ -134,7 +146,7 @@ if (!preSync) {
 const swPath = path.join(root, 'sw.js');
 if (fs.existsSync(swPath)) {
   const sw = fs.readFileSync(swPath, 'utf8');
-  if (!/faction-parity-v3-20260907/.test(sw)) warn('sw.js does not contain the v2.0.4 faction-parity cache revision; old clients may retain stale assets longer.');
+  if (!/scmdb-source-parity-v4-20260907/.test(sw)) warn('sw.js does not contain the v2.0.5 SCMDB-source-parity cache revision; old clients may retain stale assets longer.');
 } else {
   warn('sw.js not present in this overlay checkout; verify it exists in the target repository.');
 }

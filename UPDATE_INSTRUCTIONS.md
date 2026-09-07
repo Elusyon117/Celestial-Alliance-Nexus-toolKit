@@ -1,50 +1,64 @@
-# Update Instructions — Celestial Nexus Toolkit v2.0.4
+# Update Instructions — Celestial Nexus Toolkit v2.0.5
 
-## 1. Apply the overlay
+## 1. Apply the ZIP as a repository-root overlay
 
-Extract the ZIP and copy its contents over the **root of the GitHub repository**. Preserve the folder structure, including the hidden `.github` directory.
+Extract the ZIP and copy **everything inside it over the root of your GitHub repository**. Preserve the folder structure and make sure the hidden `.github` folder is included.
 
-The update intentionally replaces:
+The important replacements are:
 
 - `index.html`
 - `sw.js`
 - `.github/workflows/sync-game-data.yml`
 - `.github/workflows/validate-toolkit.yml`
-- the scripts under `scripts/` included in the ZIP
+- `scripts/sync-scmdb-missions.mjs`
+- `scripts/test-data-resilience.mjs`
+- `scripts/validate-toolkit.mjs`
+- `scripts/validate-repo.mjs`
 
-Commit and push those files to `main`.
+Commit and push the changes to your deployment branch (`main` in the current repository layout).
 
-## 2. Run validation
+## 2. Run the toolkit validation workflow
 
-In **GitHub → Actions**, manually run **CA Toolkit V 2.0.4**.
+Open **GitHub → Actions → CA Toolkit V 2.0.5** and run it manually once.
 
-The validation job should pass the repository checks, pre-sync toolkit checks, and data-resilience/faction regression suite.
+It should pass repository validation, pre-sync validation, and the regression suite including the `Reputation.DisplayName` faction-recovery fixture.
 
-## 3. Regenerate Contract Finder data
+## 3. Run Sync game data
 
-Manually run **Sync game data** after validation passes.
+After validation passes, manually run **Sync game data**.
 
-In the workflow summary, check:
+The workflow now:
 
-- Version
-- Source
-- Status
-- Contracts
-- Named factions
+1. tries exact SCMDB first;
+2. if SCMDB is unavailable, sparse-checks out `StarCitizenWiki/scunpacked-data` `contracts` and `factions` folders;
+3. loads the complete current Wiki mission catalog;
+4. joins missions to raw contract relationships by UUID;
+5. joins faction UUIDs to raw faction records;
+6. resolves placeholder top-level faction names through `Reputation.DisplayName`.
+
+## 4. Inspect the Actions summary
+
+Check these values in the Sync workflow summary:
+
+- **Source**
+- **Game version**
+- **Contracts**
+- **Named factions**
 - **Contracts without a resolved faction/issuer**
+- ScDataDumper mission/faction match counts when the fallback is used
 
-If SCMDB is currently reachable, the source should return to SCMDB automatically. If SCMDB is unavailable, the current-version Wiki fallback is acceptable, but the unresolved faction/issuer count should no longer represent a large portion of the catalog.
+If SCMDB is healthy again, the source should automatically be SCMDB. During the current SCMDB outage, a Star Citizen Wiki + ScDataDumper relationship fallback is expected.
 
-## 4. Deploy and refresh
+Do not judge success by a fixed mission number. The public 1,381-mission SCMDB client figure is only a comparison benchmark and can change between builds. The important check is that the sync loads the complete available catalog and does not collapse most contracts into an unresolved faction bucket.
 
-Wait for your normal GitHub Pages deployment to complete. Then hard-refresh the toolkit once. The v2.0.4 service-worker cache revision forces replacement of v2.0.3 cached assets.
+## 5. Deploy and hard-refresh
 
-The browser also has a relationship-enrichment fallback. If a repository snapshot still contains a few unresolved summary rows, Contract Finder can resolve them from the current faction collection and Wiki faction-filter membership and cache that mapping per game build.
+Allow GitHub Pages to redeploy, then perform one hard refresh of the toolkit. v2.0.5 uses a new service-worker cache revision so the old v2.0.4 Contract Finder code should be replaced.
 
-## 5. What to verify in Contract Finder
+## 6. Verify the Faction / Giver picker
 
-Open **Contract Finder → Faction / Giver** and confirm that the previous large `Unspecified faction` bucket is gone.
+Open **Contract Finder → Faction / Giver**.
 
-For example, generic Headhunters mission families such as `[DESTINATION] Errand` and `[LOCATION] needs some repairs` should resolve as Headhunters when that relationship exists in the source data.
+You should no longer see `No faction listed` as a selectable faction bucket. Source-backed factions such as **Foxwell Enforcement, Headhunters, Vaughn**, and other current issuers should populate when their current mission relationships are present.
 
-A record may display `No faction listed` only when all available source relationships are genuinely absent. Raw GUIDs should never be displayed as faction names.
+If the workflow summary reports a large unresolved issuer count, do not treat that deployment as healthy; capture the Actions log because it means one of the upstream relationship sources changed schema or failed to download.

@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 /**
- * Celestial Nexus Contract Finder data mirror — v2.0.4
+ * Celestial Nexus Contract Finder data mirror — v2.0.5
  *
  * Authority order:
  *   1. SCMDB versions manifest + selected dataset (exact contracts + legacyContracts semantics)
  *   2. Optional SCMDB mirror URLs supplied through SCMDB_MIRROR_URLS
- *   3. Current version-pinned Star Citizen Wiki mission API fallback
- *   4. Previously checked-in usable snapshot
+ *   3. StarCitizenWiki/scunpacked-data relationship mirror (ScDataDumper lineage)
+ *      used to enrich the current Wiki mission set when SCMDB is unavailable
+ *   4. Current version-pinned Star Citizen Wiki mission API fallback
+ *   5. Previously checked-in usable snapshot
  *
  * SCMDB records are never reduced to a custom schema. Every source field is preserved and
  * additional resolved fields are layered on top so the browser can use readable factions,
@@ -38,6 +40,8 @@ const ALLOW_LARGE_DROP = /^(1|true|yes)$/i.test(String(process.env.ALLOW_LARGE_D
 const KNOWN_LIVE_VERSION = String(process.env.KNOWN_LIVE_VERSION || '4.10.0-LIVE.12519617');
 const SCMDB_REFERENCE_TOTAL = Math.max(0, Number(process.env.SCMDB_REFERENCE_TOTAL || 1381));
 const PAGE_SIZE = 200;
+const SCUNPACKED_DATA_DIR = String(process.env.SCUNPACKED_DATA_DIR || '').trim();
+const SCUNPACKED_REPO_URL = String(process.env.SCUNPACKED_REPO_URL || 'https://github.com/StarCitizenWiki/scunpacked-data');
 
 const SCMDB_SUPPORT_KEYS = [
   'factions', 'locationPools', 'shipPools', 'blueprintPools', 'scopes', 'availabilityPools',
@@ -77,7 +81,7 @@ async function readJsonSource(url, timeout = 45_000) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout);
   try {
-    const response = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json', 'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0.4' } });
+    const response = await fetch(url, { signal: controller.signal, headers: { Accept: 'application/json', 'User-Agent': 'Celestial-Nexus-Game-Data-Sync/2.0.5' } });
     if (!response.ok) throw new Error(`HTTP ${response.status} for ${url}`);
     return await response.json();
   } finally { clearTimeout(timer); }
@@ -151,7 +155,7 @@ function enrichLocations(value,locationPools){
   if(!Array.isArray(value))return value;
   return value.map(entry=>{if(entry&&typeof entry==='object')return entry;const details=poolByIndexOrKey(locationPools,entry);return details?{guid:entry,...clone(details)}:entry;});
 }
-function readableFactionName(faction){if(faction==null)return '';if(typeof faction==='string'||typeof faction==='number'){const text=String(faction).trim();return opaqueFactionValue(text)?'':text;}return String(faction?.displayName??faction?.display_name??faction?.Name??faction?.name??faction?.title??faction?.label??'').trim();}
+function readableFactionName(faction){if(faction==null)return '';if(typeof faction==='string'||typeof faction==='number'){const text=String(faction).trim();return opaqueFactionValue(text)?'':text;}const value=faction?.displayName??faction?.display_name??faction?.DisplayName??faction?.Reputation?.DisplayName??faction?.Reputation?.displayName??faction?.reputation?.DisplayName??faction?.reputation?.displayName??faction?.Name??faction?.name??faction?.title??faction?.label??'';const text=String(value??'').trim();return opaqueFactionValue(text)?'':text;}
 function enrichScmdbRecord(row,context,legacyContract){
   const result={...row,gameVersion:context.gameVersion,legacyContract:Boolean(legacyContract),scmdb_url:`https://scmdb.net/?m=${encodeURIComponent(String(row?.id||row?.debugName||row?.debug_name||''))}`};
   const guid=row?.factionGuid??row?.faction_guid??row?.faction?.guid??row?.faction?.id;
@@ -182,7 +186,12 @@ function sourceSupport(source){const result={};for(const key of SCMDB_SUPPORT_KE
 
 async function readExistingSnapshot(){try{return JSON.parse(await fs.readFile(outJson,'utf8'));}catch{return null;}}
 function existingMissionCount(snapshot){return Math.max(Number(snapshot?.activeMissionCount||0),Array.isArray(snapshot?.missions)?snapshot.missions.length:0);}
-function isUsableExisting(snapshot){return existingMissionCount(snapshot)>=MIN_ACTIVE;}
+function isUsableExisting(snapshot){
+  const count=existingMissionCount(snapshot);if(count<MIN_ACTIVE)return false;
+  const rows=Array.isArray(snapshot?.missions)?snapshot.missions:[];if(!rows.length)return count>=MIN_ACTIVE;
+  const unresolved=rows.filter(row=>!wikiFactionNameFromRecord(row,normalizeDictionary(snapshot?.factions||{}))).length;
+  return unresolved<=Math.max(25,rows.length*0.10);
+}
 async function writeStatus(moduleStatus){
   let status={};try{status=JSON.parse(await fs.readFile(statusJson,'utf8'));}catch{}
   const next={schema:'celestial-nexus.game-data-status.v2',generatedAt:new Date().toISOString(),detectedPatch:moduleStatus.patch,detectedChannel:moduleStatus.channel,modules:{...(status.modules||{}),contractFinder:moduleStatus}};
@@ -256,6 +265,88 @@ async function synchronizeScmdbMirrors(existing, firstError){
   throw new AggregateError(errors,'All configured SCMDB mirrors failed.');
 }
 
+
+
+const SCUNPACKED_RELATIONSHIP_FIELDS = Object.freeze([
+  'Faction','MissionGiver','ReputationGained','ReputationScope','RequiredLocations','AvailabilityLocations',
+  'BlueprintRewards','HaulingOrders','MinStanding','MaxStanding','RankIndex','CrimeStat','Prerequisites',
+  'Illegal','Shareable','OnceOnly','AvailableInPrison','FailIfBecameCriminal','NotForRelease','WorkInProgress',
+  'TimeToComplete','Cooldown','Lifetime','Difficulty','MissionType','Type','DisplayTitle','Title',
+  'DisplayDescription','Description','Reward','RewardUEC','CalculatedReward','MissionTokens','ObjectiveTokens',
+  'GeneratorClass','entry_type'
+]);
+function sourceKey(value){return String(value??'').trim().toLowerCase();}
+function scunpackedRecordKeys(row,fileName=''){
+  const values=[row?.UUID,row?.uuid,row?.Guid,row?.guid,row?.ID,row?.id,row?.DebugName,row?.debugName,row?.debug_name];
+  if(fileName)values.push(path.basename(fileName,'.json'));
+  return [...new Set(values.map(sourceKey).filter(Boolean))];
+}
+function compactScunpackedRecord(row){
+  const result={};
+  for(const key of SCUNPACKED_RELATIONSHIP_FIELDS)if(row?.[key]!==undefined)result[key]=clone(row[key]);
+  for(const key of ['UUID','uuid','Guid','guid','ID','id','DebugName','debugName','debug_name'])if(row?.[key]!==undefined)result[key]=clone(row[key]);
+  return result;
+}
+function scunpackedFactionIdentity(row){
+  const direct=row?.Faction??row?.faction;
+  if(direct&&typeof direct==='object'){
+    const name=readableFactionName(direct),guid=String(direct.UUID??direct.uuid??direct.Guid??direct.guid??direct.ID??direct.id??'').trim();
+    if(name||guid)return {name,guid,record:direct};
+  }
+  const reps=wikiArray(row?.ReputationGained??row?.reputationGained??row?.reputation_gained).filter(item=>item&&typeof item==='object');
+  const ordered=[...reps.filter(item=>/^faction\s*reputation$/i.test(String(item?.Scope??item?.scope??'').replace(/[_-]/g,' ').trim())),...reps];
+  for(const item of ordered){
+    const name=readableFactionName(item?.Faction??item?.faction??item?.FactionName??item?.factionName);
+    const guid=String(item?.FactionUUID??item?.factionUUID??item?.factionUuid??item?.faction_uuid??'').trim();
+    if(name||guid)return {name,guid,record:name?{name}:null};
+  }
+  return {name:'',guid:'',record:null};
+}
+async function readScunpackedDirectory(directory,onRow){
+  let names;try{names=(await fs.readdir(directory,{withFileTypes:true})).filter(entry=>entry.isFile()&&/\.json$/i.test(entry.name)).map(entry=>entry.name).sort();}catch{return 0;}
+  let count=0;
+  for(const name of names){
+    try{const row=JSON.parse(await fs.readFile(path.join(directory,name),'utf8'));await onRow(row,name);count+=1;}
+    catch(error){console.warn(`Skipping unreadable scunpacked record ${name}: ${error?.message||error}`);}
+  }
+  return count;
+}
+async function loadScunpackedRelationshipMirror(){
+  if(!SCUNPACKED_DATA_DIR)return null;
+  const rootDir=path.resolve(SCUNPACKED_DATA_DIR),contractsDir=path.join(rootDir,'contracts'),factionsDir=path.join(rootDir,'factions');
+  const byMission=new Map(),factions={};
+  const factionFiles=await readScunpackedDirectory(factionsDir,async (row,name)=>{
+    if(!row||typeof row!=='object')return;const id=String(row.UUID??row.uuid??row.Guid??row.guid??row.ID??row.id??path.basename(name,'.json')).trim();if(id)factions[id]=clone(row);
+  });
+  const contractFiles=await readScunpackedDirectory(contractsDir,async (row,name)=>{
+    if(!row||typeof row!=='object')return;const compact=compactScunpackedRecord(row),identity=scunpackedFactionIdentity(row);
+    if(identity.guid&&identity.name&&!factions[identity.guid])factions[identity.guid]=identity.record&&typeof identity.record==='object'?clone(identity.record):{name:identity.name};
+    for(const key of scunpackedRecordKeys(row,name))if(!byMission.has(key))byMission.set(key,compact);
+  });
+  if(!contractFiles)return null;
+  return {rootDir,byMission,factions,contractFiles,factionFiles,sourceUrl:SCUNPACKED_REPO_URL};
+}
+function enrichWikiFromScunpacked(missions,mirror){
+  if(!mirror)return {matched:0,factionMatched:0};let matched=0,factionMatched=0;
+  for(const mission of missions){
+    let raw=null;for(const key of wikiMissionKeys(mission)){raw=mirror.byMission.get(key);if(raw)break;}
+    if(!raw)continue;matched+=1;
+    mission.scunpackedSource=true;
+    for(const key of SCUNPACKED_RELATIONSHIP_FIELDS)if(raw[key]!==undefined&&(mission[key]===undefined||mission[key]===null||mission[key]===''))mission[key]=clone(raw[key]);
+    const identity=scunpackedFactionIdentity(raw);
+    const dictionaryFaction=identity.guid?lookup(mirror.factions,identity.guid):null;
+    const factionName=identity.name||readableFactionName(dictionaryFaction);
+    if(factionName){
+      factionMatched+=1;mission.factionName=factionName;
+      if(identity.guid)mission.factionGuid=identity.guid;
+      mission.faction={...(dictionaryFaction&&typeof dictionaryFaction==='object'?clone(dictionaryFaction):{}),...(raw.Faction&&typeof raw.Faction==='object'?clone(raw.Faction):{}),...(identity.guid?{guid:identity.guid}:{}),name:factionName};
+    }
+    if(raw.MissionGiver!==undefined&&mission.missionGiver===undefined)mission.missionGiver=clone(raw.MissionGiver);
+    if(raw.ReputationGained!==undefined&&mission.reputation_gained===undefined)mission.reputation_gained=clone(raw.ReputationGained);
+  }
+  return {matched,factionMatched};
+}
+
 function collectionRows(payload){if(Array.isArray(payload))return payload;if(Array.isArray(payload?.data))return payload.data;for(const key of ['missions','contracts','records','results','items'])if(Array.isArray(payload?.[key]))return payload[key];return findMissionArray(payload);}
 function paginationNumber(payload,paths){for(const pathText of paths){let value=payload;for(const part of pathText.split('.'))value=value&&typeof value==='object'?value[part]:undefined;const number=Number(value);if(Number.isFinite(number)&&number>=0)return number;}return 0;}
 async function discoverWikiIdentity(){
@@ -288,7 +379,7 @@ async function fetchWikiCollection(baseUrl, identity, {versioned=true,maxPages=1
 }
 function wikiValue(row,...paths){for(const pathText of paths){let value=row;for(const part of String(pathText).split('.'))value=value&&typeof value==='object'?value[part]:undefined;if(value!==undefined&&value!==null&&value!=='')return value;}return null;}
 function wikiArray(value){return Array.isArray(value)?value:value==null?[]:[value];}
-function opaqueFactionValue(value){const text=String(value??'').trim();return !text||/^(?:[0-9a-f]{8}-[0-9a-f-]{27,}|[0-9a-f]{24,}|[a-z0-9_-]{28,})$/i.test(text);}
+function opaqueFactionValue(value){const text=String(value??'').trim();return !text||/^(?:<=\s*(?:uninitialized|placeholder)\s*=>|undefined name|@?loc_uninitialized|unknown|none|null|n\/?a)$/i.test(text)||/^(?:[0-9a-f]{8}-[0-9a-f-]{27,}|[0-9a-f]{24,}|[a-z0-9_-]{28,})$/i.test(text);}
 function wikiMissionKeys(row){return [...new Set([row?.uuid,row?.UUID,row?.guid,row?.Guid,row?.id,row?.ID,row?.mission_uuid,row?.missionUuid,row?.mission_id,row?.missionId,row?.debugName,row?.debug_name].map(value=>String(value??'').trim().toLowerCase()).filter(Boolean))];}
 function wikiFactionNameFromReputation(row,factions={}){
   const rewards=wikiArray(wikiValue(row,'reputation_gained','reputationGained','ReputationGained','reputation_rewards','reputationRewards','ReputationRewards','rewards.reputation')).filter(value=>value&&typeof value==='object');
@@ -389,14 +480,18 @@ async function synchronizeWikiFallback(upstreamError){
   const {rows,meta}=await fetchWikiCollection(WIKI_MISSIONS_URL,identity,{versioned:true,maxPages:100});
   if(rows.length<WIKI_MIN_TOTAL)throw new Error(`Star Citizen Wiki returned only ${rows.length} missions; expected at least ${WIKI_MIN_TOTAL} for a complete fallback.`);
   const missions=rows.map(row=>({...row,gameVersion:identity.code,legacyContract:Boolean(row?.legacyContract)}));
+  let scunpacked=null,scunpackedStats={matched:0,factionMatched:0};
+  try{scunpacked=await loadScunpackedRelationshipMirror();if(scunpacked){scunpackedStats=enrichWikiFromScunpacked(missions,scunpacked);console.log(`ScDataDumper mirror matched ${scunpackedStats.matched}/${missions.length} Wiki missions and supplied ${scunpackedStats.factionMatched} direct faction relationships.`);}}
+  catch(error){console.warn(`ScDataDumper relationship mirror failed: ${error?.message||error}`);}
   const factions=await fetchWikiFactions(identity,missions);
+  if(scunpacked?.factions)Object.assign(factions,clone(scunpacked.factions));
   const factionResolution=await enrichWikiMissionFactions(identity,missions,factions);
   const namedFactions=new Set(missions.map(row=>wikiFactionNameFromRecord(row,factions,factionResolution.assignments)).filter(Boolean));
   const fetchedAt=new Date().toISOString(),sourceFingerprint=fingerprint({identity:identity.code,missions});
-  const parity={semantics:'Wiki ungrouped current-version mission rows (SCMDB unavailable)',activeContracts:missions.length,legacyContracts:0,totalContracts:missions.length,factionDictionaryCount:Object.keys(factions).length,namedFactionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,factionAssignmentMethod:'record faction + FactionReputation + faction GUID dictionary + Wiki faction-filter membership',queriedFactionFilters:factionResolution.queriedFactions,scmdbReferenceTotal:SCMDB_REFERENCE_TOTAL||null,scmdbParityAvailable:false};
+  const parity={semantics:'Wiki ungrouped current-version mission rows enriched from ScDataDumper/scunpacked-data when SCMDB is unavailable',activeContracts:missions.length,legacyContracts:0,totalContracts:missions.length,factionDictionaryCount:Object.keys(factions).length,namedFactionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,factionAssignmentMethod:'ScDataDumper direct Faction/MissionGiver relationship -> record FactionReputation -> faction GUID dictionary -> Wiki faction-filter membership',queriedFactionFilters:factionResolution.queriedFactions,scunpackedAvailable:Boolean(scunpacked),scunpackedContractFiles:scunpacked?.contractFiles||0,scunpackedFactionFiles:scunpacked?.factionFiles||0,scunpackedMissionMatches:scunpackedStats.matched,scunpackedFactionMatches:scunpackedStats.factionMatched,scmdbReferenceTotal:SCMDB_REFERENCE_TOTAL||null,scmdbParityAvailable:false};
   return {
-    snapshot:{schema:'celestial-nexus.scmdb-missions.v8',source:'Star Citizen Wiki mission API fallback',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,sourceFingerprint,isFallback:true,fallbackReason:String(upstreamError?.message||upstreamError||'SCMDB unavailable'),fetchedAt,targetPatch:identity.patch,targetChannel:TARGET_CHANNEL,gameVersion:identity.code,patchVerified:true,verificationMethod:'Current channel/build discovered from Star Citizen Wiki; ungrouped mission pages are fetched until exhaustion and faction/issuer relationships are enriched from mission records, faction reputation, dictionaries, and the Wiki faction filter.',missionCount:missions.length,activeMissionCount:missions.length,legacyMissionCount:0,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,scmdbParity:parity,factions,fields:fieldInventory(missions),apiMeta:meta,missions},
-    status:{status:'current-wiki-fallback',source:'Star Citizen Wiki',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,patch:identity.patch,channel:TARGET_CHANNEL,gameVersion:identity.code,fetchedAt,activeCount:missions.length,legacyCount:0,totalCount:missions.length,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,parity,fingerprint:sourceFingerprint,upstreamError:String(upstreamError?.message||upstreamError||'')}
+    snapshot:{schema:'celestial-nexus.scmdb-missions.v9',source:scunpacked?'Star Citizen Wiki + ScDataDumper relationship fallback':'Star Citizen Wiki mission API fallback',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,sourceFingerprint,isFallback:true,fallbackReason:String(upstreamError?.message||upstreamError||'SCMDB unavailable'),fetchedAt,targetPatch:identity.patch,targetChannel:TARGET_CHANNEL,gameVersion:identity.code,patchVerified:true,verificationMethod:scunpacked?'Current channel/build discovered from Star Citizen Wiki; mission membership comes from the complete ungrouped Wiki catalog while faction/issuer relationships are joined by mission UUID to StarCitizenWiki/scunpacked-data generated by ScDataDumper, then cross-checked with Wiki faction/reputation relationships.':'Current channel/build discovered from Star Citizen Wiki; ungrouped mission pages are fetched until exhaustion and faction/issuer relationships are enriched from mission records, faction reputation, dictionaries, and the Wiki faction filter.',missionCount:missions.length,activeMissionCount:missions.length,legacyMissionCount:0,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,scmdbParity:parity,factions,fields:fieldInventory(missions),apiMeta:meta,missions},
+    status:{status:scunpacked?'current-scunpacked-enriched-wiki-fallback':'current-wiki-fallback',source:scunpacked?'Star Citizen Wiki + ScDataDumper':'Star Citizen Wiki',sourceUrl:WIKI_MISSIONS_URL,versionsUrl:WIKI_VERSIONS_URL,patch:identity.patch,channel:TARGET_CHANNEL,gameVersion:identity.code,fetchedAt,activeCount:missions.length,legacyCount:0,totalCount:missions.length,factionCount:namedFactions.size,unresolvedFactionCount:factionResolution.unresolved,parity,fingerprint:sourceFingerprint,upstreamError:String(upstreamError?.message||upstreamError||'')}
   };
 }
 
@@ -414,7 +509,7 @@ async function main(){
   let wikiError;
   try{const result=await synchronizeWikiFallback(scmdbError);await writeSnapshot(result.snapshot);await writeStatus(result.status);console.log(`Saved ${result.snapshot.missionCount} current Wiki fallback missions and ${result.snapshot.factionCount} named factions (${result.snapshot.gameVersion}).`);return;}catch(error){wikiError=error;console.warn(`Star Citizen Wiki fallback failed: ${error?.message||error}`);}
   if(await preserveUsableSnapshot(existing,scmdbError,wikiError))return;
-  throw new AggregateError([scmdbError,wikiError].filter(Boolean),'No usable Contract Finder mission dataset could be synchronized or preserved.');
+  throw new AggregateError([scmdbError,wikiError].filter(Boolean),'No usable Contract Finder mission dataset could be synchronized from SCMDB, ScDataDumper-enriched Wiki data, or a trustworthy saved snapshot.');
 }
 
 await main();
