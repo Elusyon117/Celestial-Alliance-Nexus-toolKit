@@ -1,6 +1,6 @@
 {
   "schema": "celestial-nexus.game-data-status.v2",
-  "generatedAt": "2026-09-09T04:48:20.971Z",
+  "generatedAt": "2026-09-09T11:30:27.189Z",
   "detectedPatch": "4.10.0",
   "detectedChannel": "LIVE",
   "modules": {
@@ -12,7 +12,7 @@
       "patch": "4.10.0",
       "channel": "LIVE",
       "gameVersion": "4.10.0-LIVE.12519617",
-      "fetchedAt": "2026-09-09T04:48:19.887Z",
+      "fetchedAt": "2026-09-09T11:30:26.140Z",
       "activeCount": 5093,
       "legacyCount": 0,
       "totalCount": 5093,
