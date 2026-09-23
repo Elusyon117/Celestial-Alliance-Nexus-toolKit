@@ -1,7 +1,7 @@
 {
   "schema": "celestial-nexus.game-data-status.v2",
-  "generatedAt": "2026-09-22T21:23:37.127Z",
-  "detectedPatch": "4.10.0",
+  "generatedAt": "2026-09-23T04:50:50.488Z",
+  "detectedPatch": "4.10.1",
   "detectedChannel": "LIVE",
   "modules": {
     "contractFinder": {
@@ -9,20 +9,20 @@
       "source": "Star Citizen Wiki + ScDataDumper",
       "sourceUrl": "https://api.star-citizen.wiki/api/missions",
       "versionsUrl": "https://api.star-citizen.wiki/api/game-versions",
-      "patch": "4.10.0",
+      "patch": "4.10.1",
       "channel": "LIVE",
-      "gameVersion": "4.10.0-LIVE.12519617",
-      "fetchedAt": "2026-09-22T21:23:35.618Z",
-      "activeCount": 5093,
+      "gameVersion": "4.10.1-LIVE.12660092",
+      "fetchedAt": "2026-09-23T04:50:49.220Z",
+      "activeCount": 5088,
       "legacyCount": 0,
-      "totalCount": 5093,
+      "totalCount": 5088,
       "factionCount": 65,
       "unresolvedFactionCount": 433,
       "parity": {
         "semantics": "Wiki ungrouped current-version mission rows enriched from ScDataDumper/scunpacked-data when SCMDB is unavailable",
-        "activeContracts": 5093,
+        "activeContracts": 5088,
         "legacyContracts": 0,
-        "totalContracts": 5093,
+        "totalContracts": 5088,
         "factionDictionaryCount": 75,
         "namedFactionCount": 65,
         "unresolvedFactionCount": 433,
@@ -31,12 +31,12 @@
         "scunpackedAvailable": true,
         "scunpackedContractFiles": 5120,
         "scunpackedFactionFiles": 74,
-        "scunpackedMissionMatches": 5093,
-        "scunpackedFactionMatches": 4165,
+        "scunpackedMissionMatches": 5088,
+        "scunpackedFactionMatches": 4161,
         "scmdbReferenceTotal": 1381,
         "scmdbParityAvailable": false
       },
-      "fingerprint": "ce5fdcde918a18397b7ffa163b50cc8c09005fa227dd2ea390b065e208b2943a",
+      "fingerprint": "5f2bacd4a3037c71f911908018e2855265cd9cb2942e6c92870269b272f7a8ca",
       "upstreamError": "HTTP 403 for https://scmdb.net/data/versions.json"
     }
   }
